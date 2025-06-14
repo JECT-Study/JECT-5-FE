@@ -1,0 +1,14 @@
+{
+  "name": "ject-5-fe",
+  "workspaces": [
+    "service/*",
+    "shared/*"
+  ],
+  "version": "0.0.1",
+  "packageManager": "yarn@4.9.2",
+  "devDependencies": {
+    "eslint": "^9",
+    "prettier": "^3.5",
+    "typescript": "^5.6"
+  }
+}
