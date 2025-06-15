@@ -2,7 +2,6 @@ import "./globals.css"
 
 import { type Metadata } from "next"
 import localFont from "next/font/local"
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -30,7 +29,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <p className="text-mint-500"></p>
+        <p className="text-not-defined">안녕하세요</p>
       </body>
     </html>
   )

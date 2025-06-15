@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
-    "./theme.css": "./index.css",
+    "./tailwind.config": "./tailwind.config.ts",
     "./postcss.config": "./postcss.config.mjs"
   },
   "dependencies": {
@@ -11,18 +11,34 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^4",
     "@ject-5-fe/eslint": "workspace:*",
-    "@tailwindcss/postcss": "^4.1.10",
+    "@storybook/addon-a11y": "^9.0.9",
+    "@storybook/addon-docs": "^9.0.9",
+    "@storybook/addon-vitest": "^9.0.9",
+    "@storybook/react-vite": "^9.0.9",
+    "@types/node": "^24.0.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.4.1",
-    "tailwindcss": "^4.1.10",
+    "@vitest/browser": "^3.2.3",
+    "@vitest/coverage-v8": "^3.2.3",
+    "autoprefixer": "^10.4.21",
+    "eslint-plugin-storybook": "^9.0.9",
+    "playwright": "^1.53.0",
+    "postcss": "^8.5.5",
+    "storybook": "^9.0.9",
+    "tailwindcss": "3",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^3.2.3"
   },
   "scripts": {
     "lint": "eslint . --fix",
     "type-check": "tsc --noEmit",
-    "dev": "vite"
+    "format": "prettier --write .",
+    "dev": "vite",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }

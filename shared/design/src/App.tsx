@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <div className="text-mint-500">{count}</div>
+      <div className="flex-1 text-red-100">{count}</div>
       <button onClick={() => setCount(count + 1)}>+</button>
     </>
   )

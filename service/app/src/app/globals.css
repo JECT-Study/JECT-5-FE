@@ -1,2 +1,3 @@
-@import "tailwindcss";
-@import url("@ject-5-fe/design/theme.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
