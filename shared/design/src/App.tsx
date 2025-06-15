@@ -1,5 +1,3 @@
-import "./App.css"
-
 import { useState } from "react"
 
 function App() {
@@ -7,7 +5,7 @@ function App() {
 
   return (
     <>
-      <div>{count}</div>
+      <div className="text-mint-500">{count}</div>
       <button onClick={() => setCount(count + 1)}>+</button>
     </>
   )

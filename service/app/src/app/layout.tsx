@@ -2,7 +2,6 @@ import "./globals.css"
 
 import { type Metadata } from "next"
 import localFont from "next/font/local"
-import Script from "next/script"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <Script src="https://third-party-script.js"></Script>
+        <p className="text-mint-500"></p>
       </body>
     </html>
   )
