@@ -6,6 +6,7 @@ import { defineConfig } from "eslint/config"
 import reactHooks from "eslint-plugin-react-hooks"
 import simpleImportSort from "eslint-plugin-simple-import-sort"
 import eslintConfigPrettier from "eslint-config-prettier/flat"
+import tailwind from "eslint-plugin-tailwindcss"
 
 export default defineConfig([
   { ignores: ["dist/**", "node_modules/**"] },
@@ -49,6 +50,15 @@ export default defineConfig([
   {
     plugins: {
       "simple-import-sort": simpleImportSort,
+    },
+  },
+  ...tailwind.configs["flat/recommended"],
+  {
+    settings: {
+      tailwindcss: {
+        callees: ["classnames", "clsx", "ctl"],
+        config: "../design/tailwind.config.ts",
+      },
     },
   },
   {

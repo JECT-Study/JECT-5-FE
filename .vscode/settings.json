@@ -7,5 +7,5 @@
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.nodePath": ".yarn/sdks",
-  "tailwindCSS.experimental.configFile": "shared/design/index.css"
+  "tailwindCSS.experimental.configFile": "shared/design/tailwind.config.ts"
 }
