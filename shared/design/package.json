@@ -34,7 +34,7 @@
     "vitest": "^3.2.3"
   },
   "scripts": {
-    "lint": "eslint . --fix",
+    "lint": "eslint --max-warnings 0 --no-warn-ignored --fix",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "dev": "vite",
