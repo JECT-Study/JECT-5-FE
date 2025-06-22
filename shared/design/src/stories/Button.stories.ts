@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { fn } from "storybook/test"
+import { expect, fn, within } from "storybook/test"
 
 import { Button } from "./Button"
 
@@ -29,6 +29,10 @@ export const Primary: Story = {
   args: {
     primary: true,
     label: "Button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole("button", { name: "Button" })).toBeVisible()
   },
 }
 
