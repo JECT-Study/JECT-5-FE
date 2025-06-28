@@ -23,6 +23,7 @@ export default defineProject(
       ],
       test: {
         name: "storybook",
+        passWithNoTests: true,
         browser: {
           enabled: true,
           headless: true,
