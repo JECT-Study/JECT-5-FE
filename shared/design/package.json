@@ -21,8 +21,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.4.1",
-    "@vitest/browser": "^3.2.3",
-    "@vitest/coverage-v8": "^3.2.3",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "eslint-plugin-storybook": "^9.0.9",
     "playwright": "^1.53.0",
@@ -30,15 +30,16 @@
     "storybook": "^9.0.9",
     "tailwindcss": "3",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.2.3"
+    "vite": "^6",
+    "vitest": "^3.2.4"
   },
   "scripts": {
-    "lint": "eslint --max-warnings 0 --no-warn-ignored --fix",
+    "lint": "yarn run -T -B eslint --max-warnings 0 --no-warn-ignored --fix",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write .",
+    "format": "prettier --write",
     "dev": "vite",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test": "vitest run"
   }
 }

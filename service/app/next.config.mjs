@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  transpilePackages: ["@ject-5-fe/design"],
-}
+const nextConfig = {}
 
 export default nextConfig

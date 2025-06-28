@@ -13,15 +13,19 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9",
     "lint-staged": "^16.1.2",
+    "playwright": "^1.53.1",
     "prettier": "^3.5",
-    "typescript": "^5.6"
-  },
-  "dependencies": {
-    "prettier-plugin-tailwindcss": "^0.6.12"
+    "prettier-plugin-tailwindcss": "^0.6.13",
+    "typescript": "^5.6",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "commit": "cz"
+    "commit": "cz",
+    "test": "yarn workspaces foreach -A run test"
+  },
+  "resolutions": {
+    "vite": "^6"
   }
 }
