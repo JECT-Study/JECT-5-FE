@@ -1,0 +1,116 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: 개발 컨벤션 및 워크플로우 - 커밋 규칙, 브랜치 관리, 개발 프로세스 가이드
+globs: 
+alwaysApply: true
+---
+
+# 개발 컨벤션 & 워크플로우
+
+> 🔄 **커밋, 브랜치 관리, 개발 프로세스 등 개발 시 준수해야 할 모든 가이드**
+
+## 🔧 기본 환경 설정
+
+### Yarn Berry + PnP Mode 구성
+- **Yarn Berry(v4) + PnP Mode 기반 모노레포**
+- **node_modules 폴더 존재하지 않음** → 의존성은 `.yarn/cache`에 압축 저장
+- **`zero-install` 사용하지 않음** → 브랜치 작업 시 `yarn install` 필수
+
+## 🌿 브랜치 구조
+```
+main (배포된 최종 버전)
+ ↑
+dev (개발 완료 버전, 배포 대기)
+ ↑
+feature/* (기능 개발 브랜치)
+```
+
+## 📋 개발 프로세스
+1. **Issue 작성** (영어로 작성)
+   - subissue 작성 시: main issue → `create sub-issue`로 생성
+2. **브랜치 생성**: Issue 우측 `create a branch` → `dev`를 `Branch source`로 설정
+3. **개발 작업**: `feature/*` 브랜치에서 개발
+4. **커밋**: Conventional Commits 규칙 준수 (영어만)
+5. **PR 생성**: `feature/*` → `dev`
+6. **배포**: `dev` → `main`
+
+## 📝 파일명 & 네이밍 컨벤션
+
+### 파일명 규칙
+- **파일명**: 무조건 소문자 camelCase로 작성
+  - ✅ 올바른 예시: `userProfile.tsx`, `gameSettings.js`, `apiClient.ts`
+  - ❌ 잘못된 예시: `UserProfile.tsx`, `game_settings.js`, `API_CLIENT.ts`
+
+### 변수명 규칙
+일반적인 JavaScript 컨벤션을 따라 용도에 맞게 작성:
+
+- **일반 변수/함수**: camelCase
+  ```typescript
+  const userName = 'john';
+  const getUserData = () => {};
+  ```
+
+- **상수**: UPPER_SNAKE_CASE
+  ```typescript
+  const API_BASE_URL = 'https://api.example.com';
+  const MAX_RETRY_COUNT = 3;
+  ```
+
+- **클래스명**: PascalCase
+  ```typescript
+  class GameEngine {}
+  class UserService {}
+  ```
+
+- **컴포넌트명**: PascalCase
+  ```typescript
+  const UserProfile = () => {};
+  const GameBoard = () => {};
+  ```
+
+### 🚫 금지사항
+- **kebab-case 사용 금지** (CSS 클래스 제외)
+  - ❌ `user-profile.tsx`, `game-data.js`
+
+## 🔄 커밋 규칙
+
+### 기본 원칙
+- **형식**: `type(scope): description`
+- **언어**: 영어만 사용 (한글 감지 시 커밋 실패)
+- **도구**: husky + lint-staged 활용 ([lint-staged.config.js](mdc:lint-staged.config.js))
+- **규칙**: `@commitlint/config-conventional` 적용
+
+### 허용되는 커밋 타입
+- `feat`: 새로운 기능
+- `fix`: 버그 수정
+- `docs`: 문서 수정
+- `style`: 코드 스타일 변경
+- `refactor`: 리팩토링
+- `test`: 테스트 추가/수정
+- `chore`: 기타 작업
+- `rule`: rule 파일 변경 시
+
+### 커밋 예시
+```
+feat: add button component
+fix(auth): resolve login validation issue
+docs: update README for setup instructions
+rule: update development conventions
+```
+
+## 🚫 절대 금지사항
+- **커밋 메시지에 한글 사용 금지**
+- **컨벤션 위반 시 커밋 자동 실패**
+- **`nodeLinker: node-modules` 사용 금지** (해결방법으로 절대 제시하지 말 것)
+- **main 브랜치 직접 push 금지**
+- **dev 브랜치 직접 push 금지** (PR을 통해서만)
+- **feature → main 직접 merge 금지**
+
+## ✅ 필수 사항
+- **브랜치 작업 시 `yarn install` 실행**
+- **Issue 제목은 영어로 작성**
+- **PR 제목은 커밋 컨벤션 준수**
