@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     "./tailwind.config": "./tailwind.config.ts",
-    "./postcss.config": "./postcss.config.mjs"
+    "./postcss.config": "./postcss.config.mjs",
+    "./components/*": "./src/components/*.tsx"
   },
   "dependencies": {
     "react": "^18",
