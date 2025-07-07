@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     "./tailwind.config": "./tailwind.config.ts",
-    "./postcss.config": "./postcss.config.mjs"
+    "./postcss.config": "./postcss.config.mjs",
+    "./components/*": "./src/components/*.tsx"
   },
   "dependencies": {
     "react": "^18",
@@ -25,7 +26,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "eslint-plugin-storybook": "^9.0.9",
-    "playwright": "^1.53.0",
+    "playwright": "^1.53.1",
     "postcss": "^8.5.5",
     "storybook": "^9.0.9",
     "tailwindcss": "3",
@@ -36,7 +37,7 @@
   "scripts": {
     "lint": "yarn run -T -B eslint --max-warnings 0 --no-warn-ignored --fix",
     "type-check": "tsc --noEmit",
-    "format": "prettier --write",
+    "format": "yarn run -T -B prettier --write",
     "dev": "vite",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

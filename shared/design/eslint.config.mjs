@@ -12,4 +12,20 @@ export default [
       "storybook/default-exports": "off",
     },
   },
+  {
+    settings: {
+      tailwindcss: {
+        callees: ["classnames", "clsx", "ctl", "cn"],
+        config: "./tailwind.config.ts",
+      },
+    },
+    rules: {
+      "tailwindcss/no-custom-classname": [
+        "error",
+        {
+          config: "./tailwind.config.ts",
+        },
+      ],
+    },
+  },
 ]
