@@ -1,0 +1,56 @@
+{
+  "name": "@ject-5-fe/figma-plugin",
+  "type": "module",
+  "scripts": {
+    "dev": "plugma dev",
+    "socket": "tsx src/socket.ts",
+    "start": "concurrently \"yarn run socket\" \"yarn run dev\" --names \"SOCKET,MCP\" --prefix-colors \"blue,green\"",
+    "lint": "yarn -B -T eslint --fix",
+    "format": "yarn -B -T prettier --write"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "latest",
+    "ws": "latest",
+    "xml-js": "^1.6.11",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.100.2",
+    "@ject-5-fe/eslint": "workspace:*",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/uuid": "^9.0.8",
+    "@types/ws": "^8.5.10",
+    "@vitejs/plugin-react": "^4.3.3",
+    "concurrently": "^8",
+    "plugma": "^1",
+    "tsup": "^8.5.0",
+    "tsx": "^4.7.0",
+    "vite": "^5.4.10",
+    "vite-plugin-generate-file": "^0.3.1"
+  },
+  "plugma": {
+    "manifest": {
+      "id": "e-replace",
+      "name": "e",
+      "main": "src/main.ts",
+      "ui": "src/ui.tsx",
+      "editorType": [
+        "figma",
+        "figjam"
+      ],
+      "networkAccess": {
+        "allowedDomains": [
+          "none"
+        ],
+        "devAllowedDomains": [
+          "http://localhost:*",
+          "ws://localhost:9001"
+        ]
+      }
+    }
+  }
+}
