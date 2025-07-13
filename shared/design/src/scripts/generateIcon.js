@@ -14,8 +14,11 @@ Object.keys(iconData).forEach((_icon) => {
   // 생성된 아이콘 이름 저장
   generatedIcons.push({ fileName: icon, componentName })
 
+  // SVG에서 모든 fill 속성 제거 (fill="any_color", fill='any_color' 등)
+  const cleanedSvg = iconData[icon].svg.replace(/fill=(["'])[^"']*\1/g, "")
+
   transform(
-    iconData[icon].svg,
+    cleanedSvg,
     {
       template: (variables, context) => {
         return context.tpl`
@@ -38,6 +41,7 @@ Object.keys(iconData).forEach((_icon) => {
       svgProps: {
         width: "{size}",
         height: "{size}",
+        fill: "currentColor",
       },
       plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
     },
