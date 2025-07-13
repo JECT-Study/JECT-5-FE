@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.4",
   "metadata": {},
   "collections": [
     {
@@ -505,7 +505,7 @@
               }
             },
             {
-              "name": "color/icon/interactive/secondary",
+              "name": "color/icon/secondary",
               "type": "color",
               "isAlias": true,
               "value": {
@@ -514,7 +514,7 @@
               }
             },
             {
-              "name": "color/icon/secondary",
+              "name": "color/icon/interactive/secondary",
               "type": "color",
               "isAlias": true,
               "value": {
@@ -712,6 +712,15 @@
               }
             },
             {
+              "name": "color/background/interactive/secondary-disabled",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "gray/200"
+              }
+            },
+            {
               "name": "color/background/interactive/destructive",
               "type": "color",
               "isAlias": true,
@@ -763,15 +772,6 @@
               "value": {
                 "collection": "primitive",
                 "name": "blue/50"
-              }
-            },
-            {
-              "name": "color/background/interactive/inverse",
-              "type": "color",
-              "isAlias": true,
-              "value": {
-                "collection": "primitive",
-                "name": "neutral/white"
               }
             },
             {
@@ -871,6 +871,24 @@
               "value": {
                 "collection": "primitive",
                 "name": "gray/200"
+              }
+            },
+            {
+              "name": "color/background/interactive/destructive-disabled",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "gray/200"
+              }
+            },
+            {
+              "name": "color/background/interactive/inverse",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "neutral/white"
               }
             }
           ]
@@ -1005,7 +1023,7 @@
               }
             },
             {
-              "name": "color/icon/interactive/secondary",
+              "name": "color/icon/secondary",
               "type": "color",
               "isAlias": true,
               "value": {
@@ -1014,7 +1032,7 @@
               }
             },
             {
-              "name": "color/icon/secondary",
+              "name": "color/icon/interactive/secondary",
               "type": "color",
               "isAlias": true,
               "value": {
@@ -1212,6 +1230,15 @@
               }
             },
             {
+              "name": "color/background/interactive/secondary-disabled",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "gray/400"
+              }
+            },
+            {
               "name": "color/background/interactive/destructive",
               "type": "color",
               "isAlias": true,
@@ -1263,15 +1290,6 @@
               "value": {
                 "collection": "primitive",
                 "name": "blue/50"
-              }
-            },
-            {
-              "name": "color/background/interactive/inverse",
-              "type": "color",
-              "isAlias": true,
-              "value": {
-                "collection": "primitive",
-                "name": "gray/600"
               }
             },
             {
@@ -1371,6 +1389,24 @@
               "value": {
                 "collection": "primitive",
                 "name": "gray/200"
+              }
+            },
+            {
+              "name": "color/background/interactive/destructive-disabled",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "gray/400"
+              }
+            },
+            {
+              "name": "color/background/interactive/inverse",
+              "type": "color",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "gray/600"
               }
             }
           ]
