@@ -9,7 +9,16 @@ import eslintConfigPrettier from "eslint-config-prettier/flat"
 import tailwind from "eslint-plugin-tailwindcss"
 
 export default defineConfig([
-  { ignores: ["dist/**", "node_modules/**"] },
+  {
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      ".next/**",
+      "build/**",
+      "storybook-static/**",
+      "**/*.tsbuildinfo",
+    ],
+  },
   {
     languageOptions: {
       globals: {
@@ -19,14 +28,16 @@ export default defineConfig([
       },
     },
   },
-  tseslint.config(eslintJS.configs.recommended, tseslint.configs.recommended, {
+  eslintJS.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        project: true,
       },
     },
-  }),
+  },
   {
     ...pluginReact.configs.flat["jsx-runtime"],
     settings: {
@@ -45,7 +56,7 @@ export default defineConfig([
   },
   {
     files: ["*.js", "*.mjs"],
-    extends: [tseslint.configs.disableTypeChecked],
+    ...tseslint.configs.disableTypeChecked,
   },
   {
     plugins: {
@@ -54,16 +65,8 @@ export default defineConfig([
   },
   ...tailwind.configs["flat/recommended"],
   {
-    settings: {
-      tailwindcss: {
-        callees: ["classnames", "clsx", "ctl"],
-        config: "../design/tailwind.config.ts",
-      },
-    },
-  },
-  {
     rules: {
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "@typescript-eslint/no-explicit-any": "warn",
@@ -76,6 +79,7 @@ export default defineConfig([
           argsIgnorePattern: "^_",
         },
       ],
+      "tailwindcss/no-custom-classname": "off",
     },
   },
   eslintConfigPrettier,
