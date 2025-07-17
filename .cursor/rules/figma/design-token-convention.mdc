@@ -1,0 +1,62 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# Design Token 색상 계층 및 네이밍 분석
+
+## 색상 토큰 계층 구조
+
+1. Primitive Level (원시 계층)
+   neutral/black → #000000
+   gray/300 → #D1D5DC
+   blue/400 → #51A2FF
+   red/500 → #FB2C36
+   네이밍 패턴: 색상명/숫자
+
+색상명: neutral, gray, blue, red, green, yellow
+숫자: 50~950 (50 단위, 숫자가 클수록 진함)
+
+2. Semantic Level (의미론적 계층)
+   color/text/primary → neutral/black
+   color/background/interactive/primary → blue/400
+   color/border/interactive/secondary → gray/300
+   네이밍 패턴: color/용도/세부용도/상태
+
+용도: text, background, border, icon
+세부용도: interactive, primary, secondary
+상태: hovered, pressed, disabled, focused
+
+네이밍 컨벤션 규칙
+용도별 분류
+
+text/_: 텍스트 색상
+background/_: 배경 색상
+border/_: 테두리 색상
+icon/_: 아이콘 색상
+
+중요도 분류
+
+```
+primary: 주요 (가장 중요)
+secondary: 보조 (두 번째 중요)
+tertiary: 3차 (세 번째 중요)
+```
+
+상태별 분류
+
+```
+default: 기본 상태 (명시 안 함)
+hovered: 호버 상태
+pressed: 눌림 상태
+disabled: 비활성 상태
+```
+
+실제 사용 예시
+
+```
+color/background/interactive/primary → 주요 인터랙티브 배경색
+color/text/interactive/secondary-hovered → 보조 인터랙티브 텍스트 호버색
+color/border/interactive/input/error → 입력창 에러 테두리색
+```
