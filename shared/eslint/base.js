@@ -66,7 +66,7 @@ export default defineConfig([
   ...tailwind.configs["flat/recommended"],
   {
     rules: {
-      "no-unused-vars": "warn",
+      "no-unused-vars": "off",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "@typescript-eslint/no-explicit-any": "warn",
