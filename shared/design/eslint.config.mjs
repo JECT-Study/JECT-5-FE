@@ -15,7 +15,7 @@ export default [
   {
     settings: {
       tailwindcss: {
-        callees: ["classnames", "clsx", "ctl", "cn"],
+        callees: ["cva", "clsx", "ctl", "cn"],
         config: "./tailwind.config.ts",
       },
     },
