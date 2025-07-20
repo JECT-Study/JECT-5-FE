@@ -16,14 +16,6 @@ const App = () => {
   const [selectionData, setSelectionData] = useState<any>(null)
   const [status, setStatus] = useState("Disconnected")
 
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-    } catch (err) {
-      console.error("복사 실패:", err)
-    }
-  }
-
   // 플러그인으로부터 메시지 받기
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -239,6 +231,7 @@ const App = () => {
               whiteSpace: "pre-wrap",
               wordBreak: "break-word",
               fontFamily: "monospace",
+              margin: 0,
             }}
           >
             {selectionData.xml?.join("\n\n")}
@@ -267,6 +260,7 @@ const App = () => {
               wordBreak: "break-word",
               fontFamily: "monospace",
               color: "var(--figma-color-text-secondary)",
+              margin: 0,
             }}
           >
             {JSON.stringify(selectionData.reactNodes, null, 2)}
@@ -295,6 +289,7 @@ const App = () => {
               wordBreak: "break-word",
               fontFamily: "monospace",
               color: "var(--figma-color-text-secondary)",
+              margin: 0,
             }}
           >
             {JSON.stringify(selectionData.variables, null, 2)}
