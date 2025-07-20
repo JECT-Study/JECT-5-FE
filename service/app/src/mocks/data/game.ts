@@ -17,7 +17,7 @@ export const presignedUrlDataSuccess = (gameId: UUID, imageCount: number) => {
 }
 
 export const GameListSuccess = (gameList: GameListItem[]) => {
-  return generateSuccessResponse(mockGameListData);
+  return generateSuccessResponse({ games: gameList });
 }
 
 export const gameSuccessResponse = () => ({
