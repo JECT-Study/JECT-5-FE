@@ -62,4 +62,4 @@ export const PrimaryBoxButton = forwardRef<
   )
 })
 
-PrimaryBoxButton.displayName = "BoxButton"
+PrimaryBoxButton.displayName = "PrimaryBoxButton"
