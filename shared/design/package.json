@@ -48,8 +48,7 @@
     "dev": "vite",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test": "vitest run",
-    "generate-icons": "node src/scripts/generateIcon.js",
-    "postinstall": "yarn generate-icons && yarn format src/icons && yarn lint src/icons"
+    "test": "vitest run --project=storybook",
+    "generate-icons": "node src/scripts/generateIcon.js && yarn format src/icons && yarn lint src/icons"
   }
 }
