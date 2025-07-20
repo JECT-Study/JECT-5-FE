@@ -8,6 +8,14 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.nodePath": ".yarn/sdks",
   "tailwindCSS.experimental.configFile": "shared/design/tailwind.config.ts",
+  "tailwindCSS.classFunctions": [
+    "cva",
+    "tv",
+    "cn",
+    "tw",
+    "clsx",
+    "tw\\.[a-z-]+"
+  ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

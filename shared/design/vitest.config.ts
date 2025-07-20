@@ -19,6 +19,7 @@ export default defineProject(
       plugins: [
         storybookTest({
           configDir: path.join(dirname, ".storybook"),
+          storybookScript: "yarn storybook --ci",
         }),
       ],
       test: {
