@@ -1,4 +1,4 @@
-import { GameListItem, GameDetailData, GameQuestion } from "@/entities/game";
+import { GameDetailData, GameListItem, GameQuestion } from "@/entities/game";
 
 export const generateFakeUUID = (): string => {
   const s4 = () => {

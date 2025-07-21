@@ -1,5 +1,6 @@
 import { fetchClient } from '@shared/lib/fetchClient';
-import type { GameQueryParams, GameListResponse } from '../model';
+
+import type { GameListResponse,GameQueryParams } from '../model';
 
 export const getGameList = async (params: GameQueryParams): Promise<GameListResponse> => {
   const searchParams = new URLSearchParams();

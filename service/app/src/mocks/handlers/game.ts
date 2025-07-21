@@ -1,42 +1,41 @@
 import { http, HttpResponse } from 'msw';
-import { internalServerError, loginRequiredError } from '../data/common';
+
 import { 
-  sortGames, 
-  findCursorPosition, 
   filterGamesByQuery,
+  findCursorPosition, 
   GameCreateRequest,
+  GameListItem,
   GameUpdateRequest,
   PresignedUrlRequest,
-  GameListItem
-} from '@/entities/game';
+  sortGames} from '@/entities/game';
+
+import { internalServerError, loginRequiredError } from '../data/common';
 
 const MSW_BASE_URL = process.env.MSW_BASE_URL || 'http://localhost:3000';
+import { mockGameList } from '../data/common';
 import { 
   gameConflictError, 
-  GameListSuccess, 
-  gameNotFoundError, 
-  presignedUrlDataSuccess,
-  gameSuccessResponse,
   gameDetailSuccess,
-  gameMissingFieldsError,
-  gameInvalidQuestionsError,
   gameInvalidQuestionFormatError,
-  gameModifiedError
-} from '../data/game';
-import { generateFakeUUID, generateGameDetailData } from '../utils/mockGenerators';
-import { mockGameList } from '../data/common';
+  gameInvalidQuestionsError,
+  GameListSuccess, 
+  gameMissingFieldsError,
+  gameModifiedError,
+  gameNotFoundError, 
+  gameSuccessResponse,
+  presignedUrlDataSuccess} from '../data/game';
 import {
   findGameById,
-  validateSessionCookie,
-  validateGameCreateFields,
-  validateGameUpdateFields,
-  validateQuestionsArray,
-  validateQuestionFormat,
-  updateGameFields,
+  incrementGamePlayCount,
   softDeleteGame,
   toggleGameShare,
-  incrementGamePlayCount
-} from '../utils/gameHandlers';
+  updateGameFields,
+  validateGameCreateFields,
+  validateGameUpdateFields,
+  validateQuestionFormat,
+  validateQuestionsArray,
+  validateSessionCookie} from '../utils/gameHandlers';
+import { generateFakeUUID, generateGameDetailData } from '../utils/mockGenerators';
 
 
 export const gameHandlers = [

@@ -1,6 +1,8 @@
-import { GameListItem, GameCreateRequest, GameUpdateRequest } from '@/entities/game';
-import { mockGameList } from '../data/common';
 import { UUID } from '@shared/types/common';
+
+import { GameCreateRequest, GameListItem, GameUpdateRequest } from '@/entities/game';
+
+import { mockGameList } from '../data/common';
 
 export const findGameById = (gameId: UUID): GameListItem | undefined => {
   return mockGameList.find(g => g.gameId === gameId);

@@ -1,6 +1,7 @@
 import { fetchClient } from "@shared/lib/fetchClient";
-import { PresignedUrlRequest, PresignedUrlResponse } from "../model";
 import { UUID } from "@shared/types/common";
+
+import { PresignedUrlRequest, PresignedUrlResponse } from "../model";
 
 export const getPresignedUrlsForNewGame = async (
   images: PresignedUrlRequest['images']

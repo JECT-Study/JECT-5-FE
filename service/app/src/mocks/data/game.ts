@@ -1,8 +1,10 @@
-import { GameListData, GameListItem, GameListResponse } from "@/entities/game/model/game"
-import { mockGameList } from "./common";
-import { generateSuccessResponse, generateGameErrorResponse } from "../utils/responseHelpers";
-import { generatePresignedUrlData } from "../utils/mockGenerators";
 import { UUID } from "@shared/types/common";
+
+import { GameListData, GameListItem, GameListResponse } from "@/entities/game/model/game"
+
+import { generatePresignedUrlData } from "../utils/mockGenerators";
+import { generateGameErrorResponse,generateSuccessResponse } from "../utils/responseHelpers";
+import { mockGameList } from "./common";
 
 export const mockGameListData: GameListData = {
   games: mockGameList,

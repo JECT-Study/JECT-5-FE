@@ -2,9 +2,7 @@ import { fetchClient } from "@shared/lib/fetchClient";
 import { UUID } from "@shared/types/common";
 import { ApiResponse } from "@shared/types/response";
 
-export interface GameShareResponse extends ApiResponse<null> {}
-
-export const shareGame = async (gameId: UUID): Promise<GameShareResponse> => {
+export const shareGame = async (gameId: UUID): Promise<ApiResponse<null>> => {
   const response = await fetchClient.fetch(`/games/${gameId}/share`, {
     method: 'POST',
   });
@@ -16,7 +14,7 @@ export const shareGame = async (gameId: UUID): Promise<GameShareResponse> => {
   return response.json();
 };
 
-export const unshareGame = async (gameId: UUID): Promise<GameShareResponse> => {
+export const unshareGame = async (gameId: UUID): Promise<ApiResponse<null>> => {
   const response = await fetchClient.fetch(`/games/${gameId}/unshare`, {
     method: 'POST',
   });
