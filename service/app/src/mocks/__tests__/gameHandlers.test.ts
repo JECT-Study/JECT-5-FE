@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { createFetchClient } from '@shared/lib/fetchClientFactory';
+import { describe, expect,it } from 'vitest';
 
 const testFetchClient = createFetchClient({
   baseUrl: process.env.MSW_BASE_URL || 'http://localhost:3000',

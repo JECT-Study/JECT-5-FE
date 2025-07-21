@@ -60,7 +60,7 @@ export const gameHandlers = [
             const endIndex = startIndex + pageSize;
             const paginatedGames = sortedGames.slice(startIndex, endIndex);
             return HttpResponse.json(GameListSuccess(paginatedGames));
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError);
         }
     }),
@@ -79,7 +79,7 @@ export const gameHandlers = [
             const gameDetailData = generateGameDetailData(game);
             return HttpResponse.json(gameDetailSuccess(gameDetailData));
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -98,7 +98,7 @@ export const gameHandlers = [
             incrementGamePlayCount(game);
             return HttpResponse.json(gameSuccessResponse());
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -140,7 +140,7 @@ export const gameHandlers = [
           mockGameList.push(newGame);
           return HttpResponse.json(gameSuccessResponse());
           
-        } catch (error) {
+        } catch {
           return HttpResponse.json(internalServerError);
         }
     }),
@@ -185,7 +185,7 @@ export const gameHandlers = [
             
             return HttpResponse.json(gameSuccessResponse());
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -206,7 +206,7 @@ export const gameHandlers = [
             softDeleteGame(game);
             return HttpResponse.json(gameSuccessResponse());
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -227,7 +227,7 @@ export const gameHandlers = [
             toggleGameShare(game, true);
             return HttpResponse.json(gameSuccessResponse());
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -248,7 +248,7 @@ export const gameHandlers = [
             toggleGameShare(game, false);
             return HttpResponse.json(gameSuccessResponse());
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError, { status: 500 });
         }
     }),
@@ -265,7 +265,7 @@ export const gameHandlers = [
             const newGameId = generateFakeUUID();
             return HttpResponse.json(presignedUrlDataSuccess(newGameId, images.length));
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError);
         }
     }),
@@ -282,7 +282,7 @@ export const gameHandlers = [
             
             return HttpResponse.json(presignedUrlDataSuccess(gameId as string, images.length));
             
-        } catch (error) {
+        } catch {
             return HttpResponse.json(internalServerError);
         }
     }),
