@@ -24,7 +24,7 @@
     "prepare": "husky",
     "lint-staged": "lint-staged",
     "commit": "cz",
-    "test:all": "yarn workspaces foreach -A run test",
+    "test:all": "yarn workspace @ject-5-fe/app run test:all && yarn workspace @ject-5-fe/design run test",
     "lint:all": "yarn workspaces foreach -A run lint",
     "type-check:all": "yarn workspaces foreach -A run type-check",
     "ci": "yarn run test:all && yarn run type-check:all && yarn run lint:all"

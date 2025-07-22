@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "format": "yarn run -T -B prettier --write",
     "test": "vitest run",
-    "test:msw": "vitest run --config vitest.msw.config.ts"
+    "test:msw": "vitest run --config vitest.msw.config.ts",
+    "test:all": "yarn test && yarn test:msw"
   },
   "dependencies": {
     "@ject-5-fe/design": "workspace:*",
