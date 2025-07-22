@@ -13,6 +13,7 @@ export type {
 
 // Request/Response types
 export type {
+  GameCreateQuestion,
   GameCreateRequest,
   GameIdPathVar,
   GameQueryParams,
