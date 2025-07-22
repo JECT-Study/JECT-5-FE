@@ -18,14 +18,14 @@ export interface GameIdPathVar {
     gameId: UUID;
 }
 
-interface GameCreateQuestion {
+export interface GameCreateQuestion {
     questionOrder: number;
     imageUrl: string;
     questionText: string;
     questionAnswer: string;
 }
 
-interface GameUpdateQuestion {
+export interface GameUpdateQuestion {
     questionOrder: number;
     imageUrl: string | null;
     questionText: string;

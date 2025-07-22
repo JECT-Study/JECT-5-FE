@@ -9,7 +9,8 @@ export interface FileValidationResult {
 }
 
 export const validateImageFile = (file: File): FileValidationResult => {
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type as any)) {
+  if (!ALLOWED_IMAGE_TYPES.includes(
+    file.type as typeof ALLOWED_IMAGE_TYPES[number])) {
     return {
       isValid: false,
       error: `지원하지 않는 파일 형식입니다. 지원 형식: ${ALLOWED_IMAGE_TYPES.join(', ')}`

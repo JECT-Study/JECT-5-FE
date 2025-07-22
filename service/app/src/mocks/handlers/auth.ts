@@ -1,12 +1,13 @@
 import { http, HttpResponse } from 'msw';
 
+import { KakaoLoginRequest } from '@/entities/auth/model/authRequest';
+
 import { kakaoLoginSuccess } from '../data/auth';
 
 export const authHandlers = [
   http.post('/login/kakao', async ({ request }) => {
-    const body = await request.json();
-    const code = typeof body === 'object' && body !== null && 'code' in body ? (body as any).code : undefined;
-    const type = typeof body === 'object' && body !== null && 'type' in body ? (body as any).type : undefined;
+    const body = (await request.json()) as KakaoLoginRequest;
+    const { code, type } = body;
 
     if (code === 'someValidCode' && type === 'kakao') {
       return new HttpResponse(
@@ -21,4 +22,4 @@ export const authHandlers = [
       );
     }
   }),
-]; 
+];

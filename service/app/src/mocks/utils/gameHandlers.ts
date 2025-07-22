@@ -1,6 +1,6 @@
 import { UUID } from '@shared/types/common';
 
-import { GameCreateRequest, GameListItem, GameUpdateRequest } from '@/entities/game';
+import { GameCreateQuestion,GameCreateRequest, GameListItem, GameQuestion, GameUpdateQuestion, GameUpdateRequest } from '@/entities/game';
 
 import { mockGameList } from '../data/common';
 
@@ -25,11 +25,11 @@ export const validateGameUpdateFields = (body: GameUpdateRequest): boolean => {
   return !!(gameTitle && gameCreatorEmail && gameThumbnailUrl && questions && version !== undefined);
 };
 
-export const validateQuestionsArray = (questions: any[]): boolean => {
+export const validateQuestionsArray = (questions: Array<GameQuestion | GameUpdateQuestion | GameCreateQuestion>): boolean => {
   return Array.isArray(questions) && questions.length > 0;
 };
 
-export const validateQuestionFormat = (questions: any[]): boolean => {
+export const validateQuestionFormat = (questions: Array<GameQuestion | GameUpdateQuestion | GameCreateQuestion>): boolean => {
   return questions.every(question => 
     question.questionText && 
     question.questionAnswer && 

@@ -1,6 +1,6 @@
 import { UUID } from "@shared/types/common";
 
-import { GameListData, GameListItem, GameListResponse } from "@/entities/game/model/game"
+import { GameDetailData, GameListData, GameListItem } from "@/entities/game/model/game"
 
 import { generatePresignedUrlData } from "../utils/mockGenerators";
 import { generateGameErrorResponse,generateSuccessResponse } from "../utils/responseHelpers";
@@ -28,7 +28,7 @@ export const gameSuccessResponse = () => ({
   error: null
 });
 
-export const gameDetailSuccess = (gameDetailData: any) => ({
+export const gameDetailSuccess = (gameDetailData: GameDetailData) => ({
   result: "SUCCESS",
   data: gameDetailData,
   error: null

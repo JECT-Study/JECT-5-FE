@@ -7,7 +7,7 @@ export const generateSuccessResponse = <T>(data: T) => ({
 export const generateErrorResponse = (
     code: string, 
     message: string, 
-    data?: any
+    data?: Record<string, unknown>
   ) => ({
     result: 'ERROR' as const,
     data: null,

@@ -183,7 +183,7 @@ describe('Game API Handlers', () => {
 
     it('필수 필드가 누락되면 400을 반환해야 한다', async () => {
       const invalidRequest = { ...mockGameCreateRequest };
-      (invalidRequest as any).gameTitle = undefined;
+      delete (invalidRequest as Partial<GameCreateRequest>).gameTitle;
 
       const response = await testFetchClient.fetch('/games', {
         method: 'POST',

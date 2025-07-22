@@ -16,10 +16,10 @@ export type {
   GameCreateRequest,
   GameIdPathVar,
   GameQueryParams,
+  GameUpdateQuestion,
   GameUpdateRequest,
   MyGameQueryParams,
-  PresignedUrlRequest,
-} from './gameRequest';
+  PresignedUrlRequest} from './gameRequest';
 
 // Utility functions
 export {
