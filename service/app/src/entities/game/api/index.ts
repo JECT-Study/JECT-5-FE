@@ -1,8 +1,8 @@
-export { deleteGame } from './gameDelete';
-export { GamePlay as incrementGamePlayCount } from './gamePlay';
-export type { GameSaveResult } from './gameSave';
-export { saveNewGame, updateExistingGame } from './gameSave';
-export { shareGame, unshareGame } from './gameShare';
+export { deleteGame } from './deleteGame';
+export { GamePlay as incrementGamePlayCount } from './playGame';
+export type { GameSaveResult } from './saveGame';
+export { saveNewGame, updateExistingGame } from './saveGame';
+export { shareGame, unshareGame } from './shareGame';
 export { getGameDetail } from './getGameDetail';
 export { getGameList } from './getGameList';
-export { getPresignedUrlsForExistingGame,getPresignedUrlsForNewGame } from './presignedUrl';
+export { getPresignedUrlsForExistingGame,getPresignedUrlsForNewGame } from './getPresignedUrl';

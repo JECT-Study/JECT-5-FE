@@ -3,7 +3,7 @@ import { UUID } from "@shared/types/common";
 
 import { GameCreateRequest, GameUpdateRequest } from "../model";
 import { generateUniqueFileName,uploadMultipleFilesToS3, validateMultipleFiles } from "../utils";
-import { getPresignedUrlsForExistingGame,getPresignedUrlsForNewGame } from "./presignedUrl";
+import { getPresignedUrlsForExistingGame,getPresignedUrlsForNewGame } from "./getPresignedUrl";
 
 export interface GameSaveResult {
   success: boolean;
