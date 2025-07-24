@@ -1,9 +1,9 @@
 import { fetchClient } from "@shared/lib/fetchClient";
 import { UUID } from "@shared/types/common";
+import { ApiResponse } from "@shared/types/response";
 
 import { GameDetailResponse } from "../model";
 import { mapStatusToErrorResponse } from "../utils";
-import { ApiResponse } from "@shared/types/response";
 
 export const getGameDetail = async (gameId: UUID): Promise<GameDetailResponse | ApiResponse<null>>  => {
     const response = await fetchClient.fetch(`/games/${gameId}`, {

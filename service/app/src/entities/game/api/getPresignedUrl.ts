@@ -1,9 +1,9 @@
 import { fetchClient } from "@shared/lib/fetchClient";
 import { UUID } from "@shared/types/common";
+import { ApiResponse } from "@shared/types/response";
 
 import { PresignedUrlRequest, PresignedUrlResponse } from "../model";
 import { mapStatusToErrorResponse } from "../utils";
-import { ApiResponse } from "@shared/types/response";
 
 export const getPresignedUrlsForNewGame = async (
   images: PresignedUrlRequest['images']

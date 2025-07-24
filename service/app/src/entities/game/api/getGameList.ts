@@ -1,7 +1,7 @@
 import { fetchClient } from '@shared/lib/fetchClient';
+import { ApiResponse } from '@shared/types/response';
 
 import type { GameListResponse,GameQueryParams } from '../model';
-import { ApiResponse } from '@shared/types/response';
 import { mapStatusToErrorResponse } from '../utils';
 import { toQueryString } from '../utils/toQueryString';
 

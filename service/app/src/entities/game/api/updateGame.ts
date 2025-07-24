@@ -1,12 +1,12 @@
 import { fetchClient } from "@shared/lib/fetchClient";
 import { UUID } from "@shared/types/common";
-import { GameUpdateRequest } from "../model";
-import { getPresignedUrlsForExistingGame } from "./getPresignedUrl";
-
 import { ApiResponse } from "@shared/types/response";
-import { validateMultipleFiles, generateUniqueFileName } from "../utils";
-import { uploadMultipleFilesToS3 } from "../utils/s3Upload";
+
+import { GameUpdateRequest } from "../model";
+import { generateUniqueFileName,validateMultipleFiles } from "../utils";
 import { createErrorResponse, mapStatusToErrorResponse } from "../utils/errorHandlers";
+import { uploadMultipleFilesToS3 } from "../utils/s3Upload";
+import { getPresignedUrlsForExistingGame } from "./getPresignedUrl";
 
 export const updateGame = async (
   gameData: GameUpdateRequest,

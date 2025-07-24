@@ -1,3 +1,6 @@
+export {
+  mapStatusToErrorResponse,
+} from './errorHandlers';
 export type { FileValidationResult } from './fileValidation';
 export {
   ALLOWED_IMAGE_TYPES,
@@ -11,6 +14,3 @@ export {
   uploadFileToS3,
   uploadMultipleFilesToS3,
 } from './s3Upload';
-export {
-  mapStatusToErrorResponse,
-} from './errorHandlers';
