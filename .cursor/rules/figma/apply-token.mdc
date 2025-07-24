@@ -1,0 +1,234 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# Design Token Replacement System
+
+## Overview
+
+Figma variables,데이터를 활용하여 사용자가 제공한 CSS/스타일 파일의 원시값(하드코딩된 값)을 디자인 토큰으로 교체합니다
+
+## Input Data Structure
+
+### 반환 데이터 예시
+
+```json
+{
+  "text-interactive-secondary": "#000000",
+  "body/lg/semibold": "Font(family: \"Pretendard\", style: SemiBold, size: 16, weight: 600, lineHeight: 1.2000000476837158)",
+  "background-interactive-inverse": "#ffffff",
+  "border-interactive-secondary": "#d1d5dc",
+  "background-interactive-secondary-hovered": "#f3f4f6",
+  "background-interactive-secondary-pressed": "#e5e7eb",
+  "text-interactive-inverse": "#ffffff",
+  "heading/md/semibold": "Font(family: \"Pretendard\", style: SemiBold, size: 23, weight: 600, lineHeight: 1.2000000476837158)",
+  "background-interactive-primary": "#51a2ff",
+  "text-interactive-primary": "#51a2ff",
+  "border-interactive-primary": "#51a2ff",
+  "background-interactive-primary-hovered": "#2b7fff",
+  "background-interactive-primary-pressed": "#1447e6",
+  "icon-interactive-inverse": "#ffffff",
+  "heading/sm/semibold": "Font(family: \"Pretendard\", style: Bold, size: 19, weight: 700, lineHeight: 1.2000000476837158)",
+  "background-interactive-primary-disabled": "#e5e7eb",
+  "heading/lg/semibold": "Font(family: \"Pretendard\", style: SemiBold, size: 28, weight: 600, lineHeight: 1.2000000476837158)",
+  "background-interactive-destructive": "#ff6467",
+  "background-interactive-destructive-hovered": "#fb2c36",
+  "background-interactive-destructive-pressed": "#c10007",
+  "heading/3xl/semibold": "Font(family: \"Pretendard\", style: SemiBold, size: 48, weight: 600, lineHeight: 1.2000000476837158)"
+}
+```
+
+### 교체 대상 파일 예시
+
+```javascript
+const buttonStyles = {
+  "size=xs, type=primary, style=solid, state=default": {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    width: "120px",
+    height: "39px",
+    padding: "10px",
+    borderRadius: "12px",
+    backgroundColor: "#51a2ff",
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#000000",
+  },
+}
+```
+
+## Replacement Rules
+
+### 1. Color Token Replacement
+
+**처리 대상 CSS 속성:**
+
+- `backgroundColor`
+- `color`
+- `borderColor`
+- `border` (색상 부분)
+- `boxShadow` (색상 부분)
+- 기타 색상 관련 CSS 속성
+
+**변환 로직:**
+
+1. CSS 속성의 HEX 색상값을 추출
+2. figma variables 데이터에서 동일한 색상값을 가진 토큰 검색
+3. CSS 속성에 따른 적절한 토큰 타입 매칭
+4. 매칭되는 토큰의 키값으로 교체
+
+**CSS 속성별 토큰 매칭 우선순위:**
+
+```javascript
+// color 속성의 경우
+color: "#000000" → "text-*" 토큰 우선 검색
+
+// backgroundColor 속성의 경우
+backgroundColor: "#51a2ff" → "background-*" 토큰 우선 검색
+
+// borderColor, border 속성의 경우
+borderColor: "#d1d5dc" → "border-*" 토큰 우선 검색
+
+// 기타 속성
+boxShadow, outline 등 → 해당하는 토큰 타입 우선 검색
+```
+
+**예시:**
+
+```javascript
+// Before
+color: "#000000"
+
+// After (토큰 데이터에서 "text-interactive-secondary": "#000000" 매칭)
+color: "text-interactive-secondary"
+
+// Before
+backgroundColor: "#51a2ff"
+
+// After (토큰 데이터에서 "background-interactive-primary": "#51a2ff" 매칭)
+backgroundColor: "background-interactive-primary"
+```
+
+### 2. Typography Token Replacement
+
+**처리 대상 CSS 속성:**
+
+- `fontSize`
+- `fontWeight`
+- `fontFamily` (옵션)
+- `lineHeight` (옵션)
+
+**매칭 조건:**
+`fontSize`와 `fontWeight` 값이 모두 일치하는 경우를 동일한 타이포그래피 토큰으로 처리합니다.
+
+**토큰 변환 로직:**
+
+1. 타이포그래피 토큰 키에서 `/`를 `-`로 변경
+2. `typography-` 접두사 추가
+
+**예시:**
+
+```javascript
+// 토큰 데이터
+"body/lg/semibold": "Font(family: \"Pretendard\", style: SemiBold, size: 16, weight: 600, lineHeight: 1.2000000476837158)"
+
+// CSS에서 매칭 조건
+fontSize: "16px",     // 16과 매칭
+fontWeight: "600",    // 600과 매칭
+
+// Before
+{
+  fontSize: "16px",
+  fontWeight: "600",
+}
+
+// After
+{
+  typography: "typography-body-lg-semibold"
+}
+```
+
+## Expected Output
+
+### Color Replacement Result
+
+```javascript
+const buttonStyles = {
+  "size=xs, type=primary, style=solid, state=default": {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    width: "120px",
+    height: "39px",
+    padding: "10px",
+    borderRadius: "12px",
+    backgroundColor: "background-interactive-primary", // #51a2ff → token
+    typography: "typography-body-lg-semibold", // fontSize + fontWeight → token
+    color: "text-interactive-secondary", // #000000 → token
+  },
+}
+```
+
+## Implementation Requirements
+
+### 1. Color Matching Algorithm
+
+- HEX 색상값 정확히 일치하는 토큰 검색
+- 대소문자 구분 없이 비교 (예: `#51A2FF` === `#51a2ff`)
+- 임의판단 금지, 정확하게 비교한 뒤 다를 시 변환 절대 금지
+
+### 2. Context-Aware Token Selection
+
+**동일한 색상값의 다중 토큰 매핑 처리:**
+
+```javascript
+// 예시: 같은 색상이 여러 토큰에 매핑된 경우
+"#e5e7eb": {
+  "background-interactive-secondary-pressed": "#e5e7eb",
+  "background-interactive-primary-disabled": "#e5e7eb"
+}
+```
+
+**해결 방식:**
+
+1. CSS 속성 타입에 따른 토큰 필터링 (background-_, text-_, border-\* 등)
+2. 컨텍스트 정보 활용 (버튼의 type, state 등)
+3. 토큰명의 의미적 매칭
+
+**컨텍스트별 우선순위:**
+
+```javascript
+// backgroundColor에서 disabled 상태인 경우
+backgroundColor: "#e5e7eb" + context: "disabled"
+→ "background-interactive-primary-disabled" 선택
+
+// backgroundColor에서 pressed 상태인 경우
+backgroundColor: "#e5e7eb" + context: "pressed"
+→ "background-interactive-secondary-pressed" 선택
+```
+
+### 3. Typography Matching Algorithm
+
+- Font 문자열에서 `size`와 `weight` 값 파싱
+- CSS의 `fontSize`에서 숫자 부분 추출 (예: "16px" → 16)
+- CSS의 `fontWeight`와 토큰의 `weight` 정확히 일치 확인
+
+### 4. Token Name Conversion
+
+- 슬래시(`/`) → 하이픈(`-`) 변환
+- 타이포그래피 토큰에 `typography-` 접두사 추가
+- 기존 토큰명의 케이스 유지
+
+### 5. Error Handling
+
+- 매칭되는 토큰이 없는 경우 원본 값 유지
+- 잘못된 Font 문자열 형식 처리
+- 유효하지 않은 CSS 값 처리
+- 다중 매칭 시 가장 적절한 토큰 선택 로직 적용
