@@ -1,48 +1,21 @@
 import { fetchClient } from '@shared/lib/fetchClient';
 
 import type { GameListResponse,GameQueryParams } from '../model';
+import { ApiResponse } from '@shared/types/response';
+import { mapStatusToErrorResponse } from '../utils';
+import { toQueryString } from '../utils/toQueryString';
 
-export const getGameList = async (params: GameQueryParams): Promise<GameListResponse> => {
-  const searchParams = new URLSearchParams();
-  
-  searchParams.append('limit', params.limit.toString());
-  
-  if (params.cursorGameId) {
-    searchParams.append('cursorGameId', params.cursorGameId);
-  }
-  
-  if (params.cursorPlayCount !== undefined) {
-    searchParams.append('cursorPlayCount', params.cursorPlayCount.toString());
-  }
-  
-  if (params.cursorUpdatedAt) {
-    searchParams.append('cursorUpdatedAt', params.cursorUpdatedAt);
-  }
-  
-  if (params.query) {
-    searchParams.append('query', params.query);
-  }
-  
-  const url = `/games?${searchParams.toString()}`;
-  
-  const response = await fetchClient.fetch(url, {
+export const getGameList = async (
+  params: GameQueryParams
+): Promise<GameListResponse | ApiResponse<null>> => {
+  const queryString = toQueryString(params);
+  const response = await fetchClient.fetch(`/games?${queryString}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
-  
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({
-      result: 'ERROR',
-      error: {
-        code: `E${response.status}`,
-        message: `HTTP ${response.status}: ${response.statusText}`,
-      },
-    }));
-    
-    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+    return mapStatusToErrorResponse(response.status);
   }
-  
+
   return response.json();
 };
