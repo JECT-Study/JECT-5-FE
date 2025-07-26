@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "plugin": {
+      "command": "yarn",
+      "args": ["dlx", "jds-figma-plugin@latest"]
+    },
+    "Figma": {
+      "url": "http://127.0.0.1:3845/sse"
+    }
+  }
+}

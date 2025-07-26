@@ -1,4 +1,4 @@
 export interface KakaoLoginRequest {
-    code: string;
-    type: "kakao";
+  code: string
+  type: "kakao"
 }

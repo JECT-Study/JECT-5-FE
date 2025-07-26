@@ -9,7 +9,7 @@ export type {
   PresignedUrlData,
   PresignedUrlItem,
   PresignedUrlResponse,
-} from './game';
+} from "./game"
 
 // Request/Response types
 export type {
@@ -20,11 +20,8 @@ export type {
   GameUpdateQuestion,
   GameUpdateRequest,
   MyGameQueryParams,
-  PresignedUrlRequest} from './gameRequest';
+  PresignedUrlRequest,
+} from "./gameRequest"
 
 // Utility functions
-export {
-  filterGamesByQuery,
-  findCursorPosition,
-  sortGames,
-} from './utils'; 
+export { filterGamesByQuery, findCursorPosition, sortGames } from "./utils"

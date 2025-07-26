@@ -78,15 +78,26 @@ export const generateColorTokens = () => {
 
   const dark = semanticColorDark
 
-  const theme = Object.keys(semanticColorLight).reduce(
-    (acc, _key) => {
-      const key = removeColorPrefix(_key)
-      const value = `var(${_key})`
-      acc[key] = value
-      return acc
-    },
-    {} as Record<string, string>,
-  )
+  const theme = {
+    ...Object.keys(primitiveColor).reduce(
+      (acc, _key) => {
+        const key = _key.replace("--", "")
+        const value = `var(${_key})`
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>,
+    ),
+    ...Object.keys(semanticColorLight).reduce(
+      (acc, _key) => {
+        const key = removeColorPrefix(_key)
+        const value = `var(${_key})`
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>,
+    ),
+  }
 
   return { base, dark, theme }
 }
