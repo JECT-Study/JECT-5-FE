@@ -2,6 +2,7 @@ import "./globals.css"
 
 import { type Metadata } from "next"
 import localFont from "next/font/local"
+import { ThemeProvider } from "next-themes"
 
 import { MSWComponent } from "../mocks/mswComponent"
 
@@ -22,9 +23,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={pretendard.variable}>
+    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <body>
-        <MSWComponent>{children}</MSWComponent>
+        <MSWComponent>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </MSWComponent>
       </body>
     </html>
   )
