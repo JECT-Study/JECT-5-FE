@@ -24,6 +24,7 @@
     "radix-ui": "^1.4.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-simplikit": "^0.0.40",
     "uuid": "^11.1.0",
     "vite": "^6.3.5",
     "zod": "^4.0.10",
