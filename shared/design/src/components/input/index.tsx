@@ -82,6 +82,8 @@ const errorTextVariants = cva(
   "typography-body-sm-medium mt-[10px] text-text-interactive-input-error",
 )
 
+export const Root = Form.Root
+
 type InputContext = {
   name: string
   children: ReactNode
@@ -124,9 +126,12 @@ Label.displayName = Form.Label.displayName
 
 export const Control = forwardRef<
   React.ElementRef<typeof Form.Control>,
-  ComponentPropsWithoutRef<typeof Form.Control> & {
+  Omit<
+    ComponentPropsWithoutRef<typeof Form.Control>,
+    "value" | "onChange" | "defaultValue"
+  > & {
     value?: string
-    onChange?: (value: string | number | readonly string[] | undefined) => void
+    onChange?: (value: string) => void
     defaultValue?: string
   }
 >(({ children, value, onChange, defaultValue, ...props }, ref) => {

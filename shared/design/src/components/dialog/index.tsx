@@ -127,3 +127,5 @@ export const DialogButton = {
     <SecondaryPlainBoxButton {...props}>{children}</SecondaryPlainBoxButton>
   ),
 }
+
+export { CustomDialog } from "./customDialog"
