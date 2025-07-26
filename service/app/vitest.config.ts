@@ -5,6 +5,14 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
     passWithNoTests: true,
+    include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/cypress/**",
+      "**/.{idea,git,cache,output,temp}/**",
+      "src/mocks/__tests__/**/*",
+    ],
     browser: {
       enabled: true,
       headless: true,

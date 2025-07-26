@@ -1,6 +1,4 @@
-import { userHandlers } from './user';
+import { authHandlers } from "./auth"
+import { gameHandlers } from "./game"
 
-export const handlers = [
-  ...userHandlers,
-  // additional handlers
-]; 
+export const handlers = [...authHandlers, ...gameHandlers]
