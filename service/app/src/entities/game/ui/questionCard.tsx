@@ -43,6 +43,17 @@ export function QuestionCard({
     return image ? "w-[173px]" : "w-[266px]"
   }
 
+  const moveButtons = (
+    <div className="flex flex-col gap-[22px] w-7">
+      <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveUp}>
+        <Arrow />
+      </SecondaryPlainIconButton>
+      <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveDown}>
+        <Arrow className="rotate-180" />
+      </SecondaryPlainIconButton>
+    </div>
+  )
+
   return (
     <div className={`relative w-[350px] h-[118px] rounded-[10px] ${getBorderClass()} bg-background-primary`}>
       <div className={`absolute left-5 top-6 ${getTextWidth()}`}>
@@ -57,8 +68,8 @@ export function QuestionCard({
         </DestructiveSolidIconButton>
       </div>
 
-      {image && (
-        <div className="absolute right-[18px] top-5 flex items-center gap-3">
+      <div className="absolute right-[18px] top-5 flex items-center gap-3">
+        {image && (
           <div className="w-[78px] h-[78px] rounded-[7px] overflow-hidden bg-background-interactive-secondary">
             <img 
               src={imageSrc}
@@ -66,30 +77,9 @@ export function QuestionCard({
               className="w-full h-full object-cover"
             />
           </div>
-          
-          <div className="flex flex-col gap-[22px] w-7">
-            <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveUp}>
-              <Arrow />
-            </SecondaryPlainIconButton>
-            <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveDown}>
-              <Arrow className="rotate-180" />
-            </SecondaryPlainIconButton>
-          </div>
-        </div>
-      )}
-
-      {!image && (
-        <div className="absolute right-[18px] top-5 flex items-center gap-3">
-          <div className="flex flex-col gap-[22px] w-7">
-            <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveUp}>
-              <Arrow />
-            </SecondaryPlainIconButton>
-            <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveDown}>
-              <Arrow className="rotate-180" />
-            </SecondaryPlainIconButton>
-          </div>
-        </div>
-      )}
+        )}
+        {moveButtons}
+      </div>
     </div>
   )
 } 
