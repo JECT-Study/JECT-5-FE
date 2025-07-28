@@ -1,0 +1,65 @@
+import { Arrow, Trash } from "../../icons"
+import { DestructiveSolidIconButton, SecondaryPlainIconButton } from "../button"
+
+type QuestionVariant = {
+  state: "default" | "selected" | "error"
+}
+
+interface QuestionProps extends QuestionVariant {
+  title: string
+  onDelete?: () => void
+  onMoveUp?: () => void
+  onMoveDown?: () => void
+}
+
+export const Question = ({
+  title,
+  state,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+}: QuestionProps) => {
+  return (
+    <div
+      className={`relative h-[118px] w-[350px] shrink-0 rounded-[10px] bg-background-primary p-5 ${
+        state === "selected" &&
+        "border-2 border-border-interactive-primary bg-background-primary"
+      }`}
+    >
+      {/* Question Text */}
+      <h3 className="typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-12 pt-1 text-text-primary">
+        {state === "error" ? "❗" : title}
+      </h3>
+
+      {/* Delete Button - 왼쪽 하단 */}
+      <div className="absolute bottom-4 left-4">
+        <DestructiveSolidIconButton
+          onClick={onDelete}
+          aria-label="질문 삭제"
+          size="md"
+        >
+          <Trash />
+        </DestructiveSolidIconButton>
+      </div>
+
+      {/* Move Buttons - 오른쪽 */}
+      <div className="absolute right-4 top-5 flex flex-col items-center gap-5">
+        <SecondaryPlainIconButton
+          onClick={onMoveUp}
+          size="md"
+          aria-label="위로 이동"
+        >
+          <Arrow />
+        </SecondaryPlainIconButton>
+
+        <SecondaryPlainIconButton
+          onClick={onMoveDown}
+          size="md"
+          aria-label="아래로 이동"
+        >
+          <Arrow className="rotate-180" />
+        </SecondaryPlainIconButton>
+      </div>
+    </div>
+  )
+}

@@ -9,12 +9,12 @@ const destructiveSolidIconButtonVariants = cva(
   {
     variants: {
       size: {
-        small: "size-9 p-1.5",
-        large: "size-11 p-2.5",
+        md: "size-9 p-1.5",
+        lg: "size-11 p-2.5",
       },
     },
     defaultVariants: {
-      size: "small" as const,
+      size: "md" as const,
     },
   },
 )
