@@ -1,7 +1,9 @@
+import { QuestionCard } from "@/entities/game/ui/questionCard"
+
 export default function Home() {
   return (
     <main>
-      <h1>Hello, World!</h1>
+      <QuestionCard />
     </main>
   )
 }
