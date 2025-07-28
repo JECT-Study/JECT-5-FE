@@ -6,7 +6,7 @@ import { Arrow, Trash } from "@shared/design/src/icons"
 
 interface QuestionCardProps {
   state?: 'default' | 'selected' | 'error'
-  hasImage?: boolean
+  image?: boolean
   question?: string
   imageSrc?: string
   onDelete?: () => void
@@ -16,7 +16,7 @@ interface QuestionCardProps {
 
 export function QuestionCard({
   state = 'default',
-  hasImage = true,
+  image = true,
   question = "질문가나다라마바사가나다라마바사가나다라마바사",
   imageSrc = "/checker.svg",
   onDelete,
@@ -40,7 +40,7 @@ export function QuestionCard({
   }
 
   const getTextWidth = () => {
-    return hasImage ? "w-[173px]" : "w-[266px]"
+    return image ? "w-[173px]" : "w-[266px]"
   }
 
   return (
@@ -57,7 +57,7 @@ export function QuestionCard({
         </DestructiveSolidIconButton>
       </div>
 
-      {hasImage && (
+      {image && (
         <div className="absolute right-[18px] top-5 flex items-center gap-3">
           <div className="w-[78px] h-[78px] rounded-[7px] overflow-hidden bg-background-interactive-secondary">
             <img 
@@ -78,7 +78,7 @@ export function QuestionCard({
         </div>
       )}
 
-      {!hasImage && (
+      {!image && (
         <div className="absolute right-[18px] top-5 flex items-center gap-3">
           <div className="flex flex-col gap-[22px] w-7">
             <SecondaryPlainIconButton size="md" className="w-7 h-7" onClick={onMoveUp}>
