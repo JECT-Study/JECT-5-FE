@@ -7,10 +7,10 @@ export function FileUploadArea() {
     <FileUpload>
       <Dropzone className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]">
         <div className="flex flex-col items-center gap-[22px]">
-          <h3 className="text-center text-[28px] font-semibold text-text-interactive-tertiary">
+          <h3 className="text-center typography-heading-lg-semibold text-text-interactive-tertiary">
             파일 업로드
           </h3>
-          <p className="text-center text-[19px] font-medium text-text-interactive-tertiary">
+          <p className="text-center typography-heading-sm-medium text-text-interactive-tertiary">
             JPG, JPEG, PNG (최대 2MB)
           </p>
         </div>
