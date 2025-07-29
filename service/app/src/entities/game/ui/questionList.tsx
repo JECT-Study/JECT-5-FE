@@ -4,7 +4,7 @@ import { Question } from "@shared/design/src/components/question"
 
 export function QuestionList() {
   return (
-    <div className="flex w-[400px] p-[25px_25px_0_25px] flex-col justify-end items-center bg-gray-50">
+    <div className="flex w-[400px] flex-col items-center justify-end bg-gray-50 p-[25px_25px_0_25px]">
       <div className="flex w-[350px] flex-col items-start gap-6">
         <Question
           title="질문가나다라마바사가나다라마바사가나다라마바사"

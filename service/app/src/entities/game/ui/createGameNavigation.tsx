@@ -3,8 +3,8 @@ import {
   SecondaryGhostIconButton,
   SecondaryPlainIconButton,
 } from "@shared/design/src/components/button"
-import { Cross, Sun } from "@shared/design/src/icons"
 import { Control, Field, Root } from "@shared/design/src/components/input"
+import { Cross, Sun } from "@shared/design/src/icons"
 
 export function CreateGameNavigation() {
   return (

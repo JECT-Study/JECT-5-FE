@@ -1,7 +1,7 @@
 import { CreateGameNavigation } from "../../entities/game/ui/createGameNavigation"
-import { QuestionList } from "../../entities/game/ui/questionList"
-import { QuestionInputForm } from "../../entities/game/ui/questionInputForm"
 import { FileUploadArea } from "../../entities/game/ui/fileUploadArea"
+import { QuestionInputForm } from "../../entities/game/ui/questionInputForm"
+import { QuestionList } from "../../entities/game/ui/questionList"
 
 export default function CreateGamePage() {
   return (
@@ -10,11 +10,11 @@ export default function CreateGamePage() {
       <div className="flex">
         <QuestionList />
         
-        <div className="flex-1 flex justify-center items-start pt-[40px]">
+        <div className="flex flex-1 items-start justify-center pt-[40px]">
           <FileUploadArea />
         </div>
         
-        <div className="w-[420px] pt-[40px] pr-[284px]">
+        <div className="w-[420px] pr-[284px] pt-[40px]">
           <QuestionInputForm />
         </div>
       </div>
