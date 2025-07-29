@@ -92,7 +92,7 @@ function createStore(
 
       case "SET_FILES": {
         const newFileSet = new Set(action.files)
-        for (const existingFile of files.keys()) {
+        for (const existingFile of Array.from(files.keys())) {
           if (!newFileSet.has(existingFile)) {
             files.delete(existingFile)
           }
@@ -177,7 +177,7 @@ function createStore(
 
       case "CLEAR": {
         if (urlCache) {
-          for (const file of files.keys()) {
+          for (const file of Array.from(files.keys())) {
             const cachedUrl = urlCache.get(file)
             if (cachedUrl) {
               URL.revokeObjectURL(cachedUrl)
@@ -204,7 +204,7 @@ function createStore(
 
   function dispatch(action: StoreAction) {
     state = reducer(state, action)
-    for (const listener of listeners) {
+    for (const listener of Array.from(listeners)) {
       listener()
     }
   }
@@ -385,7 +385,7 @@ function FileUploadRoot(props: FileUploadRootProps) {
 
   React.useEffect(() => {
     return () => {
-      for (const file of files?.keys() ?? []) {
+      for (const file of Array.from(files?.keys() ?? [])) {
         const cachedUrl = urlCache?.get(file)
         if (cachedUrl) {
           URL.revokeObjectURL(cachedUrl)
