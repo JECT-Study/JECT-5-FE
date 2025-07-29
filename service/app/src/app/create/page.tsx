@@ -9,11 +9,13 @@ export default function CreateGamePage() {
       <CreateGameNavigation />
       <div className="flex">
         <QuestionList />
-        <div className="flex-1 p-6">
+        
+        <div className="flex-1 flex justify-center items-start pt-[40px]">
           <FileUploadArea />
-          <div className="mt-[54px]">
-            <QuestionInputForm />
-          </div>
+        </div>
+        
+        <div className="w-[420px] pt-[40px] pr-[284px]">
+          <QuestionInputForm />
         </div>
       </div>
     </main>
