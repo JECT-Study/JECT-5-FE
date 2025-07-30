@@ -1,10 +1,14 @@
+"use client"
+
 import {
   PrimaryBoxButton,
   SecondaryGhostIconButton,
-  SecondaryPlainIconButton,
 } from "@shared/design/src/components/button"
 import { Control, Field, Root } from "@shared/design/src/components/input"
-import { Cross, Sun } from "@shared/design/src/icons"
+import { Sun } from "@shared/design/src/icons"
+
+import { RegisterButton } from "../interactions/registerButton"
+import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
   return (
@@ -30,13 +34,9 @@ export function CreateGameNavigation() {
           문제 추가
         </PrimaryBoxButton>
 
-        <PrimaryBoxButton size="sm" _style="solid">
-          게임 저장
-        </PrimaryBoxButton>
+        <SaveButton />
 
-        <SecondaryPlainIconButton size="lg">
-          <Cross />
-        </SecondaryPlainIconButton>
+        <RegisterButton />
       </div>
     </nav>
   )
