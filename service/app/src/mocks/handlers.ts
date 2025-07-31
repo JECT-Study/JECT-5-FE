@@ -1,1 +1,1 @@
-export { handlers } from './handlers/index';
+export { handlers } from "./handlers/index"

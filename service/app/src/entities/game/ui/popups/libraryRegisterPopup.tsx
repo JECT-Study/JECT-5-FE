@@ -6,7 +6,11 @@ interface LibraryRegisterPopupProps {
   onConfirm: () => void
 }
 
-export function LibraryRegisterPopup({ open, onClose, onConfirm }: LibraryRegisterPopupProps) {
+export function LibraryRegisterPopup({
+  open,
+  onClose,
+  onConfirm,
+}: LibraryRegisterPopupProps) {
   return (
     <CustomDialog
       open={open}
@@ -20,4 +24,4 @@ export function LibraryRegisterPopup({ open, onClose, onConfirm }: LibraryRegist
       cancelText="아니요"
     />
   )
-} 
+}

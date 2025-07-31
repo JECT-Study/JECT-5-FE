@@ -5,14 +5,14 @@ import { usePopup } from "../popupManager"
 
 export function RegisterButton() {
   const { showPopup } = usePopup()
-  
+
   const handleRegister = () => {
     showPopup("libraryRegister")
   }
-  
+
   return (
     <SecondaryPlainIconButton size="lg" onClick={handleRegister}>
       <Cross />
     </SecondaryPlainIconButton>
   )
-} 
+}
