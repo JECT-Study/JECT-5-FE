@@ -9,6 +9,8 @@ type QuestionVariant = {
 
 interface QuestionProps extends QuestionVariant {
   title: string
+  canDelete?: boolean
+  onClick?: () => void
   onDelete?: () => void
   onMoveUp?: () => void
   onMoveDown?: () => void
@@ -17,16 +19,19 @@ interface QuestionProps extends QuestionVariant {
 export const Question = ({
   title,
   state,
+  canDelete = true,
+  onClick,
   onDelete,
   onMoveUp,
   onMoveDown,
 }: QuestionProps) => {
   return (
     <div
-      className={`relative h-[118px] w-[350px] shrink-0 rounded-[10px] bg-background-primary p-5 ${
+      className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-[10px] bg-background-primary p-5 ${
         state === "selected" &&
         "border-2 border-border-interactive-primary bg-background-primary"
       }`}
+      onClick={onClick}
     >
       {/* Question Text */}
       <h3 className="typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-12 pt-1 text-text-primary">
@@ -37,6 +42,7 @@ export const Question = ({
       <div className="absolute bottom-4 left-4">
         <DestructiveSolidIconButton
           onClick={onDelete}
+          disabled={!canDelete}
           aria-label="질문 삭제"
           size="md"
         >
