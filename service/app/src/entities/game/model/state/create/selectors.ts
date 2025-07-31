@@ -25,21 +25,6 @@ export const validateAnswerText = (answer: string): string | null => {
   return null;
 };
 
-export const validateImageFile = (file: File): string | null => {
-  const maxSize = 2 * 1024 * 1024;
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-  
-  if (file.size > maxSize) {
-    return "파일 크기는 2MB를 초과할 수 없습니다.";
-  }
-  
-  if (!allowedTypes.includes(file.type)) {
-    return "JPG, JPEG, PNG 파일만 업로드 가능합니다.";
-  }
-  
-  return null;
-};
-
 export const selectors = {
   gameNameError: (state: GameCreationState): string | null => {
     return validateGameName(state.gameName);

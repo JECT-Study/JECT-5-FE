@@ -1,13 +1,6 @@
-import { validateImageFile } from '../../../utils/fileValidation';
-import { GameCreationAction } from './actions';
-import { GameCreationState } from './state';
-import {
-  addQuestion,
-  createInitialState,
-  deleteQuestion,
-  moveQuestionInArray,
-  updateQuestion
-} from './utils';
+import { validateImageFile } from "../utils/fileValidation";
+import { GameCreationAction, GameCreationState } from "./state/create";
+import { addQuestion, createInitialState, deleteQuestion, moveQuestionInArray, updateQuestion } from "./state/create";
 
 export const gameCreationReducer = (
   state: GameCreationState,
