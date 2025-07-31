@@ -133,8 +133,9 @@ export const Control = forwardRef<
     value?: string
     onChange?: (value: string) => void
     defaultValue?: string
+    onReset?: () => void
   }
->(({ children, value, onChange, defaultValue, ...props }, ref) => {
+>(({ children, value, onChange, defaultValue, onReset, ...props }, ref) => {
   const { type, state } = useInputContext("textField")
 
   const [controlledValue, setValue] = useControllableState({
@@ -155,7 +156,14 @@ export const Control = forwardRef<
         />
       </Form.Control>
       {type === "reset" && (
-        <DestructiveSolidIconButton type="button" onClick={() => setValue("")}>
+        <DestructiveSolidIconButton
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            setValue("")
+            onReset?.()
+          }}
+        >
           <Trash className={iconVariants({ type })} />
         </DestructiveSolidIconButton>
       )}

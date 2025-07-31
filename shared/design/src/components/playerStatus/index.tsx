@@ -1,4 +1,5 @@
 import { Add, Minus } from "../../icons"
+import { cn } from "../../utils/cn"
 import { SecondaryPlainIconButton } from "../button"
 
 interface PlayerStatusProps {
@@ -7,6 +8,7 @@ interface PlayerStatusProps {
   scoreView?: boolean
   onScoreIncrease?: () => void
   onScoreDecrease?: () => void
+  className?: string
 }
 
 export const PlayerStatus = ({
@@ -15,9 +17,15 @@ export const PlayerStatus = ({
   scoreView = true,
   onScoreIncrease,
   onScoreDecrease,
+  className,
 }: PlayerStatusProps) => {
   return (
-    <div className="max-h-[118px] w-[350px] rounded-[10px] bg-background-primary p-[20px_39px]">
+    <div
+      className={cn(
+        "max-h-[118px] w-[350px] rounded-[10px] bg-background-primary p-[20px_39px]",
+        className,
+      )}
+    >
       <div className="flex h-10 min-h-10 items-center gap-5">
         <h3 className="typography-heading-xl-medium flex h-10 min-w-0 flex-1 items-center">
           <span className="block w-full truncate">{name}</span>
