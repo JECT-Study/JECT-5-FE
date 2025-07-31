@@ -215,8 +215,8 @@ export default function GameSetupPage() {
         title="게임을 나가시겠습니까?"
         description="진행 중인 게임이 종료됩니다."
         onConfirm={() => {
-          router.push("/")
           setIsExitDialogOpen(false)
+          router.push("/")
         }}
         onCancel={() => setIsExitDialogOpen(false)}
         confirmText="나가기"
