@@ -94,7 +94,7 @@ export default function GameSetupPage() {
 
     setTeamState(
       produce((draft) => {
-        const newId = String(Date.now())
+        const newId = String(draft.teams.length + 1)
         const newTeamName = `${String.fromCharCode(65 + draft.teams.length)}팀`
         draft.teams.push({ id: newId, name: newTeamName })
         draft.errors = updateTeamErrors(draft.teams)
@@ -126,7 +126,7 @@ export default function GameSetupPage() {
             <SecondaryGhostIconButton>
               <Sun />
             </SecondaryGhostIconButton>
-            <Link href={`/game/${params.gameId}/start`}>
+            <Link href={`/game/${params.gameId}/play`}>
               <PrimaryBoxButton
                 size="sm"
                 _style="solid"
@@ -200,7 +200,6 @@ export default function GameSetupPage() {
               <PrimaryBoxButton
                 size="xl"
                 _style="solid"
-                // onClick={addTeam}
                 disabled={teamState.teams.length >= MAX_TEAMS}
               >
                 참가자 및 팀 추가하기
