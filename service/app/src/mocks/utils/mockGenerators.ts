@@ -39,7 +39,8 @@ export const generateRandomDate = (daysAgo: number = 0): string => {
 export const generateMockGameList = (count: number): GameListItem[] => {
   const result: GameListItem[] = []
   for (let i = 0; i < count; i++) {
-    const id = generateFakeUUID()
+    // const id = generateFakeUUID()
+    const id = `${i}`
     const title = `게임${i + 1}`
     const questionCount = getRandomNumber(5, 20)
     const playCount = getRandomNumber(0, 200)
