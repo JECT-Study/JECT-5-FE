@@ -1,0 +1,339 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# Figma XML to Next.js + TypeScript + Tailwind 변환 완전 가이드
+
+## 핵심 원칙
+
+**절대 임의 판단하지 말 것. XML에 명시된 정보만 사용할 것.**
+
+## 1. 컴포넌트 판단 규칙
+
+### type="INSTANCE" 확인
+
+XML에서 type="INSTANCE"가 있으면 무조건 공통 컴포넌트를 고려하기
+
+- 공통 컴포넌트는 @shared/design/src/components에 명시된 컴포넌트를 사용해야 함
+- 없을 시 임시로 html 태그 + className을 통해 생성
+- import경로 체크 필수
+
+primaryBoxButton type="INSTANCE" → PrimaryBoxButton 컴포넌트 사용
+navigation type="INSTANCE" → Navigation 컴포넌트 사용
+
+### 컴포넌트명 변환 규칙
+
+XML 태그명을 PascalCase로 변환
+
+- navigation → Navigation
+- primaryBoxButton → PrimaryBoxButton
+- secondaryPlainIconButton → SecondaryPlainIconButton
+- sidepanelList_player_default_false → SidepanelListPlayer
+- playerStatus → PlayerStatus
+- input → Input
+- destructiveSolidIconButton → DestructiveSolidIconButton
+- secondaryGhostIconButton → SecondaryGhostIconButton
+
+### 컴포넌트 props 추출
+
+componentProperties 섹션에서 props 추출
+
+componentProperties
+size type="VARIANT" value="xl"
+style type="VARIANT" value="solid"
+state type="VARIANT" value="default"
+→ size="xl" style="solid" state="default"
+
+### 아이콘 컴포넌트 판단
+
+아이콘 이름으로 된 태그는 아이콘 컴포넌트
+
+Add id="I615:6029;1087:9961;1084:8300" → Add 컴포넌트
+Cross → Cross 컴포넌트
+Trash → Trash 컴포넌트
+
+### 일반 HTML 태그 판단
+
+type="INSTANCE"가 없고 Frame, Text 등은 일반 HTML
+
+Frame → div
+Text → span 또는 p
+
+### 완전한 컴포넌트 변환 예시
+
+XML 입력:
+primaryBoxButton id="615:6038" type="INSTANCE" cornerRadius="12"
+componentProperties
+size type="VARIANT" value="xl"
+style type="VARIANT" value="solid"
+state type="VARIANT" value="default"
+Text characters="참가자 및 팀 추가하기"
+
+변환 결과:
+PrimaryBoxButton
+size="xl"
+style="solid"
+state="default"
+className="rounded-[12px]"
+참가자 및 팀 추가하기
+
+### 중첩 컴포넌트 처리
+
+XML 입력:
+destructiveSolidIconButton type="INSTANCE"
+componentProperties
+size type="VARIANT" value="lg"
+state type="VARIANT" value="default"
+Trash
+
+변환 결과:
+DestructiveSolidIconButton
+size="lg"
+state="default"
+Trash
+
+## 2. Auto Layout 변환 규칙
+
+### layoutMode 변환
+
+layoutMode="VERTICAL" → flex flex-col
+layoutMode="HORIZONTAL" → flex flex-row  
+layoutMode="NONE" → relative
+
+### layoutSizing 변환
+
+layoutSizingHorizontal="FILL" → w-full
+layoutSizingHorizontal="FIXED" width="420" → w-[420px]
+layoutSizingHorizontal="HUG" → w-fit
+layoutSizingVertical="FILL" → h-full
+layoutSizingVertical="FIXED" height="110" → h-[110px]
+layoutSizingVertical="HUG" → h-fit
+
+### primaryAxisAlignItems 변환 (주축 정렬)
+
+layoutMode="HORIZONTAL" primaryAxisAlignItems="MIN" → flex flex-row justify-start
+layoutMode="HORIZONTAL" primaryAxisAlignItems="CENTER" → flex flex-row justify-center
+layoutMode="HORIZONTAL" primaryAxisAlignItems="MAX" → flex flex-row justify-end
+layoutMode="HORIZONTAL" primaryAxisAlignItems="SPACE_BETWEEN" → flex flex-row justify-between
+layoutMode="VERTICAL" primaryAxisAlignItems="CENTER" → flex flex-col items-center
+
+### counterAxisAlignItems 변환 (교차축 정렬)
+
+layoutMode="HORIZONTAL" counterAxisAlignItems="CENTER" → flex flex-row items-center
+layoutMode="HORIZONTAL" counterAxisAlignItems="MIN" → flex flex-row items-start
+layoutMode="HORIZONTAL" counterAxisAlignItems="MAX" → flex flex-row items-end
+layoutMode="VERTICAL" counterAxisAlignItems="CENTER" → flex flex-col justify-center
+
+### spacing과 padding 변환
+
+itemSpacing="24" → gap-[24px]
+itemSpacing="10" counterAxisSpacing="5" → gap-x-[10px] gap-y-[5px]
+paddingLeft="20" paddingRight="20" paddingTop="10" paddingBottom="10" → px-[20px] py-[10px]
+paddingLeft="40" paddingRight="40" paddingTop="0" paddingBottom="0" → px-[40px] py-0
+horizontalPadding="20" verticalPadding="15" → px-[20px] py-[15px]
+
+### layoutGrow 변환
+
+layoutGrow="1" → flex-grow
+layoutGrow="0" → flex-grow-0
+
+### layoutAlign 변환
+
+layoutAlign="STRETCH" → self-stretch
+layoutAlign="INHERIT" → (부모의 align 설정을 따름, 별도 클래스 불필요)
+
+## 3. 위치 지정 변환 (layoutMode="NONE"인 경우)
+
+### 절대 위치 지정
+
+layoutMode="NONE" Frame x="734" y="110" width="452" height="970"
+→
+div className="relative"
+div className="absolute left-[734px] top-[110px] w-[452px] h-[970px]"
+
+### constraints와 조합
+
+constraints horizontal="CENTER" vertical="MIN"
+→ absolute left-1/2 top-[110px] transform -translate-x-1/2
+
+## 4. 색상 변환 규칙
+
+### fills (배경색)
+
+fills fill type="SOLID" color="#ffffff" opacity="1" → bg-[#ffffff]
+fills fill type="SOLID" color="#51a2ff" opacity="0.5" → bg-[#51a2ff] bg-opacity-50
+
+### strokes (테두리)
+
+strokes stroke type="SOLID" color="#e5e7eb" opacity="1" strokeWeight="1" → border border-[#e5e7eb]
+strokeWeight="2" → border-2 border-[색상]
+
+### strokeAlign 변환
+
+strokeAlign="INSIDE" → border (기본값)
+strokeAlign="OUTSIDE" → outline outline-[두께] outline-[색상]
+strokeAlign="CENTER" → border (CSS에서 기본적으로 center)
+
+## 5. 모양 변환 규칙
+
+### cornerRadius
+
+cornerRadius="10" → rounded-[10px]
+cornerRadius="0" → rounded-none
+
+### cornerSmoothing (iOS 스타일)
+
+cornerSmoothing="0.6" → CSS custom property 또는 무시 (Tailwind 기본 지원 안함)
+
+## 6. 텍스트 스타일 변환 규칙
+
+### fontSize & fontWeight
+
+fontSize="28" fontWeight="600" fontName family="Pretendard" style="SemiBold"
+→ text-[28px] font-semibold font-['Pretendard']
+
+### textAlign
+
+textAlignHorizontal="CENTER" → text-center
+textAlignHorizontal="LEFT" → text-left
+textAlignVertical="TOP" → align-top
+
+### lineHeight
+
+lineHeight value="120.00000476837158" unit="PERCENT" → leading-[1.2]
+
+### letterSpacing
+
+letterSpacing value="0" unit="PERCENT" → tracking-normal
+
+### textCase
+
+textCase="ORIGINAL" → normal-case
+textCase="UPPER" → uppercase
+
+## 7. 효과 변환 규칙
+
+### opacity
+
+opacity="0.5" → opacity-50
+
+### blendMode
+
+blendMode="PASS_THROUGH" → (기본값, 별도 클래스 불필요)
+blendMode="MULTIPLY" → mix-blend-multiply
+
+### visible
+
+visible="false" → hidden
+visible="true" → (기본값, 별도 클래스 불필요)
+
+## 8. 특수 속성 변환
+
+### clipsContent
+
+clipsContent="true" → overflow-hidden
+clipsContent="false" → overflow-visible
+
+### isMask
+
+isMask="true" → CSS mask 속성 또는 clip-path 사용
+
+### rotation
+
+rotation="45" → rotate-[45deg]
+
+## 9. 그림자 효과
+
+### effects (그림자)
+
+effects effect type="DROP_SHADOW" color="#000000" opacity="0.1" offset="0,4" radius="8"
+→ shadow-[0_4px_8px_rgba(0,0,0,0.1)]
+
+## 10. 이미지/벡터 변환
+
+### Vector
+
+Vector strokeWeight="2" strokeJoin="ROUND" strokeCap="ROUND"
+→ SVG 컴포넌트로 변환하거나 아이콘 컴포넌트 사용
+
+### 이미지
+
+fills fill type="IMAGE" imageRef="image_id"
+→ bg-[url('/path/to/image.jpg')]
+
+## 11. import 경로
+
+### 컴포넌트 import
+
+import { Navigation, Input, PrimaryBoxButton } from '@ject-5-fe/design/components/\*';
+
+### 아이콘 import
+
+import { Add, Cross, Trash } from '@ject-5-fe/design/icons';
+
+## 12. 완전한 변환 예시
+
+### XML 입력
+
+Frame layoutMode="VERTICAL"
+layoutSizingHorizontal="FILL"
+layoutSizingVertical="FIXED" height="970"
+primaryAxisAlignItems="CENTER"
+counterAxisAlignItems="CENTER"
+itemSpacing="24"
+paddingLeft="35" paddingRight="35" paddingTop="25" paddingBottom="25"
+cornerRadius="10"
+clipsContent="false"
+fills
+fill type="SOLID" color="#f9fafb" opacity="1"
+strokes
+stroke type="SOLID" color="#e5e7eb" opacity="1"
+strokeWeight="1"
+
+### 올바른 변환
+
+div className="flex flex-col w-full h-[970px] items-center justify-center gap-[24px] px-[35px] py-[25px] rounded-[10px] overflow-visible bg-[#f9fafb] border border-[#e5e7eb]"
+
+## 13. 절대 금지 사항
+
+### 1. 색상 추측 변환 금지
+
+❌ color="#f9fafb" → bg-gray-50
+✅ color="#f9fafb" → bg-[#f9fafb]
+
+### 2. 크기 추측 변환 금지
+
+❌ width="64" → w-16
+✅ width="64" → w-[64px]
+
+### 3. 컴포넌트 props 임의 추가 금지
+
+❌ Input value={...} onChange={...}
+✅ Input type="reset" state="filled"
+
+### 4. type="INSTANCE" 없는데 컴포넌트로 만들기 금지
+
+❌ Frame → SomeComponent
+✅ Frame → div
+
+### 5. 텍스트 내용 임의 수정 금지
+
+Text characters="A팀가나다라마바사가나다라마바사"
+→ 정확히 A팀가나다라마바사가나다라마바사 사용
+
+## 14. 검증 체크리스트
+
+변환 후 반드시 확인:
+
+1. ✅ type="INSTANCE" 확인했는가?
+2. ✅ componentProperties의 모든 props 포함했는가?
+3. ✅ 모든 크기값이 XML과 정확히 일치하는가?
+4. ✅ 모든 색상값이 원본 hex값을 사용하는가?
+5. ✅ Auto Layout 속성들이 올바른 Flexbox로 변환되었는가?
+6. ✅ 텍스트 스타일이 정확한 값으로 변환되었는가?
+7. ✅ 추가된 props나 클래스가 모두 XML에 존재하는가?
+8. ✅ 임의로 변경된 부분이 없는가?
+
+**기억할 것: XML에 없는 정보는 절대 추가하지 말 것. 모든 값은 정확히 XML에 명시된 값만 사용할 것.**
