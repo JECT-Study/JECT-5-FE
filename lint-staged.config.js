@@ -9,12 +9,12 @@ const typeCheckConfigs = packages.reduce(
     [`./${parent}/**/*.{ts,tsx}`]: (filename) => [
       `yarn workspace ${name} lint ${filename.join(" ")}`,
       `yarn workspace ${name} type-check`,
+      `yarn workspace ${name} format ${filename.join(" ")}`,
     ],
   }),
   {},
 )
 
 module.exports = {
-  "**/*.{js,jsx,ts,tsx,json,css,md}": "prettier --write",
   ...typeCheckConfigs,
 }
