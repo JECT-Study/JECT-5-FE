@@ -9,6 +9,7 @@ type QuestionVariant = {
 
 interface QuestionProps extends QuestionVariant {
   title: string
+  image?: string | null
   canDelete?: boolean
   onClick?: () => void
   onDelete?: () => void
@@ -18,6 +19,7 @@ interface QuestionProps extends QuestionVariant {
 
 export const Question = ({
   title,
+  image,
   state,
   canDelete = true,
   onClick,
@@ -37,6 +39,25 @@ export const Question = ({
       <h3 className="typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-12 pt-1 text-text-primary">
         {state === "error" ? "❗" : title}
       </h3>
+
+      {/* Image - 오른쪽 */}
+      <div className="absolute right-14 top-5">
+        {image ? (
+          <img 
+            src={image} 
+            alt="질문 이미지" 
+            className="size-[78px] rounded-[7px] object-cover"
+          />
+        ) : (
+          <div className="flex size-[78px] items-center justify-center rounded-[7px] bg-gray-200">
+            <img 
+              src="/checker.svg" 
+              alt="기본 이미지" 
+              className="size-[78px] rounded-[7px]"
+            />
+          </div>
+        )}
+      </div>
 
       {/* Delete Button - 왼쪽 하단 */}
       <div className="absolute bottom-4 left-4">
