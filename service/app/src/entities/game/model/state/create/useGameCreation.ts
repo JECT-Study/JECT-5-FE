@@ -2,11 +2,11 @@
 
 import { useCallback, useReducer } from 'react';
 
-import { GameCreationAction, gameCreationActions } from './gameCreationActions';
-import { gameCreationReducer } from './gameCreationReducer';
-import { questionSelectors, selectors } from './gameCreationSelectors';
-import { GameCreationState, Question } from './gameCreationState';
-import { createInitialState } from './gameCreationUtils';
+import { GameCreationAction, gameCreationActions } from './actions';
+import { gameCreationReducer } from './reducer';
+import { questionSelectors, selectors } from './selectors';
+import { GameCreationState, Question } from './state';
+import { createInitialState } from './utils';
 
 export const useGameCreation = () => {
   const [state, dispatch] = useReducer<React.Reducer<GameCreationState, GameCreationAction>>(

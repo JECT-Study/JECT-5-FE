@@ -8,7 +8,7 @@ import { Control, Field, Root } from "@shared/design/src/components/input"
 import { ErrorText } from "@shared/design/src/components/input"
 import { Sun } from "@shared/design/src/icons"
 
-import { useGameCreation } from "../../model"
+import { useGameCreation } from "../../model/state/create/useGameCreation"
 import { RegisterButton } from "../interactions/registerButton"
 import { SaveButton } from "../interactions/saveButton"
 

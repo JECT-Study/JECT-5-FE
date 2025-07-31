@@ -1,4 +1,4 @@
-import { GameCreationState, Question } from './gameCreationState';
+import { GameCreationState, Question } from './state';
 
 export const createInitialQuestion = (order: number): Question => ({
   id: `question-${Date.now()}-${Math.random()}`,

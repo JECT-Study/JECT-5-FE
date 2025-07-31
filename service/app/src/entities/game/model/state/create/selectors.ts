@@ -1,4 +1,4 @@
-import { GameCreationState, Question } from './gameCreationState';
+import { GameCreationState, Question } from './state';
 
 export const validateGameName = (name: string): string | null => {
   if (name.length === 0) return "게임 이름을 입력해주세요.";

@@ -1,4 +1,4 @@
-import { Question } from './gameCreationState';
+import { Question } from './state';
 
 export type GameCreationAction =
   | { type: 'SET_GAME_NAME'; payload: string }
