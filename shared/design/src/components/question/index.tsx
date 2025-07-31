@@ -1,3 +1,5 @@
+"use client"
+
 import { Arrow, Trash } from "../../icons"
 import { DestructiveSolidIconButton, SecondaryPlainIconButton } from "../button"
 
