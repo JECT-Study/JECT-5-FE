@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 
 export const MSWComponent = ({ children }: { children: React.ReactNode }) => {
-  const [mswReady, setMswReady] = useState(false);
-  const hasStartedRef = useRef(false);
+  const [mswReady, setMswReady] = useState(false)
+  const hasStartedRef = useRef(false)
 
   useEffect(() => {
     const init = async () => {
-      if (hasStartedRef.current) return;
-      hasStartedRef.current = true;
+      if (hasStartedRef.current) return
+      hasStartedRef.current = true
 
-      const { initMsw } = await import("./index");
+      const { initMsw } = await import("./index")
       if (process.env.NODE_ENV !== "production") {
-        await initMsw();
+        await initMsw()
       }
-      setMswReady(true);
-    };
+      setMswReady(true)
+    }
 
     if (!mswReady) {
-      init();
+      init()
     }
-  }, [mswReady]);
+  }, [mswReady])
 
-  return <>{children}</>;
-};
+  return <>{children}</>
+}
