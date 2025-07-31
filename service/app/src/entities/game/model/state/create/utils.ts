@@ -1,7 +1,7 @@
 import { GameCreationState, Question } from './state';
 
 export const createInitialQuestion = (order: number): Question => ({
-  id: `question-${Date.now()}-${Math.random()}`,
+  id: `question-${order}`,
   text: '',
   answer: '',
   imageFile: null,
@@ -13,8 +13,8 @@ export const createInitialQuestion = (order: number): Question => ({
 
 export const createInitialState = (): GameCreationState => ({
   gameName: '게임1',
-  questions: [],
-  selectedQuestionId: null,
+  questions: [createInitialQuestion(0)],
+  selectedQuestionId: 'question-0',
   popups: {
     showExitConfirmation: false,
     showSaveConfirmation: false,
@@ -108,12 +108,19 @@ export const deleteQuestion = (
   questions: Question[], 
   questionId: string
 ): Question[] => {
+  if (questions.length <= 1) {
+    return questions;
+  }
+  
   return updateQuestionOrder(
     questions.filter(q => q.id !== questionId)
   );
 };
 
 export const addQuestion = (questions: Question[]): Question[] => {
-  const newQuestion = createInitialQuestion(questions.length);
+  const newQuestion = {
+    ...createInitialQuestion(questions.length),
+    id: `question-${Date.now()}-${Math.random()}`
+  };
   return [...questions, newQuestion];
 }; 
