@@ -8,12 +8,12 @@ import { Control, Field, Root } from "@shared/design/src/components/input"
 import { ErrorText } from "@shared/design/src/components/input"
 import { Sun } from "@shared/design/src/icons"
 
-import { useGameCreation } from "../../model/state/create/useGameCreation"
+import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import { RegisterButton } from "../interactions/registerButton"
 import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
-  const { state, actions, selectors } = useGameCreation();
+  const { state, actions, selectors } = useGameCreationContext();
 
   const handleGameNameChange = (value: string) => {
     actions.setGameName(value);
@@ -58,7 +58,12 @@ export function CreateGameNavigation() {
           <Sun />
         </SecondaryGhostIconButton>
 
-        <PrimaryBoxButton size="sm" _style="solid">
+        <PrimaryBoxButton 
+          size="sm" 
+          _style="solid"
+          disabled={!selectors.canAddQuestion}
+          onClick={actions.addQuestion}
+        >
           문제 추가
         </PrimaryBoxButton>
 
