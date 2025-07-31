@@ -5,10 +5,13 @@ import {
   SecondaryGhostIconButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
+import { CustomDialog } from "@ject-5-fe/design/components/dialog"
 import * as InputComponents from "@ject-5-fe/design/components/input"
 import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
 import { Cross, Sun } from "@ject-5-fe/design/icons"
 import { produce } from "immer"
+import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
 interface Team {
@@ -35,13 +38,13 @@ const validateTeamName = (
   teams: Team[],
 ): string => {
   if (name.length === 0) {
-    return "팀명을 입력해주세요"
+    return "팀명을 비워둘 수 없어요."
   }
   if (name.length > MAX_TEAM_NAME_LENGTH) {
-    return "팀 이름이 너무 깁니다."
+    return "팀명은 30자까지만 가능해요."
   }
   if (teams.some((team) => team.id !== teamId && team.name === name)) {
-    return "중복된 팀 이름입니다."
+    return "이미 사용중인 팀명이에요."
   }
   return ""
 }
@@ -58,12 +61,15 @@ const updateTeamErrors = (teams: Team[]): { [teamId: string]: string } => {
 }
 
 export default function GameSetupPage() {
+  const params = useParams()
+  const router = useRouter()
   const [teamState, setTeamState] = useState<TeamState>(
     createTeamState([
       { id: "1", name: "A팀" },
       { id: "2", name: "B팀" },
     ]),
   )
+  const [isExitDialogOpen, setIsExitDialogOpen] = useState(false)
 
   const updateTeamName = (teamId: string, name: string) => {
     if (name.length > MAX_TEAM_NAME_LENGTH) {
@@ -108,37 +114,37 @@ export default function GameSetupPage() {
   return (
     <div className="flex h-screen w-screen flex-col bg-background-primary">
       {/* Navigation */}
-      <div className="flex h-[110px] w-full items-center justify-between bg-background-primary">
-        <div className="flex w-[420px] items-center gap-2.5 bg-background-tertiary px-10">
-          <div className="flex h-[60px] w-[268px] items-center justify-center">
-            <div className="size-8 bg-icon-interactive-primary" />
-          </div>
-        </div>
+      <div className="grid h-[110px] w-full grid-cols-[420px_1fr_420px] items-center bg-background-interactive-inverse px-10">
+        <div>로고</div>
 
-        <h1 className="typography-heading-lg-semibold text-text-primary">
+        <h1 className="typography-heading-lg-semibold whitespace-nowrap text-center text-text-primary">
           참가자 설정
         </h1>
 
-        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
+        <div className="flex flex-col items-end justify-center gap-2.5">
           <div className="flex items-center justify-end gap-4 px-10">
             <SecondaryGhostIconButton>
               <Sun />
             </SecondaryGhostIconButton>
-            <PrimaryBoxButton
-              size="sm"
-              _style="solid"
-              disabled={Object.keys(teamState.errors).length > 0}
+            <Link href={`/game/${params.gameId}/start`}>
+              <PrimaryBoxButton
+                size="sm"
+                _style="solid"
+                disabled={Object.keys(teamState.errors).length > 0}
+              >
+                게임 시작
+              </PrimaryBoxButton>
+            </Link>
+            <SecondaryPlainIconButton
+              size="lg"
+              onClick={() => setIsExitDialogOpen(true)}
             >
-              게임 시작
-            </PrimaryBoxButton>
-            <SecondaryPlainIconButton size="lg">
               <Cross />
             </SecondaryPlainIconButton>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
       <section className="flex flex-1 overflow-hidden">
         {/* Left Sidebar - Team List */}
         <div className="flex h-full w-[420px] flex-col gap-6 overflow-y-auto bg-background-tertiary px-[35px] pt-[25px]">
@@ -203,6 +209,20 @@ export default function GameSetupPage() {
           </div>
         </div>
       </section>
+
+      <CustomDialog
+        open={isExitDialogOpen}
+        onOpenChange={setIsExitDialogOpen}
+        title="게임을 나가시겠습니까?"
+        description="진행 중인 게임이 종료됩니다."
+        onConfirm={() => {
+          router.push("/")
+          setIsExitDialogOpen(false)
+        }}
+        onCancel={() => setIsExitDialogOpen(false)}
+        confirmText="나가기"
+        cancelText="취소"
+      />
     </div>
   )
 }
