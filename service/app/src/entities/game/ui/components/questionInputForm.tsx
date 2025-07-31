@@ -1,12 +1,22 @@
 "use client"
 
-import { Control, Field, Label, Root } from "@shared/design/src/components/input"
+import {
+  Control,
+  Field,
+  Label,
+  Root,
+} from "@shared/design/src/components/input"
 
 export function QuestionInputForm() {
   return (
     <div className="flex w-[420px] flex-col gap-[54px]">
       <Root>
-        <Field type="labelOn" state="default" name="question" className="w-full">
+        <Field
+          type="labelOn"
+          state="default"
+          name="question"
+          className="w-full"
+        >
           <Label>질문*</Label>
           <Control placeholder="질문 입력" />
         </Field>
@@ -20,4 +30,4 @@ export function QuestionInputForm() {
       </Root>
     </div>
   )
-} 
+}

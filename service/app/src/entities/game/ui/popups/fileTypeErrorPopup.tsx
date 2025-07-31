@@ -16,4 +16,4 @@ export function FileTypeErrorPopup({ open, onClose }: FileTypeErrorPopupProps) {
       cancelText="닫기"
     />
   )
-} 
+}

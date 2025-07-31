@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 
-export type PopupType = 
-  | "fileSizeError" 
-  | "fileTypeError" 
-  | "saveConfirm" 
+export type PopupType =
+  | "fileSizeError"
+  | "fileTypeError"
+  | "saveConfirm"
   | "libraryRegister"
 
 interface PopupState {
@@ -23,15 +23,15 @@ export function usePopupManager() {
     libraryRegister: false,
   })
 
-  const showPopup = (type: PopupType) => 
-    setPopups(prev => ({ ...prev, [type]: true }))
-  
-  const hidePopup = (type: PopupType) => 
-    setPopups(prev => ({ ...prev, [type]: false }))
+  const showPopup = (type: PopupType) =>
+    setPopups((prev) => ({ ...prev, [type]: true }))
 
-  return { 
-    popups, 
-    showPopup, 
-    hidePopup, 
+  const hidePopup = (type: PopupType) =>
+    setPopups((prev) => ({ ...prev, [type]: false }))
+
+  return {
+    popups,
+    showPopup,
+    hidePopup,
   }
-} 
+}

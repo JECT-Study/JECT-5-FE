@@ -6,7 +6,11 @@ interface SaveConfirmPopupProps {
   onConfirm: () => void
 }
 
-export function SaveConfirmPopup({ open, onClose, onConfirm }: SaveConfirmPopupProps) {
+export function SaveConfirmPopup({
+  open,
+  onClose,
+  onConfirm,
+}: SaveConfirmPopupProps) {
   return (
     <CustomDialog
       open={open}
@@ -19,4 +23,4 @@ export function SaveConfirmPopup({ open, onClose, onConfirm }: SaveConfirmPopupP
       cancelText="아니요"
     />
   )
-} 
+}

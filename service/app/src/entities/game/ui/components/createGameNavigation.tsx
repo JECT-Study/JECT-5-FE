@@ -17,10 +17,13 @@ export function CreateGameNavigation() {
     >
       <div className="flex w-[420px] items-center gap-2.5 bg-background-tertiary px-10">
         <Root>
-          <Field type="noIcon" state="default" name="gameTitle" className="bg-background-interactive-input-primary">
-            <Control
-              placeholder="게임 이름 입력"
-            />
+          <Field
+            type="noIcon"
+            state="default"
+            name="gameTitle"
+            className="bg-background-interactive-input-primary"
+          >
+            <Control placeholder="게임 이름 입력" />
           </Field>
         </Root>
       </div>
@@ -40,4 +43,4 @@ export function CreateGameNavigation() {
       </div>
     </nav>
   )
-} 
+}
