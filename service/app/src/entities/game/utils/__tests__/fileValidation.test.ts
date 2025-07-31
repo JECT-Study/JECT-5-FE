@@ -22,14 +22,16 @@ describe("validateImageFile", () => {
     const file = createDummyFile("test.gif", "image/gif")
     const result = validateImageFile(file)
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain("지원하지 않는 파일 형식입니다")
+    expect(result.error).toBe("INVALID_FILE_TYPE")
+    expect(result.message).toContain("지원하지 않는 파일 형식입니다")
   })
 
   it("파일 크기가 제한을 초과하면 실패해야 한다", () => {
-    const file = createDummyFile("big.png", "image/png", 11 * 1024 * 1024)
+    const file = createDummyFile("big.png", "image/png", 3 * 1024 * 1024)
     const result = validateImageFile(file)
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain("파일 크기가 너무 큽니다")
+    expect(result.error).toBe("FILE_SIZE_TOO_LARGE")
+    expect(result.message).toContain("파일 크기가 너무 큽니다")
   })
 })
 
@@ -47,14 +49,16 @@ describe("validateMultipleFiles", () => {
     ]
     const result = validateMultipleFiles(files)
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain("지원하지 않는 파일 형식입니다")
+    expect(result.error).toBe("INVALID_FILE_TYPE")
+    expect(result.message).toContain("지원하지 않는 파일 형식입니다")
   })
 
   it("파일 사이즈가 너무 크면 실패해야 한다", () => {
-    const bigFile = createDummyFile("big.png", "image/png", 11 * 1024 * 1024)
+    const bigFile = createDummyFile("big.png", "image/png", 3 * 1024 * 1024)
     const result = validateMultipleFiles([bigFile])
     expect(result.isValid).toBe(false)
-    expect(result.error).toContain("파일 크기가 너무 큽니다")
+    expect(result.error).toBe("FILE_SIZE_TOO_LARGE")
+    expect(result.message).toContain("파일 크기가 너무 큽니다")
   })
 
   it("빈 배열일 때 성공해야 한다", () => {
