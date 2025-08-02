@@ -46,7 +46,6 @@ export const moveQuestionInArray = (
   const targetIndex = direction === "up" ? questionIndex - 1 : questionIndex + 1
 
   if (targetIndex < 0 || targetIndex >= questions.length) return questions
-
   ;[newQuestions[questionIndex], newQuestions[targetIndex]] = [
     newQuestions[targetIndex],
     newQuestions[questionIndex],
@@ -115,23 +114,26 @@ export const deleteQuestion = (
   return updateQuestionOrder(questions.filter((q) => q.id !== questionId))
 }
 
-export const addQuestion = (questions: Question[], afterQuestionId?: string): Question[] => {
+export const addQuestion = (
+  questions: Question[],
+  afterQuestionId?: string,
+): Question[] => {
   const newQuestion = {
     ...createInitialQuestion(questions.length),
     id: `question-${Date.now()}-${Math.random()}`,
   }
-  
+
   if (!afterQuestionId) {
     return [...questions, newQuestion]
   }
-  
-  const insertIndex = questions.findIndex(q => q.id === afterQuestionId)
+
+  const insertIndex = questions.findIndex((q) => q.id === afterQuestionId)
   if (insertIndex === -1) {
     return [...questions, newQuestion]
   }
-  
+
   const newQuestions = [...questions]
   newQuestions.splice(insertIndex + 1, 0, newQuestion)
-  
+
   return updateQuestionOrder(newQuestions)
 }

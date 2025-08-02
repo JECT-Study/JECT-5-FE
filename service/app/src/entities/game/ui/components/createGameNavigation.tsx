@@ -62,7 +62,9 @@ export function CreateGameNavigation() {
           size="sm"
           _style="solid"
           disabled={!selectors.canAddQuestion}
-          onClick={() => actions.addQuestion(state.selectedQuestionId || undefined)}
+          onClick={() =>
+            actions.addQuestion(state.selectedQuestionId || undefined)
+          }
         >
           문제 추가
         </PrimaryBoxButton>
