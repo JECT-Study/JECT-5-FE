@@ -33,13 +33,17 @@ export const gameCreationReducer = (
       }
 
     case "ADD_QUESTION": {
-      const newQuestions = addQuestion(state.questions)
-      const newQuestion = newQuestions[newQuestions.length - 1]
+      const afterQuestionId = action.payload
+      const newQuestions = addQuestion(state.questions, afterQuestionId)
+      
+      const newQuestion = newQuestions.find(q => 
+        !state.questions.some(existingQ => existingQ.id === q.id)
+      )
 
       return {
         ...state,
         questions: newQuestions,
-        selectedQuestionId: newQuestion.id,
+        selectedQuestionId: newQuestion?.id || newQuestions[newQuestions.length - 1].id,
       }
     }
 

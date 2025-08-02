@@ -4,7 +4,7 @@ export type GameCreationAction =
   | { type: "SET_GAME_NAME"; payload: string }
   | { type: "SET_GAME_NAME_FOCUS"; payload: boolean }
   | { type: "SET_GAME_NAME_EDITING"; payload: boolean }
-  | { type: "ADD_QUESTION" }
+  | { type: "ADD_QUESTION"; payload?: string }
   | { type: "DELETE_QUESTION"; payload: string }
   | {
       type: "UPDATE_QUESTION"
@@ -57,8 +57,9 @@ export const gameCreationActions = {
     payload: isEditing,
   }),
 
-  addQuestion: (): GameCreationAction => ({
+  addQuestion: (afterQuestionId?: string): GameCreationAction => ({
     type: "ADD_QUESTION",
+    payload: afterQuestionId,
   }),
 
   deleteQuestion: (questionId: string): GameCreationAction => ({

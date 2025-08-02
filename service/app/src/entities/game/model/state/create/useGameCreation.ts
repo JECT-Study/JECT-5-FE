@@ -25,8 +25,8 @@ export const useGameCreation = () => {
     dispatch(gameCreationActions.setGameNameEditing(isEditing))
   }, [])
 
-  const addQuestion = useCallback(() => {
-    dispatch(gameCreationActions.addQuestion())
+  const addQuestion = useCallback((afterQuestionId?: string) => {
+    dispatch(gameCreationActions.addQuestion(afterQuestionId))
   }, [])
 
   const deleteQuestion = useCallback((questionId: string) => {
