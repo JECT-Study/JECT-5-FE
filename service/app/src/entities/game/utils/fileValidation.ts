@@ -5,11 +5,14 @@ export const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
 ] as const
-export const MAX_FILE_SIZE = 10 * 1024 * 1024
+export const MAX_FILE_SIZE = 2 * 1024 * 1024
+
+export type FileValidationError = "FILE_SIZE_TOO_LARGE" | "INVALID_FILE_TYPE"
 
 export interface FileValidationResult {
   isValid: boolean
-  error?: string
+  error?: FileValidationError
+  message?: string
 }
 
 export const validateImageFile = (file: File): FileValidationResult => {
@@ -20,14 +23,16 @@ export const validateImageFile = (file: File): FileValidationResult => {
   ) {
     return {
       isValid: false,
-      error: `지원하지 않는 파일 형식입니다. 지원 형식: ${ALLOWED_IMAGE_TYPES.join(", ")}`,
+      error: "INVALID_FILE_TYPE",
+      message: `지원하지 않는 파일 형식입니다. 지원 형식: ${ALLOWED_IMAGE_TYPES.join(", ")}`,
     }
   }
 
   if (file.size > MAX_FILE_SIZE) {
     return {
       isValid: false,
-      error: `파일 크기가 너무 큽니다. 최대 크기: ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+      error: "FILE_SIZE_TOO_LARGE",
+      message: `파일 크기가 너무 큽니다. 최대 크기: ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
     }
   }
 
