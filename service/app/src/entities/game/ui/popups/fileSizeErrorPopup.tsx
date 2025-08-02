@@ -16,4 +16,4 @@ export function FileSizeErrorPopup({ open, onClose }: FileSizeErrorPopupProps) {
       cancelText="닫기"
     />
   )
-} 
+}

@@ -31,25 +31,25 @@ export function PopupManager({ children }: PopupManagerProps) {
   return (
     <PopupContext.Provider value={popupContext}>
       {children}
-      
-      <FileSizeErrorPopup 
-        open={popups.fileSizeError} 
-        onClose={() => hidePopup("fileSizeError")} 
+
+      <FileSizeErrorPopup
+        open={popups.fileSizeError}
+        onClose={() => hidePopup("fileSizeError")}
       />
-      
-      <FileTypeErrorPopup 
-        open={popups.fileTypeError} 
-        onClose={() => hidePopup("fileTypeError")} 
+
+      <FileTypeErrorPopup
+        open={popups.fileTypeError}
+        onClose={() => hidePopup("fileTypeError")}
       />
-      
-      <SaveConfirmPopup 
-        open={popups.saveConfirm} 
+
+      <SaveConfirmPopup
+        open={popups.saveConfirm}
         onClose={() => hidePopup("saveConfirm")}
         onConfirm={handleSaveConfirm}
       />
-      
-      <LibraryRegisterPopup 
-        open={popups.libraryRegister} 
+
+      <LibraryRegisterPopup
+        open={popups.libraryRegister}
         onClose={() => hidePopup("libraryRegister")}
         onConfirm={handleLibraryRegister}
       />
@@ -60,8 +60,12 @@ export function PopupManager({ children }: PopupManagerProps) {
 import { createContext, useContext } from "react"
 
 interface PopupContextType {
-  showPopup: (type: "fileSizeError" | "fileTypeError" | "saveConfirm" | "libraryRegister") => void
-  hidePopup: (type: "fileSizeError" | "fileTypeError" | "saveConfirm" | "libraryRegister") => void
+  showPopup: (
+    type: "fileSizeError" | "fileTypeError" | "saveConfirm" | "libraryRegister",
+  ) => void
+  hidePopup: (
+    type: "fileSizeError" | "fileTypeError" | "saveConfirm" | "libraryRegister",
+  ) => void
 }
 
 const PopupContext = createContext<PopupContextType | null>(null)
@@ -72,4 +76,4 @@ export function usePopup() {
     throw new Error("usePopup must be used within a PopupManager")
   }
   return context
-} 
+}

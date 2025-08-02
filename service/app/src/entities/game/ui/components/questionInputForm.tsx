@@ -1,6 +1,11 @@
 "use client"
 
-import { Control, Field, Label, Root } from "@shared/design/src/components/input"
+import {
+  Control,
+  Field,
+  Label,
+  Root,
+} from "@shared/design/src/components/input"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 
@@ -26,7 +31,7 @@ export function QuestionInputForm() {
         <Field 
           type="labelOn" 
           state={selectedQuestion?.text ? "default" : "error"} 
-          name="question" 
+          name="question"
           className="w-full"
         >
           <Label>질문*</Label>
@@ -55,4 +60,4 @@ export function QuestionInputForm() {
       </Root>
     </div>
   )
-} 
+}

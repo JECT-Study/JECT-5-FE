@@ -6,4 +6,5 @@ module.exports = {
   tailwindConfig: "./shared/design/tailwind.config.ts",
   plugins: [require.resolve("prettier-plugin-tailwindcss")],
   tailwindFunctions: ["cva"],
+  endOfLine: "lf",
 }

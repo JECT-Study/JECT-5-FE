@@ -26,4 +26,4 @@ export default function CreateGamePage() {
       </PopupManager>
     </GameCreationProvider>
   )
-} 
+}

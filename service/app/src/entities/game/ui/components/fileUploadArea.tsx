@@ -58,4 +58,4 @@ export function FileUploadArea() {
       </Dropzone>
     </FileUpload>
   )
-} 
+}
