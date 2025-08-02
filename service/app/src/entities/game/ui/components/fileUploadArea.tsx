@@ -1,7 +1,11 @@
 "use client"
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { Dropzone, FileUpload, FileUploadTrigger } from "@shared/design/src/components/upload"
+import {
+  Dropzone,
+  FileUpload,
+  FileUploadTrigger,
+} from "@shared/design/src/components/upload"
 import Image from "next/image"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
@@ -13,7 +17,8 @@ export function FileUploadArea() {
   const { showPopup } = usePopup()
   const selectedQuestion = selectors.selectedQuestion
 
-  const hasImage = selectedQuestion?.imageUrl || selectedQuestion?.previewImageUrl
+  const hasImage =
+    selectedQuestion?.imageUrl || selectedQuestion?.previewImageUrl
 
   const handleFileUpload = (files: File[]) => {
     if (!selectedQuestion) {
@@ -47,7 +52,9 @@ export function FileUploadArea() {
         {hasImage ? (
           <div className="group relative mt-4 h-[500px] w-[577px]">
             <Image
-              src={selectedQuestion.imageUrl || selectedQuestion.previewImageUrl!}
+              src={
+                selectedQuestion.imageUrl || selectedQuestion.previewImageUrl!
+              }
               alt="업로드된 이미지"
               width={577}
               height={500}
@@ -55,9 +62,7 @@ export function FileUploadArea() {
             />
             <div className="absolute inset-0 flex items-center justify-center rounded-[10px] bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
               <FileUploadTrigger asChild>
-                <PrimaryBoxButton size="md">
-                  이미지 변경
-                </PrimaryBoxButton>
+                <PrimaryBoxButton size="md">이미지 변경</PrimaryBoxButton>
               </FileUploadTrigger>
             </div>
           </div>

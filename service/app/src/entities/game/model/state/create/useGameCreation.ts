@@ -57,24 +57,6 @@ export const useGameCreation = () => {
     [],
   )
 
-  const uploadImageSuccess = useCallback(
-    (questionId: string, imageUrl: string) => {
-      dispatch(gameCreationActions.uploadImageSuccess(questionId, imageUrl))
-    },
-    [],
-  )
-
-  const uploadImageError = useCallback((questionId: string, error: string) => {
-    dispatch(gameCreationActions.uploadImageError(questionId, error))
-  }, [])
-
-  const setImageHover = useCallback(
-    (questionId: string, isHovered: boolean) => {
-      dispatch(gameCreationActions.setImageHover(questionId, isHovered))
-    },
-    [],
-  )
-
   const showPopup = useCallback(
     (popupType: keyof GameCreationState["popups"]) => {
       dispatch(gameCreationActions.showPopup(popupType))
@@ -99,14 +81,6 @@ export const useGameCreation = () => {
 
   const saveGameError = useCallback((error: string) => {
     dispatch(gameCreationActions.saveGameError(error))
-  }, [])
-
-  const setGlobalError = useCallback((error: string | null) => {
-    dispatch(gameCreationActions.setGlobalError(error))
-  }, [])
-
-  const resetForm = useCallback(() => {
-    dispatch(gameCreationActions.resetForm())
   }, [])
 
   const derivedState = {
@@ -144,16 +118,11 @@ export const useGameCreation = () => {
       selectQuestion,
       moveQuestion,
       uploadImageStart,
-      uploadImageSuccess,
-      uploadImageError,
-      setImageHover,
       showPopup,
       hidePopup,
       saveGameStart,
       saveGameSuccess,
       saveGameError,
-      setGlobalError,
-      resetForm,
     },
 
     selectors: derivedState,

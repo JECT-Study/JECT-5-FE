@@ -7,8 +7,6 @@ export const createInitialQuestion = (order: number): Question => ({
   imageFile: null,
   imageUrl: null,
   previewImageUrl: null,
-  imageUploadError: null,
-  isImageHovered: false,
   order,
 })
 
@@ -19,7 +17,6 @@ export const createInitialState = (): GameCreationState => ({
   popups: {
     showExitConfirmation: false,
     showSaveConfirmation: false,
-    showImageUploadError: false,
     showFileSizeError: false,
     showFileTypeError: false,
   },
@@ -29,7 +26,6 @@ export const createInitialState = (): GameCreationState => ({
   },
   errors: {
     gameNameError: null,
-    globalError: null,
   },
   isGameNameEditing: false,
   isGameNameFocused: false,

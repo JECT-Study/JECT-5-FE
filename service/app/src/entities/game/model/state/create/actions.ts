@@ -16,25 +16,11 @@ export type GameCreationAction =
       type: "UPLOAD_IMAGE_START"
       payload: { questionId: string; file: File; previewUrl: string }
     }
-  | {
-      type: "UPLOAD_IMAGE_SUCCESS"
-      payload: { questionId: string; imageUrl: string }
-    }
-  | {
-      type: "UPLOAD_IMAGE_ERROR"
-      payload: { questionId: string; error: string }
-    }
-  | {
-      type: "SET_IMAGE_HOVER"
-      payload: { questionId: string; isHovered: boolean }
-    }
   | { type: "SHOW_POPUP"; payload: keyof PopupState }
   | { type: "HIDE_POPUP"; payload: keyof PopupState }
   | { type: "SAVE_GAME_START" }
   | { type: "SAVE_GAME_SUCCESS" }
   | { type: "SAVE_GAME_ERROR"; payload: string }
-  | { type: "SET_GLOBAL_ERROR"; payload: string | null }
-  | { type: "RESET_FORM" }
 
 interface PopupState {
   showExitConfirmation: boolean
@@ -97,30 +83,6 @@ export const gameCreationActions = {
     payload: { questionId, file, previewUrl },
   }),
 
-  uploadImageSuccess: (
-    questionId: string,
-    imageUrl: string,
-  ): GameCreationAction => ({
-    type: "UPLOAD_IMAGE_SUCCESS",
-    payload: { questionId, imageUrl },
-  }),
-
-  uploadImageError: (
-    questionId: string,
-    error: string,
-  ): GameCreationAction => ({
-    type: "UPLOAD_IMAGE_ERROR",
-    payload: { questionId, error },
-  }),
-
-  setImageHover: (
-    questionId: string,
-    isHovered: boolean,
-  ): GameCreationAction => ({
-    type: "SET_IMAGE_HOVER",
-    payload: { questionId, isHovered },
-  }),
-
   showPopup: (popupType: keyof PopupState): GameCreationAction => ({
     type: "SHOW_POPUP",
     payload: popupType,
@@ -142,14 +104,5 @@ export const gameCreationActions = {
   saveGameError: (error: string): GameCreationAction => ({
     type: "SAVE_GAME_ERROR",
     payload: error,
-  }),
-
-  setGlobalError: (error: string | null): GameCreationAction => ({
-    type: "SET_GLOBAL_ERROR",
-    payload: error,
-  }),
-
-  resetForm: (): GameCreationAction => ({
-    type: "RESET_FORM",
   }),
 }
