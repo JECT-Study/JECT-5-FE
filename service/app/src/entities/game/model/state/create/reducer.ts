@@ -96,7 +96,7 @@ export const gameCreationReducer = (
     }
 
     case "UPLOAD_IMAGE_START": {
-      const { questionId, file } = action.payload
+      const { questionId, file, previewUrl } = action.payload
       const validation = validateImageFile(file)
       const imageError = validation.isValid ? null : validation.error
 
@@ -117,6 +117,7 @@ export const gameCreationReducer = (
         },
         questions: updateQuestion(state.questions, questionId, {
           imageFile: file,
+          previewImageUrl: previewUrl,
           imageUploadError: null,
         }),
       }

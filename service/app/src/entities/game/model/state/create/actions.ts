@@ -12,7 +12,10 @@ export type GameCreationAction =
     }
   | { type: "SELECT_QUESTION"; payload: string }
   | { type: "MOVE_QUESTION"; payload: { id: string; direction: "up" | "down" } }
-  | { type: "UPLOAD_IMAGE_START"; payload: { questionId: string; file: File } }
+  | {
+      type: "UPLOAD_IMAGE_START"
+      payload: { questionId: string; file: File; previewUrl: string }
+    }
   | {
       type: "UPLOAD_IMAGE_SUCCESS"
       payload: { questionId: string; imageUrl: string }
@@ -85,9 +88,13 @@ export const gameCreationActions = {
     payload: { id, direction },
   }),
 
-  uploadImageStart: (questionId: string, file: File): GameCreationAction => ({
+  uploadImageStart: (
+    questionId: string,
+    file: File,
+    previewUrl: string,
+  ): GameCreationAction => ({
     type: "UPLOAD_IMAGE_START",
-    payload: { questionId, file },
+    payload: { questionId, file, previewUrl },
   }),
 
   uploadImageSuccess: (

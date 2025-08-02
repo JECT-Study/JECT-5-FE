@@ -30,7 +30,12 @@ export function FileUploadArea() {
       return
     }
 
-    actions.uploadImageStart(selectedQuestion.id, file)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const previewUrl = e.target?.result as string
+      actions.uploadImageStart(selectedQuestion.id, file, previewUrl)
+    }
+    reader.readAsDataURL(file)
   }
 
   return (
@@ -43,10 +48,13 @@ export function FileUploadArea() {
           <p className="typography-heading-sm-medium text-center text-text-interactive-tertiary">
             JPG, JPEG, PNG (최대 2MB)
           </p>
-          {selectedQuestion?.imageUrl && (
+          {(selectedQuestion?.imageUrl ||
+            selectedQuestion?.previewImageUrl) && (
             <div className="mt-4">
               <Image
-                src={selectedQuestion.imageUrl}
+                src={
+                  selectedQuestion.imageUrl || selectedQuestion.previewImageUrl!
+                }
                 alt="업로드된 이미지"
                 width={256}
                 height={256}

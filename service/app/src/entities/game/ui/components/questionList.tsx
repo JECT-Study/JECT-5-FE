@@ -18,7 +18,7 @@ export function QuestionList() {
             <Question
               key={question.id}
               title={question.text || "질문을 입력해주세요"}
-              image={question.imageUrl}
+              image={question.imageUrl || question.previewImageUrl}
               state={
                 isSelected ? "selected" : question.text ? "default" : "error"
               }

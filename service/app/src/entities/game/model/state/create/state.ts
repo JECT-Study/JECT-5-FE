@@ -4,6 +4,7 @@ export interface Question {
   answer: string
   imageFile: File | null
   imageUrl: string | null
+  previewImageUrl: string | null
   imageUploadError: string | null
   isImageHovered: boolean
   order: number

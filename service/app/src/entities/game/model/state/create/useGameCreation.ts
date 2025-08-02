@@ -48,9 +48,14 @@ export const useGameCreation = () => {
     dispatch(gameCreationActions.moveQuestion(id, direction))
   }, [])
 
-  const uploadImageStart = useCallback((questionId: string, file: File) => {
-    dispatch(gameCreationActions.uploadImageStart(questionId, file))
-  }, [])
+  const uploadImageStart = useCallback(
+    (questionId: string, file: File, previewUrl: string) => {
+      dispatch(
+        gameCreationActions.uploadImageStart(questionId, file, previewUrl),
+      )
+    },
+    [],
+  )
 
   const uploadImageSuccess = useCallback(
     (questionId: string, imageUrl: string) => {

@@ -6,6 +6,7 @@ export const createInitialQuestion = (order: number): Question => ({
   answer: "",
   imageFile: null,
   imageUrl: null,
+  previewImageUrl: null,
   imageUploadError: null,
   isImageHovered: false,
   order,
