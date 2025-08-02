@@ -11,16 +11,18 @@ export interface GameSaveResult {
   gameId?: string
 }
 
-export const prepareGameData = (state: GameCreationState): GameCreateRequest => {
+export const prepareGameData = (
+  state: GameCreationState,
+): GameCreateRequest => {
   const gameId = uuidv4()
-  
+
   return {
     gameId,
     gameTitle: state.gameName,
     gameCreatorEmail: "user@example.com",
     gameThumbnailUrl: "",
     questions: state.questions
-      .filter(q => q.text.trim() && q.answer.trim())
+      .filter((q) => q.text.trim() && q.answer.trim())
       .map((question, index) => ({
         questionOrder: index,
         imageUrl: question.imageUrl || "",
@@ -30,22 +32,26 @@ export const prepareGameData = (state: GameCreationState): GameCreateRequest => 
   }
 }
 
-export const saveGame = async (state: GameCreationState): Promise<GameSaveResult> => {
+export const saveGame = async (
+  state: GameCreationState,
+): Promise<GameSaveResult> => {
   try {
-    const questionsWithImages = state.questions.filter(q => q.imageFile)
-    
+    const questionsWithImages = state.questions.filter((q) => q.imageFile)
+
     let presignedResponse = null
-    
+
     if (questionsWithImages.length > 0) {
       const presignedRequest = {
         images: questionsWithImages.map((question) => ({
-          imageName: `${question.id}.${question.imageFile!.name.split('.').pop()}`,
+          imageName: `${question.id}.${question.imageFile!.name.split(".").pop()}`,
           questionOrder: question.order,
         })),
       }
 
-      presignedResponse = await getPresignedUrlsForNewGame(presignedRequest.images)
-      
+      presignedResponse = await getPresignedUrlsForNewGame(
+        presignedRequest.images,
+      )
+
       if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
         return {
           success: false,
@@ -53,7 +59,7 @@ export const saveGame = async (state: GameCreationState): Promise<GameSaveResult
         }
       }
 
-      const imageFiles = questionsWithImages.map(q => q.imageFile!)
+      const imageFiles = questionsWithImages.map((q) => q.imageFile!)
       const uploadResult = await uploadMultipleFilesToS3(
         imageFiles,
         presignedResponse.data.presignedUrls,
@@ -68,7 +74,7 @@ export const saveGame = async (state: GameCreationState): Promise<GameSaveResult
     }
 
     const gameData = prepareGameData(state)
-    
+
     if (presignedResponse && presignedResponse.data) {
       gameData.questions = gameData.questions.map((question, index) => {
         const presignedUrl = presignedResponse.data!.presignedUrls[index]
@@ -80,7 +86,7 @@ export const saveGame = async (state: GameCreationState): Promise<GameSaveResult
     }
 
     const createResponse = await createGame(gameData)
-    
+
     if (createResponse.result !== "SUCCESS") {
       return {
         success: false,
@@ -95,7 +101,10 @@ export const saveGame = async (state: GameCreationState): Promise<GameSaveResult
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.",
+      error:
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 오류가 발생했습니다.",
     }
   }
-} 
+}

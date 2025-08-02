@@ -21,9 +21,9 @@ export function PopupManager({ children }: PopupManagerProps) {
   const handleSaveConfirm = async () => {
     try {
       actions.saveGameStart()
-      
+
       const result = await saveGame(state)
-      
+
       if (result.success) {
         actions.saveGameSuccess()
         hidePopup("saveConfirm")
