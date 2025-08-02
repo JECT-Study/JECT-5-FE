@@ -13,19 +13,19 @@ import { RegisterButton } from "../interactions/registerButton"
 import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
-  const { state, actions, selectors } = useGameCreationContext();
+  const { state, actions, selectors } = useGameCreationContext()
 
   const handleGameNameChange = (value: string) => {
-    actions.setGameName(value);
-  };
+    actions.setGameName(value)
+  }
 
   const handleGameNameFocus = () => {
-    actions.setGameNameFocus(true);
-  };
+    actions.setGameNameFocus(true)
+  }
 
   const handleGameNameBlur = () => {
-    actions.setGameNameFocus(false);
-  };
+    actions.setGameNameFocus(false)
+  }
 
   return (
     <nav
@@ -33,10 +33,10 @@ export function CreateGameNavigation() {
     >
       <div className="flex w-[420px] items-center gap-2.5 bg-background-tertiary px-10">
         <Root>
-          <Field 
-            type="noIcon" 
-            state={selectors.gameNameError ? "error" : "default"} 
-            name="gameTitle" 
+          <Field
+            type="noIcon"
+            state={selectors.gameNameError ? "error" : "default"}
+            name="gameTitle"
             className="bg-background-interactive-input-primary"
           >
             <Control
@@ -58,8 +58,8 @@ export function CreateGameNavigation() {
           <Sun />
         </SecondaryGhostIconButton>
 
-        <PrimaryBoxButton 
-          size="sm" 
+        <PrimaryBoxButton
+          size="sm"
           _style="solid"
           disabled={!selectors.canAddQuestion}
           onClick={actions.addQuestion}
@@ -73,4 +73,4 @@ export function CreateGameNavigation() {
       </div>
     </nav>
   )
-} 
+}

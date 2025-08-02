@@ -1,27 +1,29 @@
 "use client"
 
-import { createContext, ReactNode,useContext } from 'react';
+import { createContext, ReactNode, useContext } from "react"
 
-import { useGameCreation } from './useGameCreation';
+import { useGameCreation } from "./useGameCreation"
 
-type GameCreationContextType = ReturnType<typeof useGameCreation>;
+type GameCreationContextType = ReturnType<typeof useGameCreation>
 
-const GameCreationContext = createContext<GameCreationContextType | null>(null);
+const GameCreationContext = createContext<GameCreationContextType | null>(null)
 
 export function GameCreationProvider({ children }: { children: ReactNode }) {
-  const gameCreation = useGameCreation();
-  
+  const gameCreation = useGameCreation()
+
   return (
     <GameCreationContext.Provider value={gameCreation}>
       {children}
     </GameCreationContext.Provider>
-  );
+  )
 }
 
 export function useGameCreationContext() {
-  const context = useContext(GameCreationContext);
+  const context = useContext(GameCreationContext)
   if (!context) {
-    throw new Error('useGameCreationContext must be used within GameCreationProvider');
+    throw new Error(
+      "useGameCreationContext must be used within GameCreationProvider",
+    )
   }
-  return context;
-} 
+  return context
+}

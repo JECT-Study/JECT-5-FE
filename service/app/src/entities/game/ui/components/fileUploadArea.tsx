@@ -8,30 +8,30 @@ import { validateImageFile } from "../../utils/fileValidation"
 import { usePopup } from "../popupManager"
 
 export function FileUploadArea() {
-  const { actions, selectors } = useGameCreationContext();
-  const { showPopup } = usePopup();
-  const selectedQuestion = selectors.selectedQuestion;
+  const { actions, selectors } = useGameCreationContext()
+  const { showPopup } = usePopup()
+  const selectedQuestion = selectors.selectedQuestion
 
   const handleFileUpload = (files: File[]) => {
     if (!selectedQuestion) {
-      return;
+      return
     }
 
-    const file = files[0];
-    if (!file) return;
+    const file = files[0]
+    if (!file) return
 
-    const validation = validateImageFile(file);
+    const validation = validateImageFile(file)
     if (!validation.isValid) {
       if (validation.error === "FILE_SIZE_TOO_LARGE") {
-        showPopup("fileSizeError");
+        showPopup("fileSizeError")
       } else if (validation.error === "INVALID_FILE_TYPE") {
-        showPopup("fileTypeError");
+        showPopup("fileTypeError")
       }
-      return;
+      return
     }
 
-    actions.uploadImageStart(selectedQuestion.id, file);
-  };
+    actions.uploadImageStart(selectedQuestion.id, file)
+  }
 
   return (
     <FileUpload onValueChange={handleFileUpload}>
@@ -45,9 +45,9 @@ export function FileUploadArea() {
           </p>
           {selectedQuestion?.imageUrl && (
             <div className="mt-4">
-              <Image 
-                src={selectedQuestion.imageUrl} 
-                alt="업로드된 이미지" 
+              <Image
+                src={selectedQuestion.imageUrl}
+                alt="업로드된 이미지"
                 width={256}
                 height={256}
                 className="max-h-64 max-w-full object-contain"

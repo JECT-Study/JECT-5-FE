@@ -19,5 +19,5 @@ export type {
   MyGameQueryParams,
   PresignedUrlRequest,
 } from "./gameRequest"
-export * from './state/create';
+export * from "./state/create"
 export { filterGamesByQuery, findCursorPosition, sortGames } from "./utils"
