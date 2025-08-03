@@ -3,6 +3,7 @@
 import { ReactNode } from "react"
 
 import { useGameCreationContext } from "../model/state/create/gameCreationContext"
+import { selectors } from "../model/state/create/selectors"
 import { usePopupManager } from "../model/usePopupManager"
 import { saveGame } from "../utils/gameSave"
 import { FileSizeErrorPopup } from "./popups/fileSizeErrorPopup"
@@ -22,7 +23,12 @@ export function PopupManager({ children }: PopupManagerProps) {
     try {
       actions.saveGameStart()
 
-      const result = await saveGame(state)
+      const cleanedQuestions = selectors.cleanedQuestions(state)
+
+      const result = await saveGame({
+        ...state,
+        questions: cleanedQuestions
+      })
 
       if (result.success) {
         actions.saveGameSuccess()

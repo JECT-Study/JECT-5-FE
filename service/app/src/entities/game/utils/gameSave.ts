@@ -21,14 +21,12 @@ export const prepareGameData = (
     gameTitle: state.gameName,
     gameCreatorEmail: "user@example.com",
     gameThumbnailUrl: "",
-    questions: state.questions
-      .filter((q) => q.text.trim() && q.answer.trim())
-      .map((question, index) => ({
-        questionOrder: index,
-        imageUrl: question.imageUrl || "",
-        questionText: question.text,
-        questionAnswer: question.answer,
-      })),
+    questions: state.questions.map((question, index) => ({
+      questionOrder: index,
+      imageUrl: question.imageUrl || "",
+      questionText: question.text,
+      questionAnswer: question.answer,
+    })),
   }
 }
 
