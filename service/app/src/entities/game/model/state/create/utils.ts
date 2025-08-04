@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid"
+
 import { GameCreationState, Question } from "./state"
 
 export const createInitialQuestion = (order: number): Question => ({
@@ -117,7 +119,7 @@ export const addQuestion = (
 ): Question[] => {
   const newQuestion = {
     ...createInitialQuestion(questions.length),
-    id: `question-${Date.now()}-${Math.random()}`,
+    id: uuidv4(),
   }
 
   if (!afterQuestionId) {
