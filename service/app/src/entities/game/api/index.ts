@@ -1,3 +1,4 @@
+export { createGame } from "./createGame"
 export { deleteGame } from "./deleteGame"
 export { getGameDetail } from "./getGameDetail"
 export { getGameList } from "./getGameList"

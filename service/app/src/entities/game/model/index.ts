@@ -1,4 +1,3 @@
-// Core game types
 export type {
   GameDetailData,
   GameDetailResponse,
@@ -10,8 +9,6 @@ export type {
   PresignedUrlItem,
   PresignedUrlResponse,
 } from "./game"
-
-// Request/Response types
 export type {
   GameCreateQuestion,
   GameCreateRequest,
@@ -22,6 +19,5 @@ export type {
   MyGameQueryParams,
   PresignedUrlRequest,
 } from "./gameRequest"
-
-// Utility functions
+export * from "./state/create"
 export { filterGamesByQuery, findCursorPosition, sortGames } from "./utils"

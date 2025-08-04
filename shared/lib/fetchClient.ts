@@ -1,7 +1,7 @@
 import { createFetchClient, FetchClientInstance } from "./fetchClientFactory"
 
 export const fetchClient: FetchClientInstance = createFetchClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || "",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   defaultHeaders: {
     "Content-Type": "application/json",
   },
