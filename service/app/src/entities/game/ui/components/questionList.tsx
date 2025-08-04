@@ -21,7 +21,11 @@ export function QuestionList() {
               title={question.text || "질문을 입력해주세요"}
               image={question.imageUrl || question.previewImageUrl}
               state={
-                isSelected ? "selected" : validateQuestion(question) ? "default" : "error"
+                isSelected
+                  ? "selected"
+                  : validateQuestion(question)
+                    ? "default"
+                    : "error"
               }
               canDelete={state.questions.length > 1}
               onClick={() => actions.selectQuestion(question.id)}

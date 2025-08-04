@@ -61,12 +61,11 @@ export const selectors = {
   },
 
   cleanedQuestions: (state: GameCreationState): Question[] => {
-    return state.questions
-      .map(q => ({
-        ...q,
-        text: q.text.trim(),
-        answer: q.answer.trim()
-      }))
+    return state.questions.map((q) => ({
+      ...q,
+      text: q.text.trim(),
+      answer: q.answer.trim(),
+    }))
   },
 
   canSave: (state: GameCreationState): boolean => {

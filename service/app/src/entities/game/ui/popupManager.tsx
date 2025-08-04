@@ -27,7 +27,7 @@ export function PopupManager({ children }: PopupManagerProps) {
 
       const result = await saveGame({
         ...state,
-        questions: cleanedQuestions
+        questions: cleanedQuestions,
       })
 
       if (result.success) {
