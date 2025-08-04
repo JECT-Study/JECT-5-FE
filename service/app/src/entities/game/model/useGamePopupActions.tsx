@@ -123,10 +123,53 @@ export function useGamePopupActions() {
     })
   }
 
+  const showSaveError = () => {
+    overlay.open(({ isOpen, close }) => {
+      return (
+        <Dialog open={isOpen} onOpenChange={() => close()}>
+          <DialogContent>
+            <DialogBody>
+              저장 중 오류가 발생했습니다. <br />
+              네트워크 상태를 확인하거나, 잠시 후 <br />
+              다시 시도해 주세요.
+            </DialogBody>
+            <DialogFooter variant="onlyBody">
+              <DialogClose asChild>
+                <DialogButton.Secondary>닫기</DialogButton.Secondary>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )
+    })
+  }
+
+  const showValidationError = () => {
+    overlay.open(({ isOpen, close }) => {
+      return (
+        <Dialog open={isOpen} onOpenChange={() => close()}>
+          <DialogContent>
+            <DialogBody>
+              입력하지 않은 질문 또는 답안이 있습니다. <br />
+              모든 필수 항목을 작성한 후 다시 저장해 주세요.
+            </DialogBody>
+            <DialogFooter variant="onlyBody">
+              <DialogClose asChild>
+                <DialogButton.Secondary>닫기</DialogButton.Secondary>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )
+    })
+  }
+
   return {
     showSaveConfirm,
     showFileSizeError,
     showFileTypeError,
     showLibraryRegister,
+    showSaveError,
+    showValidationError,
   }
 }
