@@ -60,6 +60,15 @@ export const selectors = {
     return question ? question.order < state.questions.length - 1 : false
   },
 
+  cleanedQuestions: (state: GameCreationState): Question[] => {
+    return state.questions
+      .map(q => ({
+        ...q,
+        text: q.text.trim(),
+        answer: q.answer.trim()
+      }))
+  },
+
   canSave: (state: GameCreationState): boolean => {
     const hasValidGameName = !validateGameName(state.gameName)
     const hasValidQuestions =

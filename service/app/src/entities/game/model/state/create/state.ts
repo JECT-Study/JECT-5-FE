@@ -4,15 +4,13 @@ export interface Question {
   answer: string
   imageFile: File | null
   imageUrl: string | null
-  imageUploadError: string | null
-  isImageHovered: boolean
+  previewImageUrl: string | null
   order: number
 }
 
 export interface PopupState {
   showExitConfirmation: boolean
   showSaveConfirmation: boolean
-  showImageUploadError: boolean
   showFileSizeError: boolean
   showFileTypeError: boolean
 }
@@ -24,7 +22,6 @@ export interface LoadingState {
 
 export interface ErrorState {
   gameNameError: string | null
-  globalError: string | null
 }
 
 export interface GameCreationState {

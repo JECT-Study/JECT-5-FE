@@ -2,6 +2,7 @@
 
 import { Question } from "@shared/design/src/components/question"
 
+import { validateQuestion } from "../../model"
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 
 export function QuestionList() {
@@ -18,9 +19,9 @@ export function QuestionList() {
             <Question
               key={question.id}
               title={question.text || "질문을 입력해주세요"}
-              image={question.imageUrl}
+              image={question.imageUrl || question.previewImageUrl}
               state={
-                isSelected ? "selected" : question.text ? "default" : "error"
+                isSelected ? "selected" : validateQuestion(question) ? "default" : "error"
               }
               canDelete={state.questions.length > 1}
               onClick={() => actions.selectQuestion(question.id)}

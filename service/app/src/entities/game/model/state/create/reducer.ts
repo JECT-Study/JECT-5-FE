@@ -1,9 +1,7 @@
-import { validateImageFile } from "../../../utils/fileValidation"
 import { GameCreationAction } from "./actions"
 import { GameCreationState } from "./state"
 import {
   addQuestion,
-  createInitialState,
   deleteQuestion,
   moveQuestionInArray,
   updateQuestion,
@@ -96,18 +94,7 @@ export const gameCreationReducer = (
     }
 
     case "UPLOAD_IMAGE_START": {
-      const { questionId, file } = action.payload
-      const validation = validateImageFile(file)
-      const imageError = validation.isValid ? null : validation.error
-
-      if (imageError) {
-        return {
-          ...state,
-          questions: updateQuestion(state.questions, questionId, {
-            imageUploadError: imageError,
-          }),
-        }
-      }
+      const { questionId, file, previewUrl } = action.payload
 
       return {
         ...state,
@@ -117,49 +104,10 @@ export const gameCreationReducer = (
         },
         questions: updateQuestion(state.questions, questionId, {
           imageFile: file,
-          imageUploadError: null,
+          previewImageUrl: previewUrl,
         }),
       }
     }
-
-    case "UPLOAD_IMAGE_SUCCESS": {
-      const { questionId, imageUrl } = action.payload
-
-      return {
-        ...state,
-        loading: {
-          ...state.loading,
-          isUploading: false,
-        },
-        questions: updateQuestion(state.questions, questionId, {
-          imageUrl,
-          imageUploadError: null,
-        }),
-      }
-    }
-
-    case "UPLOAD_IMAGE_ERROR": {
-      const { questionId, error } = action.payload
-
-      return {
-        ...state,
-        loading: {
-          ...state.loading,
-          isUploading: false,
-        },
-        questions: updateQuestion(state.questions, questionId, {
-          imageUploadError: error,
-        }),
-      }
-    }
-
-    case "SET_IMAGE_HOVER":
-      return {
-        ...state,
-        questions: updateQuestion(state.questions, action.payload.questionId, {
-          isImageHovered: action.payload.isHovered,
-        }),
-      }
 
     case "SHOW_POPUP": {
       const popupType = action.payload
@@ -208,23 +156,7 @@ export const gameCreationReducer = (
           ...state.loading,
           isSaving: false,
         },
-        errors: {
-          ...state.errors,
-          globalError: action.payload,
-        },
       }
-
-    case "SET_GLOBAL_ERROR":
-      return {
-        ...state,
-        errors: {
-          ...state.errors,
-          globalError: action.payload,
-        },
-      }
-
-    case "RESET_FORM":
-      return createInitialState()
 
     default:
       return state

@@ -8,6 +8,7 @@ import {
 } from "@shared/design/src/components/input"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
+import { validateAnswerText,validateQuestionText } from "../../model/state/create/selectors"
 
 export function QuestionInputForm() {
   const { actions, selectors } = useGameCreationContext()
@@ -25,12 +26,15 @@ export function QuestionInputForm() {
     }
   }
 
+  const questionError = validateQuestionText(selectedQuestion?.text || "")
+  const answerError = validateAnswerText(selectedQuestion?.answer || "")
+
   return (
     <div className="flex w-[420px] flex-col gap-[54px]">
       <Root>
         <Field
+          state={questionError ? "error": "default"}
           type="labelOn"
-          state={selectedQuestion?.text ? "default" : "error"}
           name="question"
           className="w-full"
         >
@@ -45,8 +49,8 @@ export function QuestionInputForm() {
 
       <Root>
         <Field
+          state={answerError ? "error": "default"}
           type="labelOn"
-          state={selectedQuestion?.answer ? "default" : "error"}
           name="answer"
           className="w-full"
         >
