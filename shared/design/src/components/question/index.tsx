@@ -51,7 +51,7 @@ export const Question = ({
         ) : (
           <div className="flex size-[78px] items-center justify-center rounded-[7px] bg-gray-200">
             <img 
-              src="/checker.svg" 
+              src="/checker.svg"
               alt="기본 이미지" 
               className="size-[78px] rounded-[7px]"
             />
