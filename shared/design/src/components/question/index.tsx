@@ -29,14 +29,15 @@ export const Question = ({
 }: QuestionProps) => {
   return (
     <div
-      className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-[10px] bg-background-primary p-5 ${
-        state === "selected" &&
-        "border-2 border-border-interactive-primary bg-background-primary"
+      className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-[10px] border-2 bg-background-primary p-5 ${
+        state === "selected"
+          ? "border-border-interactive-primary bg-background-primary"
+          : "border-transparent"
       }`}
       onClick={onClick}
     >
       {/* Question Text */}
-      <h3 className="typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-12 pt-1 text-text-primary">
+      <h3 className="typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-[157px] pt-1 text-text-primary">
         {state === "error" ? "❗" : title}
       </h3>
 
@@ -52,7 +53,7 @@ export const Question = ({
           <div className="flex size-[78px] items-center justify-center rounded-[7px] bg-gray-200">
             <img 
               src="/checker.svg" 
-              alt="기본 이미지" 
+              alt="기본 이미지"
               className="size-[78px] rounded-[7px]"
             />
           </div>

@@ -47,9 +47,13 @@ export function useGamePopupActions() {
                         actions.saveGameError(
                           result.error || "저장에 실패했습니다.",
                         )
+                        close()
+                        showSaveError()
                       }
                     } catch (error) {
                       actions.saveGameError("알 수 없는 오류가 발생했습니다.")
+                      close()
+                      showSaveError()
                     }
                   }}
                 >
@@ -63,29 +67,14 @@ export function useGamePopupActions() {
     })
   }
 
-  const showFileSizeError = () => {
+  const showFileUploadError = () => {
     overlay.open(({ isOpen, close }) => {
       return (
         <Dialog open={isOpen} onOpenChange={() => close()}>
           <DialogContent>
-            <DialogBody>최대 2MB 이하 이미지만 업로드 가능합니다.</DialogBody>
-            <DialogFooter variant="onlyBody">
-              <DialogClose asChild>
-                <DialogButton.Secondary>닫기</DialogButton.Secondary>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )
-    })
-  }
-
-  const showFileTypeError = () => {
-    overlay.open(({ isOpen, close }) => {
-      return (
-        <Dialog open={isOpen} onOpenChange={() => close()}>
-          <DialogContent>
-            <DialogBody>JPG, JPEG, PNG 파일만 업로드 가능합니다.</DialogBody>
+            <DialogBody>
+              JPG, JPEG, PNG 형식만 가능하며, 최대 2MB까지 업로드할 수 있습니다.
+            </DialogBody>
             <DialogFooter variant="onlyBody">
               <DialogClose asChild>
                 <DialogButton.Secondary>닫기</DialogButton.Secondary>
@@ -103,12 +92,9 @@ export function useGamePopupActions() {
         <Dialog open={isOpen} onOpenChange={() => close()}>
           <DialogContent>
             <DialogHeader>
-              이 게임을 라이브러리에 등록하시겠습니까?
+              게임을 저장하지 않았습니다. 정말 나가시겠습니까?
             </DialogHeader>
-            <DialogBody>
-              등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이
-              불가능합니다.
-            </DialogBody>
+            <DialogBody>저장하지 않으면 모든 변경사항이 사라집니다.</DialogBody>
             <DialogFooter variant="title">
               <DialogClose asChild>
                 <DialogButton.Secondary>아니요</DialogButton.Secondary>
@@ -123,10 +109,52 @@ export function useGamePopupActions() {
     })
   }
 
+  const showSaveError = () => {
+    overlay.open(({ isOpen, close }) => {
+      return (
+        <Dialog open={isOpen} onOpenChange={() => close()}>
+          <DialogContent>
+            <DialogBody>
+              저장 중 오류가 발생했습니다. <br />
+              네트워크 상태를 확인하거나, 잠시 후 <br />
+              다시 시도해 주세요.
+            </DialogBody>
+            <DialogFooter variant="onlyBody">
+              <DialogClose asChild>
+                <DialogButton.Secondary>닫기</DialogButton.Secondary>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )
+    })
+  }
+
+  const showValidationError = () => {
+    overlay.open(({ isOpen, close }) => {
+      return (
+        <Dialog open={isOpen} onOpenChange={() => close()}>
+          <DialogContent>
+            <DialogBody>
+              입력하지 않은 질문 또는 답안이 있습니다. <br />
+              모든 필수 항목을 작성한 후 다시 저장해 주세요.
+            </DialogBody>
+            <DialogFooter variant="onlyBody">
+              <DialogClose asChild>
+                <DialogButton.Secondary>닫기</DialogButton.Secondary>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )
+    })
+  }
+
   return {
     showSaveConfirm,
-    showFileSizeError,
-    showFileTypeError,
+    showFileUploadError,
     showLibraryRegister,
+    showSaveError,
+    showValidationError,
   }
 }

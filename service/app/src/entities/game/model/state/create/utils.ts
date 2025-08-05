@@ -19,8 +19,7 @@ export const createInitialState = (): GameCreationState => ({
   popups: {
     showExitConfirmation: false,
     showSaveConfirmation: false,
-    showFileSizeError: false,
-    showFileTypeError: false,
+    showFileUploadError: false,
   },
   loading: {
     isSaving: false,
