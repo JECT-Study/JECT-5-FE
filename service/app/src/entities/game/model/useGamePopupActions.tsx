@@ -103,11 +103,10 @@ export function useGamePopupActions() {
         <Dialog open={isOpen} onOpenChange={() => close()}>
           <DialogContent>
             <DialogHeader>
-              이 게임을 라이브러리에 등록하시겠습니까?
+              게임을 저장하지 않았습니다. 정말 나가시겠습니까?
             </DialogHeader>
             <DialogBody>
-              등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이
-              불가능합니다.
+              저장하지 않으면 모든 변경사항이 사라집니다.
             </DialogBody>
             <DialogFooter variant="title">
               <DialogClose asChild>
