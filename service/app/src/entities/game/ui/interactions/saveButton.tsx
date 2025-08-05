@@ -9,13 +9,15 @@ export function SaveButton() {
   const { showSaveConfirm, showValidationError } = useGamePopupActions()
 
   const handleSave = () => {
-    const hasValidationError = state.questions.some(question => !validateQuestion(question))
-    
+    const hasValidationError = state.questions.some(
+      (question) => !validateQuestion(question),
+    )
+
     if (hasValidationError) {
       showValidationError()
       return
     }
-    
+
     showSaveConfirm()
   }
 

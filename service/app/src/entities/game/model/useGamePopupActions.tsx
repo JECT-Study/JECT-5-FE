@@ -72,7 +72,9 @@ export function useGamePopupActions() {
       return (
         <Dialog open={isOpen} onOpenChange={() => close()}>
           <DialogContent>
-            <DialogBody>JPG, JPEG, PNG 형식만 가능하며, 최대 2MB까지 업로드할 수 있습니다.</DialogBody>
+            <DialogBody>
+              JPG, JPEG, PNG 형식만 가능하며, 최대 2MB까지 업로드할 수 있습니다.
+            </DialogBody>
             <DialogFooter variant="onlyBody">
               <DialogClose asChild>
                 <DialogButton.Secondary>닫기</DialogButton.Secondary>
@@ -92,9 +94,7 @@ export function useGamePopupActions() {
             <DialogHeader>
               게임을 저장하지 않았습니다. 정말 나가시겠습니까?
             </DialogHeader>
-            <DialogBody>
-              저장하지 않으면 모든 변경사항이 사라집니다.
-            </DialogBody>
+            <DialogBody>저장하지 않으면 모든 변경사항이 사라집니다.</DialogBody>
             <DialogFooter variant="title">
               <DialogClose asChild>
                 <DialogButton.Secondary>아니요</DialogButton.Secondary>
