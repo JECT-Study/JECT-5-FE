@@ -9,12 +9,12 @@ import {
 import Image from "next/image"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
+import { useGamePopupActions } from "../../model/useGamePopupActions"
 import { validateImageFile } from "../../utils/fileValidation"
-import { usePopup } from "../popupManager"
 
 export function FileUploadArea() {
   const { actions, selectors } = useGameCreationContext()
-  const { showPopup } = usePopup()
+  const { showFileSizeError, showFileTypeError } = useGamePopupActions()
   const selectedQuestion = selectors.selectedQuestion
 
   const hasImage =
@@ -31,9 +31,9 @@ export function FileUploadArea() {
     const validation = validateImageFile(file)
     if (!validation.isValid) {
       if (validation.error === "FILE_SIZE_TOO_LARGE") {
-        showPopup("fileSizeError")
+        showFileSizeError()
       } else if (validation.error === "INVALID_FILE_TYPE") {
-        showPopup("fileTypeError")
+        showFileTypeError()
       }
       return
     }

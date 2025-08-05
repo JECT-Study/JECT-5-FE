@@ -1,12 +1,12 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 
-import { usePopup } from "../popupManager"
+import { useGamePopupActions } from "../../model/useGamePopupActions"
 
 export function SaveButton() {
-  const { showPopup } = usePopup()
+  const { showSaveConfirm } = useGamePopupActions()
 
   const handleSave = () => {
-    showPopup("saveConfirm")
+    showSaveConfirm()
   }
 
   return (
