@@ -25,9 +25,7 @@ export type GameCreationAction =
 interface PopupState {
   showExitConfirmation: boolean
   showSaveConfirmation: boolean
-  showImageUploadError: boolean
-  showFileSizeError: boolean
-  showFileTypeError: boolean
+  showFileUploadError: boolean
 }
 
 export const gameCreationActions = {

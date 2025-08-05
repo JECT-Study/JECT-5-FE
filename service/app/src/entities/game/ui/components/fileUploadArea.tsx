@@ -14,7 +14,7 @@ import { validateImageFile } from "../../utils/fileValidation"
 
 export function FileUploadArea() {
   const { actions, selectors } = useGameCreationContext()
-  const { showFileSizeError, showFileTypeError } = useGamePopupActions()
+  const { showFileUploadError } = useGamePopupActions()
   const selectedQuestion = selectors.selectedQuestion
 
   const hasImage =
@@ -30,11 +30,7 @@ export function FileUploadArea() {
 
     const validation = validateImageFile(file)
     if (!validation.isValid) {
-      if (validation.error === "FILE_SIZE_TOO_LARGE") {
-        showFileSizeError()
-      } else if (validation.error === "INVALID_FILE_TYPE") {
-        showFileTypeError()
-      }
+      showFileUploadError()
       return
     }
 

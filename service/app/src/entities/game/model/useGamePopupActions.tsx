@@ -63,29 +63,12 @@ export function useGamePopupActions() {
     })
   }
 
-  const showFileSizeError = () => {
+  const showFileUploadError = () => {
     overlay.open(({ isOpen, close }) => {
       return (
         <Dialog open={isOpen} onOpenChange={() => close()}>
           <DialogContent>
-            <DialogBody>최대 2MB 이하 이미지만 업로드 가능합니다.</DialogBody>
-            <DialogFooter variant="onlyBody">
-              <DialogClose asChild>
-                <DialogButton.Secondary>닫기</DialogButton.Secondary>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )
-    })
-  }
-
-  const showFileTypeError = () => {
-    overlay.open(({ isOpen, close }) => {
-      return (
-        <Dialog open={isOpen} onOpenChange={() => close()}>
-          <DialogContent>
-            <DialogBody>JPG, JPEG, PNG 파일만 업로드 가능합니다.</DialogBody>
+            <DialogBody>JPG, JPEG, PNG 형식만 가능하며, 최대 2MB까지 업로드할 수 있습니다.</DialogBody>
             <DialogFooter variant="onlyBody">
               <DialogClose asChild>
                 <DialogButton.Secondary>닫기</DialogButton.Secondary>
@@ -165,8 +148,7 @@ export function useGamePopupActions() {
 
   return {
     showSaveConfirm,
-    showFileSizeError,
-    showFileTypeError,
+    showFileUploadError,
     showLibraryRegister,
     showSaveError,
     showValidationError,

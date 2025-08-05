@@ -11,8 +11,7 @@ export interface Question {
 export interface PopupState {
   showExitConfirmation: boolean
   showSaveConfirmation: boolean
-  showFileSizeError: boolean
-  showFileTypeError: boolean
+  showFileUploadError: boolean
 }
 
 export interface LoadingState {
