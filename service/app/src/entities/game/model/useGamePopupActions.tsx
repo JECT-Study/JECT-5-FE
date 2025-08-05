@@ -47,9 +47,13 @@ export function useGamePopupActions() {
                         actions.saveGameError(
                           result.error || "저장에 실패했습니다.",
                         )
+                        close()
+                        showSaveError()
                       }
                     } catch (error) {
                       actions.saveGameError("알 수 없는 오류가 발생했습니다.")
+                      close()
+                      showSaveError()
                     }
                   }}
                 >
