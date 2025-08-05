@@ -2,6 +2,7 @@
 
 import {
   Control,
+  ErrorText,
   Field,
   Label,
   Root,
@@ -47,6 +48,7 @@ export function QuestionInputForm() {
             value={selectedQuestion?.text || ""}
             onChange={handleQuestionChange}
           />
+          {questionError && <ErrorText>{questionError}</ErrorText>}
         </Field>
       </Root>
 
@@ -63,6 +65,7 @@ export function QuestionInputForm() {
             value={selectedQuestion?.answer || ""}
             onChange={handleAnswerChange}
           />
+          {answerError && <ErrorText>{answerError}</ErrorText>}
         </Field>
       </Root>
     </div>
