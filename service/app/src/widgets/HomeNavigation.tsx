@@ -1,6 +1,10 @@
 "use client"
 
-import { PrimaryBoxButton, SecondaryGhostIconButton, SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
+import {
+  PrimaryBoxButton,
+  SecondaryGhostIconButton,
+  SecondaryOutlineBoxButton,
+} from "@shared/design/src/components/button"
 import { Add, Sun } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -16,21 +20,17 @@ export const HomeNavigation = ({
 }: HomeNavigationProps) => {
   const router = useRouter()
 
-  const handleMyGamesClick = () => {
-  }
+  const handleMyGamesClick = () => {}
 
   const handleCreateGameClick = () => {
     router.push("/create")
   }
 
-  const handleThemeToggle = () => {
-  }
+  const handleThemeToggle = () => {}
 
-  const handleAvatarClick = () => {
-  }
+  const handleAvatarClick = () => {}
 
-  const handleLoginClick = () => {
-  }
+  const handleLoginClick = () => {}
 
   return (
     <nav
@@ -84,10 +84,7 @@ export const HomeNavigation = ({
             </>
           ) : (
             <>
-              <SecondaryOutlineBoxButton
-                size="md"
-                onClick={handleLoginClick}
-              >
+              <SecondaryOutlineBoxButton size="md" onClick={handleLoginClick}>
                 <Image
                   src="/kakao-logo.png"
                   alt="카카오 로고"
@@ -100,13 +97,11 @@ export const HomeNavigation = ({
             </>
           )}
 
-          <SecondaryGhostIconButton
-            onClick={handleThemeToggle}
-          >
+          <SecondaryGhostIconButton onClick={handleThemeToggle}>
             <Sun />
           </SecondaryGhostIconButton>
         </div>
       </div>
     </nav>
   )
-} 
+}

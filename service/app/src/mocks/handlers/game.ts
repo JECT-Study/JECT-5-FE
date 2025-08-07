@@ -52,8 +52,8 @@ export const gameHandlers = [
         result: "SUCCESS",
         error: null,
         data: {
-          games: defaultGames
-        }
+          games: defaultGames,
+        },
       })
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })

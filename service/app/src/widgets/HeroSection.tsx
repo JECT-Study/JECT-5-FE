@@ -6,7 +6,9 @@ interface HeroSectionProps {
 
 export const HeroSection = ({ className = "" }: HeroSectionProps) => {
   return (
-    <section className={`flex w-full flex-col items-center gap-[24px] ${className}`}>
+    <section
+      className={`flex w-full flex-col items-center gap-[24px] ${className}`}
+    >
       <div className="flex w-full flex-col items-center text-center">
         <h1 className="typography-heading-2xl-bold text-center text-neutral-black">
           모두가 가볍게 즐길 수 있는
@@ -16,4 +18,4 @@ export const HeroSection = ({ className = "" }: HeroSectionProps) => {
       </div>
     </section>
   )
-} 
+}

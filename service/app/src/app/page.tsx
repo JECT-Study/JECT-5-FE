@@ -7,9 +7,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background-primary">
-      <HomeNavigation 
-        isLoggedIn={isLoggedIn}
-      />
+      <HomeNavigation isLoggedIn={isLoggedIn} />
       <div className="h-[157px]" />
       <HeroSection />
       <div className="h-[70px]" />
