@@ -10,7 +10,9 @@ export default function Home() {
       <HomeNavigation 
         isLoggedIn={isLoggedIn}
       />
+      <div className="h-[157px]" />
       <HeroSection />
+      <div className="h-[70px]" />
       <GameSection />
     </main>
   )
