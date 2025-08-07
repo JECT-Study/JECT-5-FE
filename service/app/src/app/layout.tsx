@@ -5,6 +5,7 @@ import localFont from "next/font/local"
 import { ThemeProvider } from "next-themes"
 
 import { MSWComponent } from "../mocks/mswComponent"
+import { Providers } from "./providers"
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,9 +27,11 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <body>
         <MSWComponent>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
+          <Providers>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+            </ThemeProvider>
+          </Providers>
         </MSWComponent>
       </body>
     </html>
