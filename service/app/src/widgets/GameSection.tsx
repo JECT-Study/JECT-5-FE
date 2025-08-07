@@ -4,9 +4,12 @@ import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { GameCard } from "@shared/design/src/components/gameCard"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { overlay } from "overlay-kit"
 
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
+import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 interface GameSectionProps {
   className?: string
@@ -34,6 +37,44 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
 
   const handleViewMoreGames = () => {
     router.push("/games")
+  }
+
+  const handleGameCardClick = async (game: GameListItem) => {
+    try {
+      const gameDetailRes = await getGameDetail(game.gameId)
+      
+      if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
+        const gameDetail = gameDetailRes.data
+        
+        overlay.open(({ close }) => {
+          const handleStartGame = () => {
+            close()
+            router.push(`/game/${game.gameId}`)
+          }
+
+          return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <GamePreview
+                gameTitle={gameDetail.gameTitle}
+                creatorName={gameDetail.nickname}
+                questionCount={gameDetail.questionCount}
+                questions={gameDetail.questions.map((question) => ({
+                  id: question.questionId.toString(),
+                  title: question.questionText,
+                  imageUrl: question.imageUrl,
+                }))}
+                onClose={close}
+                onStartGame={handleStartGame}
+              />
+            </div>
+          )
+        })
+      } else {
+        console.error("Failed to fetch game detail")
+      }
+    } catch (error) {
+      console.error("Error fetching game detail:", error)
+    }
   }
 
   if (error) {
@@ -91,13 +132,18 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
               </div>
             ))
           : games.map((game) => (
-              <GameCard
+              <div
                 key={game.gameId}
-                type="libraryGame"
-                title={game.gameTitle}
-                questionCount={game.questionCount}
-                imageUrl={game.gameThumbnailUrl}
-              />
+                onClick={() => handleGameCardClick(game)}
+                className="cursor-pointer"
+              >
+                <GameCard
+                  type="libraryGame"
+                  title={game.gameTitle}
+                  questionCount={game.questionCount}
+                  imageUrl={game.gameThumbnailUrl}
+                />
+              </div>
             ))}
       </div>
     </section>
