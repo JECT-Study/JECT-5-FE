@@ -1,3 +1,5 @@
+import { GameSection } from "../widgets/GameSection"
+import { HeroSection } from "../widgets/HeroSection"
 import { HomeNavigation } from "../widgets/HomeNavigation"
 
 export default function Home() {
@@ -8,6 +10,8 @@ export default function Home() {
       <HomeNavigation 
         isLoggedIn={isLoggedIn}
       />
+      <HeroSection />
+      <GameSection />
     </main>
   )
 }
