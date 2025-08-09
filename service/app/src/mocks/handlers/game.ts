@@ -44,6 +44,21 @@ import {
 } from "../utils/mockGenerators"
 
 export const gameHandlers = [
+  http.get(`${MSW_BASE_URL}/games/default`, () => {
+    try {
+      const defaultGames = mockGameList.slice(0, 4)
+
+      return HttpResponse.json({
+        result: "SUCCESS",
+        error: null,
+        data: {
+          games: defaultGames,
+        },
+      })
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
   http.get(`${MSW_BASE_URL}/games`, ({ request }) => {
     const url = new URL(request.url)
     const { cursorGameId, cursorPlayCount, cursorUpdatedAt, limit, query } =
