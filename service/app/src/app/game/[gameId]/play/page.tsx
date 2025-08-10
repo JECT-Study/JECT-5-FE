@@ -3,46 +3,127 @@ import {
   PrimaryBoxButton,
   PrimarySolidIconButton,
   SecondaryGhostIconButton,
+  SecondaryOutlineBoxButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
+import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
+import { Progress } from "@ject-5-fe/design/components/progress"
 import { Cross, Show, Sun } from "@ject-5-fe/design/icons"
-import { PlayerStatus } from "@shared/design/src/components/playerStatus"
-import { useState } from "react"
+import Image from "next/image"
+import { useParams, useRouter } from "next/navigation"
+import { useMemo, useState } from "react"
+
+import { openExitConfirmDialog } from "../components/dialogs/exitConfirmDialog"
+import { useGameStore } from "../store/useGameStore"
 
 const ScoreboardGame = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [showAnswer, setShowAnswer] = useState(false)
+  const router = useRouter()
+  const params = useParams()
 
-  const teams = [
-    "A팀가나다라마바사가나다라마바사",
-    "B팀",
-    "C팀",
-    "D팀",
-    "E팀",
-    "F팀",
-    "G팀",
-    "G팀",
-    "G팀",
-  ]
+  const {
+    teams,
+    gameDetail,
+    currentRound,
+    totalRounds,
+    setRound,
+    updateTeamScore,
+  } = useGameStore((state) => state)
+
+  const currentQuestion = gameDetail?.questions.find(
+    (q) => q.questionOrder === currentRound - 1,
+  )
+
+  const handlePrevQuestion = () => {
+    if (currentRound <= 1) return
+    const newRound = currentRound - 1
+    setRound(newRound)
+    router.replace(`?q=${newRound}`)
+    setShowAnswer(false)
+  }
+
+  const handleNextQuestion = () => {
+    if (currentRound === totalRounds) {
+      router.push(`/game/${params.gameId}/result`)
+      return
+    }
+    const newRound = Math.min(currentRound + 1, totalRounds)
+    setRound(newRound)
+    router.replace(`?q=${newRound}`)
+    setShowAnswer(false)
+  }
+
+  const handleShowAnswer = () => {
+    setShowAnswer((prev) => !prev)
+  }
+
+  const progressValue = useMemo(() => {
+    if (!totalRounds || totalRounds <= 0) return 0
+    return Math.min(
+      100,
+      Math.max(0, Math.round((currentRound / totalRounds) * 100)),
+    )
+  }, [currentRound, totalRounds])
+
+  const clampScore = (value: number) => Math.max(-100, Math.min(100, value))
+
+  const handleIncreaseScore = (teamId: string) => {
+    const team = teams.find((t) => t.id === teamId)
+    if (!team) return
+    updateTeamScore(teamId, clampScore(team.score + 1))
+  }
+
+  const handleDecreaseScore = (teamId: string) => {
+    const team = teams.find((t) => t.id === teamId)
+    if (!team) return
+    updateTeamScore(teamId, clampScore(team.score - 1))
+  }
 
   return (
     <div className="flex h-screen w-screen flex-col bg-background-primary">
-      <div className="flex h-[110px] items-center justify-between">
-        <div className="flex w-[420px] items-center gap-[10px] px-[40px]"></div>
+      <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
+        <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]"></div>
 
-        <div className="flex w-[420px] items-center justify-end gap-[16px] px-[40px]">
+        <div className="flex flex-1 items-center justify-center">
+          <Progress
+            value={progressValue}
+            className="h-[25px] w-[1080px]"
+            max={100}
+          />
+        </div>
+
+        <div className="flex w-[420px] items-center justify-end gap-[16px] self-stretch px-[40px]">
           <SecondaryGhostIconButton>
             <Sun />
           </SecondaryGhostIconButton>
 
-          <PrimaryBoxButton size="sm" _style="solid">
-            이전 문제
-          </PrimaryBoxButton>
+          {currentRound > 1 && (
+            <PrimaryBoxButton
+              size="sm"
+              _style="solid"
+              onClick={handlePrevQuestion}
+            >
+              이전 문제
+            </PrimaryBoxButton>
+          )}
 
-          <PrimaryBoxButton size="sm" _style="solid">
+          <PrimaryBoxButton
+            size="sm"
+            _style="solid"
+            onClick={handleNextQuestion}
+          >
             다음 문제
           </PrimaryBoxButton>
 
-          <SecondaryPlainIconButton size="lg">
+          <SecondaryPlainIconButton
+            size="lg"
+            onClick={() =>
+              openExitConfirmDialog({
+                onConfirm: () => router.push("/"),
+              })
+            }
+          >
             <Cross />
           </SecondaryPlainIconButton>
         </div>
@@ -52,7 +133,7 @@ const ScoreboardGame = () => {
         {/* 사이드바 */}
       <div className="absolute left-[20px] top-[110px] flex max-h-[940px] w-[400px] min-w-[400px] flex-col rounded-[20px] bg-background-tertiary">
         <div className="relative flex items-center justify-center py-6">
-          <span className="text-[19px] font-bold leading-[120%] text-text-primary">
+          <span className="typography-heading-sm-bold text-text-primary">
             점수판
           </span>
           <PrimarySolidIconButton
@@ -64,11 +145,13 @@ const ScoreboardGame = () => {
         </div>
         {isSidebarOpen && (
           <div className="flex max-h-[850px] flex-1 flex-col items-center gap-6 overflow-y-scroll px-[25px] py-6">
-            {teams.map((team, index) => (
+            {teams.map((team) => (
               <PlayerStatus
-                key={index}
-                name={team}
-                score="0점"
+                key={team.id}
+                name={team.name}
+                score={`${team.score}점`}
+                onScoreIncrease={() => handleIncreaseScore(team.id)}
+                onScoreDecrease={() => handleDecreaseScore(team.id)}
                 className="min-h-[118px]"
               />
             ))}
@@ -79,17 +162,38 @@ const ScoreboardGame = () => {
         {/* 메인 컨텐츠 영역 */}
         <div className="flex w-full flex-1 flex-col items-center justify-center">
           {/* Question Text */}
-          <h1 className="mb-[118px] max-w-[1080px] text-center text-[57px] font-bold leading-[120%] text-text-primary">
-            카드 단말기의 터치식 결제 기능의 명칭은?
+          <h1 className="typography-heading-4xl-bold mb-[118px] max-w-[1080px] text-center text-text-primary">
+            {currentQuestion?.questionText || "질문을 불러오는 중..."}
           </h1>
 
-          {/* Image Rectangle */}
-          <div className="mb-[85px] h-[459px] w-[727px] rounded-[10px] bg-[lightgray] bg-cover bg-[50%] bg-no-repeat" />
+          {currentQuestion?.imageUrl && (
+            <div className="mb-[85px] h-[459px] w-[727px] overflow-hidden rounded-[10px] bg-gray-200">
+              <Image
+                src={currentQuestion.imageUrl}
+                alt="문제 이미지"
+                className="size-full object-cover transition-opacity duration-300"
+                width={727}
+                height={459}
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+              />
+            </div>
+          )}
 
-          {/* Main Answer Button */}
-          <PrimaryBoxButton size="2xl" _style="solid">
-            정답 보기
-          </PrimaryBoxButton>
+          {/* Answer Section */}
+          {showAnswer ? (
+            <SecondaryOutlineBoxButton size="lg" onClick={handleShowAnswer}>
+              {currentQuestion?.questionAnswer}
+            </SecondaryOutlineBoxButton>
+          ) : (
+            <PrimaryBoxButton
+              size="2xl"
+              _style="solid"
+              onClick={handleShowAnswer}
+            >
+              정답 보기
+            </PrimaryBoxButton>
+          )}
         </div>
       </div>
     </div>
