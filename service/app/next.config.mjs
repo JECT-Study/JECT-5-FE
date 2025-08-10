@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     instrumentationHook: true,
+    cpus: 1,
   },
   webpack(config, { isServer }) {
     if (isServer) {
@@ -19,6 +20,14 @@ const nextConfig = {
     }
 
     return config
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+    ],
   },
 }
 
