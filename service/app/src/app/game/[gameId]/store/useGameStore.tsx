@@ -20,11 +20,6 @@ interface GameState {
   gameStatus: "setup" | "playing" | "paused" | "finished"
   currentRound: number
   totalRounds: number
-
-  settings: {
-    timeLimit?: number
-    maxTeams?: number
-  }
 }
 
 interface GameActions {
@@ -39,11 +34,10 @@ interface GameActions {
 
   // 게임 진행
   setGameStatus: (status: GameState["gameStatus"]) => void
+  setRound: (round: number) => void
   nextRound: () => void
+  prevRound: () => void
   resetGame: () => void
-
-  // 설정
-  updateSettings: (settings: Partial<GameState["settings"]>) => void
 }
 
 const createGameStore = (initialGameDetail?: GameDetailData) =>
@@ -52,11 +46,14 @@ const createGameStore = (initialGameDetail?: GameDetailData) =>
     teams: [],
     gameStatus: "setup",
     currentRound: 1,
-    totalRounds: 1,
-    settings: {},
+    totalRounds: initialGameDetail?.questionCount || 1,
 
     // 액션들
-    setGameDetail: (gameDetail) => set({ gameDetail }),
+    setGameDetail: (gameDetail) =>
+      set({
+        gameDetail,
+        totalRounds: gameDetail?.questionCount || 1,
+      }),
 
     addTeam: (team) =>
       set(
@@ -99,6 +96,14 @@ const createGameStore = (initialGameDetail?: GameDetailData) =>
 
     setGameStatus: (gameStatus) => set({ gameStatus }),
 
+    setRound: (round) =>
+      set(
+        produce((state: GameState) => {
+          const boundedRound = Math.max(1, Math.min(round, state.totalRounds))
+          state.currentRound = boundedRound
+        }),
+      ),
+
     nextRound: () =>
       set(
         produce((state: GameState) => {
@@ -109,20 +114,19 @@ const createGameStore = (initialGameDetail?: GameDetailData) =>
         }),
       ),
 
+    prevRound: () =>
+      set(
+        produce((state: GameState) => {
+          state.currentRound = Math.max(state.currentRound - 1, 1)
+        }),
+      ),
+
     resetGame: () =>
       set({
         teams: [],
         gameStatus: "setup",
         currentRound: 1,
-        settings: {},
       }),
-
-    updateSettings: (newSettings) =>
-      set(
-        produce((state: GameState) => {
-          Object.assign(state.settings, newSettings)
-        }),
-      ),
   }))
 
 export type GameStoreApi = ReturnType<typeof createGameStore>
