@@ -6,6 +6,8 @@ interface OverlayProviderWrapperProps {
   children: React.ReactNode
 }
 
-export function OverlayProviderWrapper({ children }: OverlayProviderWrapperProps) {
+export function OverlayProviderWrapper({
+  children,
+}: OverlayProviderWrapperProps) {
   return <OverlayProvider>{children}</OverlayProvider>
-} 
+}

@@ -42,10 +42,10 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
   const handleGameCardClick = async (game: GameListItem) => {
     try {
       const gameDetailRes = await getGameDetail(game.gameId)
-      
+
       if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
         const gameDetail = gameDetailRes.data
-        
+
         overlay.open(({ close }) => {
           const handleStartGame = () => {
             close()

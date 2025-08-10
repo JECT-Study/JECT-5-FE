@@ -1,6 +1,9 @@
 "use client"
 
-import { PrimaryBoxButton, SecondaryPlainIconButton } from "@shared/design/src/components/button"
+import {
+  PrimaryBoxButton,
+  SecondaryPlainIconButton,
+} from "@shared/design/src/components/button"
 import { GameCard } from "@shared/design/src/components/gameCard"
 import { Cross, Play } from "@shared/design/src/icons"
 
@@ -32,10 +35,7 @@ export const GamePreview = ({
       className={`flex w-[987px] flex-col rounded-[10px] bg-background-interactive-primary-sub ${className}`}
     >
       <div className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]">
-        <SecondaryPlainIconButton
-          size="lg"
-          onClick={onClose}
-        >
+        <SecondaryPlainIconButton size="lg" onClick={onClose}>
           <Cross />
         </SecondaryPlainIconButton>
       </div>
@@ -50,11 +50,7 @@ export const GamePreview = ({
               {creatorName}
             </p>
           </div>
-          <PrimaryBoxButton
-            size="lg"
-            _style="solid"
-            onClick={onStartGame}
-          >
+          <PrimaryBoxButton size="lg" _style="solid" onClick={onStartGame}>
             <Play />
             게임 시작
           </PrimaryBoxButton>

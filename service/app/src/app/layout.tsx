@@ -30,7 +30,11 @@ export default function RootLayout({
         <MSWComponent>
           <Providers>
             <OverlayProviderWrapper>
-              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+              >
                 {children}
               </ThemeProvider>
             </OverlayProviderWrapper>
