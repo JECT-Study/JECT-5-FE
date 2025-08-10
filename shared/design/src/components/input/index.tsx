@@ -183,3 +183,30 @@ export const ErrorText = forwardRef<
   )
 })
 ErrorText.displayName = Form.Message.displayName
+
+interface SimpleInputProps {
+  type: "leftIcon" | "noIcon"
+  state?: "default" | "error"
+  placeholder?: string
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  className?: string
+}
+
+export const Input = forwardRef<HTMLInputElement, SimpleInputProps>(
+  ({ type, state = "default", placeholder, value, onChange, className }, ref) => {
+    return (
+      <div className={cn(inputWrapperVariants({ type, state }), className)}>
+        {type === "leftIcon" && <Magnifier className={iconVariants({ type })} />}
+        <input
+          ref={ref}
+          className={inputVariants({ type })}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
+    )
+  }
+)
+Input.displayName = "Input"

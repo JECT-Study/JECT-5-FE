@@ -1,6 +1,7 @@
 import { Add, Minus } from "../../icons"
 import { cn } from "../../utils/cn"
 import { SecondaryPlainIconButton } from "../button"
+import { Image } from "../Image"
 
 interface PlayerStatusProps {
   name: string
@@ -49,6 +50,32 @@ export const PlayerStatus = ({
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+interface AvatarProps {
+  menu?: boolean
+  onClick?: () => void
+  className?: string
+}
+
+export const Avatar = ({ onClick, className }: AvatarProps) => {
+  return (
+    <div
+      className={cn(
+        "flex size-[42px] cursor-pointer items-center justify-center overflow-hidden rounded-full",
+        className
+      )}
+      onClick={onClick}
+    >
+      <Image
+        src="/avatar.svg"
+        alt="사용자 아바타"
+        className="size-full"
+        width={42}
+        height={42}
+      />
     </div>
   )
 }
