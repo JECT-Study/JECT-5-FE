@@ -1,13 +1,13 @@
 import { SecondaryPlainIconButton } from "@shared/design/src/components/button"
 import { Cross } from "@shared/design/src/icons"
 
-import { usePopup } from "../popupManager"
+import { useGamePopupActions } from "../../model/useGamePopupActions"
 
 export function RegisterButton() {
-  const { showPopup } = usePopup()
+  const { showLibraryRegister } = useGamePopupActions()
 
   const handleRegister = () => {
-    showPopup("libraryRegister")
+    showLibraryRegister()
   }
 
   return (

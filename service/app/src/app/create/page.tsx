@@ -1,12 +1,16 @@
+"use client"
+
+import { OverlayProvider } from "overlay-kit"
+
+import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
 import { FileUploadArea } from "../../entities/game/ui/components/fileUploadArea"
 import { QuestionInputForm } from "../../entities/game/ui/components/questionInputForm"
 import { QuestionList } from "../../entities/game/ui/components/questionList"
-import { PopupManager } from "../../entities/game/ui/popupManager"
 
-export default function CreateGamePage() {
+function CreateGameContent() {
   return (
-    <PopupManager>
+    <OverlayProvider>
       <main className="min-h-screen bg-neutral-white">
         <CreateGameNavigation />
         <div className="flex">
@@ -21,6 +25,14 @@ export default function CreateGamePage() {
           </div>
         </div>
       </main>
-    </PopupManager>
+    </OverlayProvider>
+  )
+}
+
+export default function CreateGamePage() {
+  return (
+    <GameCreationProvider>
+      <CreateGameContent />
+    </GameCreationProvider>
   )
 }
