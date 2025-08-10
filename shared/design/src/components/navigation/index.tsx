@@ -102,7 +102,9 @@ export const Navigation = ({
             height={60}
           />
         </div>
+      </div>
 
+      <div className="flex flex-1 items-center justify-center gap-2.5">
         {hasSearchBar && (
           <Input
             type="leftIcon"
