@@ -4,7 +4,11 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { useCallback, useRef } from "react"
 
 import { getGameList } from "@/entities/game/api"
-import type { GameListData,GameListItem, GameQueryParams } from "@/entities/game/model"
+import type {
+  GameListData,
+  GameListItem,
+  GameQueryParams,
+} from "@/entities/game/model"
 
 interface UseInfiniteGameListParams {
   limit?: number
@@ -23,11 +27,13 @@ interface UseInfiniteGameListReturn {
 }
 
 // 페이지 파라미터 타입 정의
-type PageParam = {
-  cursorGameId?: string
-  cursorPlayCount?: number
-  cursorUpdatedAt?: string
-} | undefined
+type PageParam =
+  | {
+      cursorGameId?: string
+      cursorPlayCount?: number
+      cursorUpdatedAt?: string
+    }
+  | undefined
 
 export const useInfiniteGameList = ({
   limit = 10,
@@ -50,9 +56,9 @@ export const useInfiniteGameList = ({
         query,
         ...pageParam,
       }
-      
+
       const response = await getGameList(params)
-      
+
       if (response.result === "SUCCESS" && response.data) {
         return response.data
       }
@@ -64,7 +70,7 @@ export const useInfiniteGameList = ({
       if (games.length < limit) {
         return undefined
       }
-      
+
       const lastGame = games[games.length - 1]
       return {
         cursorGameId: lastGame.gameId,
@@ -92,7 +98,7 @@ export const useInfiniteGameList = ({
 
 export const useIntersectionObserver = (
   callback: () => void,
-  options: IntersectionObserverInit = {}
+  options: IntersectionObserverInit = {},
 ) => {
   const observerRef = useRef<HTMLDivElement | null>(null)
 
@@ -103,7 +109,7 @@ export const useIntersectionObserver = (
         callback()
       }
     },
-    [callback]
+    [callback],
   )
 
   const observer = useRef<IntersectionObserver | null>(null)
@@ -126,8 +132,8 @@ export const useIntersectionObserver = (
         observer.current.observe(node)
       }
     },
-    [observerCallback, options]
+    [observerCallback, options],
   )
 
   return setObserverRef
-} 
+}
