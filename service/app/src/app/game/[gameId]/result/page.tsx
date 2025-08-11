@@ -2,6 +2,7 @@
 
 import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { Cross, Sun } from "@ject-5-fe/design/icons"
+import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useMemo } from "react"
 
@@ -36,40 +37,44 @@ export default function GameResultPage() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-background-primary">
       {/* Navigation */}
-      <nav className="flex h-[110px] w-full items-center justify-between px-10">
-        {/* Left - Home Button */}
-        <div className="flex items-center gap-2.5">
+      <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
+        <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
           <button
             onClick={handleGoHome}
             className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
           >
-            {/* TODO: 로고 이미지 추가 */}
-            <span className="typography-heading-sm-semibold">홈</span>
+            <Image
+              src="/logo.svg"
+              alt="홈 로고"
+              className="size-full"
+              width={268}
+              height={60}
+            />
           </button>
         </div>
 
-        {/* Center - Title */}
-        <h1 className="typography-heading-lg-semibold text-text-primary">
+        <h1 className="typography-heading-lg-semibold whitespace-nowrap text-center text-text-primary">
           게임 종료
         </h1>
 
-        {/* Right - Action Buttons */}
-        <div className="flex items-center gap-4">
-          <button className="flex items-center justify-center gap-2.5 rounded-lg p-2.5">
-            <Sun size={24} className="text-icon-interactive-secondary" />
-          </button>
-          <PrimaryBoxButton
-            size="sm"
-            onClick={handlePreviousQuestion}
-            className="px-[18px] py-2.5"
-          >
-            이전 문제
-          </PrimaryBoxButton>
-          <button className="flex size-8 items-center justify-center">
-            <Cross size={32} className="text-icon-interactive-secondary" />
-          </button>
+        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
+          <div className="flex items-center justify-end gap-4 px-10">
+            <button className="flex items-center justify-center gap-2.5 rounded-lg p-2.5">
+              <Sun size={24} className="text-icon-interactive-secondary" />
+            </button>
+            <PrimaryBoxButton
+              size="sm"
+              _style="solid"
+              onClick={handlePreviousQuestion}
+            >
+              이전 문제
+            </PrimaryBoxButton>
+            <button className="flex size-8 items-center justify-center">
+              <Cross size={32} className="text-icon-interactive-secondary" />
+            </button>
+          </div>
         </div>
-      </nav>
+      </div>
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col items-center justify-center gap-10">

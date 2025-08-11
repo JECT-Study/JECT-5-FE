@@ -17,8 +17,13 @@ export default async function GameLayout({
   }
 
   return (
-    <GameStoreProvider initialGameDetail={gameDetail.data}>
-      {children}
+    <GameStoreProvider
+      initialGameDetail={gameDetail.data}
+      gameId={params.gameId}
+    >
+      <div className="flex h-screen w-screen flex-col bg-background-primary">
+        {children}
+      </div>
     </GameStoreProvider>
   )
 }
