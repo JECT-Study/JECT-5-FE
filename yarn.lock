@@ -1435,6 +1435,7 @@ __metadata:
   dependencies:
     "@ject-5-fe/design": "workspace:*"
     "@ject-5-fe/eslint": "workspace:*"
+    "@netlify/plugin-nextjs": "npm:^5.12.0"
     "@tanstack/react-query": "npm:^5.83.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
@@ -1672,6 +1673,13 @@ __metadata:
   version: 1.0.0
   resolution: "@neoconfetti/react@npm:1.0.0"
   checksum: 10c0/dfa487965b69f88b39562ccd910114cd68b00a90c7eb79cfb1a483c7ac717b720f9f095e5aea13cef8a9b9bea05533d380ddff5e44d3bc3f7dc4d5c66716765c
+  languageName: node
+  linkType: hard
+
+"@netlify/plugin-nextjs@npm:^5.12.0":
+  version: 5.12.0
+  resolution: "@netlify/plugin-nextjs@npm:5.12.0"
+  checksum: 10c0/2908967fe28ec9ca245013c7f9a2321ab3db0297ec2c35d068de3243b19048b984447cfbc1abfa55aff91387a6977f5ff817cbd81aa4ac905caa174316560d43
   languageName: node
   linkType: hard
 
