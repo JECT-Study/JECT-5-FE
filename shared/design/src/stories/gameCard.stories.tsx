@@ -8,6 +8,7 @@ type StorybookGameCardProps = {
   questionCount: number
   imageUrl?: string
   optionView?: boolean
+  shared?: boolean
   onEdit?: () => void
   onShare?: () => void
   onDelete?: () => void
@@ -198,6 +199,9 @@ CVA(Class Variance Authority)를 사용한 일관된 스타일링으로 디자�
       control: { type: "boolean" },
       if: { arg: 'type', eq: 'myGame' },
     },
+    shared: {
+      control: { type: "boolean" },
+    },
   },
 }
 
@@ -254,5 +258,26 @@ export const NoImage: Story = {
     type: "libraryGame",
     title: "이미지 없는 게임",
     questionCount: 12,
+  },
+}
+
+export const SharedGame: Story = {
+  args: {
+    type: "libraryGame",
+    title: "공유된 게임",
+    questionCount: 10,
+    imageUrl: "https://picsum.photos/id/237/536/354",
+    shared: true,
+  },
+}
+
+export const SharedMyGame: Story = {
+  args: {
+    type: "myGame",
+    title: "내가 만든 공유 게임",
+    questionCount: 15,
+    imageUrl: "https://picsum.photos/id/237/536/354",
+    shared: true,
+    optionView: false,
   },
 }

@@ -142,6 +142,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
                   title={game.gameTitle}
                   questionCount={game.questionCount}
                   imageUrl={game.gameThumbnailUrl}
+                  shared={game.isShared}
                 />
               </div>
             ))}

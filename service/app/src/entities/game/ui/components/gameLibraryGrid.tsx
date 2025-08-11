@@ -61,6 +61,7 @@ export const GameLibraryGrid = ({
                   title={game.gameTitle}
                   questionCount={game.questionCount}
                   imageUrl={game.gameThumbnailUrl}
+                  shared={game.isShared}
                 />
               </div>
             ))}

@@ -74,6 +74,23 @@ const badgeVariants = cva(
   },
 )
 
+const sharedBadgeVariants = cva(
+  "absolute bottom-2 left-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
+  {
+    variants: {
+      type: {
+        libraryGame: "block",
+        myGame: "block",
+        gamePreview: "hidden",
+        onlyTitleGamePreview: "hidden",
+      },
+    },
+    defaultVariants: {
+      type: "libraryGame",
+    },
+  },
+)
+
 const titleVariants = cva(
   "overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
   {
@@ -117,6 +134,7 @@ type BaseGameCardProps = {
   questionCount: number
   imageUrl?: string
   className?: string
+  shared?: boolean
 }
 
 type LibraryGameCardProps = BaseGameCardProps & {
@@ -151,7 +169,7 @@ type GameCardProps =
 
 export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
   (props, ref) => {
-    const { type, title, questionCount, imageUrl, className } = props
+    const { type, title, questionCount, imageUrl, className, shared } = props
 
     const renderThumbnail = () => (
       <div className={cn(thumbnailVariants({ type }), className)}>
@@ -164,6 +182,13 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
             {questionCount}문제
           </span>
         </div>
+        {shared && (
+          <div className={cn(sharedBadgeVariants({ type }))}>
+            <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
+              공유
+            </span>
+          </div>
+        )}
       </div>
     )
 
