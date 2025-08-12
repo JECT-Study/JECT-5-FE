@@ -46,27 +46,26 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
         const gameDetail = gameDetailRes.data
 
-        overlay.open(({ close }) => {
+        overlay.open(({ close, isOpen }) => {
           const handleStartGame = () => {
             close()
             router.push(`/game/${game.gameId}`)
           }
 
           return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <GamePreview
-                gameTitle={gameDetail.gameTitle}
-                creatorName={gameDetail.nickname}
-                questionCount={gameDetail.questionCount}
-                questions={gameDetail.questions.map((question) => ({
-                  id: question.questionId.toString(),
-                  title: question.questionText,
-                  imageUrl: question.imageUrl,
-                }))}
-                onClose={close}
-                onStartGame={handleStartGame}
-              />
-            </div>
+            <GamePreview
+              gameTitle={gameDetail.gameTitle}
+              creatorName={gameDetail.nickname}
+              questionCount={gameDetail.questionCount}
+              questions={gameDetail.questions.map((question) => ({
+                id: question.questionId.toString(),
+                title: question.questionText,
+                imageUrl: question.imageUrl,
+              }))}
+              onClose={close}
+              onStartGame={handleStartGame}
+              isOpen={isOpen}
+            />
           )
         })
       } else {

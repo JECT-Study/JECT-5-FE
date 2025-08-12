@@ -1,21 +1,33 @@
 "use client"
 
-import { SecondaryGhostIconButton, SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
+import {
+  SecondaryGhostIconButton,
+  SecondaryOutlineBoxButton,
+} from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { Magnifier, Sun } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { overlay } from "overlay-kit"
 import { useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
+import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
+import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 export default function GamesPage() {
   const router = useRouter()
   const [_searchQuery, setSearchQuery] = useState("")
-  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    login,
+    logout,
+  } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
@@ -26,8 +38,41 @@ export default function GamesPage() {
     router.push("/create")
   }
 
-  const handleGameClick = (game: GameListItem) => {
-    router.push(`/game/${game.gameId}`)
+  const handleGameClick = async (game: GameListItem) => {
+    try {
+      const gameDetailRes = await getGameDetail(game.gameId)
+
+      if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
+        const gameDetail = gameDetailRes.data
+
+        overlay.open(({ close, isOpen }) => {
+          const handleStartGame = () => {
+            close()
+            router.push(`/game/${game.gameId}`)
+          }
+
+          return (
+            <GamePreview
+              gameTitle={gameDetail.gameTitle}
+              creatorName={gameDetail.nickname}
+              questionCount={gameDetail.questionCount}
+              questions={gameDetail.questions.map((question) => ({
+                id: question.questionId.toString(),
+                title: question.questionText,
+                imageUrl: question.imageUrl,
+              }))}
+              onClose={close}
+              onStartGame={handleStartGame}
+              isOpen={isOpen}
+            />
+          )
+        })
+      } else {
+        console.error("Failed to fetch game detail")
+      }
+    } catch (error) {
+      console.error("Error fetching game detail:", error)
+    }
   }
 
   const handleLoadMore = () => {
@@ -50,15 +95,14 @@ export default function GamesPage() {
     }
   }
 
-  const handleThemeToggle = () => {
-  }
+  const handleThemeToggle = () => {}
 
   const handleLogoClick = () => {
     router.push("/")
   }
 
   const leftContent = (
-    <div 
+    <div
       className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
       onClick={handleLogoClick}
     >
@@ -107,19 +151,19 @@ export default function GamesPage() {
           </SecondaryOutlineBoxButton>
         </>
       ) : (
-        <SecondaryOutlineBoxButton 
-          size="md" 
+        <SecondaryOutlineBoxButton
+          size="md"
           onClick={handleLogin}
           disabled={authLoading}
         >
-              <Image
-                src="/kakao-logo.png"
-                alt="카카오 로고"
-                className="size-8"
-                width={32}
-                height={32}
-              />
-              간편로그인해서 게임 만들기
+          <Image
+            src="/kakao-logo.png"
+            alt="카카오 로고"
+            className="size-8"
+            width={32}
+            height={32}
+          />
+          간편로그인해서 게임 만들기
         </SecondaryOutlineBoxButton>
       )}
 
