@@ -22,12 +22,8 @@ export const getRandomBoolean = (): boolean => {
 }
 
 export const generateRandomImageUrl = (
-  width: number = 20,
-  height: number = 300,
-  seed?: number,
 ): string => {
-  const imageId = seed || Math.floor(Math.random() * 1000)
-  return `https://picsum.photos/id/${imageId}/${width}/${height}`
+  return "/exampleThumbnail.jpg"
 }
 
 export const generateRandomDate = (daysAgo: number = 0): string => {
@@ -70,7 +66,7 @@ export const generateMockQuestions = (
     questions.push({
       questionId: 1000 + i,
       questionOrder: i,
-      imageUrl: generateRandomImageUrl(400, 300, i),
+      imageUrl: generateRandomImageUrl(),
       questionText: `문제 ${i + 1}: 이것은 ${i + 1}번째 문제입니다.`,
       questionAnswer: `정답 ${i + 1}`,
       version: gameVersion,
