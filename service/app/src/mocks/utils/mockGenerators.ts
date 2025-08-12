@@ -21,8 +21,7 @@ export const getRandomBoolean = (): boolean => {
   return Math.random() < 0.5
 }
 
-export const generateRandomImageUrl = (
-): string => {
+export const generateRandomImageUrl = (): string => {
   return "/exampleThumbnail.jpg"
 }
 
