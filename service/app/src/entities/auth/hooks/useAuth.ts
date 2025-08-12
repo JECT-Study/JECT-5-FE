@@ -36,7 +36,7 @@ export const useAuth = (): UseAuthReturn => {
     try {
       const mockCode = code || "someValidCode"
       const response = await kakaoLogin(mockCode)
-      
+
       if (response.result === "SUCCESS" && response.data) {
         setUser(response.data)
         localStorage.setItem("auth_user", JSON.stringify(response.data))
