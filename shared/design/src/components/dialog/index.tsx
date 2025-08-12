@@ -3,6 +3,7 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 import { type ComponentProps, forwardRef } from "react"
 
 import { cn } from "../../utils/cn"
+import { DestructiveSolidBoxButton } from "../button"
 import { PrimaryBoxButton } from "../button/primaryBoxButton"
 import { SecondaryPlainBoxButton } from "../button/secondaryPlainBoxButton"
 
@@ -49,7 +50,7 @@ export const DialogContent = forwardRef<
       ref={ref}
       {...props}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 flex w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center bg-background-interactive-primary-sub p-5",
+        "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto bg-background-interactive-primary-sub p-5",
         className,
       )}
     >
@@ -102,7 +103,7 @@ export const DialogFooter = ({
     <div className={spacer({ style: variant })} />
     <div
       className={cn(
-        "flex w-full flex-1 items-center justify-center *:flex-1",
+        "flex w-full items-center justify-center gap-2 *:flex-1",
         className,
       )}
       {...props}
@@ -125,6 +126,14 @@ export const DialogButton = {
     ...props
   }: ComponentProps<typeof SecondaryPlainBoxButton>) => (
     <SecondaryPlainBoxButton {...props}>{children}</SecondaryPlainBoxButton>
+  ),
+  Destructive: ({
+    children,
+    ...props
+  }: ComponentProps<typeof DestructiveSolidBoxButton>) => (
+    <DestructiveSolidBoxButton size="sm" _style="solid" {...props}>
+      {children}
+    </DestructiveSolidBoxButton>
   ),
 }
 
