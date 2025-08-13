@@ -5,14 +5,16 @@ import {
   SecondaryGhostIconButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
-import { CustomDialog } from "@ject-5-fe/design/components/dialog"
 import * as InputComponents from "@ject-5-fe/design/components/input"
 import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
 import { Cross, Sun } from "@ject-5-fe/design/icons"
 import { produce } from "immer"
-import Link from "next/link"
+import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
+
+import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
+import { useGameStore } from "../../store/useGameStore"
 
 interface Team {
   id: string
@@ -63,13 +65,28 @@ const updateTeamErrors = (teams: Team[]): { [teamId: string]: string } => {
 export default function GameSetupPage() {
   const params = useParams()
   const router = useRouter()
+
+  const addTeamToStore = useGameStore((state) => state.addTeam)
+  const setGameStatus = useGameStore((state) => state.setGameStatus)
+
   const [teamState, setTeamState] = useState<TeamState>(
     createTeamState([
       { id: "1", name: "A팀" },
       { id: "2", name: "B팀" },
     ]),
   )
-  const [isExitDialogOpen, setIsExitDialogOpen] = useState(false)
+
+  const handleGameStart = () => {
+    teamState.teams.forEach((team) => {
+      addTeamToStore({
+        id: team.id,
+        name: team.name,
+        members: [],
+      })
+    })
+    setGameStatus("playing")
+    router.push(`/game/${params.gameId}/play`)
+  }
 
   const updateTeamName = (teamId: string, name: string) => {
     if (name.length > MAX_TEAM_NAME_LENGTH) {
@@ -114,30 +131,46 @@ export default function GameSetupPage() {
   return (
     <div className="flex h-screen w-screen flex-col bg-background-primary">
       {/* Navigation */}
-      <div className="grid h-[110px] w-full grid-cols-[420px_1fr_420px] items-center bg-background-interactive-inverse px-10">
-        <div>로고</div>
+      <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
+        <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
+          <button
+            onClick={() => router.push("/")}
+            className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
+          >
+            <Image
+              src="/logo.svg"
+              alt="홈 로고"
+              className="size-full"
+              width={268}
+              height={60}
+            />
+          </button>
+        </div>
 
         <h1 className="typography-heading-lg-semibold whitespace-nowrap text-center text-text-primary">
           참가자 설정
         </h1>
 
-        <div className="flex flex-col items-end justify-center gap-2.5">
+        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
           <div className="flex items-center justify-end gap-4 px-10">
             <SecondaryGhostIconButton>
               <Sun />
             </SecondaryGhostIconButton>
-            <Link href={`/game/${params.gameId}/play`}>
-              <PrimaryBoxButton
-                size="sm"
-                _style="solid"
-                disabled={Object.keys(teamState.errors).length > 0}
-              >
-                게임 시작
-              </PrimaryBoxButton>
-            </Link>
+            <PrimaryBoxButton
+              size="sm"
+              _style="solid"
+              disabled={Object.keys(teamState.errors).length > 0}
+              onClick={handleGameStart}
+            >
+              게임 시작
+            </PrimaryBoxButton>
             <SecondaryPlainIconButton
               size="lg"
-              onClick={() => setIsExitDialogOpen(true)}
+              onClick={() =>
+                openExitConfirmDialog({
+                  onConfirm: () => router.push("/"),
+                })
+              }
             >
               <Cross />
             </SecondaryPlainIconButton>
@@ -201,6 +234,8 @@ export default function GameSetupPage() {
                 size="xl"
                 _style="solid"
                 disabled={teamState.teams.length >= MAX_TEAMS}
+                onClick={addTeam}
+                type="button"
               >
                 참가자 및 팀 추가하기
               </PrimaryBoxButton>
@@ -208,20 +243,6 @@ export default function GameSetupPage() {
           </div>
         </div>
       </section>
-
-      <CustomDialog
-        open={isExitDialogOpen}
-        onOpenChange={setIsExitDialogOpen}
-        title="게임을 나가시겠습니까?"
-        description="진행 중인 게임이 종료됩니다."
-        onConfirm={() => {
-          setIsExitDialogOpen(false)
-          router.push("/")
-        }}
-        onCancel={() => setIsExitDialogOpen(false)}
-        confirmText="나가기"
-        cancelText="취소"
-      />
     </div>
   )
 }
