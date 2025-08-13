@@ -72,7 +72,9 @@ export const GameLibraryGrid = ({
                   shared={game.isShared}
                   onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
                   onShare={isDashboard ? () => onShareGame?.(game) : undefined}
-                  onDelete={isDashboard ? () => onDeleteGame?.(game) : undefined}
+                  onDelete={
+                    isDashboard ? () => onDeleteGame?.(game) : undefined
+                  }
                 />
               </div>
             ))}

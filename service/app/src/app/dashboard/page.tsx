@@ -21,11 +21,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function DashboardPage() {
   const router = useRouter()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const {
-    user,
-    isLoading: _authLoading,
-    isAuthenticated,
-  } = useAuth()
+  const { user, isLoading: _authLoading, isAuthenticated } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
@@ -124,11 +120,7 @@ export default function DashboardPage() {
 
   const rightContent = (
     <>
-      <PrimaryBoxButton
-        size="sm"
-        _style="solid"
-        onClick={handleCreateGame}
-      >
+      <PrimaryBoxButton size="sm" _style="solid" onClick={handleCreateGame}>
         <Add />
         게임 만들기
       </PrimaryBoxButton>
