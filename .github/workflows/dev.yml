@@ -1,14 +1,56 @@
 name: Dev
-# dev브랜치에 푸시되면 자동으로 실행되는 워크플로우
-# 현재는 캐시 관련 작업을하기위해서만 사용중. 추후 배포관련 작업 시 다음 job부터 기입하면 됨
 on:
   push:
     branches: [dev]
-
+  workflow_dispatch:
 jobs:
-  cache:
+  build:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Yarn cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .yarn/cache
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build app
+        run: |
+          cd service/app
+          yarn build
+
+      - name: Push build results to personal repo
+        run: |
+          cd service/app
+          git remote add personal-repo https://${{ secrets.SYNC_TOKEN }}@github.com/whdgur5717/ject-5-fe-publish
+          git config user.name "whdgur5717"
+          git config user.email "whdgur5717@gmail.com"
+          git add .next
+          git commit -m "Deploy: $(date)"
+          git push -f personal-repo HEAD:main
+          git remote remove personal-repo
+
+  playwright-cache:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
