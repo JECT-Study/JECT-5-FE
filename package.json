@@ -5,6 +5,7 @@
     "shared/*"
   ],
   "version": "0.0.1",
+  "private": true,
   "packageManager": "yarn@4.9.2",
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
