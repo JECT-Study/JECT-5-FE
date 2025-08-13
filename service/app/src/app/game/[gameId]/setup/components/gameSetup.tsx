@@ -180,7 +180,7 @@ export default function GameSetupPage() {
 
       <section className="flex flex-1 overflow-hidden">
         {/* Left Sidebar - Team List */}
-        <div className="flex h-full w-[420px] flex-col gap-6 overflow-y-auto bg-background-tertiary px-[35px] pt-[25px]">
+        <aside className="flex h-full w-[420px] flex-col gap-6 overflow-y-auto bg-background-tertiary px-[35px] pt-[25px]">
           {teamState.teams.map((team) => (
             <PlayerStatus
               key={team.id}
@@ -190,7 +190,7 @@ export default function GameSetupPage() {
               className="h-[118px]"
             />
           ))}
-        </div>
+        </aside>
 
         {/* Right Content - Team Management */}
         <div className="flex h-full flex-1 flex-col items-center justify-center">
