@@ -11,7 +11,8 @@
     "format": "yarn run -T -B prettier --write",
     "test": "vitest run",
     "test:msw": "vitest run --config vitest.msw.config.ts",
-    "test:all": "yarn test && yarn test:msw"
+    "test:all": "yarn test && yarn test:msw && yarn test:e2e",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ject-5-fe/design": "workspace:*",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@ject-5-fe/eslint": "workspace:*",
+    "@playwright/test": "1.54.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

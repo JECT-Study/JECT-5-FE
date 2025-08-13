@@ -1435,6 +1435,7 @@ __metadata:
   dependencies:
     "@ject-5-fe/design": "workspace:*"
     "@ject-5-fe/eslint": "workspace:*"
+    "@playwright/test": "npm:1.54.1"
     "@tanstack/react-query": "npm:^5.83.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
@@ -1915,6 +1916,17 @@ __metadata:
   version: 0.2.9
   resolution: "@pkgr/core@npm:0.2.9"
   checksum: 10c0/ac8e4e8138b1a7a4ac6282873aef7389c352f1f8b577b4850778f5182e4a39a5241facbe48361fec817f56d02b51691b383010843fb08b34a8e8ea3614688fd5
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:1.54.1":
+  version: 1.54.1
+  resolution: "@playwright/test@npm:1.54.1"
+  dependencies:
+    playwright: "npm:1.54.1"
+  bin:
+    playwright: cli.js
+  checksum: 10c0/1b414356bc1049927d7b9efc14d5b3bf000ef6483313926bb795b4f27fe3707e8e0acf0db59063a452bb4f7e34559758d17640401b6f3e2f5290f299a8d8d02f
   languageName: node
   linkType: hard
 
@@ -9975,7 +9987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.53.1":
+"playwright@npm:1.54.1, playwright@npm:^1.53.1":
   version: 1.54.1
   resolution: "playwright@npm:1.54.1"
   dependencies:
