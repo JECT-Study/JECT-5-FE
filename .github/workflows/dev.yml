@@ -6,6 +6,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+      deployments: write
+      statuses: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,6 +38,14 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORGID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECTID }}
 
   playwright-cache:
     runs-on: ubuntu-latest
