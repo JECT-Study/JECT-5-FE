@@ -33,22 +33,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build app
-        run: |
-          cd service/app
-          yarn build
-
-      - name: Push build results to personal repo
-        run: |
-          cd service/app
-          git remote add personal-repo https://${{ secrets.SYNC_TOKEN }}@github.com/whdgur5717/ject-5-fe-publish
-          git config user.name "whdgur5717"
-          git config user.email "whdgur5717@gmail.com"
-          git add .next
-          git commit -m "Deploy: $(date)"
-          git push -f personal-repo HEAD:main
-          git remote remove personal-repo
-
   playwright-cache:
     runs-on: ubuntu-latest
     steps:
