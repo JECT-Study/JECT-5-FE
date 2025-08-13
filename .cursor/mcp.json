@@ -6,6 +6,10 @@
     },
     "Figma": {
       "url": "http://127.0.0.1:3845/figma"
+    },
+    "playwright": {
+      "command": "yarn",
+      "args": ["dlx", "@playwright/mcp@latest"]
     }
   }
 }
