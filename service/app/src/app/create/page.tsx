@@ -1,6 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
@@ -9,7 +10,6 @@ import { QuestionInputForm } from "../../entities/game/ui/components/questionInp
 import { QuestionList } from "../../entities/game/ui/components/questionList"
 
 function CreateGameContent() {
-
   return (
     <main className="min-h-screen bg-neutral-white">
       <CreateGameNavigation />
@@ -28,7 +28,7 @@ function CreateGameContent() {
   )
 }
 
-export default function CreateGamePage() {
+function CreateGamePageContent() {
   const searchParams = useSearchParams()
   const gameId = searchParams.get("gameId")
 
@@ -36,5 +36,13 @@ export default function CreateGamePage() {
     <GameCreationProvider gameId={gameId}>
       <CreateGameContent />
     </GameCreationProvider>
+  )
+}
+
+export default function CreateGamePage() {
+  return (
+    <Suspense fallback={<div>로딩 중</div>}>
+      <CreateGamePageContent />
+    </Suspense>
   )
 }
