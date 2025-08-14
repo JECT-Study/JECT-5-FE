@@ -1,4 +1,5 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 
 import { validateQuestion } from "../../model"
@@ -9,8 +10,10 @@ import { saveGame } from "../../utils/gameSave"
 
 export function SaveButton() {
   const { state, actions } = useGameCreationContext()
-  const { showSaveConfirm, showValidationError, showSaveError } = useGamePopupActions()
+  const { showSaveConfirm, showValidationError, showSaveError } =
+    useGamePopupActions()
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const handleSave = () => {
     const gameNameError = selectors.gameNameError(state)
@@ -46,11 +49,10 @@ export function SaveButton() {
 
         if (result.success) {
           actions.saveGameSuccess()
+          queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
           router.push(`/dashboard`)
         } else {
-          actions.saveGameError(
-            result.error || "저장에 실패했습니다.",
-          )
+          actions.saveGameError(result.error || "저장에 실패했습니다.")
           showSaveError()
         }
       } catch (error) {
@@ -61,9 +63,9 @@ export function SaveButton() {
   }
 
   return (
-    <PrimaryBoxButton 
-      size="sm" 
-      _style="solid" 
+    <PrimaryBoxButton
+      size="sm"
+      _style="solid"
       onClick={handleSave}
       disabled={!selectors.canSave(state)}
     >
