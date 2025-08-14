@@ -27,6 +27,7 @@ export interface GameCreationState {
   gameName: string
   questions: Question[]
   selectedQuestionId: string | null
+  gameVersion?: number
 
   popups: PopupState
   loading: LoadingState

@@ -69,3 +69,19 @@ export const updateGame = async (
 
   return response.json()
 }
+
+export const updateGameWithoutNewImages = async (
+  gameData: GameUpdateRequest,
+  gameId: UUID,
+): Promise<ApiResponse<null>> => {
+  const response = await fetchClient.fetch(`/games/${gameId}`, {
+    method: "PUT",
+    body: JSON.stringify(gameData),
+  })
+
+  if (!response.ok) {
+    return mapStatusToErrorResponse(response.status)
+  }
+
+  return response.json()
+}

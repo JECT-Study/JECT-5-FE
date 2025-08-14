@@ -135,7 +135,6 @@ describe("Game API Handlers", () => {
     const mockGameCreateRequest: GameCreateRequest = {
       gameId: "test-game-123",
       gameTitle: "테스트 게임",
-      gameCreatorEmail: "test@example.com",
       gameThumbnailUrl: "https://example.com/thumbnail.jpg",
       questions: [
         {
@@ -218,7 +217,6 @@ describe("Game API Handlers", () => {
   describe("PUT /games/:gameId", () => {
     const mockGameUpdateRequest: GameUpdateRequest = {
       gameTitle: "수정된 게임 제목",
-      gameCreatorEmail: "test@example.com",
       gameThumbnailUrl: "https://example.com/new-thumbnail.jpg",
       version: 1,
       questions: [
@@ -227,7 +225,6 @@ describe("Game API Handlers", () => {
           questionAnswer: "수정된 정답 1",
           questionOrder: 0,
           imageUrl: "https://example.com/image1.jpg",
-          version: 1,
         },
       ],
     }
@@ -236,7 +233,6 @@ describe("Game API Handlers", () => {
       const createRequest: GameCreateRequest = {
         gameId: "update-test-game",
         gameTitle: "원본 게임",
-        gameCreatorEmail: "test@example.com",
         gameThumbnailUrl: "https://example.com/thumbnail.jpg",
         questions: [
           {
@@ -292,7 +288,6 @@ describe("Game API Handlers", () => {
       const createRequest: GameCreateRequest = {
         gameId: "version-test-game",
         gameTitle: "버전 테스트 게임",
-        gameCreatorEmail: "test@example.com",
         gameThumbnailUrl: "https://example.com/thumbnail.jpg",
         questions: [
           {
@@ -336,7 +331,6 @@ describe("Game API Handlers", () => {
       const createRequest: GameCreateRequest = {
         gameId: "delete-test-game",
         gameTitle: "삭제 테스트 게임",
-        gameCreatorEmail: "test@example.com",
         gameThumbnailUrl: "https://example.com/thumbnail.jpg",
         questions: [
           {
@@ -389,7 +383,6 @@ describe("Game API Handlers", () => {
       const createRequest: GameCreateRequest = {
         gameId: "share-test-game",
         gameTitle: "공유 테스트 게임",
-        gameCreatorEmail: "test@example.com",
         gameThumbnailUrl: "https://example.com/thumbnail.jpg",
         questions: [
           {
@@ -431,7 +424,6 @@ describe("Game API Handlers", () => {
       const createRequest: GameCreateRequest = {
         gameId: "unshare-test-game",
         gameTitle: "공유 해제 테스트 게임",
-        gameCreatorEmail: "test@example.com",
         gameThumbnailUrl: "https://example.com/thumbnail.jpg",
         questions: [
           {

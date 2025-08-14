@@ -1,12 +1,12 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 import { validateQuestion } from "../../model"
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import { selectors } from "../../model/state/create/selectors"
 import { useGamePopupActions } from "../../model/useGamePopupActions"
-import { saveGame } from "../../utils/gameSave"
+import { saveGame, updateExistingGame } from "../../utils/gameSave"
 
 export function SaveButton() {
   const { state, actions } = useGameCreationContext()
@@ -14,6 +14,8 @@ export function SaveButton() {
     useGamePopupActions()
   const router = useRouter()
   const queryClient = useQueryClient()
+  const searchParams = useSearchParams()
+  const gameId = searchParams.get("gameId")
 
   const handleSave = () => {
     const gameNameError = selectors.gameNameError(state)
@@ -42,10 +44,18 @@ export function SaveButton() {
 
         const cleanedQuestions = selectors.cleanedQuestions(state)
 
-        const result = await saveGame({
-          ...state,
-          questions: cleanedQuestions,
-        })
+        let result
+        if (gameId) {
+          result = await updateExistingGame({
+            ...state,
+            questions: cleanedQuestions,
+          }, gameId, state.gameVersion || 1)
+        } else {
+          result = await saveGame({
+            ...state,
+            questions: cleanedQuestions,
+          })
+        }
 
         if (result.success) {
           actions.saveGameSuccess()
@@ -69,7 +79,7 @@ export function SaveButton() {
       onClick={handleSave}
       disabled={!selectors.canSave(state)}
     >
-      게임 저장
+      {gameId ? "게임 수정" : "게임 저장"}
     </PrimaryBoxButton>
   )
 }

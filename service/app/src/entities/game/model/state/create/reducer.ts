@@ -95,17 +95,19 @@ export const gameCreationReducer = (
 
     case "UPLOAD_IMAGE_START": {
       const { questionId, file, previewUrl } = action.payload
+      const updatedQuestions = state.questions.map((question) =>
+        question.id === questionId
+          ? {
+              ...question,
+              imageFile: file,
+              previewImageUrl: previewUrl,
+            }
+          : question,
+      )
 
       return {
         ...state,
-        loading: {
-          ...state.loading,
-          isUploading: true,
-        },
-        questions: updateQuestion(state.questions, questionId, {
-          imageFile: file,
-          previewImageUrl: previewUrl,
-        }),
+        questions: updatedQuestions,
       }
     }
 
@@ -156,6 +158,35 @@ export const gameCreationReducer = (
           ...state.loading,
           isSaving: false,
         },
+      }
+
+    case "INITIALIZE_FROM_GAME_DETAIL": {
+      const { gameTitle, questions, version } = action.payload
+
+      // 기존 질문들을 새로운 데이터로 교체
+      const newQuestions = questions.map((question, index) => ({
+        id: question.questionId,
+        text: question.questionText,
+        answer: question.answer,
+        imageFile: null,
+        imageUrl: question.imageUrl,
+        previewImageUrl: null,
+        order: index,
+      }))
+
+      return {
+        ...state,
+        gameName: gameTitle,
+        questions: newQuestions,
+        selectedQuestionId: newQuestions.length > 0 ? newQuestions[0].id : null,
+        gameVersion: version,
+      }
+    }
+
+    case "SET_GAME_VERSION":
+      return {
+        ...state,
+        gameVersion: action.payload,
       }
 
     default:

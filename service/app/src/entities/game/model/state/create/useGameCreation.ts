@@ -83,6 +83,32 @@ export const useGameCreation = () => {
     dispatch(gameCreationActions.saveGameError(error))
   }, [])
 
+  const initializeFromGameDetail = useCallback(
+    (
+      gameTitle: string,
+      questions: Array<{
+        questionId: string
+        questionText: string
+        answer: string
+        imageUrl: string | null
+      }>,
+      version: number,
+    ) => {
+      dispatch(
+        gameCreationActions.initializeFromGameDetail(
+          gameTitle,
+          questions,
+          version,
+        ),
+      )
+    },
+    [],
+  )
+
+  const setGameVersion = useCallback((version: number) => {
+    dispatch(gameCreationActions.setGameVersion(version))
+  }, [])
+
   const derivedState = {
     gameNameError: selectors.gameNameError(state),
 
@@ -123,6 +149,8 @@ export const useGameCreation = () => {
       saveGameStart,
       saveGameSuccess,
       saveGameError,
+      initializeFromGameDetail,
+      setGameVersion,
     },
 
     selectors: derivedState,

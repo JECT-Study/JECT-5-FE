@@ -21,6 +21,20 @@ export type GameCreationAction =
   | { type: "SAVE_GAME_START" }
   | { type: "SAVE_GAME_SUCCESS" }
   | { type: "SAVE_GAME_ERROR"; payload: string }
+  | {
+      type: "INITIALIZE_FROM_GAME_DETAIL"
+      payload: {
+        gameTitle: string
+        questions: Array<{
+          questionId: string
+          questionText: string
+          answer: string
+          imageUrl: string | null
+        }>
+        version: number
+      }
+    }
+  | { type: "SET_GAME_VERSION"; payload: number }
 
 interface PopupState {
   showExitConfirmation: boolean
@@ -81,14 +95,14 @@ export const gameCreationActions = {
     payload: { questionId, file, previewUrl },
   }),
 
-  showPopup: (popupType: keyof PopupState): GameCreationAction => ({
+  showPopup: (popup: keyof PopupState): GameCreationAction => ({
     type: "SHOW_POPUP",
-    payload: popupType,
+    payload: popup,
   }),
 
-  hidePopup: (popupType: keyof PopupState): GameCreationAction => ({
+  hidePopup: (popup: keyof PopupState): GameCreationAction => ({
     type: "HIDE_POPUP",
-    payload: popupType,
+    payload: popup,
   }),
 
   saveGameStart: (): GameCreationAction => ({
@@ -102,5 +116,24 @@ export const gameCreationActions = {
   saveGameError: (error: string): GameCreationAction => ({
     type: "SAVE_GAME_ERROR",
     payload: error,
+  }),
+
+  initializeFromGameDetail: (
+    gameTitle: string,
+    questions: Array<{
+      questionId: string
+      questionText: string
+      answer: string
+      imageUrl: string | null
+    }>,
+    version: number,
+  ): GameCreationAction => ({
+    type: "INITIALIZE_FROM_GAME_DETAIL",
+    payload: { gameTitle, questions, version },
+  }),
+
+  setGameVersion: (version: number): GameCreationAction => ({
+    type: "SET_GAME_VERSION",
+    payload: version,
   }),
 }

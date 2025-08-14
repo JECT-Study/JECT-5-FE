@@ -1,5 +1,8 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
+
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
 import { FileUploadArea } from "../../entities/game/ui/components/fileUploadArea"
@@ -25,10 +28,21 @@ function CreateGameContent() {
   )
 }
 
-export default function CreateGamePage() {
+function CreateGamePageContent() {
+  const searchParams = useSearchParams()
+  const gameId = searchParams.get("gameId")
+
   return (
-    <GameCreationProvider>
+    <GameCreationProvider gameId={gameId}>
       <CreateGameContent />
     </GameCreationProvider>
+  )
+}
+
+export default function CreateGamePage() {
+  return (
+    <Suspense fallback={<div>로딩 중</div>}>
+      <CreateGamePageContent />
+    </Suspense>
   )
 }
