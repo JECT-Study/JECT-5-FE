@@ -14,17 +14,21 @@ import { useState } from "react"
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
-import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
+import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 export default function DashboardPage() {
   const router = useRouter()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { user, isLoading: _authLoading, isAuthenticated } = useAuth()
+  const {
+    user,
+    isLoading: _authLoading,
+    isAuthenticated,
+  } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteGameList({
+    useInfiniteMyGames({
       limit: 19,
     })
 
@@ -120,7 +124,11 @@ export default function DashboardPage() {
 
   const rightContent = (
     <>
-      <PrimaryBoxButton size="sm" _style="solid" onClick={handleCreateGame}>
+      <PrimaryBoxButton
+        size="sm"
+        _style="solid"
+        onClick={handleCreateGame}
+      >
         <Add />
         게임 만들기
       </PrimaryBoxButton>
