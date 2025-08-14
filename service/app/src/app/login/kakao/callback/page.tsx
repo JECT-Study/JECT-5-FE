@@ -1,11 +1,11 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 
-export default function KakaoCallbackPage() {
+function KakaoCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login } = useAuth()
@@ -62,5 +62,22 @@ export default function KakaoCallbackPage() {
         <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
       </div>
     </div>
+  )
+}
+
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="mb-4">로딩 중...</div>
+            <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+          </div>
+        </div>
+      }
+    >
+      <KakaoCallbackContent />
+    </Suspense>
   )
 }
