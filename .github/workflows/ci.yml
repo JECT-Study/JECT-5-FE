@@ -6,6 +6,10 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch: # for test
 
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORGID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECTID }}
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -60,3 +64,64 @@ jobs:
 
       - name: Run CI
         run: yarn run ci
+
+      # CI가 성공하면 Vercel Preview 배포
+      - name: Install Vercel CLI
+        if: success()
+        run: yarn install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        if: success()
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        if: success()
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        if: success()
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "PREVIEW_URL=$url" >> $GITHUB_OUTPUT
+          echo "🚀 Preview deployed to: $url"
+
+      - name: Comment PR with Preview URL
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const previewUrl = '${{ steps.deploy.outputs.PREVIEW_URL }}';
+            const commentBody = `## 🚀 Preview Deployment
+
+            ✅ CI passed and preview has been deployed!
+
+            **Preview URL:** ${previewUrl}
+
+            📝 This preview will be updated automatically when you push new commits.`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
+
+      # CI 실패 시 알림
+      - name: Comment PR on CI failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commentBody = `## ❌ CI Failed
+
+            The CI pipeline failed. Please check the logs and fix the issues before deployment.
+
+            [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
