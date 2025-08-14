@@ -104,8 +104,8 @@ export const HomeNavigation = ({
                 </div>
                 {listButton && (
                   <div className="absolute right-0 top-full z-10 mt-2">
-                    <SecondaryOutlineBoxButton 
-                      size="md" 
+                    <SecondaryOutlineBoxButton
+                      size="md"
                       onClick={handleLogoutClick}
                       className="whitespace-nowrap"
                     >
@@ -117,8 +117,8 @@ export const HomeNavigation = ({
             </>
           ) : (
             <>
-              <SecondaryOutlineBoxButton 
-                size="md" 
+              <SecondaryOutlineBoxButton
+                size="md"
                 onClick={handleLoginClick}
                 disabled={authLoading}
               >
