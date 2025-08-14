@@ -69,3 +69,20 @@ export const updateGame = async (
 
   return response.json()
 }
+
+// 게임 수정용 함수 (기존 이미지 유지)
+export const updateGameWithoutNewImages = async (
+  gameData: GameUpdateRequest,
+  gameId: UUID,
+): Promise<ApiResponse<null>> => {
+  const response = await fetchClient.fetch(`/games/${gameId}`, {
+    method: "PUT",
+    body: JSON.stringify(gameData),
+  })
+
+  if (!response.ok) {
+    return mapStatusToErrorResponse(response.status)
+  }
+
+  return response.json()
+}
