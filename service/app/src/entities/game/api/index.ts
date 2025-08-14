@@ -2,6 +2,7 @@ export { createGame } from "./createGame"
 export { deleteGame } from "./deleteGame"
 export { getGameDetail } from "./getGameDetail"
 export { getGameList } from "./getGameList"
+export { getMyGames } from "./getMyGames"
 export {
   getPresignedUrlsForExistingGame,
   getPresignedUrlsForNewGame,

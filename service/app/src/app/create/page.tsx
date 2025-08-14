@@ -1,6 +1,5 @@
 "use client"
 
-import { OverlayProvider } from "overlay-kit"
 
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
@@ -10,7 +9,6 @@ import { QuestionList } from "../../entities/game/ui/components/questionList"
 
 function CreateGameContent() {
   return (
-    <OverlayProvider>
       <main className="min-h-screen bg-neutral-white">
         <CreateGameNavigation />
         <div className="flex">
@@ -25,7 +23,6 @@ function CreateGameContent() {
           </div>
         </div>
       </main>
-    </OverlayProvider>
   )
 }
 

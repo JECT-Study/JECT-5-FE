@@ -59,6 +59,55 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
+  http.get(`${MSW_BASE_URL}/user/me/games`, ({ request }) => {
+    const url = new URL(request.url)
+    const { cursorGameId, cursorUpdatedAt, limit } =
+      Object.fromEntries(url.searchParams.entries())
+
+    try {
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
+      }
+
+      const myGames = mockGameList.filter(game => !game.deletedAt)
+
+      const sortedGames = myGames.sort((a, b) => {
+        const aDate = a.updatedAt ? new Date(a.updatedAt).getTime() : 0
+        const bDate = b.updatedAt ? new Date(b.updatedAt).getTime() : 0
+        const dateComparison = bDate - aDate
+        if (dateComparison !== 0) {
+          return dateComparison
+        }
+        return b.gameId.localeCompare(a.gameId)
+      })
+
+      let startIndex = 0
+      if (cursorGameId && cursorUpdatedAt) {
+        startIndex = sortedGames.findIndex(game => 
+          game.gameId === cursorGameId && game.updatedAt === cursorUpdatedAt
+        )
+        if (startIndex === -1) {
+          return HttpResponse.json(gameNotFoundError("cursor"), { status: 404 })
+        }
+        startIndex += 1
+      }
+
+      const pageSize = parseInt(limit || "10")
+      const endIndex = startIndex + pageSize
+      const paginatedGames = sortedGames.slice(startIndex, endIndex)
+
+      return HttpResponse.json({
+        result: "SUCCESS",
+        error: null,
+        data: {
+          games: paginatedGames,
+        },
+      })
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
   http.get(`${MSW_BASE_URL}/games`, ({ request }) => {
     const url = new URL(request.url)
     const { cursorGameId, cursorPlayCount, cursorUpdatedAt, limit, query } =
