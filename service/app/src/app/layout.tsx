@@ -1,5 +1,6 @@
 import "./globals.css"
 
+import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
 import { ThemeProvider } from "next-themes"
@@ -26,6 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
+      <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
         <MSWComponent>
           <Providers>
