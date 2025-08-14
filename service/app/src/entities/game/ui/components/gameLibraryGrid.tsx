@@ -15,6 +15,10 @@ interface GameLibraryGridProps {
   onCreateGame?: () => void
   onGameClick?: (game: GameListItem) => void
   onLoadMore?: () => void
+  isDashboard?: boolean
+  onEditGame?: (game: GameListItem) => void
+  onShareGame?: (game: GameListItem) => void
+  onDeleteGame?: (game: GameListItem) => void
 }
 
 export const GameLibraryGrid = ({
@@ -26,6 +30,10 @@ export const GameLibraryGrid = ({
   onCreateGame,
   onGameClick,
   onLoadMore,
+  isDashboard = false,
+  onEditGame,
+  onShareGame,
+  onDeleteGame,
 }: GameLibraryGridProps) => {
   const setObserverRef = useIntersectionObserver(() => {
     if (hasNextPage && !isFetchingNextPage && onLoadMore) {
@@ -57,11 +65,16 @@ export const GameLibraryGrid = ({
                 className="cursor-pointer"
               >
                 <GameCard
-                  type="libraryGame"
+                  type={isDashboard ? "myGame" : "libraryGame"}
                   title={game.gameTitle}
                   questionCount={game.questionCount}
                   imageUrl={game.gameThumbnailUrl}
                   shared={game.isShared}
+                  onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
+                  onShare={isDashboard ? () => onShareGame?.(game) : undefined}
+                  onDelete={
+                    isDashboard ? () => onDeleteGame?.(game) : undefined
+                  }
                 />
               </div>
             ))}
