@@ -25,7 +25,6 @@ export default function GamesPage() {
     user,
     isLoading: authLoading,
     isAuthenticated,
-    login,
     logout,
   } = useAuth()
 
