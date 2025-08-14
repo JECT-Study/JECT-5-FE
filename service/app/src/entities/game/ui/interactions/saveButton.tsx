@@ -46,17 +46,11 @@ export function SaveButton() {
 
         let result
         if (gameId) {
-          // 게임 수정 모드
-          result = await updateExistingGame(
-            {
-              ...state,
-              questions: cleanedQuestions,
-            },
-            gameId,
-            state.gameVersion || 1,
-          )
+          result = await updateExistingGame({
+            ...state,
+            questions: cleanedQuestions,
+          }, gameId, state.gameVersion || 1)
         } else {
-          // 새 게임 생성 모드
           result = await saveGame({
             ...state,
             questions: cleanedQuestions,
