@@ -70,7 +70,6 @@ export const updateGame = async (
   return response.json()
 }
 
-// 게임 수정용 함수 (기존 이미지 유지)
 export const updateGameWithoutNewImages = async (
   gameData: GameUpdateRequest,
   gameId: UUID,

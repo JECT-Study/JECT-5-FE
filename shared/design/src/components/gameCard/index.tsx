@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority"
 import { forwardRef } from "react"
 
-import { Edit, MoreDot, Trash, Unshare } from "../../icons"
+import { Edit, MoreDot, Trash, Unshare,Upload } from "../../icons"
 import { cn } from "../../utils/cn"
 import { SecondaryPlainIconButton } from "../button"
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuRoot, DropdownMenuTrigger } from "../menu"
@@ -220,7 +220,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
                   e.stopPropagation()
                   props.onShare?.()
                 }}>
-                  <Unshare />
+                  {shared ? <Unshare /> : <Upload />}
                   <span className="text-text-interactive-secondary">
                     {shared ? "공유취소" : "게임 공유"}
                   </span>
