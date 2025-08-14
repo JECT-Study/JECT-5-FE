@@ -31,13 +31,13 @@ export const validateSessionCookie = (cookieHeader: string | null): boolean => {
 }
 
 export const validateGameCreateFields = (body: GameCreateRequest): boolean => {
-  const { gameId, gameTitle, gameCreatorEmail, questions } = body
-  return !!(gameId && gameTitle && gameCreatorEmail && questions)
+  const { gameId, gameTitle, questions } = body
+  return !!(gameId && gameTitle && questions)
 }
 
 export const validateGameUpdateFields = (body: GameUpdateRequest): boolean => {
-  const { gameTitle, gameCreatorEmail, questions, version } = body
-  return !!(gameTitle && gameCreatorEmail && questions && version !== undefined)
+  const { gameTitle, questions, version } = body
+  return !!(gameTitle && questions && version !== undefined)
 }
 
 export const validateQuestionsArray = (

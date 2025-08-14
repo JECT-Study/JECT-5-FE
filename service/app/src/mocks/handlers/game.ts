@@ -100,13 +100,6 @@ export const gameHandlers = [
       const endIndex = startIndex + pageSize
       const paginatedGames = sortedGames.slice(startIndex, endIndex)
 
-      console.log("MSW: /user/me/games - Total games:", myGames.length)
-      console.log(
-        "MSW: /user/me/games - Paginated games:",
-        paginatedGames.length,
-      )
-      console.log("MSW: /user/me/games - First game:", paginatedGames[0])
-
       return HttpResponse.json({
         result: "SUCCESS",
         error: null,
