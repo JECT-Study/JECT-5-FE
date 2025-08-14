@@ -158,6 +158,7 @@ export const Control = forwardRef<
       {type === "reset" && (
         <DestructiveSolidIconButton
           type="button"
+          aria-label="clear input"
           onClick={(e) => {
             e.stopPropagation()
             setValue("")
