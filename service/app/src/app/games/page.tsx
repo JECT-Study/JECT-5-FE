@@ -88,11 +88,7 @@ export default function GamesPage() {
 
   const handleLogin = async () => {
     console.log("Login clicked")
-    try {
-      await login()
-    } catch (error) {
-      console.error("Login failed:", error)
-    }
+    router.push("/login/kakao")
   }
 
   const handleThemeToggle = () => {}

@@ -39,11 +39,7 @@ export const HomeNavigation = ({
   }
 
   const handleLoginClick = async () => {
-    try {
-      await login()
-    } catch (error) {
-      console.error("Login failed:", error)
-    }
+    window.location.href = "/login/kakao"
   }
 
   const handleLogoutClick = () => {
