@@ -46,6 +46,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORGID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECTID }}
+          vercel-args: --prod
 
   playwright-cache:
     runs-on: ubuntu-latest
