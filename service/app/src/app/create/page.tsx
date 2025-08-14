@@ -1,5 +1,7 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
+
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
 import { FileUploadArea } from "../../entities/game/ui/components/fileUploadArea"
@@ -7,6 +9,7 @@ import { QuestionInputForm } from "../../entities/game/ui/components/questionInp
 import { QuestionList } from "../../entities/game/ui/components/questionList"
 
 function CreateGameContent() {
+
   return (
     <main className="min-h-screen bg-neutral-white">
       <CreateGameNavigation />
@@ -26,8 +29,11 @@ function CreateGameContent() {
 }
 
 export default function CreateGamePage() {
+  const searchParams = useSearchParams()
+  const gameId = searchParams.get("gameId")
+
   return (
-    <GameCreationProvider>
+    <GameCreationProvider gameId={gameId}>
       <CreateGameContent />
     </GameCreationProvider>
   )
