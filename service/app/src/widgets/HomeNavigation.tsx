@@ -8,6 +8,9 @@ import {
 import { Add, Sun } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+
+import { useAuth } from "@/entities/auth"
 
 interface HomeNavigationProps {
   isLoggedIn?: boolean
@@ -19,8 +22,12 @@ export const HomeNavigation = ({
   className = "",
 }: HomeNavigationProps) => {
   const router = useRouter()
+  const { user, isLoading: authLoading, login, logout } = useAuth()
+  const [listButton, setListButton] = useState(false)
 
-  const handleMyGamesClick = () => {}
+  const handleMyGamesClick = () => {
+    router.push("/dashboard")
+  }
 
   const handleCreateGameClick = () => {
     router.push("/create")
@@ -28,9 +35,22 @@ export const HomeNavigation = ({
 
   const handleThemeToggle = () => {}
 
-  const handleAvatarClick = () => {}
+  const handleAvatarClick = () => {
+    setListButton(!listButton)
+  }
 
-  const handleLoginClick = () => {}
+  const handleLoginClick = async () => {
+    try {
+      await login()
+    } catch (error) {
+      console.error("Login failed:", error)
+    }
+  }
+
+  const handleLogoutClick = () => {
+    logout()
+    setListButton(false)
+  }
 
   return (
     <nav
@@ -69,22 +89,39 @@ export const HomeNavigation = ({
                 게임 만들기
               </PrimaryBoxButton>
 
-              <div
-                className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
-                onClick={handleAvatarClick}
-              >
-                <Image
-                  src="/avatar.svg"
-                  alt="사용자 아바타"
-                  className="size-full rounded-full"
-                  width={42}
-                  height={42}
-                />
+              <div className="relative">
+                <div
+                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
+                  onClick={handleAvatarClick}
+                >
+                  <Image
+                    src={user?.profileImageUrl || "/avatar.svg"}
+                    alt="사용자 아바타"
+                    className="size-full rounded-full"
+                    width={42}
+                    height={42}
+                  />
+                </div>
+                {listButton && (
+                  <div className="absolute right-0 top-full z-10 mt-2">
+                    <SecondaryOutlineBoxButton
+                      size="md"
+                      onClick={handleLogoutClick}
+                      className="whitespace-nowrap"
+                    >
+                      로그아웃
+                    </SecondaryOutlineBoxButton>
+                  </div>
+                )}
               </div>
             </>
           ) : (
             <>
-              <SecondaryOutlineBoxButton size="md" onClick={handleLoginClick}>
+              <SecondaryOutlineBoxButton
+                size="md"
+                onClick={handleLoginClick}
+                disabled={authLoading}
+              >
                 <Image
                   src="/kakao-logo.png"
                   alt="카카오 로고"
