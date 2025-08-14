@@ -3,6 +3,7 @@
 import {
   PrimaryBoxButton,
   SecondaryGhostIconButton,
+  SecondaryOutlineBoxButton,
 } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { Add, Sun } from "@shared/design/src/icons"
@@ -29,7 +30,8 @@ export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { user, isLoading: _authLoading, isAuthenticated } = useAuth()
+  const { user, isLoading: _authLoading, isAuthenticated, logout } = useAuth()
+  const [listButton, setListButton] = useState(false)
 
   const {
     games,
@@ -155,6 +157,16 @@ export default function DashboardPage() {
     router.push("/")
   }
 
+  const handleAvatarClick = () => {
+    setListButton(!listButton)
+  }
+
+  const handleLogoutClick = () => {
+    logout()
+    setListButton(false)
+    router.push("/")
+  }
+
   const leftContent = (
     <div
       className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
@@ -184,14 +196,30 @@ export default function DashboardPage() {
       </PrimaryBoxButton>
 
       {isAuthenticated ? (
-        <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
-          <Image
-            src={user?.profileImageUrl || "/avatar.svg"}
-            alt="사용자 아바타"
-            className="size-full rounded-full"
-            width={42}
-            height={42}
-          />
+        <div className="relative">
+          <div
+            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
+            onClick={handleAvatarClick}
+          >
+            <Image
+              src={user?.profileImageUrl || "/avatar.svg"}
+              alt="사용자 아바타"
+              className="size-full rounded-full"
+              width={42}
+              height={42}
+            />
+          </div>
+          {listButton && (
+            <div className="absolute right-0 top-full z-10 mt-2">
+              <SecondaryOutlineBoxButton 
+                size="md" 
+                onClick={handleLogoutClick}
+                className="whitespace-nowrap"
+              >
+                로그아웃
+              </SecondaryOutlineBoxButton>
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
