@@ -1,4 +1,5 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { useRouter } from "next/navigation"
 
 import { validateQuestion } from "../../model"
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
@@ -9,13 +10,25 @@ import { saveGame } from "../../utils/gameSave"
 export function SaveButton() {
   const { state, actions } = useGameCreationContext()
   const { showSaveConfirm, showValidationError, showSaveError } = useGamePopupActions()
+  const router = useRouter()
 
   const handleSave = () => {
+    const gameNameError = selectors.gameNameError(state)
+    if (gameNameError) {
+      showValidationError()
+      return
+    }
+
     const hasValidationError = state.questions.some(
       (question) => !validateQuestion(question),
     )
 
     if (hasValidationError) {
+      showValidationError()
+      return
+    }
+
+    if (state.questions.length === 0) {
       showValidationError()
       return
     }
@@ -33,6 +46,7 @@ export function SaveButton() {
 
         if (result.success) {
           actions.saveGameSuccess()
+          router.push(`/dashboard`)
         } else {
           actions.saveGameError(
             result.error || "저장에 실패했습니다.",
@@ -47,7 +61,12 @@ export function SaveButton() {
   }
 
   return (
-    <PrimaryBoxButton size="sm" _style="solid" onClick={handleSave}>
+    <PrimaryBoxButton 
+      size="sm" 
+      _style="solid" 
+      onClick={handleSave}
+      disabled={!selectors.canSave(state)}
+    >
       게임 저장
     </PrimaryBoxButton>
   )

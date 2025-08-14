@@ -68,7 +68,7 @@ export const GameLibraryGrid = ({
                   type={isDashboard ? "myGame" : "libraryGame"}
                   title={game.gameTitle}
                   questionCount={game.questionCount}
-                  imageUrl={game.gameThumbnailUrl}
+                  imageUrl={game.gameThumbnailUrl || undefined}
                   shared={game.isShared}
                   onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
                   onShare={isDashboard ? () => onShareGame?.(game) : undefined}

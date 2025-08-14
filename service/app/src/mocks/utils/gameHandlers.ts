@@ -23,24 +23,20 @@ export const validateSessionCookie = (cookieHeader: string | null): boolean => {
 }
 
 export const validateGameCreateFields = (body: GameCreateRequest): boolean => {
-  const { gameId, gameTitle, gameCreatorEmail, gameThumbnailUrl, questions } =
-    body
+  const { gameId, gameTitle, gameCreatorEmail, questions } = body
   return !!(
     gameId &&
     gameTitle &&
     gameCreatorEmail &&
-    gameThumbnailUrl &&
     questions
   )
 }
 
 export const validateGameUpdateFields = (body: GameUpdateRequest): boolean => {
-  const { gameTitle, gameCreatorEmail, gameThumbnailUrl, questions, version } =
-    body
+  const { gameTitle, gameCreatorEmail, questions, version } = body
   return !!(
     gameTitle &&
     gameCreatorEmail &&
-    gameThumbnailUrl &&
     questions &&
     version !== undefined
   )

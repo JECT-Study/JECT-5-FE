@@ -13,7 +13,8 @@ import { useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
-import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { deleteGame, getGameDetail, shareGame, unshareGame } from "@/entities/game/api"
+import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
@@ -31,6 +32,8 @@ export default function DashboardPage() {
     useInfiniteMyGames({
       limit: 19,
     })
+
+  const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } = useDashboardPopupActions()
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -81,18 +84,55 @@ export default function DashboardPage() {
 
   const handleEditGame = (game: GameListItem) => {
     console.log("Edit game:", game.gameId)
-    // TODO: 게임 수정 페이지로 이동
     router.push(`/create?gameId=${game.gameId}`)
   }
 
   const handleShareGame = (game: GameListItem) => {
-    console.log("Share game:", game.gameId)
-    // TODO: 게임 공유 기능 구현
+    if (game.isShared) {
+      showUnshareConfirm(game, async () => {
+        try {
+          const response = await unshareGame(game.gameId)
+          if (response.result === "SUCCESS") {
+            console.log("Game unshared successfully")
+            fetchNextPage()
+          } else {
+            console.error("Failed to unshare game")
+          }
+        } catch (error) {
+          console.error("Error unsharing game:", error)
+        }
+      })
+    } else {
+      showShareConfirm(game, async () => {
+        try {
+          const response = await shareGame(game.gameId)
+          if (response.result === "SUCCESS") {
+            console.log("Game shared successfully")
+            fetchNextPage()
+          } else {
+            console.error("Failed to share game")
+          }
+        } catch (error) {
+          console.error("Error sharing game:", error)
+        }
+      })
+    }
   }
 
   const handleDeleteGame = (game: GameListItem) => {
-    console.log("Delete game:", game.gameId)
-    // TODO: 게임 삭제 확인 다이얼로그 표시
+    showDeleteConfirm(game, async () => {
+      try {
+        const response = await deleteGame(game.gameId)
+        if (response.result === "SUCCESS") {
+          console.log("Game deleted successfully")
+          fetchNextPage()
+        } else {
+          console.error("Failed to delete game")
+        }
+      } catch (error) {
+        console.error("Error deleting game:", error)
+      }
+    })
   }
 
   const handleThemeToggle = () => {}
