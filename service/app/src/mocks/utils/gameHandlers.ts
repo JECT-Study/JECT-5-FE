@@ -26,7 +26,6 @@ export const validateSessionCookie = (cookieHeader: string | null): boolean => {
     (cookie) =>
       cookie.startsWith("JSESSIONID=") || cookie === "test-session-123",
   )
-  console.log("MSW: Has valid session:", hasValidSession)
 
   return hasValidSession
 }

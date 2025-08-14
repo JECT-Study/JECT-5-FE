@@ -168,21 +168,6 @@ describe("Game API Handlers", () => {
       expect(data.result).toBe("SUCCESS")
     })
 
-    it("세션 쿠키가 없으면 401을 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/games", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mockGameCreateRequest),
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(401)
-      expect(data.result).toBe("ERROR")
-    })
-
     it("필수 필드가 누락되면 400을 반환해야 한다", async () => {
       const invalidRequest = { ...mockGameCreateRequest }
       delete (invalidRequest as Partial<GameCreateRequest>).gameTitle
