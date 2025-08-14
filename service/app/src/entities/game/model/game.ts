@@ -3,7 +3,7 @@ import type { ApiResponse } from "@shared/types/response"
 
 export interface GameListItem {
   gameId: UUID
-  gameThumbnailUrl: string
+  gameThumbnailUrl: string | null
   gameTitle: string
   questionCount: number
   playCount: number

@@ -16,16 +16,22 @@ export const prepareGameData = (
 ): GameCreateRequest => {
   const gameId = uuidv4()
 
+  const firstQuestionWithImage = state.questions.find(
+    (question) => question.imageUrl || question.imageFile
+  )
+  
+  const thumbnailUrl = firstQuestionWithImage?.imageUrl || null
+
   return {
     gameId,
-    gameTitle: state.gameName,
+    gameTitle: state.gameName.trim() || "게임1",
     gameCreatorEmail: "user@example.com",
-    gameThumbnailUrl: "",
+    gameThumbnailUrl: thumbnailUrl,
     questions: state.questions.map((question, index) => ({
       questionOrder: index,
       imageUrl: question.imageUrl || "",
-      questionText: question.text,
-      questionAnswer: question.answer,
+      questionText: question.text.trim(),
+      questionAnswer: question.answer.trim(),
     })),
   }
 }
@@ -34,6 +40,21 @@ export const saveGame = async (
   state: GameCreationState,
 ): Promise<GameSaveResult> => {
   try {
+    // 기본 검증
+    if (!state.gameName.trim()) {
+      return {
+        success: false,
+        error: "게임 이름을 입력해주세요.",
+      }
+    }
+
+    if (state.questions.length === 0) {
+      return {
+        success: false,
+        error: "최소 1개 이상의 질문이 필요합니다.",
+      }
+    }
+
     const questionsWithImages = state.questions.filter((q) => q.imageFile)
 
     let presignedResponse = null
@@ -81,6 +102,11 @@ export const saveGame = async (
           imageUrl: presignedUrl ? presignedUrl.key : "",
         }
       })
+
+      const firstImageUrl = presignedResponse.data.presignedUrls[0]?.key
+      if (firstImageUrl) {
+        gameData.gameThumbnailUrl = firstImageUrl
+      }
     }
 
     const createResponse = await createGame(gameData)

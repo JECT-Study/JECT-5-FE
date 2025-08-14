@@ -37,14 +37,14 @@ export interface GameCreateRequest {
   gameId: UUID
   gameTitle: string
   gameCreatorEmail: string
-  gameThumbnailUrl: string
+  gameThumbnailUrl: string | null
   questions: GameCreateQuestion[]
 }
 
 export interface GameUpdateRequest {
   gameTitle: string
   gameCreatorEmail: string
-  gameThumbnailUrl: string
+  gameThumbnailUrl: string | null
   questions: GameUpdateQuestion[]
   version: number
 }
