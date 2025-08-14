@@ -35,6 +35,7 @@ fetchClient.addResponseInterceptor(
 if (process.env.NODE_ENV === "development") {
   fetchClient.addRequestInterceptor(async (url, options) => {
     console.log("🚀 Request:", url, options)
+    console.log("🍪 Cookies in request:", document.cookie)
     return { url, options }
   })
 

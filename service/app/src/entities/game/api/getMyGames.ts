@@ -23,7 +23,7 @@ export interface GetMyGamesResponse {
 }
 
 export async function getMyGames(
-  params: GetMyGamesRequest
+  params: GetMyGamesRequest,
 ): Promise<GetMyGamesResponse | ApiResponse<null>> {
   const queryString = toQueryString(params)
   const response = await fetchClient.fetch(`/user/me/games?${queryString}`, {

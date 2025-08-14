@@ -17,9 +17,9 @@ export const prepareGameData = (
   const gameId = uuidv4()
 
   const firstQuestionWithImage = state.questions.find(
-    (question) => question.imageUrl || question.imageFile
+    (question) => question.imageUrl || question.imageFile,
   )
-  
+
   const thumbnailUrl = firstQuestionWithImage?.imageUrl || null
 
   return {

@@ -201,20 +201,32 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
             </div>
             <DropdownMenuRoot>
               <DropdownMenuTrigger asChild>
-                <SecondaryPlainIconButton aria-label="게임 옵션 메뉴">
+                <SecondaryPlainIconButton 
+                  aria-label="게임 옵션 메뉴"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <MoreDot />
                 </SecondaryPlainIconButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent type="horizontal" contentType="icon" side="bottom" sideOffset={8}>
-                <DropdownMenuItem type="icon" onClick={props.onEdit}>
+                <DropdownMenuItem type="icon" onClick={(e) => {
+                  e.stopPropagation()
+                  props.onEdit?.()
+                }}>
                   <Edit />
                   <span className="text-text-interactive-secondary">게임 수정</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem type="icon" onClick={props.onShare}>
+                <DropdownMenuItem type="icon" onClick={(e) => {
+                  e.stopPropagation()
+                  props.onShare?.()
+                }}>
                   <Upload />
                   <span className="text-text-interactive-secondary">게임 공유</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem type="icon" onClick={props.onDelete}>
+                <DropdownMenuItem type="icon" onClick={(e) => {
+                  e.stopPropagation()
+                  props.onDelete?.()
+                }}>
                   <Trash />
                   <span className="text-text-interactive-secondary">게임 삭제</span>
                 </DropdownMenuItem>

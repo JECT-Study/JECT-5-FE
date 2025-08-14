@@ -140,7 +140,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
                   type="libraryGame"
                   title={game.gameTitle}
                   questionCount={game.questionCount}
-                  imageUrl={game.gameThumbnailUrl}
+                  imageUrl={game.gameThumbnailUrl ?? undefined}
                   shared={game.isShared}
                 />
               </div>

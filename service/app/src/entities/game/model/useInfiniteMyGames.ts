@@ -74,7 +74,8 @@ export const useInfiniteMyGames = ({
     retry: 2,
   })
 
-  const games = data?.pages.flatMap((page: { games: GameListItem[] }) => page.games) ?? []
+  const games =
+    data?.pages.flatMap((page: { games: GameListItem[] }) => page.games) ?? []
 
   return {
     games,
