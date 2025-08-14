@@ -60,3 +60,6 @@ jobs:
 
       - name: Run CI
         run: yarn run ci
+
+      - name: build App
+        run: yarn workspace @ject-5-fe/app build
