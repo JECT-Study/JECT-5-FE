@@ -1,7 +1,7 @@
 import { KakaoLoginData, KakaoLoginResponse } from "@/entities/auth/model/auth"
 
 const mockKakaoLoginData: KakaoLoginData = {
-  profileImageUrl: "https://picsum.photos/id/237/536/354",
+  profileImageUrl: "/exampleThumbnail.jpg",
   nickname: "testUser",
   email: "test@example.com",
 }

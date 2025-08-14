@@ -8,15 +8,26 @@ import { Navigation } from "@shared/design/src/components/navigation"
 import { Magnifier, Sun } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { overlay } from "overlay-kit"
 import { useState } from "react"
 
+import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
+import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
+import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 export default function GamesPage() {
   const router = useRouter()
   const [_searchQuery, setSearchQuery] = useState("")
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    login,
+    logout,
+  } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
@@ -27,8 +38,41 @@ export default function GamesPage() {
     router.push("/create")
   }
 
-  const handleGameClick = (game: GameListItem) => {
-    router.push(`/game/${game.gameId}`)
+  const handleGameClick = async (game: GameListItem) => {
+    try {
+      const gameDetailRes = await getGameDetail(game.gameId)
+
+      if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
+        const gameDetail = gameDetailRes.data
+
+        overlay.open(({ close, isOpen }) => {
+          const handleStartGame = () => {
+            close()
+            router.push(`/game/${game.gameId}`)
+          }
+
+          return (
+            <GamePreview
+              gameTitle={gameDetail.gameTitle}
+              creatorName={gameDetail.nickname}
+              questionCount={gameDetail.questionCount}
+              questions={gameDetail.questions.map((question) => ({
+                id: question.questionId.toString(),
+                title: question.questionText,
+                imageUrl: question.imageUrl,
+              }))}
+              onClose={close}
+              onStartGame={handleStartGame}
+              isOpen={isOpen}
+            />
+          )
+        })
+      } else {
+        console.error("Failed to fetch game detail")
+      }
+    } catch (error) {
+      console.error("Error fetching game detail:", error)
+    }
   }
 
   const handleLoadMore = () => {
@@ -39,13 +83,16 @@ export default function GamesPage() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-    // TODO: Implement search functionality
     console.log("Search query:", e.target.value)
   }
 
-  const handleLogin = () => {
-    // TODO: Implement login functionality
+  const handleLogin = async () => {
     console.log("Login clicked")
+    try {
+      await login()
+    } catch (error) {
+      console.error("Login failed:", error)
+    }
   }
 
   const handleThemeToggle = () => {}
@@ -83,16 +130,42 @@ export default function GamesPage() {
 
   const rightContent = (
     <>
-      <SecondaryOutlineBoxButton size="md" onClick={handleLogin}>
-        <Image
-          src="/kakao-logo.png"
-          alt="카카오 로고"
-          className="size-8"
-          width={32}
-          height={32}
-        />
-        간편로그인해서 게임 만들기
-      </SecondaryOutlineBoxButton>
+      {isAuthenticated ? (
+        <>
+          <div className="flex items-center gap-2">
+            <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
+              <Image
+                src={user?.profileImageUrl || "/avatar.svg"}
+                alt="사용자 아바타"
+                className="size-full rounded-full"
+                width={42}
+                height={42}
+              />
+            </div>
+            <span className="text-sm font-medium text-text-primary">
+              {user?.nickname}
+            </span>
+          </div>
+          <SecondaryOutlineBoxButton size="md" onClick={logout}>
+            로그아웃
+          </SecondaryOutlineBoxButton>
+        </>
+      ) : (
+        <SecondaryOutlineBoxButton
+          size="md"
+          onClick={handleLogin}
+          disabled={authLoading}
+        >
+          <Image
+            src="/kakao-logo.png"
+            alt="카카오 로고"
+            className="size-8"
+            width={32}
+            height={32}
+          />
+          간편로그인해서 게임 만들기
+        </SecondaryOutlineBoxButton>
+      )}
 
       <SecondaryGhostIconButton onClick={handleThemeToggle}>
         <Sun />
