@@ -8,6 +8,15 @@ import { FileUploadArea } from "../../entities/game/ui/components/fileUploadArea
 import { QuestionInputForm } from "../../entities/game/ui/components/questionInputForm"
 import { QuestionList } from "../../entities/game/ui/components/questionList"
 
+/**
+ * Renders the main create-game UI layout.
+ *
+ * This is a pure presentational component that composes the create-game page from
+ * smaller pieces: navigation, question list, file upload area, and question input form.
+ * It contains no local state or side effects.
+ *
+ * @returns The JSX for the create-game page content.
+ */
 function CreateGameContent() {
 
   return (
@@ -28,6 +37,13 @@ function CreateGameContent() {
   )
 }
 
+/**
+ * Page component that reads the `gameId` query parameter and provides it to the GameCreationProvider, rendering the create-game UI.
+ *
+ * Reads `gameId` from the URL search params (may be `null`) and passes it to GameCreationProvider; renders CreateGameContent as the provider child.
+ *
+ * @returns The Create Game page JSX element.
+ */
 export default function CreateGamePage() {
   const searchParams = useSearchParams()
   const gameId = searchParams.get("gameId")

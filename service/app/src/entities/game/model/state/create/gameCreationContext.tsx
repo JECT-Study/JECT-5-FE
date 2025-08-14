@@ -22,6 +22,22 @@ interface GameCreationProviderProps {
   gameId?: string | null
 }
 
+/**
+ * Provides game creation state to descendants and, when a `gameId` is given,
+ * loads that game's details once to initialize the creation state.
+ *
+ * When `gameId` is provided, the provider performs a one-time client-side
+ * fetch to `getGameDetail(gameId)`. On a successful response it calls
+ * `gameCreation.actions.initializeFromGameDetail(...)` with the fetched title,
+ * transformed questions (stringified `questionId`, `questionText`, `answer`, and
+ * `imageUrl`), and version. While loading, the component renders a simple
+ * loading message; after loading it renders the context provider with `children`.
+ *
+ * @param gameId - Optional external game identifier. If present, triggers a one-time
+ *   initialization of the game creation state from the remote game detail.
+ * @returns The GameCreationContext provider wrapping `children`, or a loading
+ *   indicator while the game detail is being fetched.
+ */
 export function GameCreationProvider({
   children,
   gameId,

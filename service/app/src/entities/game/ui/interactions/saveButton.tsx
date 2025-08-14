@@ -8,6 +8,18 @@ import { selectors } from "../../model/state/create/selectors"
 import { useGamePopupActions } from "../../model/useGamePopupActions"
 import { saveGame, updateExistingGame } from "../../utils/gameSave"
 
+/**
+ * Renders a small primary button that validates and saves the current game draft.
+ *
+ * When clicked, the button runs validation (game name, per-question validation, and non-empty questions),
+ * shows a validation error popup on failure, and otherwise asks for confirmation before saving.
+ * In "edit" mode (when `gameId` is present in the URL search params) it calls `updateExistingGame`
+ * with the current state and game version; in create mode it calls `saveGame`.
+ * On successful save it updates client cache for the user's games and navigates to `/dashboard`.
+ * On save failure or exceptions it updates save state and shows an error popup.
+ *
+ * @returns The button JSX element.
+ */
 export function SaveButton() {
   const { state, actions } = useGameCreationContext()
   const { showSaveConfirm, showValidationError, showSaveError } =
