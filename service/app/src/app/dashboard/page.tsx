@@ -6,14 +6,20 @@ import {
 } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { Add, Sun } from "@shared/design/src/icons"
+import { useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
-import { deleteGame, getGameDetail, shareGame, unshareGame } from "@/entities/game/api"
+import {
+  deleteGame,
+  getGameDetail,
+  shareGame,
+  unshareGame,
+} from "@/entities/game/api"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
@@ -21,19 +27,27 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 export default function DashboardPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
+  const { user, isLoading: _authLoading, isAuthenticated } = useAuth()
+
   const {
-    user,
-    isLoading: _authLoading,
-    isAuthenticated,
-  } = useAuth()
+    games,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    refetch,
+  } = useInfiniteMyGames({
+    limit: 19,
+  })
 
-  const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteMyGames({
-      limit: 19,
-    })
+  const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } =
+    useDashboardPopupActions()
 
-  const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } = useDashboardPopupActions()
+  useEffect(() => {
+    refetch()
+  }, [refetch])
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -94,7 +108,7 @@ export default function DashboardPage() {
           const response = await unshareGame(game.gameId)
           if (response.result === "SUCCESS") {
             console.log("Game unshared successfully")
-            fetchNextPage()
+            queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
           } else {
             console.error("Failed to unshare game")
           }
@@ -108,7 +122,7 @@ export default function DashboardPage() {
           const response = await shareGame(game.gameId)
           if (response.result === "SUCCESS") {
             console.log("Game shared successfully")
-            fetchNextPage()
+            queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
           } else {
             console.error("Failed to share game")
           }
@@ -125,7 +139,7 @@ export default function DashboardPage() {
         const response = await deleteGame(game.gameId)
         if (response.result === "SUCCESS") {
           console.log("Game deleted successfully")
-          fetchNextPage()
+          queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
         } else {
           console.error("Failed to delete game")
         }
@@ -164,11 +178,7 @@ export default function DashboardPage() {
 
   const rightContent = (
     <>
-      <PrimaryBoxButton
-        size="sm"
-        _style="solid"
-        onClick={handleCreateGame}
-      >
+      <PrimaryBoxButton size="sm" _style="solid" onClick={handleCreateGame}>
         <Add />
         게임 만들기
       </PrimaryBoxButton>
