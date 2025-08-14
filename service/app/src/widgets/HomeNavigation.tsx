@@ -18,11 +18,10 @@ interface HomeNavigationProps {
 }
 
 export const HomeNavigation = ({
-  isLoggedIn = false,
   className = "",
 }: HomeNavigationProps) => {
   const router = useRouter()
-  const { user, isLoading: authLoading, login, logout } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
   const [listButton, setListButton] = useState(false)
 
   const handleMyGamesClick = () => {
@@ -70,7 +69,7 @@ export const HomeNavigation = ({
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
         <div className="flex items-center gap-4 px-10">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <PrimaryBoxButton
                 size="sm"
