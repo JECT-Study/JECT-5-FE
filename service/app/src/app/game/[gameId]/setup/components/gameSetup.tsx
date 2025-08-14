@@ -108,7 +108,7 @@ export default function GameSetupPage() {
     if (teamState.teams.length >= MAX_TEAMS) {
       return
     }
-
+    console.log(teamState)
     setTeamState(
       produce((draft) => {
         const newId = String(draft.teams.length + 1)
