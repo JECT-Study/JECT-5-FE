@@ -11,10 +11,12 @@
     "format": "yarn run -T -B prettier --write",
     "test": "vitest run",
     "test:msw": "vitest run --config vitest.msw.config.ts",
-    "test:all": "yarn test && yarn test:msw"
+    "test:all": "yarn test && yarn test:msw && yarn test:e2e",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ject-5-fe/design": "workspace:*",
+    "@next/third-parties": "^15.4.6",
     "@tanstack/react-query": "^5.83.0",
     "es-toolkit": "^1.39.8",
     "immer": "^10.1.1",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@ject-5-fe/eslint": "workspace:*",
+    "@playwright/test": "1.54.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

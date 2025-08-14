@@ -1435,6 +1435,8 @@ __metadata:
   dependencies:
     "@ject-5-fe/design": "workspace:*"
     "@ject-5-fe/eslint": "workspace:*"
+    "@next/third-parties": "npm:^15.4.6"
+    "@playwright/test": "npm:1.54.1"
     "@tanstack/react-query": "npm:^5.83.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
@@ -1817,6 +1819,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@next/third-parties@npm:^15.4.6":
+  version: 15.4.6
+  resolution: "@next/third-parties@npm:15.4.6"
+  dependencies:
+    third-party-capital: "npm:1.0.20"
+  peerDependencies:
+    next: ^13.0.0 || ^14.0.0 || ^15.0.0
+    react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+  checksum: 10c0/db6375da0ae0256a0f9af8779d0ff7a6de8c7a5131ea5f9434fd709dc68bcf00eda09ac055cc261a07aece76e40e05b9df21b6ff7727fed79c048d8d1b21db3c
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1915,6 +1929,17 @@ __metadata:
   version: 0.2.9
   resolution: "@pkgr/core@npm:0.2.9"
   checksum: 10c0/ac8e4e8138b1a7a4ac6282873aef7389c352f1f8b577b4850778f5182e4a39a5241facbe48361fec817f56d02b51691b383010843fb08b34a8e8ea3614688fd5
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:1.54.1":
+  version: 1.54.1
+  resolution: "@playwright/test@npm:1.54.1"
+  dependencies:
+    playwright: "npm:1.54.1"
+  bin:
+    playwright: cli.js
+  checksum: 10c0/1b414356bc1049927d7b9efc14d5b3bf000ef6483313926bb795b4f27fe3707e8e0acf0db59063a452bb4f7e34559758d17640401b6f3e2f5290f299a8d8d02f
   languageName: node
   linkType: hard
 
@@ -9975,7 +10000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.53.1":
+"playwright@npm:1.54.1, playwright@npm:^1.53.1":
   version: 1.54.1
   resolution: "playwright@npm:1.54.1"
   dependencies:
@@ -11968,6 +11993,13 @@ __metadata:
   dependencies:
     any-promise: "npm:^1.0.0"
   checksum: 10c0/f375aeb2b05c100a456a30bc3ed07ef03a39cbdefe02e0403fb714b8c7e57eeaad1a2f5c4ecfb9ce554ce3db9c2b024eba144843cd9e344566d9fcee73b04767
+  languageName: node
+  linkType: hard
+
+"third-party-capital@npm:1.0.20":
+  version: 1.0.20
+  resolution: "third-party-capital@npm:1.0.20"
+  checksum: 10c0/7f45ff156ec9d7e2957a5b39061be22b780ffbd2d93c127252d908e2bff6cdd09f827a95909d457c8096e036f155006a38e355a06ee11cb6d63c7f4b150bbfb0
   languageName: node
   linkType: hard
 
