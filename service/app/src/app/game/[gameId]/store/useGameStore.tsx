@@ -1,11 +1,15 @@
-"use client"
-
-import { createContext, type ReactNode, useContext, useRef } from "react"
 import { create, useStore } from "zustand"
 import { persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import type { GameDetailData } from "@/entities/game/model"
+
+import { useGameStoreContext } from "./gameProvider"
+
+const DEFAULT_TEAMS = [
+  { id: "1", name: "A팀", members: [] },
+  { id: "2", name: "B팀", members: [] },
+]
 
 export interface Team {
   id: string
@@ -16,7 +20,6 @@ export interface Team {
 
 interface GameState {
   gameDetail: GameDetailData | null
-
   teams: Team[]
   gameStatus: "setup" | "playing" | "paused" | "finished"
   currentRound: number
@@ -24,39 +27,40 @@ interface GameState {
 }
 
 interface GameActions {
-  // 게임 초기화
-  setGameDetail: (gameDetail: GameDetailData) => void
-
-  // 팀 관리
+  // 팀 관리 - 플랫 구조
   addTeam: (team: Omit<Team, "score">) => void
   removeTeam: (teamId: string) => void
+  updateTeamName: (teamId: string, name: string) => void
   updateTeamScore: (teamId: string, score: number) => void
-  addScoreToTeam: (teamId: string, points: number) => void
+  addTeamScore: (teamId: string, points: number) => void
 
   // 게임 진행
   setGameStatus: (status: GameState["gameStatus"]) => void
   setRound: (round: number) => void
   nextRound: () => void
   prevRound: () => void
+
+  // 초기화
   resetGame: () => void
 }
 
-const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
+// 헬퍼 함수들
+const findTeamIndex = (teams: Team[], teamId: string): number => {
+  return teams.findIndex((team) => team.id === teamId)
+}
+
+export const createGameStore = (
+  initialGameDetail?: GameDetailData,
+  gameId?: string,
+) =>
   create<GameState & GameActions>()(
     persist(
       immer((set) => ({
         gameDetail: initialGameDetail || null,
-        teams: [],
+        teams: DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 })),
         gameStatus: "setup",
         currentRound: 1,
         totalRounds: initialGameDetail?.questionCount || 1,
-
-        // 액션들
-        setGameDetail: (gameDetail) =>
-          set({
-            gameDetail,
-            totalRounds: gameDetail?.questionCount || 1,
-          }),
 
         addTeam: (team) =>
           set((state) => {
@@ -65,62 +69,68 @@ const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
 
         removeTeam: (teamId) =>
           set((state) => {
-            const index = state.teams.findIndex(
-              (team: Team) => team.id === teamId,
-            )
+            const index = findTeamIndex(state.teams, teamId)
             if (index !== -1) {
               state.teams.splice(index, 1)
             }
           }),
 
+        updateTeamName: (teamId, name) =>
+          set((state) => {
+            const index = findTeamIndex(state.teams, teamId)
+            if (index !== -1) {
+              state.teams[index].name = name
+            }
+          }),
+
         updateTeamScore: (teamId, score) =>
           set((state) => {
-            const team = state.teams.find((team: Team) => team.id === teamId)
-            if (team) {
-              team.score = score
+            const index = findTeamIndex(state.teams, teamId)
+            if (index !== -1) {
+              state.teams[index].score = score
             }
           }),
 
-        addScoreToTeam: (teamId, points) =>
+        addTeamScore: (teamId, points) =>
           set((state) => {
-            const team = state.teams.find((team: Team) => team.id === teamId)
-            if (team) {
-              team.score += points
+            const index = findTeamIndex(state.teams, teamId)
+            if (index !== -1) {
+              state.teams[index].score += points
             }
           }),
 
+        // 게임 진행 액션들
         setGameStatus: (gameStatus) => set({ gameStatus }),
 
         setRound: (round) =>
           set((state) => {
-            const boundedRound = Math.max(1, Math.min(round, state.totalRounds))
-            state.currentRound = boundedRound
+            state.currentRound = Math.max(1, Math.min(round, state.totalRounds))
           }),
 
         nextRound: () =>
           set((state) => {
-            state.currentRound = Math.min(
-              state.currentRound + 1,
-              state.totalRounds,
-            )
+            if (state.currentRound < state.totalRounds) {
+              state.currentRound += 1
+            }
           }),
 
         prevRound: () =>
           set((state) => {
-            state.currentRound = Math.max(state.currentRound - 1, 1)
+            if (state.currentRound > 1) {
+              state.currentRound -= 1
+            }
           }),
 
         resetGame: () =>
-          set({
-            teams: [],
-            gameStatus: "setup",
-            currentRound: 1,
+          set((state) => {
+            state.teams = DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 }))
+            state.gameStatus = "setup"
+            state.currentRound = 1
           }),
       })),
       {
         name: `game-store-${gameId || "default"}`,
         partialize: (state) => ({
-          teams: state.teams,
           gameStatus: state.gameStatus,
           currentRound: state.currentRound,
           totalRounds: state.totalRounds,
@@ -132,41 +142,9 @@ const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
 
 export type GameStoreApi = ReturnType<typeof createGameStore>
 
-export const GameStoreContext = createContext<GameStoreApi | undefined>(
-  undefined,
-)
-
-export interface GameStoreProviderProps {
-  children: ReactNode
-  initialGameDetail?: GameDetailData
-  gameId?: string
-}
-
-export const GameStoreProvider = ({
-  children,
-  initialGameDetail,
-  gameId,
-}: GameStoreProviderProps) => {
-  const storeRef = useRef<GameStoreApi | null>(null)
-  if (storeRef.current === null) {
-    storeRef.current = createGameStore(initialGameDetail, gameId)
-  }
-
-  return (
-    <GameStoreContext.Provider value={storeRef.current}>
-      {children}
-    </GameStoreContext.Provider>
-  )
-}
-
 export const useGameStore = <T,>(
   selector: (store: GameState & GameActions) => T,
 ): T => {
-  const gameStoreContext = useContext(GameStoreContext)
-
-  if (!gameStoreContext) {
-    throw new Error(`useGameStore must be used within GameStoreProvider`)
-  }
-
-  return useStore(gameStoreContext, selector)
+  const gameStoreApi = useGameStoreContext()
+  return useStore(gameStoreApi, selector)
 }
