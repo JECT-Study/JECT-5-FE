@@ -7,7 +7,7 @@ export async function initMsw() {
     await worker.start({
       onUnhandledRequest: "bypass",
       serviceWorker: { url: "/mockServiceWorker.js" },
-      waitUntilReady: true,
+      waitUntilReady: false,
     })
   }
 }

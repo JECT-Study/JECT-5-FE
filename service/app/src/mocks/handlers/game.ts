@@ -66,8 +66,7 @@ export const gameHandlers = [
     )
 
     try {
-      const cookieHeader =
-        request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+      const cookieHeader = request.headers.get("Cookie")
       if (!validateSessionCookie(cookieHeader)) {
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
@@ -180,8 +179,7 @@ export const gameHandlers = [
         return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
       }
 
-      const cookieHeader =
-        request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+      const cookieHeader = request.headers.get("Cookie")
       if (!validateSessionCookie(cookieHeader)) {
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
@@ -225,8 +223,7 @@ export const gameHandlers = [
         return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
       }
 
-      const cookieHeader =
-        request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+      const cookieHeader = request.headers.get("Cookie")
       if (!validateSessionCookie(cookieHeader)) {
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
@@ -271,8 +268,7 @@ export const gameHandlers = [
     try {
       const { gameId } = params
 
-      const cookieHeader =
-        request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+      const cookieHeader = request.headers.get("Cookie")
       if (!validateSessionCookie(cookieHeader)) {
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
@@ -296,8 +292,7 @@ export const gameHandlers = [
       try {
         const { gameId } = params
 
-        const cookieHeader =
-          request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+        const cookieHeader = request.headers.get("Cookie")
         if (!validateSessionCookie(cookieHeader)) {
           return HttpResponse.json(loginRequiredError, { status: 401 })
         }
@@ -322,8 +317,7 @@ export const gameHandlers = [
       try {
         const { gameId } = params
 
-        const cookieHeader =
-          request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+        const cookieHeader = request.headers.get("Cookie")
         if (!validateSessionCookie(cookieHeader)) {
           return HttpResponse.json(loginRequiredError, { status: 401 })
         }
@@ -347,8 +341,7 @@ export const gameHandlers = [
       const body = (await request.json()) as PresignedUrlRequest
       const { images } = body
 
-      const cookieHeader =
-        request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+      const cookieHeader = request.headers.get("Cookie")
       if (!validateSessionCookie(cookieHeader)) {
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
@@ -369,8 +362,7 @@ export const gameHandlers = [
         const body = (await request.json()) as PresignedUrlRequest
         const { images } = body
 
-        const cookieHeader =
-          request.headers.get("Cookie") || "JSESSIONID=test-session-123"
+        const cookieHeader = request.headers.get("Cookie")
         if (!validateSessionCookie(cookieHeader)) {
           return HttpResponse.json(loginRequiredError, { status: 401 })
         }

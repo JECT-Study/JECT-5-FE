@@ -5,11 +5,14 @@ import { handlers } from "../handlers"
 
 const server = setupServer(...handlers)
 
-beforeAll(() => {
-  server.listen({ onUnhandledRequest: "error" })
+beforeAll(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 100))
+  server.listen({
+    onUnhandledRequest: "error",
+  })
 })
 
-afterAll(() => {
+afterAll(async () => {
   server.close()
 })
 

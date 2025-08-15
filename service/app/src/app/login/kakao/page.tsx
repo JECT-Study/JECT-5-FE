@@ -10,7 +10,7 @@ export default function KakaoLoginPage() {
     const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID
     const redirectUri =
       process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
-      `${window.location.origin}/login/kakao/callback`
+      `${window.location.origin}/login/kakao`
 
     if (!kakaoClientId) {
       console.error("KAKAO_CLIENT_ID is not defined")

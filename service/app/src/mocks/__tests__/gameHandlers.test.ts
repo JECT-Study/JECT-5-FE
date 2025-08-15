@@ -534,4 +534,50 @@ describe("Game API Handlers", () => {
       expect(data.data.presignedUrls).toHaveLength(2)
     })
   })
+
+  describe("GET /user/me/games", () => {
+    it("유효한 세션 쿠키로 내 게임 목록을 조회할 수 있어야 한다", async () => {
+      const response = await testFetchClient.fetch("/user/me/games", {
+        method: "GET",
+        headers: {
+          Cookie: mockSessionCookie,
+        },
+      })
+      const data = await response.json()
+
+      expect(response.ok).toBe(true)
+      expect(data.result).toBe("SUCCESS")
+      expect(data.data).toHaveProperty("games")
+      expect(Array.isArray(data.data.games)).toBe(true)
+    })
+
+    it("세션 쿠키가 없으면 401을 반환해야 한다", async () => {
+      const response = await testFetchClient.fetch("/user/me/games", {
+        method: "GET",
+        headers: {
+          Cookie: "invalid-session",
+        },
+      })
+      const data = await response.json()
+
+      expect(response.ok).toBe(false)
+      expect(response.status).toBe(401)
+      expect(data.result).toBe("ERROR")
+      expect(data.error.code).toBe("E401")
+      expect(data.error.message).toBe("로그인이 필요합니다.")
+    })
+
+    it("쿠키 헤더가 없으면 401을 반환해야 한다", async () => {
+      const response = await testFetchClient.fetch("/user/me/games", {
+        method: "GET",
+      })
+      const data = await response.json()
+
+      expect(response.ok).toBe(false)
+      expect(response.status).toBe(401)
+      expect(data.result).toBe("ERROR")
+      expect(data.error.code).toBe("E401")
+      expect(data.error.message).toBe("로그인이 필요합니다.")
+    })
+  })
 })
