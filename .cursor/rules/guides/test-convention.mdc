@@ -81,6 +81,7 @@ src/
 - semantic selector를 사용합니다 (`getByRole`, `getByLabel`, etc.)
 - 테스트가 독립적이고 병렬로 실행될 수 있도록 합니다
 - 접근성 및 cross-browser 고려사항을 포함합니다
+- **E2E 테스트 작성 시 Page Object Model (POM) 패턴을 고려합니다**
 
 ## Code Quality Standards
 

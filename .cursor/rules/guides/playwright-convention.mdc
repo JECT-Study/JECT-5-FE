@@ -34,9 +34,116 @@ You write concise, technical TypeScript and technical JavaScript codes with accu
 - Avoid hardcoded timeouts
 - Use `page.waitFor` with specific conditions or events to wait for elements or states
 
+## Page Object Model (POM) Pattern
+
+### When to Use POM
+
+- **Complex pages**: Pages with multiple interactive elements and workflows
+- **Reusable components**: Elements that appear across multiple tests
+- **Maintenance reduction**: When tests share common page interactions
+- **Better readability**: To create higher-level abstraction for test logic
+
+### POM Implementation Guidelines
+
+#### Page Object Class Structure
+
+```typescript
+export class GameSetupPage {
+  readonly page: Page
+  readonly addTeamButton: Locator
+  readonly teamInputs: Locator
+  readonly deleteButtons: Locator
+
+  constructor(page: Page) {
+    this.page = page
+    // Initialize locators using semantic selectors
+    this.addTeamButton = page.getByRole("button", { name: "참가자 및 팀 추가하기" })
+    this.teamInputs = page.locator('input[name^="team-"]')
+    this.deleteButtons = page.getByRole("button", { name: "clear input" })
+  }
+
+  // Navigation methods
+  async goto(gameId: string = "1") {
+    await this.page.goto(`http://localhost:3000/game/${gameId}/setup`)
+    await this.page.waitForLoadState("networkidle")
+  }
+
+  // Action methods
+  async addTeam(): Promise<void> {
+    await expect(this.addTeamButton).toBeEnabled()
+    await this.addTeamButton.click()
+  }
+
+  // Getter methods
+  async getTeamCount(): Promise<number> {
+    return await this.teamInputs.count()
+  }
+
+  // Assertion methods
+  async expectTeamToBeVisible(teamName: string): Promise<void> {
+    await expect(this.page.getByText(teamName)).toBeVisible()
+  }
+}
+```
+
+#### POM Design Principles
+
+- **Single Responsibility**: Each page object should represent one page or component
+- **Encapsulation**: Hide implementation details behind meaningful method names
+- **Semantic Locators**: Use role-based and semantic selectors within page objects
+- **Method Naming**: Use action verbs (add, delete, change) and assertion patterns (expect*)
+- **Return Types**: Action methods can return void, getter methods return data, assertion methods use Promise<void>
+
+#### File Organization
+
+```
+__tests__/
+├── pages/
+│   ├── gameSetupPage.ts
+│   ├── loginPage.ts
+│   └── dashboardPage.ts
+└── *.spec.ts
+```
+
+### POM Best Practices
+
+#### Constructor Pattern
+- Initialize `page` parameter and all locators in constructor
+- Use `readonly` for immutable properties
+- Prefer semantic selectors over CSS/XPath selectors
+
+#### Method Categories
+- **Navigation**: `goto()`, `navigateToSection()`
+- **Actions**: `addTeam()`, `deleteItem()`, `fillForm()`
+- **Getters**: `getTeamCount()`, `getErrorMessage()`
+- **Assertions**: `expectTeamVisible()`, `expectButtonDisabled()`
+
+#### Error Handling
+- Include built-in assertions in action methods when appropriate
+- Provide meaningful error messages through page object methods
+- Handle common wait conditions within page object methods
+
+#### Test Integration
+```typescript
+test.describe("게임 설정 - 팀 관리", () => {
+  let gameSetupPage: GameSetupPage
+
+  test.beforeEach(async ({ page }) => {
+    gameSetupPage = new GameSetupPage(page)
+    await gameSetupPage.goto()
+  })
+
+  test("팀 추가 기능", async () => {
+    await gameSetupPage.addTeam()
+    await gameSetupPage.expectTeamCount(3)
+  })
+})
+```
+
 ## Test Quality
 
 - Ensure tests run reliably in parallel without shared state conflicts
 - Avoid commenting on the resulting code
 - Focus on critical user paths, maintaining tests that are stable, maintainable, and reflect real user behavior
+- **Consider implementing POM pattern** for complex pages with multiple interactions
 - Follow the guidance and best practices described on "https://playwright.dev/docs/writing-tests"
