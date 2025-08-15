@@ -10,6 +10,7 @@ import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import { useMsw } from "@/mocks/mswProvider"
 
 interface GameSectionProps {
   className?: string
@@ -17,6 +18,7 @@ interface GameSectionProps {
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
   const router = useRouter()
+  const { isMswReady } = useMsw()
 
   const {
     data: games = [],
@@ -31,6 +33,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       }
       throw new Error("Failed to fetch default games")
     },
+    enabled: isMswReady,
     staleTime: 5 * 60 * 1000,
     retry: 2,
   })
