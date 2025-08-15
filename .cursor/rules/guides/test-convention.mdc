@@ -1,0 +1,288 @@
+---
+alwaysApply: false
+---
+
+# Test Writing Convention Guide
+
+이 가이드는 프로젝트의 unit/integration 테스트, E2E 테스트 작성에 대한 가이드라인입니다.
+해당 가이드에서 제시하는 컨벤션과, 테스트 코드 지침을 따라 정확하고, 테스트 가치가 있는 테스트코드를 작성해야 합니다
+
+## Testing Framework Stack
+
+| Test Type        | Framework                             | File Pattern               | 목적                               |
+| ---------------- | ------------------------------------- | -------------------------- | ---------------------------------- |
+| Unit/Integration | [Vitest](https://vitest.dev/)         | `*.test.ts`, `*.test.tsx`  | 로직 검증 및 integration 시나리오  |
+| E2E              | [Playwright](https://playwright.dev/) | `*.spec.ts`, `*.spec.tsx`  | 사용자 여정 및 end-to-end workflow |
+| MSW Integration  | [MSW + Vitest](https://mswjs.io/)     | `*.test.ts` with MSW setup | API integration 테스트             |
+
+## File Structure & Location
+
+테스트는 **테스트하는 코드에 가장 가까운 곳**에 배치해야 합니다:
+
+```
+src/
+├─ entities/
+│  ├─ game/
+│  │  ├─ api/
+│  │  │  ├─ gameApi.ts
+│  │  │  └─ __tests__/
+│  │  │     └─ gameApi.test.ts
+│  │  └─ ui/
+│  │     ├─ GameCard.tsx
+│  │     └─ __tests__/
+│  │        └─ GameCard.test.tsx
+├─ app/
+│  └─ game/
+│     └─ [gameId]/
+│        └─ setup/
+│           └─ __tests__/
+│              └─ team-management.spec.ts (E2E)
+```
+
+## Test Development Process
+
+### 1. Requirements Analysis
+
+- 사용자 요구사항과 기능 명세를 분석합니다
+- 중요한 사용자 경로와 edge case를 식별합니다
+- 테스트 범위를 결정합니다 (unit vs integration vs E2E)
+
+### 2. Test Planning
+
+다음을 다루는 테스트 시나리오를 작성합니다:
+
+- **Happy path**: 주요 사용자 workflow
+- **Edge cases**: 경계 조건 및 오류 상태
+- **Integration points**: API 상호작용 및 state 관리
+- **User interactions**: UI 동작 및 접근성
+
+### 3. E2E Test Documentation (해당하는 경우)
+
+복잡한 E2E 시나리오의 경우, 다음을 포함한 문서를 작성한 뒤 이를 기반으로 테스트 로직을 작성합니다:
+필요 시 유저 플로우에 대한 정보를 유저에게 요청합니다
+
+- 테스트 목표 및 사용자 스토리
+- 단계별 사용자 액션
+- 예상 결과 및 assertion
+- 전제 조건 및 테스트 데이터 요구사항
+
+### 4. Test Implementation
+
+#### Unit/Integration Tests (Vitest)
+
+- 개별 함수와 컴포넌트 동작을 테스트합니다
+- 외부 의존성을 적절히 mock합니다
+- API integration 테스트에는 MSW를 사용합니다
+- 로직 검증과 state 관리에 집중합니다
+
+#### E2E Tests (Playwright)
+
+- 완전한 사용자 workflow를 테스트합니다
+- semantic selector를 사용합니다 (`getByRole`, `getByLabel`, etc.)
+- 테스트가 독립적이고 병렬로 실행될 수 있도록 합니다
+- 접근성 및 cross-browser 고려사항을 포함합니다
+
+## Code Quality Standards
+
+### Test Independence
+
+- 각 테스트는 완전히 독립적이어야 합니다
+- `beforeEach`/`afterEach`에서 적절한 setup/teardown을 사용합니다
+- 테스트 간 공유 상태를 피합니다
+
+### Naming Conventions
+
+- **Descriptive test names**: 예상 동작을 명확히 설명합니다
+- **File naming**: 대상 파일과 일치시킵니다 (e.g., `button.tsx` → `button.test.tsx`)
+- **Test descriptions**: 행동 중심 언어를 사용합니다 ("should...", "when...", "given...")
+- **테스트 설명과 주석**: 각 테스트 로직에 대해서 주석을 달고, 무조건 한글로 작성합니다
+
+### Assertions & Error Handling
+
+- 더 나은 신뢰성을 위해 web-first assertion을 사용합니다
+- 명확한 실패 메시지를 제공합니다
+- 오류 상태와 edge case를 테스트합니다
+- 긍정적 시나리오와 부정적 시나리오를 모두 검증합니다
+
+## Test Logic Writing Principles
+
+### Given-When-Then Structure
+
+모든 테스트는 BDD 스타일의 Given-When-Then 구조를 따라야 합니다:
+
+```typescript
+describe('팀 생성 프로세스', () => {
+  it('유효한 팀 정보로 팀을 생성할 수 있어야 한다', async () => {
+    // Given: 유효한 팀 데이터가 주어졌을 때
+    const teamData = {
+      name: '테스트팀',
+      members: ['user1', 'user2']
+    }
+
+    // When: 팀 생성을 실행하면
+    const result = await createTeam(teamData)
+
+    // Then: 팀이 성공적으로 생성되어야 한다
+    expect(result.success).toBe(true)
+    expect(result.team.name).toBe(teamData.name)
+  })
+})
+```
+
+### Mock Strategy & Over-Mocking Prevention
+
+- **필요한 부분만 mock합니다** - 과도한 mocking은 테스트의 신뢰성을 떨어뜨립니다
+- **실제 동작과 유사한 mock**을 작성합니다
+- **Mock 상태를 명확히 관리**합니다
+
+```typescript
+describe('UserService', () => {
+  beforeEach(() => {
+    // 필요한 외부 의존성만 mock
+    vi.mocked(apiClient.post).mockResolvedValue({ success: true })
+    // 내부 로직은 실제 코드 사용
+  })
+
+  it('사용자 생성 시 올바른 API 호출을 해야 한다', async () => {
+    // Given: 사용자 데이터가 주어졌을 때
+    const userData = { name: '홍길동', email: 'hong@test.com' }
+
+    // When: 사용자 생성을 실행하면
+    await userService.createUser(userData)
+
+    // Then: 올바른 API가 호출되어야 한다
+    expect(apiClient.post).toHaveBeenCalledWith('/users', userData)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks() // Mock 상태 정리
+  })
+})
+```
+
+### Flaky Test Prevention
+
+- **명시적 대기 전략 사용** - 하드코딩된 timeout 피하기
+- **테스트 격리 보장** - 각 테스트는 완전히 독립적
+- **타이밍 이슈 해결** - 비동기 작업 완료 대기
+
+```typescript
+describe('게임 상태 변경', () => {
+  beforeEach(async () => {
+    // 각 테스트마다 깨끗한 상태로 시작
+    await gameStore.reset()
+    vi.clearAllMocks()
+  })
+
+  it('게임 시작 후 상태가 변경되어야 한다', async () => {
+    // Given: 게임이 준비 상태일 때
+    gameStore.setState('ready')
+
+    // When: 게임을 시작하면
+    await gameStore.startGame()
+
+    // Then: 상태가 playing으로 변경되어야 한다
+    // 명시적 대기로 flaky test 방지
+    await waitFor(() => {
+      expect(gameStore.getState()).toBe('playing')
+    })
+  })
+})
+```
+
+### Test Independence & Isolation
+
+- **테스트 실행 순서에 의존하지 않음**
+- **다른 테스트의 결과나 상태에 의존하지 않음**
+- **공유 상태 사용 금지**
+
+```typescript
+describe('TeamManager', () => {
+  let teamManager: TeamManager
+
+  beforeEach(() => {
+    // 각 테스트마다 새로운 인스턴스 생성
+    teamManager = new TeamManager()
+  })
+
+  it('팀 추가가 정상적으로 작동해야 한다', () => {
+    // Given: 빈 팀 매니저가 주어졌을 때
+    expect(teamManager.getTeamCount()).toBe(0)
+
+    // When: 팀을 추가하면
+    teamManager.addTeam('팀A')
+
+    // Then: 팀 수가 증가해야 한다
+    expect(teamManager.getTeamCount()).toBe(1)
+  })
+
+  it('팀 제거가 정상적으로 작동해야 한다', () => {
+    // Given: 팀이 하나 있을 때
+    teamManager.addTeam('팀A')
+
+    // When: 팀을 제거하면
+    teamManager.removeTeam('팀A')
+
+    // Then: 팀 수가 감소해야 한다
+    expect(teamManager.getTeamCount()).toBe(0)
+  })
+})
+```
+
+## Best Practices
+
+### Performance
+
+- 테스트를 집중적이고 빠르게 유지합니다
+- 적절한 대기 전략을 사용합니다 (하드코딩된 timeout 피하기)
+- 테스트 setup 오버헤드를 최소화합니다
+
+### Maintainability
+
+- 테스트를 단순하고 읽기 쉽게 유지합니다
+- 코드 변경 시 테스트를 업데이트합니다
+- 구식 테스트를 즉시 제거합니다
+- 복잡한 테스트 시나리오를 문서화합니다
+
+### Coverage Goals
+
+- 중요한 비즈니스 로직에 집중합니다
+- 사용자 대면 기능을 우선시합니다
+- 구현 세부사항 테스트를 피합니다
+- 100% 커버리지를 추구하지 않고, 과도한 테스트 없이 합리적인 커버리지를 유지합니다
+
+## Troubleshooting Common Issues
+
+### Flaky Tests
+
+- 적절한 대기 전략을 사용합니다
+- 테스트 격리를 보장합니다
+- 타이밍 이슈를 확인합니다
+- 테스트 환경 일관성을 검증합니다
+
+### Performance Issues
+
+- 느린 테스트를 프로파일링합니다
+- 테스트 setup과 teardown을 최적화합니다
+- 효율적인 selector를 사용합니다
+- 병렬 실행을 고려합니다
+
+## Related Guidelines
+
+프로젝트 가이드라인, 라이브러리 사용 가이드에 대해서는 다음 가이드를 참조하세요:
+
+- **[Playwright E2E Testing](./playwright-convention.mdc)**: 특정 Playwright 테스팅 패턴 및 locator 전략
+- **[MSW Usage Convention](./msw-usage-convention.mdc)**: API 테스팅을 위한 Mock Service Worker 통합
+- **[Folder Structure Convention](./folder-structure-convention.mdc)**: 프로젝트 구성 및 파일 배치 규칙
+- **[Development Convention](./development-convention.mdc)**: 일반적인 개발 워크플로우 및 코딩 표준
+- **[Frontend Fundamentals](./frontend-fundamental.mdc)**: 핵심 frontend 개발 원칙
+
+## Additional Resources
+
+- [Vitest Documentation](https://vitest.dev/)
+- [Playwright Testing Guide](https://playwright.dev/docs/writing-tests)
+- [MSW Documentation](https://mswjs.io/)
+- [Testing Library Best Practices](https://testing-library.com/docs/guiding-principles/)
+
+- 로직 검증,디버깅 시에는 `playwright mcp` 등을 활용합니다
+- 테스트 코드가 아닌, 테스트 원본을 변경해서는 안됩니다
