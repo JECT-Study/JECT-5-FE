@@ -5,7 +5,7 @@ import { type Metadata } from "next"
 import localFont from "next/font/local"
 import { ThemeProvider } from "next-themes"
 
-import { MSWComponent } from "../mocks/mswComponent"
+import { MSWProvider } from "../mocks/mswProvider"
 import { OverlayProviderWrapper } from "./overlayProvider"
 import { Providers } from "./providers"
 
@@ -34,7 +34,7 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
-        <MSWComponent>
+        <MSWProvider>
           <Providers>
             <OverlayProviderWrapper>
               <ThemeProvider
@@ -46,7 +46,7 @@ export default function RootLayout({
               </ThemeProvider>
             </OverlayProviderWrapper>
           </Providers>
-        </MSWComponent>
+        </MSWProvider>
       </body>
     </html>
   )
