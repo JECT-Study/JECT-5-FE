@@ -1,9 +1,9 @@
 "use client"
 
-import { produce } from "immer"
 import { createContext, type ReactNode, useContext, useRef } from "react"
 import { create, useStore } from "zustand"
 import { persist } from "zustand/middleware"
+import { immer } from "zustand/middleware/immer"
 
 import type { GameDetailData } from "@/entities/game/model"
 
@@ -44,7 +44,7 @@ interface GameActions {
 const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
   create<GameState & GameActions>()(
     persist(
-      (set) => ({
+      immer((set) => ({
         gameDetail: initialGameDetail || null,
         teams: [],
         gameStatus: "setup",
@@ -59,73 +59,56 @@ const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
           }),
 
         addTeam: (team) =>
-          set(
-            produce((state: GameState) => {
-              state.teams.push({ ...team, score: 0 })
-            }),
-          ),
+          set((state) => {
+            state.teams.push({ ...team, score: 0 })
+          }),
 
         removeTeam: (teamId) =>
-          set(
-            produce((state: GameState) => {
-              const index = state.teams.findIndex(
-                (team: Team) => team.id === teamId,
-              )
-              if (index !== -1) {
-                state.teams.splice(index, 1)
-              }
-            }),
-          ),
+          set((state) => {
+            const index = state.teams.findIndex(
+              (team: Team) => team.id === teamId,
+            )
+            if (index !== -1) {
+              state.teams.splice(index, 1)
+            }
+          }),
 
         updateTeamScore: (teamId, score) =>
-          set(
-            produce((state: GameState) => {
-              const team = state.teams.find((team: Team) => team.id === teamId)
-              if (team) {
-                team.score = score
-              }
-            }),
-          ),
+          set((state) => {
+            const team = state.teams.find((team: Team) => team.id === teamId)
+            if (team) {
+              team.score = score
+            }
+          }),
 
         addScoreToTeam: (teamId, points) =>
-          set(
-            produce((state: GameState) => {
-              const team = state.teams.find((team: Team) => team.id === teamId)
-              if (team) {
-                team.score += points
-              }
-            }),
-          ),
+          set((state) => {
+            const team = state.teams.find((team: Team) => team.id === teamId)
+            if (team) {
+              team.score += points
+            }
+          }),
 
         setGameStatus: (gameStatus) => set({ gameStatus }),
 
         setRound: (round) =>
-          set(
-            produce((state: GameState) => {
-              const boundedRound = Math.max(
-                1,
-                Math.min(round, state.totalRounds),
-              )
-              state.currentRound = boundedRound
-            }),
-          ),
+          set((state) => {
+            const boundedRound = Math.max(1, Math.min(round, state.totalRounds))
+            state.currentRound = boundedRound
+          }),
 
         nextRound: () =>
-          set(
-            produce((state: GameState) => {
-              state.currentRound = Math.min(
-                state.currentRound + 1,
-                state.totalRounds,
-              )
-            }),
-          ),
+          set((state) => {
+            state.currentRound = Math.min(
+              state.currentRound + 1,
+              state.totalRounds,
+            )
+          }),
 
         prevRound: () =>
-          set(
-            produce((state: GameState) => {
-              state.currentRound = Math.max(state.currentRound - 1, 1)
-            }),
-          ),
+          set((state) => {
+            state.currentRound = Math.max(state.currentRound - 1, 1)
+          }),
 
         resetGame: () =>
           set({
@@ -133,7 +116,7 @@ const createGameStore = (initialGameDetail?: GameDetailData, gameId?: string) =>
             gameStatus: "setup",
             currentRound: 1,
           }),
-      }),
+      })),
       {
         name: `game-store-${gameId || "default"}`,
         partialize: (state) => ({
