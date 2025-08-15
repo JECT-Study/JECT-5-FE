@@ -1,7 +1,9 @@
 "use client"
 import { createContext, useContext, useEffect, useState } from "react"
 
-interface MSWContextValue { isMswReady: boolean }
+interface MSWContextValue {
+  isMswReady: boolean
+}
 const MSWContext = createContext<MSWContextValue>({ isMswReady: false })
 export const useMsw = () => useContext(MSWContext)
 
@@ -20,8 +22,6 @@ export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   return (
-    <MSWContext.Provider value={{ isMswReady }}>
-      {children}
-    </MSWContext.Provider>
+    <MSWContext.Provider value={{ isMswReady }}>{children}</MSWContext.Provider>
   )
 }

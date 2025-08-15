@@ -48,7 +48,11 @@ export const GamePreview = ({
           className={`flex w-[987px] flex-col rounded-[10px] bg-background-interactive-primary-sub ${className}`}
         >
           <div className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]">
-            <SecondaryPlainIconButton size="lg" onClick={handleClose} aria-label="팝업 닫기">
+            <SecondaryPlainIconButton
+              size="lg"
+              onClick={handleClose}
+              aria-label="팝업 닫기"
+            >
               <Cross />
             </SecondaryPlainIconButton>
           </div>
@@ -78,7 +82,10 @@ export const GamePreview = ({
               총 {questionCount} 문제
             </p>
 
-            <div className="flex items-center gap-[34px] overflow-x-auto" data-testid="image-carousel">
+            <div
+              className="flex items-center gap-[34px] overflow-x-auto"
+              data-testid="image-carousel"
+            >
               {questions.map((question, _index) => (
                 <GameCard
                   key={question.id}

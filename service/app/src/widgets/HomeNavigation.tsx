@@ -17,9 +17,7 @@ interface HomeNavigationProps {
   className?: string
 }
 
-export const HomeNavigation = ({
-  className = "",
-}: HomeNavigationProps) => {
+export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
   const [listButton, setListButton] = useState(false)
@@ -54,7 +52,7 @@ export const HomeNavigation = ({
       <div className="flex w-[420px] items-center gap-2.5 px-10">
         <button
           className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
-          onClick={() => router.push('/')}
+          onClick={() => router.push("/")}
           aria-label="홈으로 이동"
         >
           <Image
@@ -105,7 +103,7 @@ export const HomeNavigation = ({
                   />
                 </button>
                 {listButton && (
-                  <div 
+                  <div
                     className="absolute right-0 top-full z-10 mt-2"
                     role="menu"
                     aria-label="사용자 메뉴"
@@ -141,7 +139,10 @@ export const HomeNavigation = ({
             </>
           )}
 
-          <SecondaryGhostIconButton onClick={handleThemeToggle} aria-label="라이트/다크 모드 전환">
+          <SecondaryGhostIconButton
+            onClick={handleThemeToggle}
+            aria-label="라이트/다크 모드 전환"
+          >
             <Sun />
           </SecondaryGhostIconButton>
         </div>

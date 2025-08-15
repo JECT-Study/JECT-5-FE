@@ -21,12 +21,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [_searchQuery, setSearchQuery] = useState("")
-  const {
-    user,
-    isLoading: authLoading,
-    isAuthenticated,
-    logout,
-  } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({

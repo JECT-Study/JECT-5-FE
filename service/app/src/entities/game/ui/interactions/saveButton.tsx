@@ -46,10 +46,14 @@ export function SaveButton() {
 
         let result
         if (gameId) {
-          result = await updateExistingGame({
-            ...state,
-            questions: cleanedQuestions,
-          }, gameId, state.gameVersion || 1)
+          result = await updateExistingGame(
+            {
+              ...state,
+              questions: cleanedQuestions,
+            },
+            gameId,
+            state.gameVersion || 1,
+          )
         } else {
           result = await saveGame({
             ...state,
