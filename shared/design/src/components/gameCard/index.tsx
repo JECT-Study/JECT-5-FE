@@ -177,7 +177,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
           className={cn(imageVariants({ type }))}
           style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}
         />
-        <div className={cn(badgeVariants({ type }))}>
+        <div className={cn(badgeVariants({ type }))} data-testid="question-count">
           <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
             {questionCount}문제
           </span>
@@ -196,9 +196,9 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
       <div className={cn(titleContainerVariants({ type }))}>
         {type === 'myGame' ? (
           <>
-            <div className="line-clamp-2 w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary">
-              {title}
-            </div>
+                      <div className="line-clamp-2 w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary" data-testid="game-title">
+            {title}
+          </div>
             <DropdownMenuRoot>
               <DropdownMenuTrigger asChild>
                 <SecondaryPlainIconButton 
@@ -236,7 +236,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
             </DropdownMenuRoot>
           </>
         ) : (
-          <div className={cn(titleVariants({ type }), "line-clamp-2")}>
+          <div className={cn(titleVariants({ type }), "line-clamp-2")} data-testid="game-title">
             {title}
           </div>
         )}
@@ -244,7 +244,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
     )
 
     return (
-      <div ref={ref} className={cn(gameCardVariants({ type }))}>
+      <div ref={ref} className={cn(gameCardVariants({ type }))} data-testid="game-card">
         <div className="flex flex-col gap-[14px]">
           {renderThumbnail()}
           <div className="h-[46px]">
