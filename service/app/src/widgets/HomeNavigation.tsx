@@ -52,7 +52,11 @@ export const HomeNavigation = ({
       className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary ${className}`}
     >
       <div className="flex w-[420px] items-center gap-2.5 px-10">
-        <div className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5">
+        <button
+          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
+          onClick={() => router.push('/')}
+          aria-label="홈으로 이동"
+        >
           <Image
             src="/logo.svg"
             alt="홈 로고"
@@ -60,7 +64,7 @@ export const HomeNavigation = ({
             width={268}
             height={60}
           />
-        </div>
+        </button>
       </div>
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
@@ -85,9 +89,12 @@ export const HomeNavigation = ({
               </PrimaryBoxButton>
 
               <div className="relative">
-                <div
+                <button
                   className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
                   onClick={handleAvatarClick}
+                  aria-label="사용자 메뉴 열기"
+                  aria-expanded={listButton}
+                  aria-haspopup="true"
                 >
                   <Image
                     src={user?.profileImageUrl || "/avatar.svg"}
@@ -96,13 +103,18 @@ export const HomeNavigation = ({
                     width={42}
                     height={42}
                   />
-                </div>
+                </button>
                 {listButton && (
-                  <div className="absolute right-0 top-full z-10 mt-2">
+                  <div 
+                    className="absolute right-0 top-full z-10 mt-2"
+                    role="menu"
+                    aria-label="사용자 메뉴"
+                  >
                     <SecondaryOutlineBoxButton
                       size="md"
                       onClick={handleLogoutClick}
                       className="whitespace-nowrap"
+                      role="menuitem"
                     >
                       로그아웃
                     </SecondaryOutlineBoxButton>
