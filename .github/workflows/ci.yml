@@ -61,5 +61,46 @@ jobs:
       - name: Run CI
         run: yarn run ci
 
-      - name: build App
-        run: yarn workspace @ject-5-fe/app build
+      - name: build vercel preview
+        uses: amondnet/vercel-action@v20
+        id: vercel-preview-deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORGID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECTID }}
+
+      - name: Run Playwright tests on preview
+        run: yarn workspace @ject-5-fe/app test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ steps.vercel-preview-deploy.outputs.preview-url }}
+
+      - name: Comment on PR - Success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ **CI 및 E2E 테스트 성공!**
+              
+              🚀 Preview URL: ${{ steps.vercel-preview-deploy.outputs.preview-url }}
+              
+              모든 테스트가 통과했습니다. 코드 리뷰를 진행해주세요!`
+            })
+
+      - name: Comment on PR - Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ **테스트 실패**
+              
+              테스트가 실패했습니다. [Actions 로그](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})를 확인해주세요.`
+            })
