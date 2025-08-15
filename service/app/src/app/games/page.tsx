@@ -152,7 +152,7 @@ export default function GamesPage() {
           disabled={authLoading}
         >
           <Image
-            src="/kakao-logo.png"
+            src="/kakao-logo.svg"
             alt="카카오 로고"
             className="size-8"
             width={32}

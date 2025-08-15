@@ -118,7 +118,7 @@ export const HomeNavigation = ({
                 disabled={authLoading}
               >
                 <Image
-                  src="/kakao-logo.png"
+                  src="/kakao-logo.svg"
                   alt="카카오 로고"
                   className="size-8"
                   width={32}
@@ -129,7 +129,7 @@ export const HomeNavigation = ({
             </>
           )}
 
-          <SecondaryGhostIconButton onClick={handleThemeToggle}>
+          <SecondaryGhostIconButton onClick={handleThemeToggle} aria-label="라이트/다크 모드 전환">
             <Sun />
           </SecondaryGhostIconButton>
         </div>
