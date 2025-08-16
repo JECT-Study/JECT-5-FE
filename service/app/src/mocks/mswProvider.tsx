@@ -33,6 +33,8 @@ export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
     init()
   }, [])
 
+  if (!isMswReady) return null
+
   return (
     <MSWContext.Provider value={{ isMswReady, isMswError }}>
       {children}
