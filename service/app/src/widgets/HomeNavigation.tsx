@@ -19,7 +19,7 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, logout, login } = useAuth()
   const [listButton, setListButton] = useState(false)
 
   const handleMyGamesClick = () => {
@@ -37,6 +37,15 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   }
 
   const handleLoginClick = async () => {
+    if (process.env.NODE_ENV === "development") {
+      try {
+        await login("someValidCode")
+      } catch (error) {
+        console.error("Login error:", error)
+      }
+      return
+    }
+
     window.location.href = "/login/kakao"
   }
 
