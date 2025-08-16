@@ -12,6 +12,7 @@ import { type Team, useGameStore } from "../store/useGameStore"
 import { GameNavigation } from "./components/gameNavigation"
 import { TeamSidebar } from "./components/teamSidebar"
 
+const MIN_TEAMS = 2
 const MAX_TEAMS = 10
 const MAX_TEAM_NAME_LENGTH = 30
 
@@ -80,6 +81,7 @@ export default function GameSetupPage() {
     addTeam({
       id: newId,
       name: newTeamName,
+      score: 0,
       members: [],
     })
   }
@@ -102,7 +104,7 @@ export default function GameSetupPage() {
           router.push(`/game/${params.gameId}/play`)
         }}
         onExit={handleExitClick}
-        canStart={Object.keys(teamErrors).length > 0}
+        isStartEnabled={Object.keys(teamErrors).length === 0}
       />
       <section className="flex flex-1 overflow-hidden">
         <TeamSidebar teams={teams} />
@@ -126,7 +128,7 @@ export default function GameSetupPage() {
                       value={team.name}
                       onChange={(value) => handleUpdateTeamName(team.id, value)}
                       onReset={() => {
-                        if (teams.length > 2) {
+                        if (teams.length > MIN_TEAMS) {
                           handleRemoveTeam(team.id)
                         }
                       }}
