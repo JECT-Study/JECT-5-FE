@@ -1,3 +1,4 @@
+"use client"
 import { create, useStore } from "zustand"
 import { persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -28,7 +29,7 @@ interface GameState {
 
 interface GameActions {
   // 팀 관리 - 플랫 구조
-  addTeam: (team: Omit<Team, "score">) => void
+  addTeam: (team: Team) => void
   removeTeam: (teamId: string) => void
   updateTeamName: (teamId: string, name: string) => void
   updateTeamScore: (teamId: string, score: number) => void
@@ -64,7 +65,7 @@ export const createGameStore = (
 
         addTeam: (team) =>
           set((state) => {
-            state.teams.push({ ...team, score: 0 })
+            state.teams.push({ ...team })
           }),
 
         removeTeam: (teamId) =>
@@ -131,6 +132,7 @@ export const createGameStore = (
       {
         name: `game-store-${gameId || "default"}`,
         partialize: (state) => ({
+          teams: state.teams,
           gameStatus: state.gameStatus,
           currentRound: state.currentRound,
           totalRounds: state.totalRounds,
