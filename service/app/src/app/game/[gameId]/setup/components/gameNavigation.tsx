@@ -10,13 +10,13 @@ import Link from "next/link"
 interface GameNavigationProps {
   onStart: () => void
   onExit: () => void
-  canStart: boolean
+  isStartEnabled: boolean
 }
 
 export function GameNavigation({
   onStart,
   onExit,
-  canStart,
+  isStartEnabled,
 }: GameNavigationProps) {
   return (
     <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
@@ -47,7 +47,7 @@ export function GameNavigation({
           <PrimaryBoxButton
             size="sm"
             _style="solid"
-            disabled={canStart}
+            disabled={!isStartEnabled}
             onClick={onStart}
           >
             게임 시작
