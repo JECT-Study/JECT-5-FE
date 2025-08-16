@@ -207,8 +207,6 @@ export const gameHandlers = [
       }
 
       mockGameList.push(newGame)
-      console.log("MSW: Game created successfully:", newGame)
-      console.log("MSW: Total games in mockGameList:", mockGameList.length)
       return HttpResponse.json(gameSuccessResponse())
     } catch {
       return HttpResponse.json(internalServerError)
