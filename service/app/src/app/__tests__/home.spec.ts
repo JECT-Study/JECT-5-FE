@@ -13,7 +13,7 @@ import { expect, type Locator, type Page, test } from "@playwright/test"
  */
 
 // Page Object Model: 홈페이지 클래스
-export class HomePage {
+class HomePage {
   readonly page: Page
   readonly logo: Locator
   readonly kakaoLoginButton: Locator
