@@ -18,7 +18,10 @@ export const findGameById = (gameId: UUID): GameListItem | undefined => {
 export const validateSessionCookie = (cookieHeader: string | null): boolean => {
   if (typeof window !== "undefined" && typeof document !== "undefined") {
     const documentCookie = document.cookie
-    if (documentCookie.includes("sessionId=") || documentCookie.includes("test-session-123")) {
+    if (
+      documentCookie.includes("sessionId=") ||
+      documentCookie.includes("test-session-123")
+    ) {
       return true
     }
   }

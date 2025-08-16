@@ -38,14 +38,11 @@ export const useAuth = (): UseAuthReturn => {
   useEffect(() => {
     if (!user) return
 
-    const cleanup = startPeriodicSessionValidation(
-      5 * 60 * 1000,
-      () => {
-        setUser(null)
-        localStorage.removeItem("auth_user")
-        deleteCookie("sessionId")
-      }
-    )
+    const cleanup = startPeriodicSessionValidation(5 * 60 * 1000, () => {
+      setUser(null)
+      localStorage.removeItem("auth_user")
+      deleteCookie("sessionId")
+    })
 
     return cleanup
   }, [user])

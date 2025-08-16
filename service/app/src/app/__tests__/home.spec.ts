@@ -37,7 +37,9 @@ export class HomePage {
     this.kakaoLoginButton = page.getByRole("button", {
       name: /간편로그인해서 게임 만들기/,
     })
-    this.themeToggleButton = page.getByRole('button', { name: '라이트/다크 모드 전환' })
+    this.themeToggleButton = page.getByRole("button", {
+      name: "라이트/다크 모드 전환",
+    })
 
     // 게임 섹션 요소들
     this.viewMoreGamesButton = page.getByRole("button", {
@@ -51,7 +53,9 @@ export class HomePage {
 
     // 로그인 상태에서 추가되는 요소들
     this.myGamesButton = page.getByRole("button", { name: "내 게임" })
-    this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).filter({ hasText: /^게임 만들기$/ })
+    this.createGameButton = page
+      .getByRole("button", { name: "게임 만들기" })
+      .filter({ hasText: /^게임 만들기$/ })
     this.avatarButton = page.getByRole("button", { name: "사용자 메뉴 열기" })
     this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
   }
@@ -207,12 +211,15 @@ export class HomePage {
     ).toBeVisible()
   }
 
-  async startGameFromPreview(gamePreviewDialog: Locator, isLoggedIn: boolean = false) {
+  async startGameFromPreview(
+    gamePreviewDialog: Locator,
+    isLoggedIn: boolean = false,
+  ) {
     const startButton = gamePreviewDialog.getByRole("button", {
       name: "게임 시작",
     })
     await startButton.click()
-    
+
     // 로그인 상태에 따라 다른 URL 확인
     if (isLoggedIn) {
       // 로그인 상태: /game/0/setup으로 리다이렉트
@@ -262,7 +269,8 @@ test.describe("홈페이지 E2E 테스트 - 비로그인 상태", () => {
   test.describe("로그인 관련 UI 확인", () => {
     test("비로그인 상태에서는 카카오 로그인 버튼이 표시되어야 한다", async () => {
       await expect(homePage.kakaoLoginButton).toBeVisible()
-      const kakaoLogo = homePage.kakaoLoginButton.locator('img[alt="카카오 로고"]')
+      const kakaoLogo =
+        homePage.kakaoLoginButton.locator('img[alt="카카오 로고"]')
       await expect(kakaoLogo).toBeVisible()
     })
   })
@@ -305,12 +313,15 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page)
     await page.addInitScript(() => {
-      localStorage.setItem("auth_user", JSON.stringify({
-        id: "test-user-id",
-        nickname: "테스트 사용자",
-        profileImageUrl: "/avatar.svg",
-        email: "test@example.com"
-      }))
+      localStorage.setItem(
+        "auth_user",
+        JSON.stringify({
+          id: "test-user-id",
+          nickname: "테스트 사용자",
+          profileImageUrl: "/avatar.svg",
+          email: "test@example.com",
+        }),
+      )
     })
     await homePage.goto()
   })
@@ -323,7 +334,8 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
 
     test("로그인 상태에서 사용자 아바타가 표시되어야 한다", async () => {
       await expect(homePage.avatarButton).toBeVisible()
-      const avatarImage = homePage.avatarButton.locator('img[alt="사용자 아바타"]')
+      const avatarImage =
+        homePage.avatarButton.locator('img[alt="사용자 아바타"]')
       await expect(avatarImage).toBeVisible()
     })
 
@@ -334,7 +346,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
       await expect(homePage.createGameButton).toBeVisible()
       await expect(homePage.createGameButton).toHaveText("게임 만들기")
 
-      const addIcon = homePage.createGameButton.locator('svg')
+      const addIcon = homePage.createGameButton.locator("svg")
       await expect(addIcon).toBeVisible()
     })
   })

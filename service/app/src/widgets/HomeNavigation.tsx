@@ -19,7 +19,13 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { user, isLoading: authLoading, isAuthenticated, logout, login } = useAuth()
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    logout,
+    login,
+  } = useAuth()
   const [listButton, setListButton] = useState(false)
 
   const handleMyGamesClick = () => {

@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { startPeriodicSessionValidation, validateSessionWithRequest } from "../sessionValidator"
+import {
+  startPeriodicSessionValidation,
+  validateSessionWithRequest,
+} from "../sessionValidator"
 
 vi.mock("@shared/lib/fetchClient", () => ({
   fetchClient: {
@@ -13,10 +16,10 @@ describe("Session Validator", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    
+
     const { fetchClient } = await import("@shared/lib/fetchClient")
     mockFetch = vi.mocked(fetchClient.fetch)
-    
+
     Object.defineProperty(window, "localStorage", {
       value: {
         removeItem: vi.fn(),
@@ -74,7 +77,7 @@ describe("Session Validator", () => {
       const cleanup = startPeriodicSessionValidation(1000) // 1초마다
 
       expect(typeof cleanup).toBe("function")
-      
+
       // 정리 함수 실행
       cleanup()
     })
@@ -88,7 +91,7 @@ describe("Session Validator", () => {
       const onSessionExpired = vi.fn()
       const cleanup = startPeriodicSessionValidation(100, onSessionExpired)
 
-      await new Promise(resolve => setTimeout(resolve, 150))
+      await new Promise((resolve) => setTimeout(resolve, 150))
 
       expect(onSessionExpired).toHaveBeenCalled()
 

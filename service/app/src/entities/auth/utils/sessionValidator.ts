@@ -10,31 +10,32 @@ interface SessionValidationResult {
   error?: string
 }
 
-export const validateSessionWithRequest = async (): Promise<SessionValidationResult> => {
-  try {
-    // 간단한 API 요청으로 세션 상태 확인 (예: 내 게임 목록 조회)
-    const response = await fetchClient.fetch("/user/me/games?limit=1", {
-      method: "GET",
-    })
+export const validateSessionWithRequest =
+  async (): Promise<SessionValidationResult> => {
+    try {
+      // 간단한 API 요청으로 세션 상태 확인 (예: 내 게임 목록 조회)
+      const response = await fetchClient.fetch("/user/me/games?limit=1", {
+        method: "GET",
+      })
 
-    if (response.status === 401) {
+      if (response.status === 401) {
+        return {
+          isValid: false,
+          error: "Session expired",
+        }
+      }
+
+      return {
+        isValid: true,
+      }
+    } catch (error) {
+      console.error("Session validation error:", error)
       return {
         isValid: false,
-        error: "Session expired",
+        error: "Network error",
       }
     }
-
-    return {
-      isValid: true,
-    }
-  } catch (error) {
-    console.error("Session validation error:", error)
-    return {
-      isValid: false,
-      error: "Network error",
-    }
   }
-}
 
 export const startPeriodicSessionValidation = (
   intervalMs: number = 5 * 60 * 1000,
@@ -42,14 +43,15 @@ export const startPeriodicSessionValidation = (
 ): (() => void) => {
   const intervalId = setInterval(async () => {
     const result = await validateSessionWithRequest()
-    
+
     if (!result.isValid) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth_user")
-        document.cookie = "sessionId=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
-        
+        document.cookie =
+          "sessionId=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
+
         window.dispatchEvent(new CustomEvent("auth:session-expired"))
-        
+
         if (onSessionExpired) {
           onSessionExpired()
         }
