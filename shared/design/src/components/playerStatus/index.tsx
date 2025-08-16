@@ -22,7 +22,7 @@ export const PlayerStatus = ({
   return (
     <div
       className={cn(
-        "max-h-[118px] w-[350px] rounded-[10px] bg-background-primary p-[20px_39px]",
+        "flex max-h-[118px] w-[350px] items-center justify-center rounded-[10px] bg-background-primary p-[20px_39px]",
         className,
       )}
     >

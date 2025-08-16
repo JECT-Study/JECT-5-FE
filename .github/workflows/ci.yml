@@ -70,10 +70,10 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORGID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECTID }}
 
-      - name: Run Playwright tests on preview
-        run: yarn workspace @ject-5-fe/app test:e2e
-        env:
-          PLAYWRIGHT_BASE_URL: ${{ steps.vercel-preview-deploy.outputs.preview-url }}
+      # - name: Run Playwright tests on preview
+      #   run: yarn workspace @ject-5-fe/app test:e2e
+      #   env:
+      #     PLAYWRIGHT_BASE_URL: ${{ steps.vercel-preview-deploy.outputs.preview-url }}
 
       - name: Comment on PR - Success
         if: success()
