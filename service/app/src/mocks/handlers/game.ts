@@ -59,7 +59,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.get(`${MSW_BASE_URL}/user/me/games`, ({ request }) => {
+  http.get(`${MSW_BASE_URL}/users/me/games`, ({ request }) => {
     const url = new URL(request.url)
     const { cursorGameId, cursorUpdatedAt, limit } = Object.fromEntries(
       url.searchParams.entries(),

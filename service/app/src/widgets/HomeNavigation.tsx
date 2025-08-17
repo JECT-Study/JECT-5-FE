@@ -21,7 +21,6 @@ interface HomeNavigationProps {
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const {
-    user,
     isLoading: authLoading,
     isAuthenticated,
     logout,
@@ -119,7 +118,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                   aria-haspopup="true"
                 >
                   <Image
-                    src={user?.profileImageUrl || "/avatar.svg"}
+                    src="/avatar.svg"
                     alt="사용자 아바타"
                     className="size-full rounded-full"
                     width={42}

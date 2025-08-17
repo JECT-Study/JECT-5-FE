@@ -535,9 +535,9 @@ describe("Game API Handlers", () => {
     })
   })
 
-  describe("GET /user/me/games", () => {
+  describe("GET /users/me/games", () => {
     it("유효한 세션 쿠키로 내 게임 목록을 조회할 수 있어야 한다", async () => {
-      const response = await testFetchClient.fetch("/user/me/games", {
+      const response = await testFetchClient.fetch("/users/me/games", {
         method: "GET",
         headers: {
           Cookie: mockSessionCookie,
@@ -552,7 +552,7 @@ describe("Game API Handlers", () => {
     })
 
     it("세션 쿠키가 없으면 401을 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/user/me/games", {
+      const response = await testFetchClient.fetch("/users/me/games", {
         method: "GET",
         headers: {
           Cookie: "invalid-session",
@@ -568,7 +568,7 @@ describe("Game API Handlers", () => {
     })
 
     it("쿠키 헤더가 없으면 401을 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/user/me/games", {
+      const response = await testFetchClient.fetch("/users/me/games", {
         method: "GET",
       })
       const data = await response.json()

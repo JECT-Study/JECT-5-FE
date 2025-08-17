@@ -26,7 +26,7 @@ export async function getMyGames(
   params: GetMyGamesRequest,
 ): Promise<GetMyGamesResponse | ApiResponse<null>> {
   const queryString = toQueryString(params)
-  const response = await fetchClient.fetch(`/user/me/games?${queryString}`, {
+  const response = await fetchClient.fetch(`/users/me/games?${queryString}`, {
     method: "GET",
   })
 

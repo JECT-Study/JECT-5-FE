@@ -31,7 +31,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { user, isLoading: _authLoading, isAuthenticated, logout } = useAuth()
+  const { isLoading: _authLoading, isAuthenticated, logout } = useAuth()
   const [listButton, setListButton] = useState(false)
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -216,13 +216,13 @@ export default function DashboardPage() {
             className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
             onClick={handleAvatarClick}
           >
-            <Image
-              src={user?.profileImageUrl || "/avatar.svg"}
-              alt="사용자 아바타"
-              className="size-full rounded-full"
-              width={42}
-              height={42}
-            />
+                <Image
+                  src="/avatar.svg"
+                  alt="사용자 아바타"
+                  className="size-full rounded-full"
+                  width={42}
+                  height={42}
+                />
           </div>
           {listButton && (
             <div className="absolute right-0 top-full z-10 mt-2">
