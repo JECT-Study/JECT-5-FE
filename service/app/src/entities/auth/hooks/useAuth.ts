@@ -60,46 +60,6 @@ export const useAuth = (): UseAuthReturn => {
   }, [user])
 
   useEffect(() => {
-    if (!user) return
-
-    const checkCookieStatus = () => {
-      const hasSessionCookie = document.cookie.includes("JSESSIONID=")
-      if (!hasSessionCookie) {
-        console.log("Session cookie not found, logging out user")
-        setUser(null)
-        localStorage.removeItem("auth_user")
-        deleteCookie("JSESSIONID")
-        window.dispatchEvent(new CustomEvent("auth:session-expired"))
-        return
-      }
-      animationFrameId = requestAnimationFrame(checkCookieStatus)
-    }
-
-    let animationFrameId: number
-    animationFrameId = requestAnimationFrame(checkCookieStatus)
-
-    const handleFocus = () => {
-      const hasSessionCookie = document.cookie.includes("JSESSIONID=")
-      if (!hasSessionCookie) {
-        console.log("Session cookie not found on focus, logging out user")
-        setUser(null)
-        localStorage.removeItem("auth_user")
-        deleteCookie("JSESSIONID")
-        window.dispatchEvent(new CustomEvent("auth:session-expired"))
-      }
-    }
-
-    window.addEventListener("focus", handleFocus)
-
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId)
-      }
-      window.removeEventListener("focus", handleFocus)
-    }
-  }, [user])
-
-  useEffect(() => {
     const savedUser = localStorage.getItem("auth_user")
     if (savedUser) {
       try {
