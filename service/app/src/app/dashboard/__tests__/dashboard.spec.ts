@@ -29,7 +29,7 @@ class DashboardPage {
 
     // 네비게이션 버튼들
     this.homeButton = page.getByRole("button", { name: "홈으로 이동" })
-    this.createGameButton = page.getByRole("button", { name: "게임 만들기" })
+    this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).first()
 
     // 게임 카드 관련
     this.gameCards = page.locator('[data-testid="game-card"]')
