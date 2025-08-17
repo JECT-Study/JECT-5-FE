@@ -23,6 +23,8 @@ class DashboardPage {
   readonly gameOptionsButtons: Locator
   readonly gamePreviewDialog: Locator
   readonly alertDialog: Locator
+  readonly avatarButton: Locator
+  readonly logoutButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -30,6 +32,10 @@ class DashboardPage {
     // 네비게이션 버튼들
     this.homeButton = page.getByRole("button", { name: "홈으로 이동" })
     this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).first()
+
+    // 사용자 메뉴 관련
+    this.avatarButton = page.getByRole("button", { name: /테스트 사용자 메뉴 (열기|닫기)/ })
+    this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
 
     // 게임 카드 관련
     this.gameCards = page.locator('[data-testid="game-card"]')
@@ -83,6 +89,14 @@ class DashboardPage {
 
   async clickCreateGameButton() {
     await this.createGameButton.click()
+  }
+
+  async clickAvatarButton() {
+    await this.avatarButton.click()
+  }
+
+  async clickLogoutButton() {
+    await this.logoutButton.click()
   }
 
   // 게임 카드 관련 액션 메서드들

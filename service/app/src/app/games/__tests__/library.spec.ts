@@ -33,6 +33,8 @@ class LibraryPage {
   readonly questionCount: Locator
   readonly imageCarousel: Locator
   readonly startGameButton: Locator
+  readonly avatarButton: Locator
+  readonly logoutButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -46,7 +48,11 @@ class LibraryPage {
     this.createGameButton = page.getByRole("button", { name: "게임 만들기", exact: true })
 
     // 비로그인 상태에서 추가되는 요소들
-    this.kakaoLoginButton = page.getByRole("button", { name: /간편로그인해서 게임 만들기/ })
+    this.kakaoLoginButton = page.getByRole("button", { name: "카카오 간편 로그인" })
+
+    // 로그인 상태에서 추가되는 요소들
+    this.avatarButton = page.getByRole("button", { name: "사용자 아바타" })
+    this.logoutButton = page.getByRole("button", { name: "로그아웃" })
 
     // 게임 미리 보기 팝업 요소들
     this.gamePreviewDialog = page.getByRole("dialog")
@@ -175,11 +181,15 @@ class LibraryPage {
   async expectLoggedInState() {
     await expect(this.createGameButton).toBeVisible()
     await expect(this.kakaoLoginButton).not.toBeVisible()
+    await expect(this.avatarButton).toBeVisible()
+    await expect(this.logoutButton).toBeVisible()
   }
 
   async expectLoggedOutState() {
     await expect(this.kakaoLoginButton).toBeVisible()
     await expect(this.createGameButton).toBeVisible()
+    await expect(this.avatarButton).not.toBeVisible()
+    await expect(this.logoutButton).not.toBeVisible()
   }
 
   // 게임 카드 관련 검증 메서드들
@@ -255,9 +265,9 @@ test.describe("라이브러리 E2E 테스트 - 로그인 상태", () => {
     // 로그인 상태 시뮬레이션
     await page.addInitScript(() => {
       localStorage.setItem("auth_user", JSON.stringify({
-        id: 1,
-        name: "테스트 사용자",
-        email: "test@example.com"
+        id: "test-user-id",
+        nickname: "테스트 사용자",
+        email: "test@example.com",
       }))
       document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })

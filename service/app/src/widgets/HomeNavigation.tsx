@@ -143,7 +143,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                   className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
                   onClick={handleAvatarClick}
                   onKeyDown={handleAvatarKeyDown}
-                  aria-label={`${user?.nickname || '사용자'} 메뉴 ${listButton ? '닫기' : '열기'}`}
+                  aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
                   aria-expanded={listButton}
                   aria-haspopup="true"
                   tabIndex={0}
