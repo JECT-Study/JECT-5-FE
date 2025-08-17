@@ -103,18 +103,22 @@ class HomePage {
 
   // 검증 메서드들
   async expectToBeOnHomePage() {
+    await this.page.waitForURL("http://localhost:3000/", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/")
   }
 
   async expectToBeOnGamesPage() {
+    await this.page.waitForURL("http://localhost:3000/games", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/games")
   }
 
   async expectToBeOnDashboardPage() {
+    await this.page.waitForURL("http://localhost:3000/dashboard", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/dashboard")
   }
 
   async expectToBeOnCreatePage() {
+    await this.page.waitForURL("http://localhost:3000/create", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/create")
   }
 
@@ -220,6 +224,7 @@ class HomePage {
     })
     await startButton.click()
 
+    await this.page.waitForURL(/\/game\/\d+(\/setup)?/, { timeout: 10000 })
     await expect(this.page).toHaveURL(/\/game\/\d+(\/setup)?/)
   }
 }

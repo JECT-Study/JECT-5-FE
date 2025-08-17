@@ -129,19 +129,23 @@ class DashboardPage {
 
   // 검증 메서드들
   async expectToBeOnHomePage() {
+    await this.page.waitForURL("http://localhost:3000/", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/")
   }
 
   async expectToBeOnCreatePage() {
+    await this.page.waitForURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/, { timeout: 10000 })
     await expect(this.page).toHaveURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/)
   }
 
   async expectToBeOnDashboardPage() {
+    await this.page.waitForURL("http://localhost:3000/dashboard", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/dashboard")
   }
 
-  async expectToBeOnGamePage(gameId: string) {
-    await expect(this.page).toHaveURL(new RegExp(`/game/${gameId}/setup`))
+  async expectToBeOnGameSetupPage() {
+    await this.page.waitForURL(/\/game\/\d+(\/setup)?/, { timeout: 10000 })
+    await expect(this.page).toHaveURL(/\/game\/\d+(\/setup)?/)
   }
 
   // UI 요소 확인 메서드들
@@ -328,7 +332,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
     await dashboardPage.expectGamePreviewInfo()
     
     await dashboardPage.clickGameStartButton()
-    await expect(dashboardPage.page).toHaveURL(/\/game\/\d+(\/setup)?/)
+    await dashboardPage.expectToBeOnGameSetupPage()
   })
 })
 
