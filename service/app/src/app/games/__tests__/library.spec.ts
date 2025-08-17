@@ -35,6 +35,7 @@ class LibraryPage {
   readonly startGameButton: Locator
   readonly avatarButton: Locator
   readonly logoutButton: Locator
+  readonly userMenu: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -51,8 +52,9 @@ class LibraryPage {
     this.kakaoLoginButton = page.getByRole("button", { name: "카카오 간편 로그인" })
 
     // 로그인 상태에서 추가되는 요소들
-    this.avatarButton = page.getByRole("button", { name: "사용자 아바타" })
-    this.logoutButton = page.getByRole("button", { name: "로그아웃" })
+    this.avatarButton = page.getByRole("button", { name: /사용자 메뉴/ })
+    this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
+    this.userMenu = page.locator('[data-user-menu]')
 
     // 게임 미리 보기 팝업 요소들
     this.gamePreviewDialog = page.getByRole("dialog")
@@ -182,6 +184,9 @@ class LibraryPage {
     await expect(this.createGameButton).toBeVisible()
     await expect(this.kakaoLoginButton).not.toBeVisible()
     await expect(this.avatarButton).toBeVisible()
+    await this.avatarButton.click()
+    await this.page.waitForTimeout(100)
+    await expect(this.userMenu).toBeVisible()
     await expect(this.logoutButton).toBeVisible()
   }
 

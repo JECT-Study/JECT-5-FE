@@ -22,8 +22,9 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
+  const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -96,8 +97,16 @@ export default function GamesPage() {
   }
 
   const handleLogin = async () => {
-    console.log("Login clicked")
-    router.push("/login")
+    if (process.env.NODE_ENV === "development") {
+      try {
+        await login("someValidCode")
+      } catch (error) {
+        console.error("Login error:", error)
+      }
+      return
+    }
+
+    window.location.href = "/login"
   }
 
   const handleThemeToggle = () => {
@@ -107,6 +116,29 @@ export default function GamesPage() {
   const handleLogoClick = () => {
     router.push("/")
   }
+
+  const handleAvatarClick = () => {
+    setListButton(!listButton)
+  }
+
+  const handleLogoutClick = () => {
+    logout()
+    setListButton(false)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (listButton && !target.closest('[data-user-menu]')) {
+        setListButton(false)
+      }
+    }
+
+    if (listButton) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [listButton])
 
   const leftContent = (
     <button
@@ -142,9 +174,17 @@ export default function GamesPage() {
       {isAuthenticated ? (
         <>
           <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-text-primary">
+              {user?.nickname}
+            </span>
+          </div>
+          <div className="relative" data-user-menu>
             <button
-              className="flex size-[42px] items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
-              aria-label="사용자 아바타"
+              className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+              onClick={handleAvatarClick}
+              aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
+              aria-expanded={listButton}
+              aria-haspopup="true"
               tabIndex={0}
             >
               <Image
@@ -155,17 +195,25 @@ export default function GamesPage() {
                 height={42}
               />
             </button>
-            <span className="text-sm font-medium text-text-primary">
-              {user?.nickname}
-            </span>
+            {listButton && (
+              <div
+                className="absolute right-0 top-full z-10 mt-2"
+                role="menu"
+                aria-label="사용자 메뉴"
+              >
+                <SecondaryOutlineBoxButton
+                  size="md"
+                  onClick={handleLogoutClick}
+                  className="whitespace-nowrap"
+                  role="menuitem"
+                  aria-label="로그아웃"
+                  tabIndex={0}
+                >
+                  로그아웃
+                </SecondaryOutlineBoxButton>
+              </div>
+            )}
           </div>
-          <SecondaryOutlineBoxButton 
-            size="md" 
-            onClick={logout}
-            aria-label="로그아웃"
-          >
-            로그아웃
-          </SecondaryOutlineBoxButton>
         </>
       ) : (
         <SecondaryOutlineBoxButton
