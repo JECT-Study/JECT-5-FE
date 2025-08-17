@@ -126,7 +126,7 @@ const titleContainerVariants = cva("", {
 })
 
 const skeletonVariants = cva(
-  "animate-pulse rounded-[10px] bg-gradient-to-br from-gray-200 to-gray-300",
+  "animate-pulse rounded-[10px] bg-gray-200",
   {
     variants: {
       type: {
