@@ -63,10 +63,10 @@ export const GamePreview = ({
           <div className="flex w-full flex-col gap-[25px] px-[60px] pb-[60px]">
             <div className="flex w-[860px] items-start justify-between">
               <div className="flex flex-col gap-[18px]">
-                <h2 className="typography-heading-xl-semibold text-neutral-black">
+                <h2 className="typography-heading-xl-semibold text-text-primary">
                   {gameTitle}
                 </h2>
-                <p className="typography-body-md-medium text-neutral-black">
+                <p className="typography-body-md-medium text-text-secondary">
                   {creatorName}
                 </p>
               </div>
@@ -81,7 +81,7 @@ export const GamePreview = ({
               </PrimaryBoxButton>
             </div>
 
-            <p className="typography-heading-lg-medium text-neutral-black">
+            <p className="typography-heading-lg-medium text-text-primary">
               총 {questionCount} 문제
             </p>
 
