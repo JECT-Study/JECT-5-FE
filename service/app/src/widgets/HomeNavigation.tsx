@@ -9,7 +9,7 @@ import { Add } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 
@@ -21,8 +21,13 @@ interface HomeNavigationProps {
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleMyGamesClick = () => {
     router.push("/dashboard")
@@ -130,7 +135,9 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
               </SecondaryOutlineBoxButton>
             </>
           )}
-          <ThemeToggle theme={theme} onThemeToggle={handleThemeToggle} />
+          {mounted && (
+            <ThemeToggle theme={resolvedTheme || "light"} onThemeToggle={handleThemeToggle} />
+          )}
         </div>
       </div>
     </nav>
