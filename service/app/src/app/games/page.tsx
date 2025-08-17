@@ -22,7 +22,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -97,8 +97,16 @@ export default function GamesPage() {
   }
 
   const handleLogin = async () => {
-    console.log("Login clicked")
-    router.push("/login")
+    if (process.env.NODE_ENV === "development") {
+      try {
+        await login("someValidCode")
+      } catch (error) {
+        console.error("Login error:", error)
+      }
+      return
+    }
+
+    window.location.href = "/login"
   }
 
   const handleThemeToggle = () => {
