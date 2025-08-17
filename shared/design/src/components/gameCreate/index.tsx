@@ -10,6 +10,8 @@ export const GameCreate = ({ onClick, className = "" }: GameCreateProps) => {
     <div
       className={`flex w-[178px] cursor-pointer flex-col items-center gap-4 ${className}`}
       onClick={onClick}
+      role="button"
+      aria-label="게임 만들기"
     >
       {/* Icon */}
       <div className="flex h-[168px] w-[178px] items-center justify-center">

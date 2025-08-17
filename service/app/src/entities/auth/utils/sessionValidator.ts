@@ -48,7 +48,7 @@ export const startPeriodicSessionValidation = (
       if (typeof window !== "undefined") {
         localStorage.removeItem("auth_user")
         document.cookie =
-          "sessionId=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
+          "JSESSIONID=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
 
         window.dispatchEvent(new CustomEvent("auth:session-expired"))
 

@@ -29,7 +29,7 @@ class DashboardPage {
 
     // 네비게이션 버튼들
     this.homeButton = page.getByRole("button", { name: "홈으로 이동" })
-    this.createGameButton = page.getByRole("button", { name: "게임 만들기" })
+    this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).first()
 
     // 게임 카드 관련
     this.gameCards = page.locator('[data-testid="game-card"]')
@@ -143,21 +143,23 @@ class DashboardPage {
 
   // 검증 메서드들
   async expectToBeOnHomePage() {
+    await this.page.waitForURL("http://localhost:3000/", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/")
   }
 
   async expectToBeOnCreatePage() {
-    await expect(this.page).toHaveURL(
-      /^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/,
-    )
+    await this.page.waitForURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/, { timeout: 10000 })
+    await expect(this.page).toHaveURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/)
   }
 
   async expectToBeOnDashboardPage() {
+    await this.page.waitForURL("http://localhost:3000/dashboard", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/dashboard")
   }
 
-  async expectToBeOnGamePage(gameId: string) {
-    await expect(this.page).toHaveURL(new RegExp(`/game/${gameId}/setup`))
+  async expectToBeOnGameSetupPage() {
+    await this.page.waitForURL(/\/game\/\d+(\/setup)?/, { timeout: 10000 })
+    await expect(this.page).toHaveURL(/\/game\/\d+(\/setup)?/)
   }
 
   // UI 요소 확인 메서드들
@@ -294,7 +296,7 @@ test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -323,7 +325,7 @@ test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -354,7 +356,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -377,7 +379,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
     await dashboardPage.expectGamePreviewInfo()
 
     await dashboardPage.clickGameStartButton()
-    await expect(dashboardPage.page).toHaveURL(/\/game\/\d+(\/setup)?/)
+    await dashboardPage.expectToBeOnGameSetupPage()
   })
 })
 
@@ -396,7 +398,7 @@ test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -430,7 +432,7 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
         }),
       )
       // 쿠키 설정
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
