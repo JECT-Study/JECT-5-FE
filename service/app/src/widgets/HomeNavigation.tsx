@@ -52,7 +52,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       return
     }
 
-    window.location.href = "/login/kakao"
+    window.location.href = "/login"
   }
 
   const handleLogoutClick = () => {
