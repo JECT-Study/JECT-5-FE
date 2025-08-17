@@ -348,6 +348,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page)
+    
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -358,8 +359,13 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
           email: "test@example.com",
         }),
       )
+      
+      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
     })
+    
     await homePage.goto()
+    
+    await page.waitForTimeout(1000)
   })
 
   test.describe("로그인 상태 UI 요소 표시 확인", () => {

@@ -42,12 +42,15 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 export const DialogContent = forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    role?: "dialog" | "alertdialog"
+  }
+>(({ className, children, role = "dialog", ...props }, ref) => (
   <DialogPrimitive.Portal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      role={role}
       {...props}
       className={cn(
         "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto bg-background-interactive-primary-sub p-5",
