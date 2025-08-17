@@ -43,18 +43,17 @@ export function FileUploadArea() {
   }
 
   return (
-    <FileUpload onValueChange={handleFileUpload}>
+    <FileUpload onAccept={handleFileUpload}>
       <Dropzone className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]">
         {hasImage ? (
-          <div className="group relative mt-4 h-[500px] w-[577px]">
+          <div className="group relative size-full">
             <Image
               src={
                 selectedQuestion.imageUrl || selectedQuestion.previewImageUrl!
               }
               alt="업로드된 이미지"
-              width={577}
-              height={500}
-              className="size-full rounded-[10px] object-cover"
+              fill
+              className="rounded-[10px] object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-center rounded-[10px] bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
               <FileUploadTrigger asChild>
