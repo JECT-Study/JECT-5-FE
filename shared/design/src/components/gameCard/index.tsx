@@ -183,7 +183,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
           </span>
         </div>
         {shared && (
-          <div className={cn(sharedBadgeVariants({ type }))}>
+          <div className={cn(sharedBadgeVariants({ type }))} data-testid="shared-badge">
             <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
               공유
             </span>
@@ -202,8 +202,9 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
             <DropdownMenuRoot>
               <DropdownMenuTrigger asChild>
                 <SecondaryPlainIconButton 
-                  aria-label="게임 옵션 메뉴"
+                  aria-label="게임 옵션"
                   onClick={(e) => e.stopPropagation()}
+                  data-testid="game-options-button"
                 >
                   <MoreDot />
                 </SecondaryPlainIconButton>
@@ -222,7 +223,7 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
                 }}>
                   {shared ? <Unshare /> : <Upload />}
                   <span className="text-text-interactive-secondary">
-                    {shared ? "공유취소" : "게임 공유"}
+                    {shared ? "공유 취소" : "게임 공유"}
                   </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem type="icon" onClick={(e) => {
