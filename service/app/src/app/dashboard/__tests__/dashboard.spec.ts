@@ -43,17 +43,27 @@ class DashboardPage {
   async getFirstSharedGameIndex(): Promise<number | null> {
     const count = await this.gameCards.count()
     for (let i = 0; i < count; i++) {
-      if (await this.gameCards.nth(i).locator('[data-testid="shared-badge"]').isVisible()) {
+      if (
+        await this.gameCards
+          .nth(i)
+          .locator('[data-testid="shared-badge"]')
+          .isVisible()
+      ) {
         return i
       }
     }
     return null
   }
-  
+
   async getFirstUnsharedGameIndex(): Promise<number | null> {
     const count = await this.gameCards.count()
     for (let i = 0; i < count; i++) {
-      if (!(await this.gameCards.nth(i).locator('[data-testid="shared-badge"]').isVisible())) {
+      if (
+        !(await this.gameCards
+          .nth(i)
+          .locator('[data-testid="shared-badge"]')
+          .isVisible())
+      ) {
         return i
       }
     }
@@ -103,7 +113,9 @@ class DashboardPage {
 
   // 게임 미리보기 관련 액션 메서드들
   async clickGamePreviewCloseButton() {
-    await this.gamePreviewDialog.getByRole("button", { name: "팝업 닫기" }).click()
+    await this.gamePreviewDialog
+      .getByRole("button", { name: "팝업 닫기" })
+      .click()
   }
 
   async clickGamePreviewCloseArea() {
@@ -111,7 +123,9 @@ class DashboardPage {
   }
 
   async clickGameStartButton() {
-    await this.gamePreviewDialog.getByRole("button", { name: "게임 시작" }).click()
+    await this.gamePreviewDialog
+      .getByRole("button", { name: "게임 시작" })
+      .click()
   }
 
   // Alert 팝업 관련 액션 메서드들
@@ -133,7 +147,9 @@ class DashboardPage {
   }
 
   async expectToBeOnCreatePage() {
-    await expect(this.page).toHaveURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/)
+    await expect(this.page).toHaveURL(
+      /^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/,
+    )
   }
 
   async expectToBeOnDashboardPage() {
@@ -148,7 +164,7 @@ class DashboardPage {
   async expectCommonUIElements() {
     await expect(this.homeButton).toBeVisible()
     await expect(this.createGameButton).toBeVisible()
-    
+
     // 게임 카드가 최소 1개 이상 표시되어야 함
     const gameCardCount = await this.gameCards.count()
     expect(gameCardCount).toBeGreaterThan(0)
@@ -162,23 +178,31 @@ class DashboardPage {
     await expect(gameCard.locator('[data-testid="game-title"]')).toBeVisible()
 
     // 문제 개수가 표시되어야 한다
-    await expect(gameCard.locator('[data-testid="question-count"]')).toBeVisible()
+    await expect(
+      gameCard.locator('[data-testid="question-count"]'),
+    ).toBeVisible()
 
     // 게임 옵션 버튼이 표시되어야 한다
-    await expect(gameCard.locator('[data-testid="game-options-button"]')).toBeVisible()
+    await expect(
+      gameCard.locator('[data-testid="game-options-button"]'),
+    ).toBeVisible()
   }
 
   async expectGamePreviewInfo() {
     await expect(this.gamePreviewDialog).toBeVisible()
 
     // 게임 제목
-    await expect(this.gamePreviewDialog.getByRole("heading", { level: 2 })).toBeVisible()
+    await expect(
+      this.gamePreviewDialog.getByRole("heading", { level: 2 }),
+    ).toBeVisible()
 
     // 문제 개수
     await expect(this.gamePreviewDialog.getByText(/총.*문제/)).toBeVisible()
 
     // 게임 시작 버튼
-    await expect(this.gamePreviewDialog.getByRole("button", { name: "게임 시작" })).toBeVisible()
+    await expect(
+      this.gamePreviewDialog.getByRole("button", { name: "게임 시작" }),
+    ).toBeVisible()
   }
 
   async expectAlertDialog(title: string) {
@@ -195,38 +219,63 @@ class DashboardPage {
   async expectNoSharedBadge(index: number | null = 0) {
     const idx = index ?? 0
     const gameCard = this.gameCards.nth(idx)
-    await expect(gameCard.locator('[data-testid="shared-badge"]')).not.toBeVisible()
+    await expect(
+      gameCard.locator('[data-testid="shared-badge"]'),
+    ).not.toBeVisible()
   }
 
   async expectNoSharedBadgeByTitle(gameTitle: string) {
-    const gameCard = this.page.locator(`[data-testid="game-card"]:has-text("${gameTitle}")`)
-    await expect(gameCard.locator('[data-testid="shared-badge"]')).not.toBeVisible()
+    const gameCard = this.page.locator(
+      `[data-testid="game-card"]:has-text("${gameTitle}")`,
+    )
+    await expect(
+      gameCard.locator('[data-testid="shared-badge"]'),
+    ).not.toBeVisible()
   }
 
   async expectSharedBadgeByTitle(gameTitle: string) {
-    const gameCard = this.page.locator(`[data-testid="game-card"]:has-text("${gameTitle}")`)
+    const gameCard = this.page.locator(
+      `[data-testid="game-card"]:has-text("${gameTitle}")`,
+    )
     await expect(gameCard.locator('[data-testid="shared-badge"]')).toBeVisible()
   }
 
   async expectGameOptionsMenu(index: number = 0) {
     await expect(this.page.getByRole("menu")).toBeVisible()
-    await expect(this.page.getByRole("menuitem", { name: "게임 수정" })).toBeVisible()
-    
-    const isShared = await this.gameCards.nth(index).locator('[data-testid="shared-badge"]').isVisible()
+    await expect(
+      this.page.getByRole("menuitem", { name: "게임 수정" }),
+    ).toBeVisible()
+
+    const isShared = await this.gameCards
+      .nth(index)
+      .locator('[data-testid="shared-badge"]')
+      .isVisible()
     if (isShared) {
-      await expect(this.page.getByRole("menuitem", { name: "공유 취소" })).toBeVisible()
+      await expect(
+        this.page.getByRole("menuitem", { name: "공유 취소" }),
+      ).toBeVisible()
     } else {
-      await expect(this.page.getByRole("menuitem", { name: "게임 공유" })).toBeVisible()
+      await expect(
+        this.page.getByRole("menuitem", { name: "게임 공유" }),
+      ).toBeVisible()
     }
-    
-    await expect(this.page.getByRole("menuitem", { name: "게임 삭제" })).toBeVisible()
+
+    await expect(
+      this.page.getByRole("menuitem", { name: "게임 삭제" }),
+    ).toBeVisible()
   }
 
   async expectGameOptionsMenuWithUnshare() {
     await expect(this.page.getByRole("menu")).toBeVisible()
-    await expect(this.page.getByRole("menuitem", { name: "게임 수정" })).toBeVisible()
-    await expect(this.page.getByRole("menuitem", { name: "공유 취소" })).toBeVisible()
-    await expect(this.page.getByRole("menuitem", { name: "게임 삭제" })).toBeVisible()
+    await expect(
+      this.page.getByRole("menuitem", { name: "게임 수정" }),
+    ).toBeVisible()
+    await expect(
+      this.page.getByRole("menuitem", { name: "공유 취소" }),
+    ).toBeVisible()
+    await expect(
+      this.page.getByRole("menuitem", { name: "게임 삭제" }),
+    ).toBeVisible()
   }
 }
 
@@ -318,7 +367,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
   test("게임 미리보기 팝업 닫기 버튼 클릭 시 팝업이 닫혀야 한다", async () => {
     await dashboardPage.clickGameCard()
     await dashboardPage.expectGamePreviewInfo()
-    
+
     await dashboardPage.clickGamePreviewCloseButton()
     await expect(dashboardPage.gamePreviewDialog).not.toBeVisible()
   })
@@ -326,7 +375,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
   test("게임 미리보기에서 게임 시작 버튼 클릭 시 게임 진행 화면으로 이동해야 한다", async () => {
     await dashboardPage.clickGameCard()
     await dashboardPage.expectGamePreviewInfo()
-    
+
     await dashboardPage.clickGameStartButton()
     await expect(dashboardPage.page).toHaveURL(/\/game\/\d+(\/setup)?/)
   })
@@ -347,7 +396,7 @@ test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
           email: "test@example.com",
         }),
       )
-        document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -391,7 +440,9 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     if (idx === null) test.skip()
     await dashboardPage.clickGameOptionsButton(idx)
     await dashboardPage.clickGameShareButton()
-    await dashboardPage.expectAlertDialog("이 게임을 라이브러리에 등록하시겠습니까?")
+    await dashboardPage.expectAlertDialog(
+      "이 게임을 라이브러리에 등록하시겠습니까?",
+    )
   })
 
   test("게임 공유 Alert에서 아니요 버튼 클릭 시 Alert가 닫혀야 한다", async () => {
@@ -399,8 +450,10 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     if (idx === null) test.skip()
     await dashboardPage.clickGameOptionsButton(idx)
     await dashboardPage.clickGameShareButton()
-    await dashboardPage.expectAlertDialog("이 게임을 라이브러리에 등록하시겠습니까?")
-    
+    await dashboardPage.expectAlertDialog(
+      "이 게임을 라이브러리에 등록하시겠습니까?",
+    )
+
     await dashboardPage.clickAlertNoButton()
     await expect(dashboardPage.alertDialog).not.toBeVisible()
   })
@@ -410,8 +463,10 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     if (idx === null) test.skip()
     await dashboardPage.clickGameOptionsButton(idx)
     await dashboardPage.clickGameShareButton()
-    await dashboardPage.expectAlertDialog("이 게임을 라이브러리에 등록하시겠습니까?")
-    
+    await dashboardPage.expectAlertDialog(
+      "이 게임을 라이브러리에 등록하시겠습니까?",
+    )
+
     await dashboardPage.clickAlertYesButton()
     await expect(dashboardPage.alertDialog).not.toBeVisible()
     await dashboardPage.expectSharedBadge(idx)
@@ -424,7 +479,7 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     await dashboardPage.clickGameOptionsButton(idx)
     await dashboardPage.clickGameShareButton()
     await dashboardPage.clickAlertYesButton()
-    
+
     // 공유된 게임의 옵션 메뉴 확인
     const sharedIdx = await dashboardPage.getFirstSharedGameIndex()
     if (sharedIdx === null) test.skip()
@@ -436,18 +491,21 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     // 공유된 게임을 찾아서 공유 취소
     const sharedIdx = await dashboardPage.getFirstSharedGameIndex()
     if (sharedIdx === null) test.skip()
-    
+
     // 게임 제목을 미리 저장
-    const gameTitle = await dashboardPage.gameCards.nth(sharedIdx!).locator('[data-testid="game-title"]').textContent()
+    const gameTitle = await dashboardPage.gameCards
+      .nth(sharedIdx!)
+      .locator('[data-testid="game-title"]')
+      .textContent()
     if (!gameTitle) test.skip()
-    
+
     await dashboardPage.clickGameOptionsButton(sharedIdx!)
     await dashboardPage.clickGameUnshareButton()
     await dashboardPage.expectAlertDialog("라이브러리 공유를 취소하시겠습니까?")
-    
+
     await dashboardPage.clickAlertYesButton()
     await expect(dashboardPage.alertDialog).not.toBeVisible()
-    
+
     // 게임 제목으로 찾아서 공유 뱃지가 사라졌는지 확인
     await dashboardPage.expectNoSharedBadgeByTitle(gameTitle!)
   })
@@ -460,20 +518,27 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
 
   test("게임 삭제 Alert에서 네 버튼 클릭 시 게임이 삭제되어야 한다", async () => {
     // 첫 번째 게임의 제목을 미리 저장
-    const firstGameTitle = await dashboardPage.gameCards.nth(0).locator('[data-testid="game-title"]').textContent()
+    const firstGameTitle = await dashboardPage.gameCards
+      .nth(0)
+      .locator('[data-testid="game-title"]')
+      .textContent()
     if (!firstGameTitle) test.skip()
-    
+
     await dashboardPage.clickGameOptionsButton()
     await dashboardPage.clickGameDeleteButton()
     await dashboardPage.expectAlertDialog("게임을 삭제하시겠습니까?")
-    
+
     await dashboardPage.clickAlertYesButton()
     await expect(dashboardPage.alertDialog).not.toBeVisible()
-    
+
     // 삭제 후 페이지 업데이트 대기
     await dashboardPage.page.waitForLoadState("networkidle")
-    
+
     // 삭제된 게임이 화면에서 사라졌는지 확인
-    await expect(dashboardPage.page.locator(`[data-testid="game-card"]:has-text("${firstGameTitle}")`)).not.toBeVisible()
+    await expect(
+      dashboardPage.page.locator(
+        `[data-testid="game-card"]:has-text("${firstGameTitle}")`,
+      ),
+    ).not.toBeVisible()
   })
 })

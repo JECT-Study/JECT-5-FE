@@ -31,9 +31,12 @@ export const generateRandomDate = (daysAgo: number = 0): string => {
   return date.toISOString()
 }
 
-export const generateMockGameList = (count: number, seed?: number): GameListItem[] => {
+export const generateMockGameList = (
+  count: number,
+  seed?: number,
+): GameListItem[] => {
   let originalRandom: (() => number) | undefined
-  
+
   if (seed !== undefined) {
     originalRandom = Math.random
     let currentSeed = seed
@@ -42,7 +45,7 @@ export const generateMockGameList = (count: number, seed?: number): GameListItem
       return x - Math.floor(x)
     }
   }
-  
+
   const result: GameListItem[] = []
   for (let i = 0; i < count; i++) {
     // const id = generateFakeUUID()
@@ -64,11 +67,11 @@ export const generateMockGameList = (count: number, seed?: number): GameListItem
       version,
     })
   }
-  
+
   if (originalRandom) {
     Math.random = originalRandom
   }
-  
+
   return result
 }
 

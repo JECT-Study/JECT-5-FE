@@ -6,6 +6,7 @@ export class GameSetupPOM {
   readonly teamInputs: Locator
   readonly sidebar: Locator
   readonly deleteButtons: Locator
+  readonly startButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -15,6 +16,7 @@ export class GameSetupPOM {
     this.teamInputs = page.locator('input[name^="team-"]')
     this.sidebar = page.getByRole("complementary")
     this.deleteButtons = page.getByRole("button", { name: "clear input" })
+    this.startButton = page.getByRole("button", { name: "게임 시작" })
   }
 
   async goto(gameId: string = "1") {
@@ -93,5 +95,11 @@ export class GameSetupPOM {
   async reloadPage(): Promise<void> {
     await this.page.reload()
     await this.page.waitForLoadState("networkidle")
+  }
+
+  async startGame(): Promise<void> {
+    await expect(this.startButton).toBeEnabled()
+    await this.startButton.click()
+    await expect(this.page).toHaveURL(/\/game\/\d+\/play/)
   }
 }

@@ -1,6 +1,6 @@
 "use client"
 import { create, useStore } from "zustand"
-import { persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import type { GameDetailData } from "@/entities/game/model"
@@ -131,6 +131,7 @@ export const createGameStore = (
       })),
       {
         name: `game-store-${gameId || "default"}`,
+        storage: createJSONStorage(() => sessionStorage),
         partialize: (state) => ({
           teams: state.teams,
           gameStatus: state.gameStatus,

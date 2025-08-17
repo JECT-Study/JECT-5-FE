@@ -163,7 +163,10 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
             </>
           )}
           {mounted && (
-            <ThemeToggle theme={(resolvedTheme as "dark" | "light") || "light"} onThemeToggle={handleThemeToggle} />
+            <ThemeToggle
+              theme={(resolvedTheme as "dark" | "light") || "light"}
+              onThemeToggle={handleThemeToggle}
+            />
           )}
         </div>
       </div>

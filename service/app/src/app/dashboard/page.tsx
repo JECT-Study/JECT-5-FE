@@ -191,9 +191,9 @@ export default function DashboardPage() {
 
   const rightContent = (
     <>
-      <PrimaryBoxButton 
-        size="sm" 
-        _style="solid" 
+      <PrimaryBoxButton
+        size="sm"
+        _style="solid"
         onClick={handleCreateGame}
         aria-label="게임 만들기"
       >
