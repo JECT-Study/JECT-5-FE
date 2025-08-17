@@ -124,7 +124,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
 
       <div className="flex items-center gap-[80px]">
         {isLoading ? (
-          <div aria-live="polite" aria-label="게임 목록 로딩 중">
+          <div aria-live="polite" aria-label="게임 목록 로딩 중" className="flex items-center gap-[80px]">
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
