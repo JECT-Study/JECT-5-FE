@@ -255,13 +255,21 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-background-primary">
-      <Navigation
-        type="title"
-        playGame={false}
-        leftContent={leftContent}
-        centerContent={centerContent}
-        rightContent={rightContent}
-      />
+      <nav className="flex h-[110px] w-full items-center justify-between bg-background-tertiary">
+        <div className="flex w-[420px] items-center gap-2.5 px-10">
+          {leftContent}
+        </div>
+
+        <div className="flex w-[1080px] justify-center">
+          {centerContent}
+        </div>
+
+        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
+          <div className="flex items-center justify-end gap-4 px-10">
+            {rightContent}
+          </div>
+        </div>
+      </nav>
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
           games={games}
