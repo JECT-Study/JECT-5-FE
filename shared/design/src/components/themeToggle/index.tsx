@@ -3,7 +3,7 @@ import { SecondaryGhostIconButton } from "../button"
 
 interface ThemeToggleProps {
   className?: string
-  theme?: "light" | "dark" | undefined
+  theme?: "light" | "dark"
   onThemeToggle?: () => void
   ariaLabel?: string
 }
