@@ -2,13 +2,14 @@
 
 import {
   PrimaryBoxButton,
-  SecondaryGhostIconButton,
   SecondaryOutlineBoxButton,
 } from "@shared/design/src/components/button"
-import { Add, Sun } from "@shared/design/src/icons"
+import { ThemeToggle } from "@shared/design/src/components/themeToggle"
+import { Add } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 
@@ -17,12 +18,16 @@ interface HomeNavigationProps {
   className?: string
 }
 
-export const HomeNavigation = ({
-  className = "",
-}: HomeNavigationProps) => {
+export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleMyGamesClick = () => {
     router.push("/dashboard")
@@ -32,7 +37,9 @@ export const HomeNavigation = ({
     router.push("/create")
   }
 
-  const handleThemeToggle = () => {}
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   const handleAvatarClick = () => {
     setListButton(!listButton)
@@ -128,10 +135,9 @@ export const HomeNavigation = ({
               </SecondaryOutlineBoxButton>
             </>
           )}
-
-          <SecondaryGhostIconButton onClick={handleThemeToggle}>
-            <Sun />
-          </SecondaryGhostIconButton>
+          {mounted && (
+            <ThemeToggle theme={(resolvedTheme as "dark" | "light") || "light"} onThemeToggle={handleThemeToggle} />
+          )}
         </div>
       </div>
     </nav>
