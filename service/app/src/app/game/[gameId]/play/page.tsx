@@ -14,6 +14,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 
 import { openExitConfirmDialog } from "../components/dialogs/exitConfirmDialog"
+import { useGameStoreContext } from "../store/gameProvider"
 import { useGameStore } from "../store/useGameStore"
 
 const ScoreboardGame = () => {
@@ -21,6 +22,7 @@ const ScoreboardGame = () => {
   const [showAnswer, setShowAnswer] = useState(false)
   const router = useRouter()
   const params = useParams()
+  const gameStoreApi = useGameStoreContext()
 
   const {
     teams,
@@ -87,7 +89,10 @@ const ScoreboardGame = () => {
           <button
             onClick={() =>
               openExitConfirmDialog({
-                onConfirm: () => router.push("/"),
+                onConfirm: () => {
+                  gameStoreApi.persist?.clearStorage?.()
+                  router.push("/")
+                },
               })
             }
             className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
@@ -138,7 +143,10 @@ const ScoreboardGame = () => {
               size="lg"
               onClick={() =>
                 openExitConfirmDialog({
-                  onConfirm: () => router.push("/"),
+                  onConfirm: () => {
+                    gameStoreApi.persist?.clearStorage?.()
+                    router.push("/")
+                  },
                 })
               }
               aria-label="게임 종료"
