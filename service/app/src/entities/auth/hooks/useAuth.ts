@@ -17,7 +17,7 @@ interface UseAuthReturn {
 
 export const useAuth = (): UseAuthReturn => {
   const [user, setUser] = useState<KakaoLoginData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const handleSessionExpired = () => {
@@ -69,6 +69,8 @@ export const useAuth = (): UseAuthReturn => {
         localStorage.removeItem("auth_user")
       }
     }
+    // 초기 로딩 완료
+    setIsLoading(false)
   }, [])
 
   const login = useCallback(async (code?: string) => {
