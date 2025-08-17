@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
 import { kakaoLogin } from "../api/kakaoLogin"
@@ -19,7 +18,6 @@ interface UseAuthReturn {
 export const useAuth = (): UseAuthReturn => {
   const [user, setUser] = useState<KakaoLoginData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const _router = useRouter()
 
   useEffect(() => {
     const handleSessionExpired = () => {
@@ -28,12 +26,26 @@ export const useAuth = (): UseAuthReturn => {
       deleteCookie("sessionId")
     }
 
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === null || e.key === "auth_user") {
+        const hasSessionCookie = document.cookie.includes("sessionId=")
+        if (!hasSessionCookie && user) {
+          console.log("Session cookie removed, logging out user")
+          setUser(null)
+          localStorage.removeItem("auth_user")
+          deleteCookie("sessionId")
+        }
+      }
+    }
+
     window.addEventListener("auth:session-expired", handleSessionExpired)
+    window.addEventListener("storage", handleStorageChange)
 
     return () => {
       window.removeEventListener("auth:session-expired", handleSessionExpired)
+      window.removeEventListener("storage", handleStorageChange)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (!user) return
@@ -45,6 +57,46 @@ export const useAuth = (): UseAuthReturn => {
     })
 
     return cleanup
+  }, [user])
+
+  useEffect(() => {
+    if (!user) return
+
+    const checkCookieStatus = () => {
+      const hasSessionCookie = document.cookie.includes("sessionId=")
+      if (!hasSessionCookie) {
+        console.log("Session cookie not found, logging out user")
+        setUser(null)
+        localStorage.removeItem("auth_user")
+        deleteCookie("sessionId")
+        window.dispatchEvent(new CustomEvent("auth:session-expired"))
+        return
+      }
+      animationFrameId = requestAnimationFrame(checkCookieStatus)
+    }
+
+    let animationFrameId: number
+    animationFrameId = requestAnimationFrame(checkCookieStatus)
+
+    const handleFocus = () => {
+      const hasSessionCookie = document.cookie.includes("sessionId=")
+      if (!hasSessionCookie) {
+        console.log("Session cookie not found on focus, logging out user")
+        setUser(null)
+        localStorage.removeItem("auth_user")
+        deleteCookie("sessionId")
+        window.dispatchEvent(new CustomEvent("auth:session-expired"))
+      }
+    }
+
+    window.addEventListener("focus", handleFocus)
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+      window.removeEventListener("focus", handleFocus)
+    }
   }, [user])
 
   useEffect(() => {
@@ -66,8 +118,16 @@ export const useAuth = (): UseAuthReturn => {
       const response = await kakaoLogin(mockCode)
 
       if (response.result === "SUCCESS" && response.data) {
-        setUser(response.data)
-        localStorage.setItem("auth_user", JSON.stringify(response.data))
+        const hasSessionCookie = document.cookie.includes("sessionId=")
+
+        if (hasSessionCookie) {
+          setUser(response.data)
+          localStorage.setItem("auth_user", JSON.stringify(response.data))
+          console.log("Login completed successfully with session cookie")
+        } else {
+          console.error("Login failed: No session cookie found")
+          throw new Error("Login failed: No session cookie")
+        }
       } else {
         throw new Error("Login failed")
       }

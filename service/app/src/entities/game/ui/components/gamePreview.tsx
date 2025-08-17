@@ -47,7 +47,10 @@ export const GamePreview = ({
         <div
           className={`flex w-[987px] flex-col rounded-[10px] bg-background-interactive-primary-sub ${className}`}
         >
-          <div className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]">
+          <div
+            className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]"
+            data-testid="close-area"
+          >
             <SecondaryPlainIconButton
               size="lg"
               onClick={handleClose}

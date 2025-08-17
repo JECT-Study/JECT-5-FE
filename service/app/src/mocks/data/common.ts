@@ -7,4 +7,4 @@ export const loginRequiredError = generateCommonErrorResponse.loginRequired()
 export const internalServerError =
   generateCommonErrorResponse.internalServerError()
 
-export const mockGameList: GameListItem[] = generateMockGameList(100)
+export const mockGameList: GameListItem[] = generateMockGameList(100, 123)
