@@ -33,7 +33,7 @@ export default function DashboardPage() {
   const [_searchQuery, _setSearchQuery] = useState("")
   const { user, isLoading: _authLoading, isAuthenticated, logout } = useAuth()
   const [listButton, setListButton] = useState(false)
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   const {
@@ -159,7 +159,7 @@ export default function DashboardPage() {
   }
 
   const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   const handleLogoClick = () => {

@@ -15,7 +15,7 @@ import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
   const { state, actions, selectors } = useGameCreationContext()
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function CreateGameNavigation() {
   }
 
   const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   return (

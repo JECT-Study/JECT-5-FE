@@ -23,7 +23,7 @@ export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -101,7 +101,7 @@ export default function GamesPage() {
   }
 
   const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   const handleLogoClick = () => {

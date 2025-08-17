@@ -20,7 +20,7 @@ export function GameNavigation({
   onExit,
   isStartEnabled,
 }: GameNavigationProps) {
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export function GameNavigation({
   }, [])
 
   const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   return (
