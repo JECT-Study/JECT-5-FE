@@ -11,7 +11,7 @@ import { QuestionList } from "../../entities/game/ui/components/questionList"
 
 function CreateGameContent() {
   return (
-    <main className="min-h-screen bg-neutral-white">
+    <main className="min-h-screen bg-background-primary">
       <CreateGameNavigation />
       <div className="flex">
         <QuestionList />

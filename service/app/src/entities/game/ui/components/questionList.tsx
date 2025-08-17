@@ -9,7 +9,7 @@ export function QuestionList() {
   const { state, actions, getQuestionSelectors } = useGameCreationContext()
 
   return (
-    <div className="flex w-[400px] flex-col items-center bg-gray-50 p-[25px_25px_0_25px]">
+    <div className="flex w-[400px] flex-col items-center bg-background-tertiary p-[25px_25px_0_25px]">
       <div className="flex w-[350px] flex-col items-start gap-6">
         {state.questions.map((question) => {
           const questionSelectors = getQuestionSelectors(question.id)
