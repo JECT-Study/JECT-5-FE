@@ -1,17 +1,57 @@
 "use client"
 
-import { useCallback, useReducer } from "react"
+import { useCallback, useEffect, useReducer, useState } from "react"
 
 import { GameCreationAction, gameCreationActions } from "./actions"
 import { gameCreationReducer } from "./reducer"
 import { questionSelectors, selectors } from "./selectors"
 import { GameCreationState, Question } from "./state"
-import { createInitialState } from "./utils"
+import { 
+  clearGameCreationFromStorage, 
+  createInitialState, 
+  loadGameCreationFromStorage, 
+  saveGameCreationToStorage} from "./utils"
 
 export const useGameCreation = () => {
   const [state, dispatch] = useReducer<
     React.Reducer<GameCreationState, GameCreationAction>
   >(gameCreationReducer, createInitialState())
+
+  const [isLoading, setIsLoading] = useState(true)
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const savedState = loadGameCreationFromStorage()
+        if (savedState && savedState.questions.length > 0) {
+          dispatch(gameCreationActions.initializeFromStorage(savedState))
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 300))
+      } catch (error) {
+        console.error("Failed to load data from storage:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadData()
+  }, [])
+
+  useEffect(() => {
+    if (isInitialized && state.questions.length > 0) {
+      saveGameCreationToStorage(state)
+    }
+  }, [state, isInitialized])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialized(true)
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   const setGameName = useCallback((name: string) => {
     dispatch(gameCreationActions.setGameName(name))
@@ -76,6 +116,7 @@ export const useGameCreation = () => {
   }, [])
 
   const saveGameSuccess = useCallback(() => {
+    clearGameCreationFromStorage()
     dispatch(gameCreationActions.saveGameSuccess())
   }, [])
 
@@ -99,7 +140,7 @@ export const useGameCreation = () => {
           gameTitle,
           questions,
           version,
-        ),
+        )
       )
     },
     [],
@@ -107,6 +148,11 @@ export const useGameCreation = () => {
 
   const setGameVersion = useCallback((version: number) => {
     dispatch(gameCreationActions.setGameVersion(version))
+  }, [])
+
+  const clearDraft = useCallback(() => {
+    clearGameCreationFromStorage()
+    dispatch(gameCreationActions.clearDraft())
   }, [])
 
   const derivedState = {
@@ -133,6 +179,7 @@ export const useGameCreation = () => {
 
   return {
     state,
+    isLoading,
 
     actions: {
       setGameName,
@@ -151,6 +198,7 @@ export const useGameCreation = () => {
       saveGameError,
       initializeFromGameDetail,
       setGameVersion,
+      clearDraft,
     },
 
     selectors: derivedState,

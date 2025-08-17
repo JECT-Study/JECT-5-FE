@@ -19,10 +19,9 @@ import { GameListItem } from "@/entities/game"
 import {
   deleteGame,
   getGameDetail,
-  shareGame,
-  unshareGame,
 } from "@/entities/game/api"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
+import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
@@ -49,6 +48,8 @@ export default function DashboardPage() {
 
   const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } =
     useDashboardPopupActions()
+  const { shareGame: shareGameAction, unshareGame: unshareGameAction } =
+    useGameShareActions()
 
   useEffect(() => {
     refetch()
@@ -114,13 +115,7 @@ export default function DashboardPage() {
     if (game.isShared) {
       showUnshareConfirm(game, async () => {
         try {
-          const response = await unshareGame(game.gameId)
-          if (response.result === "SUCCESS") {
-            console.log("Game unshared successfully")
-            queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
-          } else {
-            console.error("Failed to unshare game")
-          }
+          await unshareGameAction(game)
         } catch (error) {
           console.error("Error unsharing game:", error)
         }
@@ -128,13 +123,7 @@ export default function DashboardPage() {
     } else {
       showShareConfirm(game, async () => {
         try {
-          const response = await shareGame(game.gameId)
-          if (response.result === "SUCCESS") {
-            console.log("Game shared successfully")
-            queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
-          } else {
-            console.error("Failed to share game")
-          }
+          await shareGameAction(game)
         } catch (error) {
           console.error("Error sharing game:", error)
         }

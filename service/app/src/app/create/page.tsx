@@ -1,7 +1,6 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import { Suspense } from "react"
 
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
@@ -40,9 +39,5 @@ function CreateGamePageContent() {
 }
 
 export default function CreateGamePage() {
-  return (
-    <Suspense fallback={<div>로딩 중</div>}>
-      <CreateGamePageContent />
-    </Suspense>
-  )
+  return <CreateGamePageContent />
 }

@@ -10,6 +10,7 @@ import {
 } from "react"
 
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { GameCreationLoading } from "@/entities/game/ui/components/gameCreationLoading"
 
 import { useGameCreation } from "./useGameCreation"
 
@@ -27,13 +28,13 @@ export function GameCreationProvider({
   gameId,
 }: GameCreationProviderProps) {
   const gameCreation = useGameCreation()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingGameData, setIsLoadingGameData] = useState(false)
   const hasLoaded = useRef(false)
 
   useEffect(() => {
     if (gameId && !hasLoaded.current) {
       hasLoaded.current = true
-      setIsLoading(true)
+      setIsLoadingGameData(true)
 
       const loadGameData = async () => {
         try {
@@ -55,7 +56,7 @@ export function GameCreationProvider({
         } catch (error) {
           console.error("Failed to load game data:", error)
         } finally {
-          setIsLoading(false)
+          setIsLoadingGameData(false)
         }
       }
 
@@ -63,8 +64,8 @@ export function GameCreationProvider({
     }
   }, [gameId, gameCreation.actions])
 
-  if (isLoading) {
-    return <div>게임 데이터를 불러오는 중...</div>
+  if (gameCreation.isLoading || isLoadingGameData) {
+    return <GameCreationLoading />
   }
 
   return (

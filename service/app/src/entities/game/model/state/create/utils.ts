@@ -2,6 +2,21 @@ import { v4 as uuidv4 } from "uuid"
 
 import { GameCreationState, Question } from "./state"
 
+const STORAGE_KEY = "game-creation-draft"
+
+export interface StoredGameCreationData {
+  gameName: string
+  questions: Array<{
+    id: string
+    text: string
+    answer: string
+    imageUrl: string | null
+    order: number
+  }>
+  gameVersion?: number
+  lastSaved: number
+}
+
 export const createInitialQuestion = (order: number): Question => ({
   id: `question-${order}`,
   text: "",
@@ -12,25 +27,107 @@ export const createInitialQuestion = (order: number): Question => ({
   order,
 })
 
-export const createInitialState = (): GameCreationState => ({
-  gameName: "게임1",
-  questions: [createInitialQuestion(0)],
-  selectedQuestionId: "question-0",
-  popups: {
-    showExitConfirmation: false,
-    showSaveConfirmation: false,
-    showFileUploadError: false,
-  },
-  loading: {
-    isSaving: false,
-    isUploading: false,
-  },
-  errors: {
-    gameNameError: null,
-  },
-  isGameNameEditing: false,
-  isGameNameFocused: false,
-})
+export function createInitialState(): GameCreationState {
+  return {
+    gameName: "게임1",
+    questions: [createInitialQuestion(0)],
+    selectedQuestionId: "question-0",
+    gameVersion: undefined,
+    popups: {
+      showExitConfirmation: false,
+      showSaveConfirmation: false,
+      showFileUploadError: false,
+    },
+    loading: {
+      isSaving: false,
+      isUploading: false,
+    },
+    errors: {
+      gameNameError: null,
+    },
+    isGameNameEditing: false,
+    isGameNameFocused: false,
+  }
+}
+
+export function loadGameCreationFromStorage(): GameCreationState | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) return null
+
+    const data: StoredGameCreationData = JSON.parse(stored)
+    
+    const now = Date.now()
+    const oneDay = 24 * 60 * 60 * 1000
+    if (now - data.lastSaved > oneDay) {
+      localStorage.removeItem(STORAGE_KEY)
+      return null
+    }
+
+    const questions: Question[] = data.questions.map(q => ({
+      id: q.id,
+      text: q.text,
+      answer: q.answer,
+      imageFile: null,
+      imageUrl: q.imageUrl,
+      previewImageUrl: q.imageUrl,
+      order: q.order,
+    }))
+
+    return {
+      gameName: data.gameName,
+      questions,
+      selectedQuestionId: questions.length > 0 ? questions[0].id : null,
+      gameVersion: data.gameVersion,
+      popups: {
+        showExitConfirmation: false,
+        showSaveConfirmation: false,
+        showFileUploadError: false,
+      },
+      loading: {
+        isSaving: false,
+        isUploading: false,
+      },
+      errors: {
+        gameNameError: null,
+      },
+      isGameNameEditing: false,
+      isGameNameFocused: false,
+    }
+  } catch (error) {
+    console.error("Failed to load game creation data from storage:", error)
+    return null
+  }
+}
+
+export function saveGameCreationToStorage(state: GameCreationState): void {
+  try {
+    const data: StoredGameCreationData = {
+      gameName: state.gameName,
+      questions: state.questions.map(q => ({
+        id: q.id,
+        text: q.text,
+        answer: q.answer,
+        imageUrl: q.imageUrl,
+        order: q.order,
+      })),
+      gameVersion: state.gameVersion,
+      lastSaved: Date.now(),
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  } catch (error) {
+    console.error("Failed to save game creation data to storage:", error)
+  }
+}
+
+export function clearGameCreationFromStorage(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch (error) {
+    console.error("Failed to clear game creation data from storage:", error)
+  }
+}
 
 export const moveQuestionInArray = (
   questions: Question[],
