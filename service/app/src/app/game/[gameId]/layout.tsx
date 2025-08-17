@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 
-import { GameStoreProvider } from "./store/useGameStore"
+import { GameProvider } from "./store/gameProvider"
 
 export default async function GameLayout({
   params,
@@ -17,13 +17,10 @@ export default async function GameLayout({
   }
 
   return (
-    <GameStoreProvider
-      initialGameDetail={gameDetail.data}
-      gameId={params.gameId}
-    >
+    <GameProvider initialGameDetail={gameDetail.data} gameId={params.gameId}>
       <div className="flex h-screen w-screen flex-col bg-background-primary">
         {children}
       </div>
-    </GameStoreProvider>
+    </GameProvider>
   )
 }
