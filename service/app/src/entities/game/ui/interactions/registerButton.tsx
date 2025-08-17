@@ -16,7 +16,12 @@ export function RegisterButton() {
   }
 
   return (
-    <SecondaryPlainIconButton size="lg" onClick={handleRegister}>
+    <SecondaryPlainIconButton 
+      size="lg" 
+      onClick={handleRegister}
+      aria-label="게임 생성 취소"
+      data-testid="close-button"
+    >
       <Cross />
     </SecondaryPlainIconButton>
   )
