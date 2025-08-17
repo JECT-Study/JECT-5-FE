@@ -8,7 +8,7 @@ import {
 } from "@ject-5-fe/design/components/button"
 import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
 import { Progress } from "@ject-5-fe/design/components/progress"
-import { Cross, Show, Sun } from "@ject-5-fe/design/icons"
+import { Cross, Hidden, Show, Sun } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
@@ -85,7 +85,11 @@ const ScoreboardGame = () => {
       <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
         <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
           <button
-            onClick={() => router.push("/")}
+            onClick={() =>
+              openExitConfirmDialog({
+                onConfirm: () => router.push("/"),
+              })
+            }
             className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
           >
             <Image
@@ -137,6 +141,7 @@ const ScoreboardGame = () => {
                   onConfirm: () => router.push("/"),
                 })
               }
+              aria-label="게임 종료"
             >
               <Cross />
             </SecondaryPlainIconButton>
@@ -154,8 +159,9 @@ const ScoreboardGame = () => {
           <PrimarySolidIconButton
             className="absolute right-9 top-4"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label="점수판 토글"
           >
-            <Show />
+            {isSidebarOpen ? <Show /> : <Hidden />}
           </PrimarySolidIconButton>
         </div>
         {isSidebarOpen && (
