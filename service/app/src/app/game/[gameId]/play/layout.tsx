@@ -1,5 +1,8 @@
 "use client"
 
+import { useParams, useRouter } from "next/navigation"
+import { useEffect } from "react"
+
 import { useGameStore } from "../store/useGameStore"
 
 interface PlayLayoutProps {
@@ -7,11 +10,15 @@ interface PlayLayoutProps {
 }
 
 export default function PlayLayout({ children }: PlayLayoutProps) {
+  const router = useRouter()
+  const params = useParams()
   const gameStatus = useGameStore((state) => state.gameStatus)
 
-  if (gameStatus !== "playing") {
-    return null
-  }
+  useEffect(() => {
+    if (gameStatus !== "playing") {
+      router.replace(`/game/${params.gameId}/setup`)
+    }
+  }, [gameStatus, params.gameId, router])
 
   return <>{children}</>
 }
