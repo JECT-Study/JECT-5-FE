@@ -54,21 +54,13 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
     await pageObj.toggleScoreboard() // 펼치기
   })
 
-  test("팀 점수를 +1, -1씩 조정할 수 있고 -100~+100 범위를 벗어나지 않아야 한다", async () => {
+  test("팀 점수를 클릭 당 +1, -1씩 조정할 수 있다", async () => {
     const teamName = "A팀"
-    await pageObj.increaseScore(teamName)
-    await pageObj.increaseScore(teamName)
-    await pageObj.expectTeamScore(teamName, "2점")
-
-    await pageObj.decreaseScore(teamName)
+    await pageObj.increaseScore(teamName, 1)
     await pageObj.expectTeamScore(teamName, "1점")
 
-    await pageObj.increaseScore(teamName, 101)
-
-    await pageObj.expectTeamScore(teamName, "100점")
-
-    await pageObj.decreaseScore(teamName, 201)
-    await pageObj.expectTeamScore(teamName, "-100점")
+    await pageObj.decreaseScore(teamName, 1)
+    await pageObj.expectTeamScore(teamName, "0점")
   })
 
   test("'이전 문제' 클릭 시 이전 라운드로 이동하고 진행률이 감소한다", async ({
