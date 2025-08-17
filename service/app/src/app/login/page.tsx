@@ -8,12 +8,9 @@ export default function KakaoLoginPage() {
 
   useEffect(() => {
     const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID
-    const redirectUri =
-      process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
-      `${window.location.origin}/login/kakao`
-
-    if (!kakaoClientId) {
-      console.error("KAKAO_CLIENT_ID is not defined")
+    const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI
+    if (!kakaoClientId || !redirectUri) {
+      console.error("KAKAO 환경변수가 정의되지 않았습니다.")
       return
     }
 
