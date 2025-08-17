@@ -168,9 +168,10 @@ export default function DashboardPage() {
   }
 
   const leftContent = (
-    <div
+    <button
       className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
       onClick={handleLogoClick}
+      aria-label="홈으로 이동"
     >
       <Image
         src="/logo.svg"
@@ -179,7 +180,7 @@ export default function DashboardPage() {
         width={268}
         height={60}
       />
-    </div>
+    </button>
   )
 
   const centerContent = (
@@ -190,7 +191,12 @@ export default function DashboardPage() {
 
   const rightContent = (
     <>
-      <PrimaryBoxButton size="sm" _style="solid" onClick={handleCreateGame}>
+      <PrimaryBoxButton 
+        size="sm" 
+        _style="solid" 
+        onClick={handleCreateGame}
+        aria-label="게임 만들기"
+      >
         <Add />
         게임 만들기
       </PrimaryBoxButton>
