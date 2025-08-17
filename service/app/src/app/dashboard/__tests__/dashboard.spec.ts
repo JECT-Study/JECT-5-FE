@@ -80,6 +80,10 @@ class DashboardPage {
   async goto() {
     await this.page.goto("http://localhost:3000/dashboard")
     await this.page.waitForLoadState("networkidle")
+    // 게임 카드가 로드될 때까지 기다림
+    await this.page.waitForSelector('[data-testid="game-card"]', { timeout: 10000 }).catch(() => {
+      console.warn("No game cards found after 10s")
+    })
   }
 
   // 네비게이션 액션 메서드들
@@ -106,6 +110,8 @@ class DashboardPage {
 
   async clickGameOptionsButton(index: number | null = 0) {
     const idx = index ?? 0
+    await this.gameCards.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
+    await this.gameOptionsButtons.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
     await this.gameOptionsButtons.nth(idx).click()
   }
 
