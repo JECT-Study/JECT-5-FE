@@ -57,7 +57,7 @@ class HomePage {
     this.createGameButton = page
       .getByRole("button", { name: "새 게임 만들기 페이지로 이동" })
       .filter({ hasText: /^게임 만들기$/ })
-    this.avatarButton = page.getByRole("button", { name: /테스트 사용자 메뉴 (열기|닫기)/ })
+    this.avatarButton = page.getByRole("button", { name: /사용자 메뉴 (열기|닫기)/ })
     this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
   }
 
@@ -392,7 +392,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
     test("로그인 상태에서 사용자 아바타가 표시되어야 한다", async () => {
       await expect(homePage.avatarButton).toBeVisible()
       const avatarImage =
-        homePage.avatarButton.locator('img[alt="테스트 사용자 아바타"]')
+        homePage.avatarButton.locator('img[alt="사용자 아바타"]')
       await expect(avatarImage).toBeVisible()
     })
 
