@@ -17,6 +17,7 @@ function Progress({
         "relative h-[10px] w-[500px] overflow-hidden rounded-[99px] bg-background-progressbar-secondary",
         className,
       )}
+      value={value}
       {...props}
     >
       <ProgressPrimitive.Indicator

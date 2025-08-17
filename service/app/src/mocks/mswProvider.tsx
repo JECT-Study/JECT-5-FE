@@ -12,7 +12,9 @@ const MSWContext = createContext<MSWContextValue>({
 export const useMsw = () => useContext(MSWContext)
 
 export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isMswReady, setIsMswReady] = useState(process.env.NODE_ENV === "production")
+  const [isMswReady, setIsMswReady] = useState(
+    process.env.NODE_ENV === "production",
+  )
   const [isMswError, setIsMswError] = useState(false)
 
   useEffect(() => {

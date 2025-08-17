@@ -287,3 +287,39 @@ describe('TeamManager', () => {
 
 - 로직 검증,디버깅 시에는 `playwright mcp` 등을 활용합니다
 - 테스트 코드가 아닌, 테스트 원본을 변경해서는 안됩니다
+
+## E2E Selector Policy & POM Standards
+
+### Selector Policy (Must)
+
+- 반드시 접근성 기반 셀렉터를 우선 사용합니다.
+  - `getByRole` + 접근성 이름(버튼 라벨, role) 사용
+  - `getByLabel`(aria-label, label), `getByAltText`(이미지), `getByPlaceholder`(입력)
+  - 텍스트는 사용자에게 노출되는 고정 문구만 제한적으로 사용 (`getByText`)
+- 다음 셀렉터는 금지합니다.
+  - XPath 전체 금지 (구조 의존, brittle)
+  - CSS 유틸리티/스타일 클래스 기반 셀렉터 금지 (예: `rounded-*`, `w-[1080px]`)
+  - DOM 구조/위치 의존 셀렉터 금지 (예: `nth-child`, `following::button[1]`)
+- 접근성 앵커가 부족하면, 테스트에서 우회하지 말고 구현에 접근성 속성을 추가하는 것을 고려해야 합니다
+  - 예: 버튼에 `aria-label` 부여, 그룹 컨테이너에 `role`/`aria-label` 추가
+  - 진행률은 `role="progressbar"`와 `aria-valuenow`로 검증
+  - 다이얼로그는 `role="dialog"` 및 버튼의 접근성 이름으로 제어
+- 최후의 수단으로만 `data-testid`를 사용합니다. 가능하면 접근성 속성을 우선 추가하세요.
+
+### POM Standards (Should)
+
+- 각 페이지/플로우에 대해 POM 클래스를 작성하고, 테스트는 POM 메서드만 호출합니다.
+  - 공개 API는 행위(의도) 중심 메서드로 정의: `goToNextQuestion`, `toggleScoreboard`, `showAnswerAndGetText`
+  - Locator는 POM 내부에 은닉하고 외부로 노출하지 않습니다.
+- POM 내 셀렉터는 위 Selector Policy를 준수합니다.
+- 상태/스타일을 직접 읽지 말고 의미 있는 접근성 값으로 검증합니다.
+  - 예: 진행률 → `aria-valuenow`, 정답 토글 → 버튼 라벨 변경
+- URL/라우팅 검증은 경로/쿼리 기준으로 확인합니다. (예: `?q=2`, `/result`)
+
+### Accessibility Contract (Should)
+
+- 테스트 가능성을 위해 다음 접근성 계약을 권장합니다.
+  - 주요 아이콘 버튼: 의미 있는 `aria-label` 제공 (예: "게임 종료", "점수판 토글")
+  - 컬렉션 아이템 카드: `role="group" aria-label="{이름} ..."`로 식별자 제공
+  - 수치 값: `aria-label`로 현재 값을 설명 (예: "{팀명} 현재 점수")
+  - 증감 버튼: `aria-label`로 행위 표현 (예: "{팀명} 점수 증가/감소")

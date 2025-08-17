@@ -13,9 +13,9 @@ export default function KakaoLoginPage() {
       console.error("KAKAO 환경변수가 정의되지 않았습니다.")
       return
     }
-    
+
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
-    
+
     window.location.href = kakaoAuthUrl
   }, [router])
 

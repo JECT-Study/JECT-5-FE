@@ -267,8 +267,14 @@ test.describe("홈페이지 E2E 테스트 - 비로그인 상태", () => {
   test.describe("테마 토글 기능 확인", () => {
     test("테마 토글 버튼이 표시되어야 한다", async () => {
       await expect(homePage.themeToggleButton).toBeVisible()
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "다크 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "false")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "다크 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      )
     })
 
     test("초기 상태는 라이트 모드여야 한다", async () => {
@@ -278,24 +284,36 @@ test.describe("홈페이지 E2E 테스트 - 비로그인 상태", () => {
     test("테마 토글 버튼 클릭 시 다크 모드로 전환되어야 한다", async () => {
       await homePage.clickThemeToggle()
       await homePage.expectDarkModeToBeActive()
-      
+
       // 다크 모드에서 버튼의 접근성 속성 확인
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "라이트 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "true")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "라이트 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      )
     })
 
     test("다크 모드에서 테마 토글 버튼 클릭 시 라이트 모드로 전환되어야 한다", async () => {
       // 먼저 다크 모드로 전환
       await homePage.clickThemeToggle()
       await homePage.expectDarkModeToBeActive()
-      
+
       // 다시 라이트 모드로 전환
       await homePage.clickThemeToggle()
       await homePage.expectLightModeToBeActive()
-      
+
       // 라이트 모드에서 버튼의 접근성 속성 확인
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "다크 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "false")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "다크 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      )
     })
   })
 
@@ -345,7 +363,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
 
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page)
-    
+
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -356,12 +374,12 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
           email: "test@example.com",
         }),
       )
-      
+
       document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
     })
-    
+
     await homePage.goto()
-    
+
     await page.waitForTimeout(1000)
   })
 
@@ -429,31 +447,49 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
   test.describe("로그인 상태 테마 토글 기능 확인", () => {
     test("로그인 상태에서도 테마 토글 버튼이 표시되어야 한다", async () => {
       await expect(homePage.themeToggleButton).toBeVisible()
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "다크 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "false")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "다크 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      )
     })
 
     test("로그인 상태에서 테마 토글 버튼 클릭 시 다크 모드로 전환되어야 한다", async () => {
       await homePage.clickThemeToggle()
       await homePage.expectDarkModeToBeActive()
-      
+
       // 다크 모드에서 버튼의 접근성 속성 확인
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "라이트 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "true")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "라이트 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "true",
+      )
     })
 
     test("로그인 상태에서 다크 모드에서 라이트 모드로 전환되어야 한다", async () => {
       // 먼저 다크 모드로 전환
       await homePage.clickThemeToggle()
       await homePage.expectDarkModeToBeActive()
-      
+
       // 다시 라이트 모드로 전환
       await homePage.clickThemeToggle()
       await homePage.expectLightModeToBeActive()
-      
+
       // 라이트 모드에서 버튼의 접근성 속성 확인
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-label", "다크 모드 전환")
-      await expect(homePage.themeToggleButton).toHaveAttribute("aria-pressed", "false")
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-label",
+        "다크 모드 전환",
+      )
+      await expect(homePage.themeToggleButton).toHaveAttribute(
+        "aria-pressed",
+        "false",
+      )
     })
   })
 

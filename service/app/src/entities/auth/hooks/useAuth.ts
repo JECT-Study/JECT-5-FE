@@ -118,9 +118,8 @@ export const useAuth = (): UseAuthReturn => {
       const response = await kakaoLogin(mockCode)
 
       if (response.result === "SUCCESS" && response.data) {
-        
         const hasSessionCookie = document.cookie.includes("sessionId=")
-        
+
         if (hasSessionCookie) {
           setUser(response.data)
           localStorage.setItem("auth_user", JSON.stringify(response.data))

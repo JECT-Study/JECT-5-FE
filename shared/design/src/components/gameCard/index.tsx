@@ -1,27 +1,29 @@
 import { cva, type VariantProps } from "class-variance-authority"
 import { forwardRef } from "react"
 
-import { Edit, MoreDot, Trash, Unshare,Upload } from "../../icons"
+import { Edit, MoreDot, Trash, Unshare, Upload } from "../../icons"
 import { cn } from "../../utils/cn"
 import { SecondaryPlainIconButton } from "../button"
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuRoot, DropdownMenuTrigger } from "../menu"
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRoot,
+  DropdownMenuTrigger,
+} from "../menu"
 
-const gameCardVariants = cva(
-  "relative",
-  {
-    variants: {
-      type: {
-        libraryGame: "",
-        myGame: "",
-        gamePreview: "",
-        onlyTitleGamePreview: "",
-      },
-    },
-    defaultVariants: {
-      type: "libraryGame",
+const gameCardVariants = cva("relative", {
+  variants: {
+    type: {
+      libraryGame: "",
+      myGame: "",
+      gamePreview: "",
+      onlyTitleGamePreview: "",
     },
   },
-)
+  defaultVariants: {
+    type: "libraryGame",
+  },
+})
 
 const thumbnailVariants = cva(
   "rounded-[10px] bg-cover bg-center bg-no-repeat",
@@ -30,7 +32,8 @@ const thumbnailVariants = cva(
       type: {
         libraryGame: "relative size-[178px]",
         myGame: "relative size-[178px]",
-        gamePreview: "flex h-[260px] w-[178px] flex-col items-center justify-center",
+        gamePreview:
+          "flex h-[260px] w-[178px] flex-col items-center justify-center",
         onlyTitleGamePreview: "hidden",
       },
     },
@@ -108,24 +111,19 @@ const titleVariants = cva(
   },
 )
 
-const titleContainerVariants = cva(
-  "",
-  {
-    variants: {
-      type: {
-        libraryGame: "h-[46px] w-[178px]",
-        myGame: "flex  w-[178px] justify-end",
-        gamePreview: "h-[46px] w-[178px]",
-        onlyTitleGamePreview: "h-[46px] w-[178px]",
-      },
-    },
-    defaultVariants: {
-      type: "libraryGame",
+const titleContainerVariants = cva("", {
+  variants: {
+    type: {
+      libraryGame: "h-[46px] w-[178px]",
+      myGame: "flex w-[178px] justify-end",
+      gamePreview: "h-[46px] w-[178px]",
+      onlyTitleGamePreview: "h-[46px] w-[178px]",
     },
   },
-)
-
-
+  defaultVariants: {
+    type: "libraryGame",
+  },
+})
 
 export type GameCardVariantProps = VariantProps<typeof gameCardVariants>
 
@@ -161,10 +159,10 @@ type OnlyTitleGamePreviewCardProps = BaseGameCardProps & {
   optionView?: never
 }
 
-type GameCardProps = 
-  | LibraryGameCardProps 
-  | MyGameCardProps 
-  | GamePreviewCardProps 
+type GameCardProps =
+  | LibraryGameCardProps
+  | MyGameCardProps
+  | GamePreviewCardProps
   | OnlyTitleGamePreviewCardProps
 
 export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
@@ -173,17 +171,23 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
 
     const renderThumbnail = () => (
       <div className={cn(thumbnailVariants({ type }), className)}>
-        <div 
+        <div
           className={cn(imageVariants({ type }))}
           style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}
         />
-        <div className={cn(badgeVariants({ type }))} data-testid="question-count">
+        <div
+          className={cn(badgeVariants({ type }))}
+          data-testid="question-count"
+        >
           <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
             {questionCount}문제
           </span>
         </div>
         {shared && (
-          <div className={cn(sharedBadgeVariants({ type }))} data-testid="shared-badge">
+          <div
+            className={cn(sharedBadgeVariants({ type }))}
+            data-testid="shared-badge"
+          >
             <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
               공유
             </span>
@@ -194,14 +198,17 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
 
     const renderTitle = () => (
       <div className={cn(titleContainerVariants({ type }))}>
-        {type === 'myGame' ? (
+        {type === "myGame" ? (
           <>
-                      <div className="line-clamp-2 w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary" data-testid="game-title">
-            {title}
-          </div>
+            <div
+              className="line-clamp-2 w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
+              data-testid="game-title"
+            >
+              {title}
+            </div>
             <DropdownMenuRoot>
               <DropdownMenuTrigger asChild>
-                <SecondaryPlainIconButton 
+                <SecondaryPlainIconButton
                   aria-label="게임 옵션"
                   onClick={(e) => e.stopPropagation()}
                   data-testid="game-options-button"
@@ -209,35 +216,56 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
                   <MoreDot />
                 </SecondaryPlainIconButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent type="horizontal" contentType="icon" side="bottom" sideOffset={8}>
-                <DropdownMenuItem type="icon" onClick={(e) => {
-                  e.stopPropagation()
-                  props.onEdit?.()
-                }}>
+              <DropdownMenuContent
+                type="horizontal"
+                contentType="icon"
+                side="bottom"
+                sideOffset={8}
+              >
+                <DropdownMenuItem
+                  type="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    props.onEdit?.()
+                  }}
+                >
                   <Edit />
-                  <span className="text-text-interactive-secondary">게임 수정</span>
+                  <span className="text-text-interactive-secondary">
+                    게임 수정
+                  </span>
                 </DropdownMenuItem>
-                <DropdownMenuItem type="icon" onClick={(e) => {
-                  e.stopPropagation()
-                  props.onShare?.()
-                }}>
+                <DropdownMenuItem
+                  type="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    props.onShare?.()
+                  }}
+                >
                   {shared ? <Unshare /> : <Upload />}
                   <span className="text-text-interactive-secondary">
                     {shared ? "공유 취소" : "게임 공유"}
                   </span>
                 </DropdownMenuItem>
-                <DropdownMenuItem type="icon" onClick={(e) => {
-                  e.stopPropagation()
-                  props.onDelete?.()
-                }}>
+                <DropdownMenuItem
+                  type="icon"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    props.onDelete?.()
+                  }}
+                >
                   <Trash />
-                  <span className="text-text-interactive-secondary">게임 삭제</span>
+                  <span className="text-text-interactive-secondary">
+                    게임 삭제
+                  </span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenuRoot>
           </>
         ) : (
-          <div className={cn(titleVariants({ type }), "line-clamp-2")} data-testid="game-title">
+          <div
+            className={cn(titleVariants({ type }), "line-clamp-2")}
+            data-testid="game-title"
+          >
             {title}
           </div>
         )}
@@ -245,12 +273,14 @@ export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
     )
 
     return (
-      <div ref={ref} className={cn(gameCardVariants({ type }))} data-testid="game-card">
+      <div
+        ref={ref}
+        className={cn(gameCardVariants({ type }))}
+        data-testid="game-card"
+      >
         <div className="flex flex-col gap-[14px]">
           {renderThumbnail()}
-          <div className="h-[46px]">
-            {renderTitle()}
-          </div>
+          <div className="h-[46px]">{renderTitle()}</div>
         </div>
       </div>
     )

@@ -12,9 +12,7 @@ export const metadata: Metadata = {
   title: "RE:creation",
   description: "모두가 가볍게 즐길 수 있는 라이트 레크리에이션",
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ]
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
 }
 

@@ -70,7 +70,11 @@ export default function GameResultPage() {
               이전 문제
             </PrimaryBoxButton>
             <button className="flex size-8 items-center justify-center">
-              <Cross size={32} className="text-icon-interactive-secondary" />
+              <Cross
+                size={32}
+                className="text-icon-interactive-secondary"
+                onClick={handleGoHome}
+              />
             </button>
           </div>
         </div>

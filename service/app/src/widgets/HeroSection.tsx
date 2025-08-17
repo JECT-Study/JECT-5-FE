@@ -10,7 +10,7 @@ export const HeroSection = ({ className = "" }: HeroSectionProps) => {
       className={`flex w-full flex-col items-center gap-[24px] ${className}`}
     >
       <div className="flex w-full flex-col items-center text-center">
-        <h1 
+        <h1
           className="typography-heading-2xl-bold text-center text-text-interactive-secondary"
           data-testid="hero-title"
         >

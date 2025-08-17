@@ -8,12 +8,13 @@ import {
 } from "@ject-5-fe/design/components/button"
 import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
 import { Progress } from "@ject-5-fe/design/components/progress"
-import { Cross, Show, Sun } from "@ject-5-fe/design/icons"
+import { Cross, Hidden, Show, Sun } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 
 import { openExitConfirmDialog } from "../components/dialogs/exitConfirmDialog"
+import { useGameStoreContext } from "../store/gameProvider"
 import { useGameStore } from "../store/useGameStore"
 
 const ScoreboardGame = () => {
@@ -21,6 +22,7 @@ const ScoreboardGame = () => {
   const [showAnswer, setShowAnswer] = useState(false)
   const router = useRouter()
   const params = useParams()
+  const gameStoreApi = useGameStoreContext()
 
   const {
     teams,
@@ -85,7 +87,14 @@ const ScoreboardGame = () => {
       <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
         <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
           <button
-            onClick={() => router.push("/")}
+            onClick={() =>
+              openExitConfirmDialog({
+                onConfirm: () => {
+                  gameStoreApi.persist?.clearStorage?.()
+                  router.push("/")
+                },
+              })
+            }
             className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
           >
             <Image
@@ -134,9 +143,13 @@ const ScoreboardGame = () => {
               size="lg"
               onClick={() =>
                 openExitConfirmDialog({
-                  onConfirm: () => router.push("/"),
+                  onConfirm: () => {
+                    gameStoreApi.persist?.clearStorage?.()
+                    router.push("/")
+                  },
                 })
               }
+              aria-label="게임 종료"
             >
               <Cross />
             </SecondaryPlainIconButton>
@@ -154,8 +167,9 @@ const ScoreboardGame = () => {
           <PrimarySolidIconButton
             className="absolute right-9 top-4"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            aria-label="점수판 토글"
           >
-            <Show />
+            {isSidebarOpen ? <Show /> : <Hidden />}
           </PrimarySolidIconButton>
         </div>
         {isSidebarOpen && (
@@ -182,15 +196,16 @@ const ScoreboardGame = () => {
           </h1>
 
           {currentQuestion?.imageUrl && (
-            <div className="mb-[85px] h-[459px] w-[727px] overflow-hidden rounded-[10px] bg-gray-200">
+            <div className="relative mb-[85px] min-h-[459px] w-[727px] overflow-hidden rounded-[10px]">
               <Image
                 src={currentQuestion.imageUrl}
                 alt="문제 이미지"
-                className="size-full object-cover transition-opacity duration-300"
-                width={727}
-                height={459}
+                className="size-full rounded-[10px] object-contain transition-opacity duration-300"
+                fill
                 placeholder="blur"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                loading="eager"
+                sizes="(max-width: 1920px) 727px, 1454px"
               />
             </div>
           )}
