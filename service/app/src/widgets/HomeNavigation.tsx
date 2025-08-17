@@ -116,7 +116,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       </div>
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-        <div className="flex items-center gap-4 px-10">
+        <div className={`flex items-center gap-4 px-10 ${isAuthenticated ? 'justify-end' : 'justify-center'}`}>
           {isAuthenticated ? (
             <>
               <PrimaryBoxButton
