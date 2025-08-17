@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority"
-import { forwardRef } from "react"
+import { forwardRef, useState } from "react"
 
 import { Edit, MoreDot, Trash, Unshare, Upload } from "../../icons"
 import { cn } from "../../utils/cn"
@@ -26,12 +26,12 @@ const gameCardVariants = cva("relative", {
 })
 
 const thumbnailVariants = cva(
-  "rounded-[10px] bg-cover bg-center bg-no-repeat",
+  "relative rounded-[10px] bg-cover bg-center bg-no-repeat",
   {
     variants: {
       type: {
-        libraryGame: "relative size-[178px]",
-        myGame: "relative size-[178px]",
+        libraryGame: "size-[178px]",
+        myGame: "size-[178px]",
         gamePreview:
           "flex h-[260px] w-[178px] flex-col items-center justify-center",
         onlyTitleGamePreview: "hidden",
@@ -125,6 +125,23 @@ const titleContainerVariants = cva("", {
   },
 })
 
+const skeletonVariants = cva(
+  "animate-pulse rounded-[10px] bg-gradient-to-br from-gray-200 to-gray-300",
+  {
+    variants: {
+      type: {
+        libraryGame: "size-[178px]",
+        myGame: "size-[178px]",
+        gamePreview: "h-[260px] w-[178px]",
+        onlyTitleGamePreview: "hidden",
+      },
+    },
+    defaultVariants: {
+      type: "libraryGame",
+    },
+  },
+)
+
 export type GameCardVariantProps = VariantProps<typeof gameCardVariants>
 
 type BaseGameCardProps = {
@@ -168,13 +185,51 @@ type GameCardProps =
 export const GameCard = forwardRef<HTMLDivElement, GameCardProps>(
   (props, ref) => {
     const { type, title, questionCount, imageUrl, className, shared } = props
+    const [imageLoading, setImageLoading] = useState(true)
+    const [imageError, setImageError] = useState(false)
 
     const renderThumbnail = () => (
       <div className={cn(thumbnailVariants({ type }), className)}>
-        <div
-          className={cn(imageVariants({ type }))}
-          style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}
-        />
+        {imageUrl && !imageError ? (
+          <>
+            {imageLoading && (
+              <div
+                className={cn(skeletonVariants({ type }), "absolute inset-0")}
+                data-testid="image-skeleton"
+              />
+            )}
+            
+            <div className={cn(imageVariants({ type }), "relative")}>
+              <img
+                src={imageUrl}
+                alt={title}
+                className={cn(
+                  "size-full rounded-[10px] object-cover transition-opacity duration-500 ease-in-out",
+                  imageLoading ? "opacity-0" : "opacity-100"
+                )}
+                onLoad={() => setImageLoading(false)}
+                onError={() => {
+                  setImageLoading(false)
+                  setImageError(true)
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          /* 이미지가 없거나 에러인 경우 placeholder */
+          <div
+            className={cn(
+              imageVariants({ type }),
+              "flex items-center justify-center bg-gray-200"
+            )}
+            data-testid="image-placeholder"
+          >
+            <span className="text-[14px] font-medium text-gray-500">
+              {imageError ? "이미지 로드 실패" : "이미지 없음"}
+            </span>
+          </div>
+        )}
+        
         <div
           className={cn(badgeVariants({ type }))}
           data-testid="question-count"

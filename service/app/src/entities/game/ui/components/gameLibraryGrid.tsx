@@ -65,17 +65,17 @@ export const GameLibraryGrid = ({
                 className="cursor-pointer"
               >
                 <GameCard
-                  type={isDashboard ? "myGame" : "libraryGame"}
-                  title={game.gameTitle}
-                  questionCount={game.questionCount}
-                  imageUrl={game.gameThumbnailUrl || undefined}
-                  shared={game.isShared}
-                  onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
-                  onShare={isDashboard ? () => onShareGame?.(game) : undefined}
-                  onDelete={
-                    isDashboard ? () => onDeleteGame?.(game) : undefined
-                  }
-                />
+                type={isDashboard ? "myGame" : "libraryGame"}
+                title={game.gameTitle}
+                questionCount={game.questionCount}
+                imageUrl={game.gameThumbnailUrl || undefined}
+                shared={game.isShared}
+                onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
+                onShare={isDashboard ? () => onShareGame?.(game) : undefined}
+                onDelete={
+                  isDashboard ? () => onDeleteGame?.(game) : undefined
+                }
+              />
               </div>
             ))}
       </div>
