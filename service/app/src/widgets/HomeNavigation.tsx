@@ -51,6 +51,15 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     setListButton(!listButton)
   }
 
+  const handleAvatarKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      setListButton(!listButton)
+    } else if (event.key === "Escape" && listButton) {
+      setListButton(false)
+    }
+  }
+
   const handleLoginClick = async () => {
     if (process.env.NODE_ENV === "development") {
       try {
@@ -69,15 +78,33 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     setListButton(false)
   }
 
+  // 외부 클릭 시 메뉴 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (listButton && !target.closest('[data-user-menu]')) {
+        setListButton(false)
+      }
+    }
+
+    if (listButton) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [listButton])
+
   return (
     <nav
       className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary ${className}`}
+      role="navigation"
+      aria-label="메인 네비게이션"
     >
       <div className="flex w-[420px] items-center gap-2.5 px-10">
         <button
-          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
+          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
           onClick={() => router.push("/")}
           aria-label="홈으로 이동"
+          tabIndex={0}
         >
           <Image
             src="/logo.svg"
@@ -97,6 +124,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="sm"
                 _style="solid"
                 onClick={handleMyGamesClick}
+                aria-label="내 게임 관리 페이지로 이동"
               >
                 내 게임
               </PrimaryBoxButton>
@@ -105,22 +133,25 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="sm"
                 _style="solid"
                 onClick={handleCreateGameClick}
+                aria-label="새 게임 만들기 페이지로 이동"
               >
-                <Add className="size-6" />
+                <Add className="size-6" aria-hidden="true" />
                 게임 만들기
               </PrimaryBoxButton>
 
-              <div className="relative">
+              <div className="relative" data-user-menu>
                 <button
-                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
+                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
                   onClick={handleAvatarClick}
-                  aria-label="사용자 메뉴 열기"
+                  onKeyDown={handleAvatarKeyDown}
+                  aria-label={`${user?.nickname || '사용자'} 메뉴 ${listButton ? '닫기' : '열기'}`}
                   aria-expanded={listButton}
                   aria-haspopup="true"
+                  tabIndex={0}
                 >
                   <Image
                     src={user?.profileImageUrl || "/avatar.svg"}
-                    alt="사용자 아바타"
+                    alt={`${user?.nickname || '사용자'} 아바타`}
                     className="size-full rounded-full"
                     width={42}
                     height={42}
@@ -137,6 +168,8 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                       onClick={handleLogoutClick}
                       className="whitespace-nowrap"
                       role="menuitem"
+                      aria-label="로그아웃"
+                      tabIndex={0}
                     >
                       로그아웃
                     </SecondaryOutlineBoxButton>
@@ -150,6 +183,8 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="md"
                 onClick={handleLoginClick}
                 disabled={authLoading}
+                aria-label={authLoading ? "로그인 처리 중" : "카카오 간편 로그인"}
+                aria-busy={authLoading}
               >
                 <Image
                   src="/kakao-logo.svg"
@@ -157,6 +192,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                   className="size-8"
                   width={32}
                   height={32}
+                  aria-hidden="true"
                 />
                 간편로그인해서 게임 만들기
               </SecondaryOutlineBoxButton>

@@ -36,7 +36,7 @@ class HomePage {
     // 공통 네비게이션 요소들
     this.logo = page.getByRole("img", { name: "홈 로고" })
     this.kakaoLoginButton = page.getByRole("button", {
-      name: /간편로그인해서 게임 만들기/,
+      name: "카카오 간편 로그인",
     })
     this.themeToggleButton = page.getByRole("button", {
       name: /(라이트|다크) 모드 전환/,
@@ -44,7 +44,7 @@ class HomePage {
 
     // 게임 섹션 요소들
     this.viewMoreGamesButton = page.getByRole("button", {
-      name: "게임 더 보기",
+      name: "더 많은 게임 보기",
     })
     this.gameSectionTitle = page.getByText("어떤 게임으로 시작해 볼까요?")
     this.gameCards = page.locator('[data-testid="game-card"]')
@@ -53,11 +53,11 @@ class HomePage {
     this.heroTitle = page.locator('[data-testid="hero-title"]')
 
     // 로그인 상태에서 추가되는 요소들
-    this.myGamesButton = page.getByRole("button", { name: "내 게임" })
+    this.myGamesButton = page.getByRole("button", { name: "내 게임 관리 페이지로 이동" })
     this.createGameButton = page
-      .getByRole("button", { name: "게임 만들기" })
+      .getByRole("button", { name: "새 게임 만들기 페이지로 이동" })
       .filter({ hasText: /^게임 만들기$/ })
-    this.avatarButton = page.getByRole("button", { name: "사용자 메뉴 열기" })
+    this.avatarButton = page.getByRole("button", { name: /테스트 사용자 메뉴 (열기|닫기)/ })
     this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
   }
 
@@ -392,7 +392,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
     test("로그인 상태에서 사용자 아바타가 표시되어야 한다", async () => {
       await expect(homePage.avatarButton).toBeVisible()
       const avatarImage =
-        homePage.avatarButton.locator('img[alt="사용자 아바타"]')
+        homePage.avatarButton.locator('img[alt="테스트 사용자 아바타"]')
       await expect(avatarImage).toBeVisible()
     })
 

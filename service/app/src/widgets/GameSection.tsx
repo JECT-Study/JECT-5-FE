@@ -79,10 +79,18 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     }
   }
 
+  const handleGameCardKeyDown = (event: React.KeyboardEvent, game: GameListItem) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      handleGameCardClick(game)
+    }
+  }
+
   if (error) {
     return (
       <section
         className={`flex w-full flex-col items-center gap-[45px] ${className}`}
+        aria-label="게임 섹션"
       >
         <div className="flex w-[952px] items-center justify-between">
           <h2 className="typography-heading-lg-semibold text-text-interactive-secondary">
@@ -92,11 +100,16 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
             size="md"
             _style="solid"
             onClick={handleViewMoreGames}
+            aria-label="더 많은 게임 보기"
           >
             게임 더 보기
           </PrimaryBoxButton>
         </div>
-        <div className="flex w-full items-center justify-center">
+        <div 
+          className="flex w-full items-center justify-center"
+          role="alert"
+          aria-live="assertive"
+        >
           <p className="text-red-500">
             게임을 불러오는 중 오류가 발생했습니다.
           </p>
@@ -108,6 +121,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
   return (
     <section
       className={`flex w-full flex-col items-center gap-[45px] ${className}`}
+      aria-label="게임 섹션"
     >
       <div className="flex w-[952px] items-center justify-between">
         <h2 className="typography-heading-lg-semibold text-text-interactive-secondary">
@@ -117,12 +131,17 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
           size="md"
           _style="solid"
           onClick={handleViewMoreGames}
+          aria-label="더 많은 게임 보기"
         >
           게임 더 보기
         </PrimaryBoxButton>
       </div>
 
-      <div className="flex items-center gap-[80px]">
+      <div 
+        className="flex items-center gap-[80px]"
+        role="region"
+        aria-label="추천 게임 목록"
+      >
         {isLoading ? (
           <div
             aria-live="polite"
@@ -133,6 +152,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
               <div
                 key={index}
                 className="flex w-[178px] flex-col items-start gap-[14px]"
+                aria-hidden="true"
               >
                 <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
                 <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
@@ -140,22 +160,35 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
             ))}
           </div>
         ) : (
-          games.map((game) => (
-            <button
-              key={game.gameId}
-              onClick={() => handleGameCardClick(game)}
-              className="cursor-pointer border-none bg-transparent p-0"
-              aria-label={`${game.gameTitle} 게임 미리보기 보기`}
-            >
-              <GameCard
-                type="libraryGame"
-                title={game.gameTitle}
-                questionCount={game.questionCount}
-                imageUrl={game.gameThumbnailUrl ?? undefined}
-                shared={game.isShared}
-              />
-            </button>
-          ))
+          <div
+            role="list"
+            aria-label={`${games.length}개의 추천 게임`}
+            className="flex items-center gap-[80px]"
+          >
+            {games.map((game, _index) => (
+              <div
+                key={game.gameId}
+                role="listitem"
+                className="flex w-[178px] flex-col items-start gap-[14px]"
+              >
+                <button
+                  onClick={() => handleGameCardClick(game)}
+                  onKeyDown={(e) => handleGameCardKeyDown(e, game)}
+                  className="cursor-pointer border-none bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-primary"
+                  aria-label={`${game.gameTitle} 게임 미리보기 보기. ${game.questionCount}개의 질문이 있습니다.`}
+                  tabIndex={0}
+                >
+                  <GameCard
+                    type="libraryGame"
+                    title={game.gameTitle}
+                    questionCount={game.questionCount}
+                    imageUrl={game.gameThumbnailUrl ?? undefined}
+                    shared={game.isShared}
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </section>
