@@ -23,17 +23,17 @@ export const useAuth = (): UseAuthReturn => {
     const handleSessionExpired = () => {
       setUser(null)
       localStorage.removeItem("auth_user")
-      deleteCookie("sessionId")
+      deleteCookie("JSESSIONID")
     }
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === null || e.key === "auth_user") {
-        const hasSessionCookie = document.cookie.includes("sessionId=")
+        const hasSessionCookie = document.cookie.includes("JSESSIONID=")
         if (!hasSessionCookie && user) {
           console.log("Session cookie removed, logging out user")
           setUser(null)
           localStorage.removeItem("auth_user")
-          deleteCookie("sessionId")
+          deleteCookie("JSESSIONID")
         }
       }
     }
@@ -53,7 +53,7 @@ export const useAuth = (): UseAuthReturn => {
     const cleanup = startPeriodicSessionValidation(5 * 60 * 1000, () => {
       setUser(null)
       localStorage.removeItem("auth_user")
-      deleteCookie("sessionId")
+      deleteCookie("JSESSIONID")
     })
 
     return cleanup
@@ -63,12 +63,12 @@ export const useAuth = (): UseAuthReturn => {
     if (!user) return
 
     const checkCookieStatus = () => {
-      const hasSessionCookie = document.cookie.includes("sessionId=")
+      const hasSessionCookie = document.cookie.includes("JSESSIONID=")
       if (!hasSessionCookie) {
         console.log("Session cookie not found, logging out user")
         setUser(null)
         localStorage.removeItem("auth_user")
-        deleteCookie("sessionId")
+        deleteCookie("JSESSIONID")
         window.dispatchEvent(new CustomEvent("auth:session-expired"))
         return
       }
@@ -79,12 +79,12 @@ export const useAuth = (): UseAuthReturn => {
     animationFrameId = requestAnimationFrame(checkCookieStatus)
 
     const handleFocus = () => {
-      const hasSessionCookie = document.cookie.includes("sessionId=")
+      const hasSessionCookie = document.cookie.includes("JSESSIONID=")
       if (!hasSessionCookie) {
         console.log("Session cookie not found on focus, logging out user")
         setUser(null)
         localStorage.removeItem("auth_user")
-        deleteCookie("sessionId")
+        deleteCookie("JSESSIONID")
         window.dispatchEvent(new CustomEvent("auth:session-expired"))
       }
     }
@@ -124,7 +124,6 @@ export const useAuth = (): UseAuthReturn => {
           if (hasSessionCookie) break
           await new Promise(resolve => setTimeout(resolve, 100))
         }
-
         if (hasSessionCookie) {
           setUser(response.data)
           localStorage.setItem("auth_user", JSON.stringify(response.data))
@@ -148,7 +147,7 @@ export const useAuth = (): UseAuthReturn => {
   const logout = useCallback(() => {
     setUser(null)
     localStorage.removeItem("auth_user")
-    deleteCookie("sessionId")
+    deleteCookie("JSESSIONID")
     window.dispatchEvent(new CustomEvent("auth:session-expired"))
   }, [])
 

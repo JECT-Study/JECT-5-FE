@@ -16,7 +16,7 @@ import {
 } from "@/entities/game"
 
 describe("Game API Handlers", () => {
-  const mockSessionCookie = "sessionId=test-session-123"
+  const mockSessionCookie = "JSESSIONID=test-session-123"
 
   describe("GET /games", () => {
     it("게임 목록을 성공적으로 조회해야 한다", async () => {
