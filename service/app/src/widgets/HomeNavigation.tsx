@@ -21,7 +21,6 @@ interface HomeNavigationProps {
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const {
-    user,
     isLoading: authLoading,
     isAuthenticated,
     logout,
@@ -150,8 +149,8 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                   tabIndex={0}
                 >
                   <Image
-                    src={user?.profileImageUrl || "/avatar.svg"}
-                    alt={`${user?.nickname || '사용자'} 아바타`}
+                    src="/avatar.svg"
+                    alt="사용자 아바타"
                     className="size-full rounded-full"
                     width={42}
                     height={42}

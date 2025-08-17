@@ -132,13 +132,13 @@ export default function GamesPage() {
         <>
           <div className="flex items-center gap-2">
             <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
-              <Image
-                src={user?.profileImageUrl || "/avatar.svg"}
-                alt="사용자 아바타"
-                className="size-full rounded-full"
-                width={42}
-                height={42}
-              />
+                <Image
+                  src="/avatar.svg"
+                  alt="사용자 아바타"
+                  className="size-full rounded-full"
+                  width={42}
+                  height={42}
+                />
             </div>
             <span className="text-sm font-medium text-text-primary">
               {user?.nickname}
