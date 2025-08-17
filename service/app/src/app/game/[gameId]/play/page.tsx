@@ -182,15 +182,16 @@ const ScoreboardGame = () => {
           </h1>
 
           {currentQuestion?.imageUrl && (
-            <div className="mb-[85px] h-[459px] w-[727px] overflow-hidden rounded-[10px] bg-gray-200">
+            <div className="relative mb-[85px] min-h-[459px] w-[727px] overflow-hidden rounded-[10px] bg-gray-200">
               <Image
                 src={currentQuestion.imageUrl}
                 alt="문제 이미지"
-                className="size-full object-cover transition-opacity duration-300"
-                width={727}
-                height={459}
+                className="size-full rounded-[10px] object-cover transition-opacity duration-300"
+                fill
                 placeholder="blur"
                 blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                loading="eager"
+                sizes="(max-width: 1920px) 727px, 1454px"
               />
             </div>
           )}
