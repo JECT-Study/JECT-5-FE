@@ -1,15 +1,16 @@
 "use client"
 
 import {
-  SecondaryGhostIconButton,
   SecondaryOutlineBoxButton,
 } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
-import { Magnifier, Sun } from "@shared/design/src/icons"
+import { ThemeToggle } from "@shared/design/src/components/themeToggle"
+import { Magnifier } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
@@ -22,11 +23,17 @@ export default function GamesPage() {
   const router = useRouter()
   const [_searchQuery, setSearchQuery] = useState("")
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
     })
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -85,7 +92,9 @@ export default function GamesPage() {
     router.push("/login")
   }
 
-  const handleThemeToggle = () => {}
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   const handleLogoClick = () => {
     router.push("/")
@@ -113,7 +122,7 @@ export default function GamesPage() {
         type="text"
         placeholder="오늘의 추천 게임은?"
         onChange={handleSearchChange}
-        className="flex-1 text-[19px] font-medium leading-[120%] text-text-primary placeholder:text-text-interactive-input-placeholder focus:outline-none"
+        className="flex-1 bg-transparent text-[19px] font-medium leading-[120%] text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none"
       />
     </div>
   )
@@ -157,9 +166,12 @@ export default function GamesPage() {
         </SecondaryOutlineBoxButton>
       )}
 
-      <SecondaryGhostIconButton onClick={handleThemeToggle}>
-        <Sun />
-      </SecondaryGhostIconButton>
+      {mounted && (
+        <ThemeToggle
+          theme={(resolvedTheme as "dark" | "light") || "light"}
+          onThemeToggle={handleThemeToggle}
+        />
+      )}
     </>
   )
 

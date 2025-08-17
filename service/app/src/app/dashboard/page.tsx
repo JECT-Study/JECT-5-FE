@@ -2,14 +2,15 @@
 
 import {
   PrimaryBoxButton,
-  SecondaryGhostIconButton,
   SecondaryOutlineBoxButton,
 } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
-import { Add, Sun } from "@shared/design/src/icons"
+import { ThemeToggle } from "@shared/design/src/components/themeToggle"
+import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
@@ -32,6 +33,8 @@ export default function DashboardPage() {
   const [_searchQuery, _setSearchQuery] = useState("")
   const { user, isLoading: _authLoading, isAuthenticated, logout } = useAuth()
   const [listButton, setListButton] = useState(false)
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   const {
     games,
@@ -50,6 +53,10 @@ export default function DashboardPage() {
   useEffect(() => {
     refetch()
   }, [refetch])
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -151,7 +158,9 @@ export default function DashboardPage() {
     })
   }
 
-  const handleThemeToggle = () => {}
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   const handleLogoClick = () => {
     router.push("/")
@@ -239,9 +248,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <SecondaryGhostIconButton onClick={handleThemeToggle}>
-        <Sun />
-      </SecondaryGhostIconButton>
+      {mounted && (
+        <ThemeToggle
+          theme={(resolvedTheme as "dark" | "light") || "light"}
+          onThemeToggle={handleThemeToggle}
+        />
+      )}
     </>
   )
 
