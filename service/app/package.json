@@ -27,6 +27,7 @@
     "radix-ui": "^1.4.2",
     "react": "^18",
     "react-dom": "^18",
+    "react-error-boundary": "^6.0.0",
     "react-simplikit": "^0.0.40",
     "uuid": "^11.1.0",
     "vite": "^6.3.5",

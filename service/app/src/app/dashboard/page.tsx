@@ -203,24 +203,31 @@ export default function DashboardPage() {
 
       {isAuthenticated ? (
         <div className="relative">
-          <div
-            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
+          <button
+            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
             onClick={handleAvatarClick}
+            aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
+            aria-expanded={listButton}
+            aria-haspopup="true"
+            tabIndex={0}
           >
-                <Image
-                  src="/avatar.svg"
-                  alt="사용자 아바타"
-                  className="size-full rounded-full"
-                  width={42}
-                  height={42}
-                />
-          </div>
+            <Image
+              src="/avatar.svg"
+              alt="사용자 아바타"
+              className="size-full rounded-full"
+              width={42}
+              height={42}
+            />
+          </button>
           {listButton && (
             <div className="absolute right-0 top-full z-10 mt-2">
               <SecondaryOutlineBoxButton
                 size="md"
                 onClick={handleLogoutClick}
                 className="whitespace-nowrap"
+                role="menuitem"
+                aria-label="로그아웃"
+                tabIndex={0}
               >
                 로그아웃
               </SecondaryOutlineBoxButton>

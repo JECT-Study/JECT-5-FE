@@ -23,6 +23,8 @@ class DashboardPage {
   readonly gameOptionsButtons: Locator
   readonly gamePreviewDialog: Locator
   readonly alertDialog: Locator
+  readonly avatarButton: Locator
+  readonly logoutButton: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -30,6 +32,10 @@ class DashboardPage {
     // 네비게이션 버튼들
     this.homeButton = page.getByRole("button", { name: "홈으로 이동" })
     this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).first()
+
+    // 사용자 메뉴 관련
+    this.avatarButton = page.getByRole("button", { name: /테스트 사용자 메뉴 (열기|닫기)/ })
+    this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
 
     // 게임 카드 관련
     this.gameCards = page.locator('[data-testid="game-card"]')
@@ -74,6 +80,10 @@ class DashboardPage {
   async goto() {
     await this.page.goto("http://localhost:3000/dashboard")
     await this.page.waitForLoadState("networkidle")
+    // 게임 카드가 로드될 때까지 기다림
+    await this.page.waitForSelector('[data-testid="game-card"]', { timeout: 10000 }).catch(() => {
+      console.warn("No game cards found after 10s")
+    })
   }
 
   // 네비게이션 액션 메서드들
@@ -85,6 +95,14 @@ class DashboardPage {
     await this.createGameButton.click()
   }
 
+  async clickAvatarButton() {
+    await this.avatarButton.click()
+  }
+
+  async clickLogoutButton() {
+    await this.logoutButton.click()
+  }
+
   // 게임 카드 관련 액션 메서드들
   async clickGameCard(index: number = 0) {
     await this.gameCards.nth(index).click()
@@ -92,6 +110,8 @@ class DashboardPage {
 
   async clickGameOptionsButton(index: number | null = 0) {
     const idx = index ?? 0
+    await this.gameCards.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
+    await this.gameOptionsButtons.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
     await this.gameOptionsButtons.nth(idx).click()
   }
 

@@ -100,9 +100,11 @@ export default function GamesPage() {
   }
 
   const leftContent = (
-    <div
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
+    <button
+      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
       onClick={handleLogoClick}
+      aria-label="홈으로 이동"
+      tabIndex={0}
     >
       <Image
         src="/logo.svg"
@@ -111,7 +113,7 @@ export default function GamesPage() {
         width={268}
         height={60}
       />
-    </div>
+    </button>
   )
 
   const centerContent = (
@@ -131,20 +133,28 @@ export default function GamesPage() {
       {isAuthenticated ? (
         <>
           <div className="flex items-center gap-2">
-            <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
-                <Image
-                  src="/avatar.svg"
-                  alt="사용자 아바타"
-                  className="size-full rounded-full"
-                  width={42}
-                  height={42}
-                />
-            </div>
+            <button
+              className="flex size-[42px] items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+              aria-label="사용자 아바타"
+              tabIndex={0}
+            >
+              <Image
+                src="/avatar.svg"
+                alt="사용자 아바타"
+                className="size-full rounded-full"
+                width={42}
+                height={42}
+              />
+            </button>
             <span className="text-sm font-medium text-text-primary">
               {user?.nickname}
             </span>
           </div>
-          <SecondaryOutlineBoxButton size="md" onClick={logout}>
+          <SecondaryOutlineBoxButton 
+            size="md" 
+            onClick={logout}
+            aria-label="로그아웃"
+          >
             로그아웃
           </SecondaryOutlineBoxButton>
         </>
@@ -153,6 +163,8 @@ export default function GamesPage() {
           size="md"
           onClick={handleLogin}
           disabled={authLoading}
+          aria-label={authLoading ? "로그인 처리 중" : "카카오 간편 로그인"}
+          aria-busy={authLoading}
         >
           <Image
             src="/kakao-logo.svg"

@@ -8,6 +8,7 @@ export const HeroSection = ({ className = "" }: HeroSectionProps) => {
   return (
     <section
       className={`flex w-full flex-col items-center gap-[24px] ${className}`}
+      aria-label="메인 히어로 섹션"
     >
       <div className="flex w-full flex-col items-center text-center">
         <h1
