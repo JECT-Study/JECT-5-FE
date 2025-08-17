@@ -20,9 +20,9 @@ export default plugin(
       ":root": {
         ...fontWeightTokens,
         ...colorBase,
-        ".dark": {
-          ...colorDark,
-        },
+      },
+      ".dark": {
+        ...colorDark,
       },
     })
     const typography = theme("typography")

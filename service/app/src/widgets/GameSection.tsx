@@ -85,7 +85,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
         className={`flex w-full flex-col items-center gap-[45px] ${className}`}
       >
         <div className="flex w-[952px] items-center justify-between">
-          <h2 className="typography-heading-lg-semibold text-neutral-black">
+          <h2 className="typography-heading-lg-semibold text-text-interactive-secondary">
             어떤 게임으로 시작해 볼까요?
           </h2>
           <PrimaryBoxButton
@@ -110,7 +110,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       className={`flex w-full flex-col items-center gap-[45px] ${className}`}
     >
       <div className="flex w-[952px] items-center justify-between">
-        <h2 className="typography-heading-lg-semibold text-neutral-black">
+        <h2 className="typography-heading-lg-semibold text-text-interactive-secondary">
           어떤 게임으로 시작해 볼까요?
         </h2>
         <PrimaryBoxButton

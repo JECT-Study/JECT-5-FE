@@ -3,7 +3,6 @@ import "./globals.css"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
-import { ThemeProvider } from "next-themes"
 
 import { MSWProvider } from "../mocks/mswProvider"
 import { OverlayProviderWrapper } from "./overlayProvider"
@@ -34,15 +33,7 @@ export default function RootLayout({
       <body>
         <MSWProvider>
           <Providers>
-            <OverlayProviderWrapper>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
-                {children}
-              </ThemeProvider>
-            </OverlayProviderWrapper>
+            <OverlayProviderWrapper>{children}</OverlayProviderWrapper>
           </Providers>
         </MSWProvider>
       </body>
