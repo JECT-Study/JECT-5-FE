@@ -182,6 +182,7 @@ class LibraryPage {
     await expect(this.createGameButton).toBeVisible()
     await expect(this.kakaoLoginButton).not.toBeVisible()
     await expect(this.avatarButton).toBeVisible()
+    await this.avatarButton.click()
     await expect(this.logoutButton).toBeVisible()
   }
 
