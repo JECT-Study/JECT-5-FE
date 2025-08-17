@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test"
 
-export class GameSetupPage {
+export class GameSetupPOM {
   readonly page: Page
   readonly addTeamButton: Locator
   readonly teamInputs: Locator
@@ -18,7 +18,7 @@ export class GameSetupPage {
   }
 
   async goto(gameId: string = "1") {
-    await this.page.goto(`http://localhost:3000/game/${gameId}/setup`)
+    await this.page.goto(`game/${gameId}/setup`)
     await this.page.waitForLoadState("networkidle")
   }
 
