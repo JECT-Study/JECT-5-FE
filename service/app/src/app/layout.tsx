@@ -4,7 +4,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
 
-import { MSWComponent } from "../mocks/mswComponent"
+import { MSWProvider } from "../mocks/mswProvider"
 import { OverlayProviderWrapper } from "./overlayProvider"
 import { Providers } from "./providers"
 
@@ -12,9 +12,7 @@ export const metadata: Metadata = {
   title: "RE:creation",
   description: "모두가 가볍게 즐길 수 있는 라이트 레크리에이션",
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ]
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
 }
 
@@ -33,11 +31,11 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
-        <MSWComponent>
+        <MSWProvider>
           <Providers>
             <OverlayProviderWrapper>{children}</OverlayProviderWrapper>
           </Providers>
-        </MSWComponent>
+        </MSWProvider>
       </body>
     </html>
   )

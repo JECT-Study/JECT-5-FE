@@ -22,7 +22,11 @@ fetchClient.addRequestInterceptor(
 fetchClient.addResponseInterceptor(
   async (response) => {
     if (response.status === 401) {
-      console.log("401 Unauthorized")
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth_user")
+        document.cookie = "sessionId=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
+        window.dispatchEvent(new CustomEvent("auth:session-expired"))
+      }
     }
     return response
   },

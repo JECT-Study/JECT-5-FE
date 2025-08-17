@@ -34,7 +34,7 @@ export function GameCreationProvider({
     if (gameId && !hasLoaded.current) {
       hasLoaded.current = true
       setIsLoading(true)
-      
+
       const loadGameData = async () => {
         try {
           const response = await getGameDetail(gameId)

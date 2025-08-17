@@ -49,7 +49,7 @@ describe("Auth API Handlers", () => {
       })
 
       expect(response.ok).toBe(true)
-      expect(response.headers.get("Set-Cookie")).toContain("JSESSIONID=")
+      expect(response.headers.get("Set-Cookie")).toContain("sessionId=")
     })
   })
 })
