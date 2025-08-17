@@ -4,7 +4,6 @@ import {
   PrimaryBoxButton,
   SecondaryOutlineBoxButton,
 } from "@shared/design/src/components/button"
-import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
