@@ -51,7 +51,7 @@ class LibraryPage {
     this.kakaoLoginButton = page.getByRole("button", { name: "카카오 간편 로그인" })
 
     // 로그인 상태에서 추가되는 요소들
-    this.avatarButton = page.getByRole("button", { name: "사용자 아바타" })
+    this.avatarButton = page.getByRole("button", { name: /사용자 메뉴/ })
     this.logoutButton = page.getByRole("button", { name: "로그아웃" })
 
     // 게임 미리 보기 팝업 요소들
