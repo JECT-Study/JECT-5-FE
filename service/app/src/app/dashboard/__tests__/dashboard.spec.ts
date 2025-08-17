@@ -291,7 +291,7 @@ test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
       localStorage.setItem(
         "auth_user",
         JSON.stringify({
-          profileImageUrl: "/exampleThumbnail.jpg",
+          profileImageUrl: "/avatar.svg",
           nickname: "testUser",
           email: "test@example.com",
         }),
@@ -320,7 +320,7 @@ test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
       localStorage.setItem(
         "auth_user",
         JSON.stringify({
-          profileImageUrl: "/exampleThumbnail.jpg",
+          profileImageUrl: "/avatar.svg",
           nickname: "testUser",
           email: "test@example.com",
         }),
@@ -351,7 +351,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
       localStorage.setItem(
         "auth_user",
         JSON.stringify({
-          profileImageUrl: "/exampleThumbnail.jpg",
+          profileImageUrl: "/avatar.svg",
           nickname: "testUser",
           email: "test@example.com",
         }),
@@ -393,7 +393,7 @@ test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
       localStorage.setItem(
         "auth_user",
         JSON.stringify({
-          profileImageUrl: "/exampleThumbnail.jpg",
+          profileImageUrl: "/avatar.svg",
           nickname: "testUser",
           email: "test@example.com",
         }),
@@ -426,7 +426,7 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
       localStorage.setItem(
         "auth_user",
         JSON.stringify({
-          profileImageUrl: "/exampleThumbnail.jpg",
+          profileImageUrl: "/avatar.svg",
           nickname: "testUser",
           email: "test@example.com",
         }),
