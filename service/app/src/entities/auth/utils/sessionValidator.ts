@@ -14,7 +14,7 @@ export const validateSessionWithRequest =
   async (): Promise<SessionValidationResult> => {
     try {
       // 간단한 API 요청으로 세션 상태 확인 (예: 내 게임 목록 조회)
-      const response = await fetchClient.fetch("/user/me/games?limit=1", {
+      const response = await fetchClient.fetch("/users/me/games?limit=1", {
         method: "GET",
       })
 
