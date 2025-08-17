@@ -2,6 +2,7 @@ import { GameCreationAction } from "./actions"
 import { GameCreationState } from "./state"
 import {
   addQuestion,
+  createInitialState,
   deleteQuestion,
   moveQuestionInArray,
   updateQuestion,
@@ -181,6 +182,16 @@ export const gameCreationReducer = (
         selectedQuestionId: newQuestions.length > 0 ? newQuestions[0].id : null,
         gameVersion: version,
       }
+    }
+
+    case "INITIALIZE_FROM_STORAGE": {
+      // localStorage에서 불러온 상태로 완전히 교체
+      return action.payload
+    }
+
+    case "CLEAR_DRAFT": {
+      // 초기 상태로 리셋
+      return createInitialState()
     }
 
     case "SET_GAME_VERSION":

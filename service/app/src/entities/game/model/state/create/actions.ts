@@ -1,4 +1,4 @@
-import { Question } from "./state"
+import { GameCreationState, Question } from "./state"
 
 export type GameCreationAction =
   | { type: "SET_GAME_NAME"; payload: string }
@@ -35,6 +35,8 @@ export type GameCreationAction =
       }
     }
   | { type: "SET_GAME_VERSION"; payload: number }
+  | { type: "INITIALIZE_FROM_STORAGE"; payload: GameCreationState }
+  | { type: "CLEAR_DRAFT" }
 
 interface PopupState {
   showExitConfirmation: boolean
@@ -135,5 +137,14 @@ export const gameCreationActions = {
   setGameVersion: (version: number): GameCreationAction => ({
     type: "SET_GAME_VERSION",
     payload: version,
+  }),
+
+  initializeFromStorage: (state: GameCreationState): GameCreationAction => ({
+    type: "INITIALIZE_FROM_STORAGE",
+    payload: state,
+  }),
+
+  clearDraft: (): GameCreationAction => ({
+    type: "CLEAR_DRAFT",
   }),
 }
