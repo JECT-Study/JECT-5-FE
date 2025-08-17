@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 
 import { useAuth } from "@/entities/auth"
 
@@ -12,8 +12,6 @@ export default function ClientLayout({
 }) {
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
-
-  console.log(isAuthenticated, isLoading)
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
