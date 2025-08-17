@@ -2,11 +2,12 @@
 
 import {
   PrimaryBoxButton,
-  SecondaryGhostIconButton,
 } from "@shared/design/src/components/button"
 import { Control, Field, Root } from "@shared/design/src/components/input"
 import { ErrorText } from "@shared/design/src/components/input"
-import { Sun } from "@shared/design/src/icons"
+import { ThemeToggle } from "@shared/design/src/components/themeToggle"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import { RegisterButton } from "../interactions/registerButton"
@@ -14,6 +15,12 @@ import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
   const { state, actions, selectors } = useGameCreationContext()
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleGameNameChange = (value: string) => {
     actions.setGameName(value)
@@ -25,6 +32,10 @@ export function CreateGameNavigation() {
 
   const handleGameNameBlur = () => {
     actions.setGameNameFocus(false)
+  }
+
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
   }
 
   return (
@@ -54,9 +65,12 @@ export function CreateGameNavigation() {
       </div>
 
       <div className="flex w-[420px] items-center justify-end gap-4 px-10">
-        <SecondaryGhostIconButton>
-          <Sun />
-        </SecondaryGhostIconButton>
+        {mounted && (
+          <ThemeToggle
+            theme={(resolvedTheme as "dark" | "light") || "light"}
+            onThemeToggle={handleThemeToggle}
+          />
+        )}
 
         <PrimaryBoxButton
           size="sm"
