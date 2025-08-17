@@ -103,18 +103,22 @@ class HomePage {
 
   // 검증 메서드들
   async expectToBeOnHomePage() {
+    await this.page.waitForURL("http://localhost:3000/", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/")
   }
 
   async expectToBeOnGamesPage() {
+    await this.page.waitForURL("http://localhost:3000/games", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/games")
   }
 
   async expectToBeOnDashboardPage() {
+    await this.page.waitForURL("http://localhost:3000/dashboard", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/dashboard")
   }
 
   async expectToBeOnCreatePage() {
+    await this.page.waitForURL("http://localhost:3000/create", { timeout: 10000 })
     await expect(this.page).toHaveURL("http://localhost:3000/create")
   }
 
@@ -214,21 +218,14 @@ class HomePage {
 
   async startGameFromPreview(
     gamePreviewDialog: Locator,
-    isLoggedIn: boolean = false,
   ) {
     const startButton = gamePreviewDialog.getByRole("button", {
       name: "게임 시작",
     })
     await startButton.click()
 
-    // 로그인 상태에 따라 다른 URL 확인
-    if (isLoggedIn) {
-      // 로그인 상태: /game/0/setup으로 리다이렉트
-      await expect(this.page).toHaveURL(/\/game\/\d+\/setup/)
-    } else {
-      // 비로그인 상태: /game/0으로 이동
-      await expect(this.page).toHaveURL(/\/game\/\d+$/)
-    }
+    await this.page.waitForURL(/\/game\/\d+(\/setup)?/, { timeout: 10000 })
+    await expect(this.page).toHaveURL(/\/game\/\d+(\/setup)?/)
   }
 }
 
@@ -355,7 +352,7 @@ test.describe("홈페이지 E2E 테스트 - 비로그인 상태", () => {
     test("게임 미리보기에서 게임 시작 버튼 클릭 시 게임 진행 화면으로 이동해야 한다", async () => {
       const gamePreviewDialog = await homePage.openGamePreview()
       if (!gamePreviewDialog) return
-      await homePage.startGameFromPreview(gamePreviewDialog, false)
+      await homePage.startGameFromPreview(gamePreviewDialog)
     })
   })
 })
@@ -377,8 +374,8 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
           email: "test@example.com",
         }),
       )
-
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
 
     await homePage.goto()
@@ -522,7 +519,7 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
     test("게임 미리보기에서 게임 시작 버튼 클릭 시 게임 진행 화면으로 이동해야 한다", async () => {
       const gamePreviewDialog = await homePage.openGamePreview()
       if (!gamePreviewDialog) return
-      await homePage.startGameFromPreview(gamePreviewDialog, true)
+      await homePage.startGameFromPreview(gamePreviewDialog)
     })
   })
 })

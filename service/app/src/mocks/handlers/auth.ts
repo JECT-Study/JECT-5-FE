@@ -15,7 +15,7 @@ export const authHandlers = [
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Set-Cookie": "sessionId=test-session-123; Path=/; SameSite=Lax",
+          "Set-Cookie": "JSESSIONID=test-session-123; Path=/; SameSite=Lax",
         },
       })
     }

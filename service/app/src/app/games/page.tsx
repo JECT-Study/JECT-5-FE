@@ -21,7 +21,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
 export default function GamesPage() {
   const router = useRouter()
-  const [_searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -34,6 +34,15 @@ export default function GamesPage() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const filteredGames = games.filter((game) => {
+    if (!searchQuery.trim()) return true
+    
+    const query = searchQuery.toLowerCase().replace(/\s/g, '')
+    const title = game.gameTitle.toLowerCase().replace(/\s/g, '')
+    
+    return title.includes(query)
+  })
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -84,7 +93,6 @@ export default function GamesPage() {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-    console.log("Search query:", e.target.value)
   }
 
   const handleLogin = async () => {
@@ -186,7 +194,7 @@ export default function GamesPage() {
       />
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
-          games={games}
+          games={filteredGames}
           isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}
           hasNextPage={hasNextPage}
