@@ -28,7 +28,7 @@ export const deleteCookie = (name: string): void => {
 }
 
 export const getSessionId = (): string | null => {
-  return getCookie("sessionId")
+  return getCookie("JSESSIONID")
 }
 
 export const hasValidSession = (): boolean => {

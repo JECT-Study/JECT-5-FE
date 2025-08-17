@@ -259,7 +259,7 @@ test.describe("라이브러리 E2E 테스트 - 로그인 상태", () => {
         name: "테스트 사용자",
         email: "test@example.com"
       }))
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await libraryPage.goto()
   })

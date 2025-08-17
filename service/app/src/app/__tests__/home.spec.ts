@@ -374,8 +374,8 @@ test.describe("홈페이지 E2E 테스트 - 로그인 상태", () => {
           email: "test@example.com",
         }),
       )
-
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
 
     await homePage.goto()

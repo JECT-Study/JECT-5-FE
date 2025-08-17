@@ -19,7 +19,7 @@ export const validateSessionCookie = (cookieHeader: string | null): boolean => {
   if (typeof window !== "undefined" && typeof document !== "undefined") {
     const documentCookie = document.cookie
     if (
-      documentCookie.includes("sessionId=") ||
+      documentCookie.includes("JSESSIONID=") ||
       documentCookie.includes("test-session-123")
     ) {
       return true
@@ -34,7 +34,7 @@ export const validateSessionCookie = (cookieHeader: string | null): boolean => {
 
   const hasValidSession = cookies.some(
     (cookie) =>
-      cookie.startsWith("sessionId=") || cookie === "test-session-123",
+      cookie.startsWith("JSESSIONID=") || cookie === "test-session-123",
   )
 
   return hasValidSession

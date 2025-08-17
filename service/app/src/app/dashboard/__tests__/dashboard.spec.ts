@@ -296,7 +296,7 @@ test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -325,7 +325,7 @@ test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -356,7 +356,7 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -398,7 +398,7 @@ test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
@@ -432,7 +432,7 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
         }),
       )
       // 쿠키 설정
-      document.cookie = "sessionId=test-session-123; Path=/; SameSite=Lax"
+      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
     await dashboardPage.goto()
   })
