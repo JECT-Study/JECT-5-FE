@@ -225,10 +225,12 @@ class LibraryPage {
     if (gameCardCount > 0) {
       // 검색어가 포함된 게임이 있는지 확인
       let hasMatchingGame = false
+      const normalizedKeyword = keyword.toLowerCase().replace(/\s/g, "")
       for (let i = 0; i < gameCardCount; i++) {
         const card = this.gameCards.nth(i)
         const title = await card.locator('[data-testid="game-title"]').textContent()
-        if (title?.toLowerCase().includes(keyword.toLowerCase())) {
+        const normalizedTitle = (title ?? "").toLowerCase().replace(/\s/g, "")
+        if (normalizedTitle.includes(normalizedKeyword)) {
           hasMatchingGame = true
           break
         }
