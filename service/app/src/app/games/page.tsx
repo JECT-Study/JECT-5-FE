@@ -82,7 +82,7 @@ export default function GamesPage() {
 
   const handleLogin = async () => {
     console.log("Login clicked")
-    router.push("/login/kakao")
+    router.push("/login")
   }
 
   const handleThemeToggle = () => {}

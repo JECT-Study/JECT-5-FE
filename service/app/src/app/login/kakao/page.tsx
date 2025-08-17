@@ -1,33 +1,83 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense, useEffect, useState } from "react"
 
-export default function KakaoLoginPage() {
+import { useAuth } from "@/entities/auth"
+
+function KakaoCallbackContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { login } = useAuth()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID
-    const redirectUri =
-      process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
-      `${window.location.origin}/login/kakao`
+    const handleCallback = async () => {
+      const code = searchParams.get("code")
+      const error = searchParams.get("error")
 
-    if (!kakaoClientId) {
-      console.error("KAKAO_CLIENT_ID is not defined")
-      return
+      if (error) {
+        setError("카카오 로그인 중 오류가 발생했습니다.")
+        return
+      }
+
+      if (!code) {
+        setError("인증 코드를 받지 못했습니다.")
+        return
+      }
+
+      try {
+        await login(code)
+        // 로그인 성공 후 홈페이지로 리다이렉트
+        router.push("/")
+      } catch (error) {
+        console.error("Login error:", error)
+        setError("로그인 처리 중 오류가 발생했습니다.")
+      }
     }
 
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
+    handleCallback()
+  }, [searchParams, login, router])
 
-    window.location.href = kakaoAuthUrl
-  }, [router])
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 text-red-600">{error}</div>
+          <button
+            onClick={() => router.push("/")}
+            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <div className="mb-4">카카오 로그인으로 이동 중...</div>
+        <div className="mb-4">카카오 로그인 처리 중...</div>
         <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
       </div>
     </div>
+  )
+}
+
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-center">
+            <div className="mb-4">로딩 중...</div>
+            <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+          </div>
+        </div>
+      }
+    >
+      <KakaoCallbackContent />
+    </Suspense>
   )
 }
