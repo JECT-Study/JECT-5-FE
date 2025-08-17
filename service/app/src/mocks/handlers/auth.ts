@@ -15,10 +15,10 @@ export const authHandlers = [
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Set-Cookie": "JSESSIONID=test-session-123",
+          "Set-Cookie": "sessionId=test-session-123; Path=/; HttpOnly",
         },
       })
     }
-    return new HttpResponse("Unauthorized", { status: 401 }) // temporary
+    return new HttpResponse("Unauthorized", { status: 401 })
   }),
 ]

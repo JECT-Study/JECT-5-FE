@@ -20,7 +20,13 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    logout,
+    login,
+  } = useAuth()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -46,7 +52,16 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   }
 
   const handleLoginClick = async () => {
-    window.location.href = "/login/kakao"
+    if (process.env.NODE_ENV === "development") {
+      try {
+        await login("someValidCode")
+      } catch (error) {
+        console.error("Login error:", error)
+      }
+      return
+    }
+
+    window.location.href = "/login"
   }
 
   const handleLogoutClick = () => {
@@ -59,7 +74,11 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary ${className}`}
     >
       <div className="flex w-[420px] items-center gap-2.5 px-10">
-        <div className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5">
+        <button
+          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
+          onClick={() => router.push("/")}
+          aria-label="홈으로 이동"
+        >
           <Image
             src="/logo.svg"
             alt="홈 로고"
@@ -67,7 +86,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
             width={268}
             height={60}
           />
-        </div>
+        </button>
       </div>
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
@@ -92,9 +111,12 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
               </PrimaryBoxButton>
 
               <div className="relative">
-                <div
+                <button
                   className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300"
                   onClick={handleAvatarClick}
+                  aria-label="사용자 메뉴 열기"
+                  aria-expanded={listButton}
+                  aria-haspopup="true"
                 >
                   <Image
                     src={user?.profileImageUrl || "/avatar.svg"}
@@ -103,13 +125,18 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                     width={42}
                     height={42}
                   />
-                </div>
+                </button>
                 {listButton && (
-                  <div className="absolute right-0 top-full z-10 mt-2">
+                  <div
+                    className="absolute right-0 top-full z-10 mt-2"
+                    role="menu"
+                    aria-label="사용자 메뉴"
+                  >
                     <SecondaryOutlineBoxButton
                       size="md"
                       onClick={handleLogoutClick}
                       className="whitespace-nowrap"
+                      role="menuitem"
                     >
                       로그아웃
                     </SecondaryOutlineBoxButton>
@@ -125,7 +152,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 disabled={authLoading}
               >
                 <Image
-                  src="/kakao-logo.png"
+                  src="/kakao-logo.svg"
                   alt="카카오 로고"
                   className="size-8"
                   width={32}

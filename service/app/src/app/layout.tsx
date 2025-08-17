@@ -4,7 +4,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
 
-import { MSWComponent } from "../mocks/mswComponent"
+import { MSWProvider } from "../mocks/mswProvider"
 import { OverlayProviderWrapper } from "./overlayProvider"
 import { Providers } from "./providers"
 
@@ -33,11 +33,11 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
-        <MSWComponent>
+        <MSWProvider>
           <Providers>
             <OverlayProviderWrapper>{children}</OverlayProviderWrapper>
           </Providers>
-        </MSWComponent>
+        </MSWProvider>
       </body>
     </html>
   )

@@ -21,12 +21,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [_searchQuery, setSearchQuery] = useState("")
-  const {
-    user,
-    isLoading: authLoading,
-    isAuthenticated,
-    logout,
-  } = useAuth()
+  const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
@@ -87,7 +82,7 @@ export default function GamesPage() {
 
   const handleLogin = async () => {
     console.log("Login clicked")
-    router.push("/login/kakao")
+    router.push("/login")
   }
 
   const handleThemeToggle = () => {}
@@ -152,7 +147,7 @@ export default function GamesPage() {
           disabled={authLoading}
         >
           <Image
-            src="/kakao-logo.png"
+            src="/kakao-logo.svg"
             alt="카카오 로고"
             className="size-8"
             width={32}
