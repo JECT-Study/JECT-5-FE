@@ -6,8 +6,6 @@ import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import Link from "next/link"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 
 interface GameNavigationProps {
   onStart: () => void
@@ -20,17 +18,6 @@ export function GameNavigation({
   onExit,
   isStartEnabled,
 }: GameNavigationProps) {
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const handleThemeToggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }
-
   return (
     <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
       <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
@@ -54,12 +41,8 @@ export function GameNavigation({
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
         <div className="flex items-center justify-end gap-4 px-10">
-          {mounted && (
-            <ThemeToggle
-              theme={(resolvedTheme as "dark" | "light") || "light"}
-              onThemeToggle={handleThemeToggle}
-            />
-          )}
+          <ThemeToggle />
+
           <PrimaryBoxButton
             size="sm"
             _style="solid"
