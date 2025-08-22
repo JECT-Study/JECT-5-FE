@@ -1,3 +1,4 @@
+"use client"
 import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
@@ -6,20 +7,22 @@ import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-interface GameNavigationProps {
-  onStart: () => void
-  onExit: () => void
-  isStartEnabled: boolean
-}
+import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
+import { useGameStore } from "../../store/useGameStore"
+import { canStartGame } from "../../utils/teamValidation"
 
-export function GameNavigation({
-  onStart,
-  onExit,
-  isStartEnabled,
-}: GameNavigationProps) {
+export function GameNavigation() {
+  const setGameStatus = useGameStore((state) => state.setGameStatus)
+  const teams = useGameStore((state) => state.teams)
+
+  const isGameReady = canStartGame(teams)
+
+  const router = useRouter()
+
   return (
-    <div className="mx-auto flex h-[110px] w-[1920px] shrink-0 items-center justify-between">
+    <div className="mx-auto flex h-[110px] w-full shrink-0 items-center justify-between">
       <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
         <Link
           href="/"
@@ -46,12 +49,24 @@ export function GameNavigation({
           <PrimaryBoxButton
             size="sm"
             _style="solid"
-            disabled={!isStartEnabled}
-            onClick={onStart}
+            disabled={!isGameReady}
+            onClick={() => {
+              if (isGameReady) {
+                setGameStatus("playing")
+                router.push("./play")
+              }
+            }}
           >
             게임 시작
           </PrimaryBoxButton>
-          <SecondaryPlainIconButton size="lg" onClick={onExit}>
+          <SecondaryPlainIconButton
+            size="lg"
+            onClick={() => {
+              openExitConfirmDialog({
+                onConfirm: () => router.push("/"),
+              })
+            }}
+          >
             <Cross />
           </SecondaryPlainIconButton>
         </div>
