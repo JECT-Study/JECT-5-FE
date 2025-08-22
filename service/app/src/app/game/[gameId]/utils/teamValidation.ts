@@ -13,7 +13,7 @@ export const validateTeamName = (
     return "팀명을 비워둘 수 없어요."
   }
   if (name.length > MAX_TEAM_NAME_LENGTH) {
-    return "팀명은 30자까지만 가능해요."
+    return `팀명은 ${MAX_TEAM_NAME_LENGTH}자까지만 가능해요.`
   }
   if (teams.some((team) => team.id !== teamId && team.name === name)) {
     return "이미 사용중인 팀명이에요."

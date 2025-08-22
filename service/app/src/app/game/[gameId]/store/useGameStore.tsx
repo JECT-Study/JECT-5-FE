@@ -28,7 +28,6 @@ interface GameState {
 }
 
 interface GameActions {
-  // 팀 관리 - 플랫 구조
   addTeam: (team: Team) => void
   removeTeam: (teamId: string) => void
   updateTeamName: (teamId: string, name: string) => void
@@ -51,17 +50,17 @@ const findTeamIndex = (teams: Team[], teamId: string): number => {
 }
 
 export const createGameStore = (
-  initialGameDetail?: GameDetailData,
+  initialGameDetail: GameDetailData,
   gameId?: string,
 ) =>
   create<GameState & GameActions>()(
     persist(
       immer((set) => ({
-        gameDetail: initialGameDetail || null,
+        gameDetail: initialGameDetail,
         teams: DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 })),
         gameStatus: "setup",
         currentRound: 1,
-        totalRounds: initialGameDetail?.questionCount || 1,
+        totalRounds: initialGameDetail.questionCount || 1,
 
         addTeam: (team) =>
           set((state) => {
