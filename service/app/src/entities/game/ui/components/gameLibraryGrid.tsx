@@ -1,6 +1,7 @@
 "use client"
 
 import { GameCard } from "@shared/design/src/components/gameCard"
+import { MyGameCard } from "@shared/design/src/components/gameCard/myGameCard"
 import { GameCreate } from "@shared/design/src/components/gameCreate"
 
 import type { GameListItem } from "@/entities/game/model"
@@ -64,18 +65,25 @@ export const GameLibraryGrid = ({
                 onClick={() => onGameClick?.(game)}
                 className="cursor-pointer"
               >
-                <GameCard
-                type={isDashboard ? "myGame" : "libraryGame"}
-                title={game.gameTitle}
-                questionCount={game.questionCount}
-                imageUrl={game.gameThumbnailUrl || undefined}
-                shared={game.isShared}
-                onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
-                onShare={isDashboard ? () => onShareGame?.(game) : undefined}
-                onDelete={
-                  isDashboard ? () => onDeleteGame?.(game) : undefined
-                }
-              />
+                {isDashboard ? (
+                  <MyGameCard
+                    title={game.gameTitle}
+                    questionCount={game.questionCount}
+                    imageUrl={game.gameThumbnailUrl || undefined}
+                    shared={game.isShared}
+                    onEdit={() => onEditGame?.(game)}
+                    onShare={() => onShareGame?.(game)}
+                    onDelete={() => onDeleteGame?.(game)}
+                  />
+                ) : (
+                  <GameCard
+                    type="libraryGame"
+                    title={game.gameTitle}
+                    questionCount={game.questionCount}
+                    imageUrl={game.gameThumbnailUrl || undefined}
+                    shared={game.isShared}
+                  />
+                )}
               </div>
             ))}
       </div>
