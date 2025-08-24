@@ -20,12 +20,7 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const {
-    isLoading: authLoading,
-    isAuthenticated,
-    logout,
-    login,
-  } = useAuth()
+  const { isLoading: authLoading, isAuthenticated, logout, login } = useAuth()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -81,14 +76,14 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
-      if (listButton && !target.closest('[data-user-menu]')) {
+      if (listButton && !target.closest("[data-user-menu]")) {
         setListButton(false)
       }
     }
 
     if (listButton) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [listButton])
 
@@ -100,7 +95,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     >
       <div className="flex w-[420px] items-center gap-2.5 px-10">
         <button
-          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none"
           onClick={() => router.push("/")}
           aria-label="홈으로 이동"
           tabIndex={0}
@@ -116,7 +111,9 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       </div>
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-        <div className={`flex items-center gap-4 px-10 ${isAuthenticated ? 'justify-end' : 'justify-center'}`}>
+        <div
+          className={`flex items-center gap-4 px-10 ${isAuthenticated ? "justify-end" : "justify-center"}`}
+        >
           {isAuthenticated ? (
             <>
               <PrimaryBoxButton
@@ -140,10 +137,10 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
 
               <div className="relative" data-user-menu>
                 <button
-                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
                   onClick={handleAvatarClick}
                   onKeyDown={handleAvatarKeyDown}
-                  aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
+                  aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
                   aria-expanded={listButton}
                   aria-haspopup="true"
                   tabIndex={0}
@@ -182,7 +179,9 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="md"
                 onClick={handleLoginClick}
                 disabled={authLoading}
-                aria-label={authLoading ? "로그인 처리 중" : "카카오 간편 로그인"}
+                aria-label={
+                  authLoading ? "로그인 처리 중" : "카카오 간편 로그인"
+                }
                 aria-busy={authLoading}
               >
                 <Image
