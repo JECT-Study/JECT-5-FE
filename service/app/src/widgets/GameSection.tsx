@@ -3,6 +3,7 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { GameCard } from "@shared/design/src/components/gameCard"
 import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
 
@@ -79,7 +80,10 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     }
   }
 
-  const handleGameCardKeyDown = (event: React.KeyboardEvent, game: GameListItem) => {
+  const handleGameCardKeyDown = (
+    event: React.KeyboardEvent,
+    game: GameListItem,
+  ) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
       handleGameCardClick(game)
@@ -105,7 +109,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
             게임 더 보기
           </PrimaryBoxButton>
         </div>
-        <div 
+        <div
           className="flex w-full items-center justify-center"
           role="alert"
           aria-live="assertive"
@@ -137,7 +141,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
         </PrimaryBoxButton>
       </div>
 
-      <div 
+      <div
         className="flex items-center gap-[80px]"
         role="region"
         aria-label="추천 게임 목록"
@@ -178,13 +182,33 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
                   aria-label={`${game.gameTitle} 게임 미리보기 보기. ${game.questionCount}개의 질문이 있습니다.`}
                   tabIndex={0}
                 >
-                  <GameCard
-                    type="libraryGame"
-                    title={game.gameTitle}
-                    questionCount={game.questionCount}
-                    imageUrl={game.gameThumbnailUrl ?? undefined}
-                    shared={game.isShared}
-                  />
+                  <GameCard>
+                    <GameCard.Image>
+                      {game.gameThumbnailUrl ? (
+                        <Image
+                          src={game.gameThumbnailUrl}
+                          alt={game.gameTitle}
+                          fill
+                          className="rounded-[10px] object-cover"
+                          sizes="178px"
+                          priority={_index < 2}
+                          placeholder="blur"
+                          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
+                          <span className="text-[14px] font-medium text-gray-500">
+                            이미지 없음
+                          </span>
+                        </div>
+                      )}
+                      <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
+                      {game.isShared && (
+                        <GameCard.SharedBadge>공유</GameCard.SharedBadge>
+                      )}
+                    </GameCard.Image>
+                    <GameCard.Title>{game.gameTitle}</GameCard.Title>
+                  </GameCard>
                 </button>
               </div>
             ))}

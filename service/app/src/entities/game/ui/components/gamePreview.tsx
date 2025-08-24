@@ -7,6 +7,7 @@ import {
 import { Dialog, DialogContent } from "@shared/design/src/components/dialog"
 import { GameCard } from "@shared/design/src/components/gameCard"
 import { Cross, Play } from "@shared/design/src/icons"
+import Image from "next/image"
 
 interface GamePreviewProps {
   className?: string
@@ -90,15 +91,22 @@ export const GamePreview = ({
               data-testid="image-carousel"
             >
               {questions.map((question, _index) => (
-                <GameCard
-                  key={question.id}
-                  type={
-                    question.imageUrl ? "gamePreview" : "onlyTitleGamePreview"
-                  }
-                  title={question.title}
-                  questionCount={10}
-                  imageUrl={question.imageUrl}
-                />
+                <GameCard key={question.id}>
+                  {question.imageUrl ? (
+                    <GameCard.Image className="h-[260px]">
+                      <Image
+                        src={question.imageUrl}
+                        alt={question.title}
+                        fill
+                        className="rounded-[10px] object-cover"
+                        sizes="178px"
+                        placeholder="blur"
+                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                      />
+                    </GameCard.Image>
+                  ) : null}
+                  <GameCard.Title>{question.title}</GameCard.Title>
+                </GameCard>
               ))}
             </div>
           </div>
