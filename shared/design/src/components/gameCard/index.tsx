@@ -1,9 +1,10 @@
+import type { ReactNode } from "react"
 import { forwardRef } from "react"
 
 import { cn } from "../../utils/cn"
 
 interface GameCardProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
@@ -22,7 +23,7 @@ const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
 )
 
 interface GameCardImageProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
@@ -40,7 +41,7 @@ const GameCardImage = ({ children, className }: GameCardImageProps) => {
 }
 
 interface GameCardTitleProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
@@ -61,7 +62,7 @@ const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
 }
 
 interface GameCardBadgeProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
