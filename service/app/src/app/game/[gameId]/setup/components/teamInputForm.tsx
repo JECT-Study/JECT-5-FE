@@ -57,7 +57,7 @@ export function TeamInputForm() {
               if (value.length > MAX_TEAM_NAME_LENGTH) {
                 return
               }
-              updateTeamName(team.id, value)
+              updateTeamName(team.id, value.trim())
             }}
             onReset={() => {
               if (teams.length > MIN_TEAMS) {
