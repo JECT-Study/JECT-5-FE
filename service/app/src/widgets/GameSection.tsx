@@ -178,7 +178,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
                 <button
                   onClick={() => handleGameCardClick(game)}
                   onKeyDown={(e) => handleGameCardKeyDown(e, game)}
-                  className="cursor-pointer border-none bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-primary"
+                  className="cursor-pointer border-none bg-transparent p-0 focus:outline-none"
                   aria-label={`${game.gameTitle} 게임 미리보기 보기. ${game.questionCount}개의 질문이 있습니다.`}
                   tabIndex={0}
                 >
