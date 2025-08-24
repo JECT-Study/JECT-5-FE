@@ -98,11 +98,9 @@ type MyGameCardProps = {
   imageUrl?: string
   className?: string
   shared?: boolean
-  optionView?: boolean
   onEdit?: () => void
   onShare?: () => void
   onDelete?: () => void
-  onMoreClick?: () => void
   ImageComponent?: React.ComponentType<{
     src: string
     alt: string
