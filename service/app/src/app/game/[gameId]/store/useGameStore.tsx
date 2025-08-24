@@ -20,15 +20,13 @@ export interface Team {
 }
 
 interface GameState {
-  gameDetail: GameDetailData | null
+  gameDetail: GameDetailData
   teams: Team[]
   gameStatus: "setup" | "playing" | "paused" | "finished"
-  currentRound: number
   totalRounds: number
 }
 
 interface GameActions {
-  // 팀 관리 - 플랫 구조
   addTeam: (team: Team) => void
   removeTeam: (teamId: string) => void
   updateTeamName: (teamId: string, name: string) => void
@@ -37,9 +35,6 @@ interface GameActions {
 
   // 게임 진행
   setGameStatus: (status: GameState["gameStatus"]) => void
-  setRound: (round: number) => void
-  nextRound: () => void
-  prevRound: () => void
 
   // 초기화
   resetGame: () => void
@@ -51,17 +46,16 @@ const findTeamIndex = (teams: Team[], teamId: string): number => {
 }
 
 export const createGameStore = (
-  initialGameDetail?: GameDetailData,
+  initialGameDetail: GameDetailData,
   gameId?: string,
 ) =>
   create<GameState & GameActions>()(
     persist(
       immer((set) => ({
-        gameDetail: initialGameDetail || null,
+        gameDetail: initialGameDetail,
         teams: DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 })),
         gameStatus: "setup",
-        currentRound: 1,
-        totalRounds: initialGameDetail?.questionCount || 1,
+        totalRounds: initialGameDetail.questionCount,
 
         addTeam: (team) =>
           set((state) => {
@@ -103,30 +97,10 @@ export const createGameStore = (
         // 게임 진행 액션들
         setGameStatus: (gameStatus) => set({ gameStatus }),
 
-        setRound: (round) =>
-          set((state) => {
-            state.currentRound = Math.max(1, Math.min(round, state.totalRounds))
-          }),
-
-        nextRound: () =>
-          set((state) => {
-            if (state.currentRound < state.totalRounds) {
-              state.currentRound += 1
-            }
-          }),
-
-        prevRound: () =>
-          set((state) => {
-            if (state.currentRound > 1) {
-              state.currentRound -= 1
-            }
-          }),
-
         resetGame: () =>
           set((state) => {
             state.teams = DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 }))
             state.gameStatus = "setup"
-            state.currentRound = 1
           }),
       })),
       {
@@ -135,9 +109,6 @@ export const createGameStore = (
         partialize: (state) => ({
           teams: state.teams,
           gameStatus: state.gameStatus,
-          currentRound: state.currentRound,
-          totalRounds: state.totalRounds,
-          gameDetail: state.gameDetail,
         }),
       },
     ),

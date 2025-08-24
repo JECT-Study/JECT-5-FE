@@ -15,7 +15,7 @@ const [GameStoreProvider, useGameStoreContext] = buildContext<GameStoreApi>(
 
 export interface GameProviderProps {
   children: ReactNode
-  initialGameDetail?: GameDetailData
+  initialGameDetail: GameDetailData
   gameId?: string
 }
 
