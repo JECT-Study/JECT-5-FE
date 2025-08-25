@@ -13,14 +13,17 @@ export const useMsw = () => useContext(MSWContext)
 
 export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
   const [isMswReady, setIsMswReady] = useState(
-    process.env.NODE_ENV === "production",
+    process.env.NODE_ENV === "production" || !!process.env.NEXT_PUBLIC_TEST,
   )
   const [isMswError, setIsMswError] = useState(false)
 
   useEffect(() => {
     const init = async () => {
       try {
-        if (process.env.NODE_ENV !== "production") {
+        if (
+          process.env.NODE_ENV !== "production" ||
+          !process.env.NEXT_PUBLIC_TEST
+        ) {
           const { initMsw } = await import("./index")
           await initMsw()
         }
