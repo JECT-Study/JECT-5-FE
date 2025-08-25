@@ -15,13 +15,17 @@ export type GameCardOptionsProps = {
   onDelete?: () => void
 }
 
-export function GameCardOptions({ shared, onEdit, onShare, onDelete }: GameCardOptionsProps) {
+export function GameCardOptions({
+  shared,
+  onEdit,
+  onShare,
+  onDelete,
+}: GameCardOptionsProps) {
   return (
     <DropdownMenuRoot>
       <DropdownMenuTrigger asChild>
         <SecondaryPlainIconButton
-          aria-label="게임 옵션"
-          onClick={stopAnd()}
+          aria-label="게임 옵션 메뉴 열기"
           data-testid="game-options-button"
         >
           <MoreDot />
@@ -33,32 +37,19 @@ export function GameCardOptions({ shared, onEdit, onShare, onDelete }: GameCardO
         side="bottom"
         sideOffset={8}
       >
-        <DropdownMenuItem
-          type="icon"
-          onClick={stopAnd(onEdit)}
-        >
+        <DropdownMenuItem type="icon" onClick={stopAnd(onEdit)}>
           <Edit />
-          <span className="text-text-interactive-secondary">
-            게임 수정
-          </span>
+          <span className="text-text-interactive-secondary">게임 수정</span>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          type="icon"
-          onClick={stopAnd(onShare)}
-        >
+        <DropdownMenuItem type="icon" onClick={stopAnd(onShare)}>
           {shared ? <Unshare /> : <Upload />}
           <span className="text-text-interactive-secondary">
             {shared ? "공유 취소" : "게임 공유"}
           </span>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          type="icon"
-          onClick={stopAnd(onDelete)}
-        >
+        <DropdownMenuItem type="icon" onClick={stopAnd(onDelete)}>
           <Trash />
-          <span className="text-text-interactive-secondary">
-            게임 삭제
-          </span>
+          <span className="text-text-interactive-secondary">게임 삭제</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenuRoot>

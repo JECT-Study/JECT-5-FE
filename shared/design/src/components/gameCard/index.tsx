@@ -6,15 +6,18 @@ import { cn } from "../../utils/cn"
 interface GameCardProps {
   children: ReactNode
   className?: string
+  title?: string
 }
 
 const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
-  ({ children, className }, ref) => {
+  ({ children, className, title }, ref) => {
     return (
       <div
         ref={ref}
         className={cn("relative", className)}
         data-testid="game-card"
+        role="article"
+        aria-label={`게임 카드: ${title}`}
       >
         <div className="flex flex-col gap-[14px]">{children}</div>
       </div>
@@ -34,6 +37,7 @@ const GameCardImage = ({ children, className }: GameCardImageProps) => {
         "relative size-[178px] rounded-[10px] bg-cover bg-center bg-no-repeat",
         className,
       )}
+      role="img"
     >
       {children}
     </div>
@@ -53,7 +57,8 @@ const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
           "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
           className,
         )}
-        data-testid="game-title"
+        role="heading"
+        aria-level={3}
       >
         {children}
       </div>
@@ -73,7 +78,8 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
         "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-primary px-[5px] py-[2px]",
         className,
       )}
-      data-testid="question-count"
+      role="status"
+      aria-label={`문제 수: ${children}개`}
     >
       <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
         {children}
@@ -89,7 +95,8 @@ const GameCardSharedBadge = ({ children, className }: GameCardBadgeProps) => {
         "absolute bottom-2 left-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
         className,
       )}
-      data-testid="shared-badge"
+      role="status"
+      aria-label="공유된 게임"
     >
       <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
         {children}

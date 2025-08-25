@@ -44,14 +44,17 @@ export const GamePreview = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose?.()}>
-      <DialogContent className="max-w-[987px] border-none bg-transparent p-0 shadow-none">
+      <DialogContent
+        className="max-w-[987px] border-none bg-transparent p-0 shadow-none"
+        data-testid="game-preview-dialog"
+        role="dialog"
+        aria-labelledby="game-preview-title"
+        aria-describedby="game-preview-description"
+      >
         <div
           className={`flex w-[987px] flex-col rounded-[10px] bg-background-interactive-primary-sub ${className}`}
         >
-          <div
-            className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]"
-            data-testid="close-area"
-          >
+          <div className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]">
             <SecondaryPlainIconButton
               size="lg"
               onClick={handleClose}
@@ -64,10 +67,16 @@ export const GamePreview = ({
           <div className="flex w-full flex-col gap-[25px] px-[60px] pb-[60px]">
             <div className="flex w-[860px] items-start justify-between">
               <div className="flex flex-col gap-[18px]">
-                <h2 className="typography-heading-xl-semibold text-text-primary">
+                <h2
+                  className="typography-heading-xl-semibold text-text-primary"
+                  id="game-preview-title"
+                >
                   {gameTitle}
                 </h2>
-                <p className="typography-body-md-medium text-text-secondary">
+                <p
+                  className="typography-body-md-medium text-text-secondary"
+                  aria-label={`제작자: ${creatorName}`}
+                >
                   {creatorName}
                 </p>
               </div>
@@ -76,27 +85,33 @@ export const GamePreview = ({
                 _style="solid"
                 onClick={handleStartGame}
                 aria-label="게임 시작"
+                data-testid="game-start-button"
               >
                 <Play />
                 게임 시작
               </PrimaryBoxButton>
             </div>
 
-            <p className="typography-heading-lg-medium text-text-primary">
+            <p
+              className="typography-heading-lg-medium text-text-primary"
+              id="game-preview-description"
+              aria-label={`총 ${questionCount}문제`}
+            >
               총 {questionCount} 문제
             </p>
 
             <div
               className="flex items-center gap-[34px] overflow-x-auto"
-              data-testid="image-carousel"
+              role="list"
+              aria-label="게임 문제 목록"
             >
-              {questions.map((question, _index) => (
-                <GameCard key={question.id}>
+              {questions.map((question) => (
+                <GameCard key={question.id} title={question.title}>
                   {question.imageUrl ? (
                     <GameCard.Image className="h-[260px]">
                       <Image
                         src={question.imageUrl}
-                        alt={question.title}
+                        alt={`${question.title} 문제 이미지`}
                         fill
                         className="rounded-[10px] object-cover"
                         sizes="178px"
