@@ -17,7 +17,7 @@ export const MyGameCard = forwardRef<HTMLDivElement, MyGameCardProps>(
         ref={ref}
         className={className}
         title={title}
-        data-testid="my-game-card"
+        aria-label={`내 게임 카드: ${title}`}
       >
         {children}
       </GameCard>

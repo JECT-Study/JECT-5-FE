@@ -1,10 +1,10 @@
 # GameCard 컴포넌트 접근성 및 테스트 가이드
 
-> 🎮 **GameCard, MyGameCard, GameCardOptions 컴포넌트의 접근성 속성 및 테스트 ID 문서**
+> 🎮 **GameCard, MyGameCard, GameCardOptions 컴포넌트의 접근성 속성 및 테스트 가이드**
 
 ## 📋 개요
 
-이 문서는 GameCard 관련 컴포넌트들의 접근성 속성과 테스트 ID를 정리한 가이드입니다. Playwright E2E 테스트 및 스크린 리더 지원을 위한 표준을 정의합니다.
+이 문서는 GameCard 관련 컴포넌트들의 접근성 속성을 정리한 가이드입니다. Playwright E2E 테스트에서 **접근성 기반 셀렉터를 우선 사용**하고, 스크린 리더 지원을 위한 표준을 정의합니다.
 
 ## 🎯 컴포넌트별 접근성 속성
 
@@ -18,15 +18,15 @@ interface GameCardProps {
   children: ReactNode
   className?: string
   title?: string  // 접근성을 위한 게임 제목
+  "aria-label"?: string  // 커스텀 aria-label (선택사항)
 }
 ```
 
 #### 접근성 속성
 ```tsx
 <div
-  data-testid="game-card"
   role="article"
-  aria-label={`게임 카드: ${title || "게임 카드"}`}
+  aria-label={ariaLabel || `게임 카드: ${title}`}
 >
 ```
 
@@ -36,7 +36,7 @@ interface GameCardProps {
 ```tsx
 <div
   role="img"
-  // aria-label은 내부 Image 컴포넌트의 alt 속성으로 처리
+  aria-label="게임 썸네일 이미지"
 >
 ```
 
@@ -80,8 +80,7 @@ type MyGameCardProps = {
 #### 접근성 속성
 ```tsx
 <GameCard
-  data-testid="my-game-card"
-  // aria-label은 GameCard에서 처리하여 중복 방지
+  aria-label={`내 게임 카드: ${title}`}
 >
 ```
 
@@ -105,7 +104,6 @@ export type GameCardOptionsProps = {
 ```tsx
 <SecondaryPlainIconButton
   aria-label="게임 옵션 메뉴 열기"
-  data-testid="game-options-button"
   // aria-expanded와 aria-haspopup은 Radix UI가 자동으로 관리
 >
 ```
@@ -128,52 +126,56 @@ export type GameCardOptionsProps = {
 >
 ```
 
-## 🧪 테스트 ID 목록
+## 🧪 접근성 기반 셀렉터 목록
 
-### GameCard
-- `game-card`: 기본 게임 카드 컨테이너
+### GameCard & MyGameCard
+- `role="article"` + `aria-label`: 게임 카드 식별
+  - 일반 게임: `aria-label="게임 카드: 제목"`
+  - 내 게임: `aria-label="내 게임 카드: 제목"`
 
-### MyGameCard
-- `my-game-card`: 내 게임 카드 컨테이너
+### GameCard 하위 요소들
+- `role="heading"` + `aria-level={3}`: 게임 제목
+- `role="status"` + `aria-label="문제 수: N개"`: 문제 수 배지
+- `role="status"` + `aria-label="공유된 게임"`: 공유 배지
+- `role="img"` + `aria-label="게임 썸네일 이미지"`: 게임 이미지
 
 ### GameCardOptions
-- `game-options-button`: 옵션 메뉴 트리거 버튼
+- `role="button"` + `aria-label="게임 옵션 메뉴 열기"`: 옵션 메뉴 버튼
+- `role="menuitem"`: 메뉴 아이템들 (Radix UI 자동 생성)
 
 ### Navigation (네비게이션)
-- `navigation`: 기본 네비게이션 컨테이너
-- `game-navigation`: 게임 설정 네비게이션 컨테이너
-- `game-start-button`: 게임 시작 버튼 (게임 설정 페이지)
-- `game-exit-button`: 게임 설정 나가기 버튼
+- `role="navigation"`: 네비게이션 컨테이너
+- `role="button"` + `aria-label`: 각종 네비게이션 버튼들
 
 ### GamePreview (게임 미리보기 팝업)
-- `game-preview-dialog`: 게임 미리보기 팝업 다이얼로그
-- `game-start-button`: 게임 시작 버튼
+- `role="dialog"`: 게임 미리보기 팝업 다이얼로그
+- `role="button"` + `aria-label`: 팝업 내 버튼들
 
 ## 🎯 Playwright 테스트 예시
 
-### 기본 게임 카드 테스트
+### 기본 게임 카드 테스트 (접근성 기반)
 ```tsx
 // 게임 카드 존재 확인
-await expect(page.getByTestId("game-card")).toBeVisible()
+await expect(page.getByRole("article", { name: /게임 카드:/ })).toBeVisible()
 
 // 게임 제목 확인
 await expect(page.getByRole("heading", { level: 3 })).toHaveText("게임 제목")
 
 // 문제 수 배지 확인
-await expect(page.getByRole("status")).toHaveText("10문제")
+await expect(page.getByRole("status", { name: /문제 수:/ })).toHaveText("10문제")
 
 // 공유 배지 확인 (있는 경우)
 await expect(page.getByRole("status", { name: "공유된 게임" })).toBeVisible()
 ```
 
-### 내 게임 카드 테스트
+### 내 게임 카드 테스트 (접근성 기반)
 ```tsx
 // 내 게임 카드 존재 확인
-await expect(page.getByTestId("my-game-card")).toBeVisible()
+await expect(page.getByRole("article", { name: /내 게임 카드:/ })).toBeVisible()
 
 // 옵션 메뉴 열기
-await page.getByTestId("game-options-button").click()
-await expect(page.getByTestId("game-options-button")).toHaveAttribute("aria-expanded", "true")
+await page.getByRole("button", { name: "게임 옵션 메뉴 열기" }).click()
+await expect(page.getByRole("button", { name: "게임 옵션 메뉴 열기" })).toHaveAttribute("aria-expanded", "true")
 
 // 메뉴 아이템 클릭 (Radix UI가 자동으로 aria-label 생성)
 await page.getByRole("menuitem", { name: "게임 수정" }).click()
@@ -182,8 +184,8 @@ await page.getByRole("menuitem", { name: "게임 수정" }).click()
 ### 게임 미리보기 팝업 테스트 (접근성 기반 셀렉터 사용)
 ```tsx
 // 게임 미리보기 팝업 열기
-await page.getByTestId("game-card").first().click()
-await expect(page.getByTestId("game-preview-dialog")).toBeVisible()
+await page.getByRole("article", { name: /게임 카드:/ }).first().click()
+await expect(page.getByRole("dialog")).toBeVisible()
 
 // 게임 정보 확인 (접근성 기반 셀렉터 사용)
 await expect(page.locator('#game-preview-title')).toHaveText("게임 제목")
@@ -191,7 +193,7 @@ await expect(page.locator('[aria-label^="제작자:"]')).toHaveText("제작자 �
 await expect(page.locator('[aria-label*="문제"]')).toHaveText("총 10 문제")
 
 // 게임 시작 버튼 클릭
-await page.getByTestId("game-start-button").click()
+await page.getByRole("button", { name: "게임 시작" }).click()
 
 // 팝업 닫기
 await page.getByRole("button", { name: "팝업 닫기" }).click()
@@ -203,7 +205,7 @@ await page.getByRole("button", { name: "팝업 닫기" }).click()
 await page.getByRole("article", { name: "게임 카드: 퀴즈 게임" }).click()
 
 // 라벨 기반 셀렉터
-await page.getByLabel("게임 옵션 메뉴 열기").click()
+await page.getByRole("button", { name: "게임 옵션 메뉴 열기" }).click()
 
 // 상태 기반 셀렉터
 await page.getByRole("status", { name: "문제 수: 10개" }).toBeVisible()
@@ -219,7 +221,7 @@ await expect(page.locator('[aria-label*="문제"]')).toHaveText("총 10 문제")
 await expect(page.locator('img[alt*="문제 이미지"]')).toBeVisible()
 
 // 네비게이션 접근성 테스트
-await expect(page.getByTestId('navigation')).toHaveAttribute('role', 'navigation')
+await expect(page.getByRole('navigation')).toBeVisible()
 await expect(page.getByRole('button', { name: '내 게임' })).toBeVisible()
 await expect(page.getByRole('button', { name: '게임 만들기' })).toBeEnabled()
 ```
@@ -287,6 +289,6 @@ await expect(page.getByRole('button', { name: '게임 만들기' })).toBeEnabled
 1. **title prop 필수**: 접근성을 위해 GameCard와 MyGameCard 사용 시 `title` prop 제공 권장
 2. **이미지 alt 텍스트**: GameCard.Image 내부의 Image 컴포넌트에 적절한 alt 텍스트 제공
 3. **Radix UI 자동 관리**: GameCardOptions는 Radix UI의 자동 접근성 관리 활용 (aria-expanded, aria-haspopup, role="menuitem" 등)
-4. **중복 방지**: MyGameCard는 GameCard의 aria-label을 재사용하여 중복 방지
-5. **테스트 ID 최소화**: 필요한 경우에만 data-testid 사용하고, 가능하면 접근성 기반 셀렉터 우선 사용
-6. **접근성 우선**: aria-labelledby, role, aria-label 등을 활용한 접근성 기반 테스트 권장
+4. **aria-label 구분**: MyGameCard는 `내 게임 카드:` 접두사로 일반 GameCard와 구분
+5. **접근성 기반 셀렉터 우선**: data-testid 대신 role, aria-label 기반 셀렉터 우선 사용
+6. **의미있는 식별자**: aria-label을 통해 게임 제목별로 고유하게 식별 가능

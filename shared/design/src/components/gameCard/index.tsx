@@ -7,17 +7,17 @@ interface GameCardProps {
   children: ReactNode
   className?: string
   title?: string
+  "aria-label"?: string
 }
 
 const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
-  ({ children, className, title }, ref) => {
+  ({ children, className, title, "aria-label": ariaLabel }, ref) => {
     return (
       <div
         ref={ref}
         className={cn("relative", className)}
-        data-testid="game-card"
         role="article"
-        aria-label={`게임 카드: ${title}`}
+        aria-label={ariaLabel || `게임 카드: ${title}`}
       >
         <div className="flex flex-col gap-[14px]">{children}</div>
       </div>
@@ -38,6 +38,7 @@ const GameCardImage = ({ children, className }: GameCardImageProps) => {
         className,
       )}
       role="img"
+      aria-label="게임 썸네일 이미지"
     >
       {children}
     </div>
