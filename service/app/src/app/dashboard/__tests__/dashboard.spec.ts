@@ -31,14 +31,18 @@ class DashboardPage {
 
     // 네비게이션 버튼들
     this.homeButton = page.getByRole("button", { name: "홈으로 이동" })
-    this.createGameButton = page.getByRole("button", { name: "게임 만들기" }).first()
+    this.createGameButton = page
+      .getByRole("button", { name: "게임 만들기" })
+      .first()
 
     // 사용자 메뉴 관련
-    this.avatarButton = page.getByRole("button", { name: /테스트 사용자 메뉴 (열기|닫기)/ })
+    this.avatarButton = page.getByRole("button", {
+      name: /테스트 사용자 메뉴 (열기|닫기)/,
+    })
     this.logoutButton = page.getByRole("menuitem", { name: "로그아웃" })
 
     // 게임 카드 관련
-    this.gameCards = page.locator('[data-testid="game-card"]')
+    this.gameCards = page.getByTestId("game-card")
     this.gameOptionsButtons = page.getByRole("button", { name: "게임 옵션" })
 
     // 팝업 관련
@@ -49,12 +53,7 @@ class DashboardPage {
   async getFirstSharedGameIndex(): Promise<number | null> {
     const count = await this.gameCards.count()
     for (let i = 0; i < count; i++) {
-      if (
-        await this.gameCards
-          .nth(i)
-          .locator('[data-testid="shared-badge"]')
-          .isVisible()
-      ) {
+      if (await this.gameCards.nth(i).getByTestId("shared-badge").isVisible()) {
         return i
       }
     }
@@ -65,10 +64,7 @@ class DashboardPage {
     const count = await this.gameCards.count()
     for (let i = 0; i < count; i++) {
       if (
-        !(await this.gameCards
-          .nth(i)
-          .locator('[data-testid="shared-badge"]')
-          .isVisible())
+        !(await this.gameCards.nth(i).getByTestId("shared-badge").isVisible())
       ) {
         return i
       }
@@ -78,12 +74,9 @@ class DashboardPage {
 
   // 페이지 이동 메서드
   async goto() {
-    await this.page.goto("http://localhost:3000/dashboard")
-    await this.page.waitForLoadState("networkidle")
+    await this.page.goto("/dashboard")
     // 게임 카드가 로드될 때까지 기다림
-    await this.page.waitForSelector('[data-testid="game-card"]', { timeout: 10000 }).catch(() => {
-      console.warn("No game cards found after 10s")
-    })
+    await this.page.getByTestId("game-card").first().waitFor({ timeout: 10000 })
   }
 
   // 네비게이션 액션 메서드들
@@ -110,8 +103,10 @@ class DashboardPage {
 
   async clickGameOptionsButton(index: number | null = 0) {
     const idx = index ?? 0
-    await this.gameCards.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
-    await this.gameOptionsButtons.nth(idx).waitFor({ state: 'visible', timeout: 10000 })
+    await this.gameCards.nth(idx).waitFor({ state: "visible", timeout: 10000 })
+    await this.gameOptionsButtons
+      .nth(idx)
+      .waitFor({ state: "visible", timeout: 10000 })
     await this.gameOptionsButtons.nth(idx).click()
   }
 
@@ -139,7 +134,7 @@ class DashboardPage {
   }
 
   async clickGamePreviewCloseArea() {
-    await this.gamePreviewDialog.locator('[data-testid="close-area"]').click()
+    await this.gamePreviewDialog.getByTestId("close-area").click()
   }
 
   async clickGameStartButton() {
@@ -158,23 +153,25 @@ class DashboardPage {
   }
 
   async clickAlertCloseArea() {
-    await this.alertDialog.locator('[data-testid="close-area"]').click()
+    await this.alertDialog.getByTestId("close-area").click()
   }
 
   // 검증 메서드들
   async expectToBeOnHomePage() {
-    await this.page.waitForURL("http://localhost:3000/", { timeout: 10000 })
-    await expect(this.page).toHaveURL("http://localhost:3000/")
+    await this.page.waitForURL("/", { timeout: 10000 })
+    await expect(this.page).toHaveURL("/")
   }
 
   async expectToBeOnCreatePage() {
-    await this.page.waitForURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/, { timeout: 10000 })
-    await expect(this.page).toHaveURL(/^http:\/\/localhost:3000\/create(\?gameId=\d+)?$/)
+    await this.page.waitForURL(/\/create(\?gameId=\d+)?$/, { timeout: 10000 })
+    await expect(this.page).toHaveURL(/\/create(\?gameId=\d+)?$/)
   }
 
   async expectToBeOnDashboardPage() {
-    await this.page.waitForURL("http://localhost:3000/dashboard", { timeout: 10000 })
-    await expect(this.page).toHaveURL("http://localhost:3000/dashboard")
+    await this.page.waitForURL("/dashboard", {
+      timeout: 10000,
+    })
+    await expect(this.page).toHaveURL("/dashboard")
   }
 
   async expectToBeOnGameSetupPage() {
@@ -197,17 +194,13 @@ class DashboardPage {
     await expect(gameCard).toBeVisible()
 
     // 게임 제목이 표시되어야 한다
-    await expect(gameCard.locator('[data-testid="game-title"]')).toBeVisible()
+    await expect(gameCard.getByTestId("game-title")).toBeVisible()
 
     // 문제 개수가 표시되어야 한다
-    await expect(
-      gameCard.locator('[data-testid="question-count"]'),
-    ).toBeVisible()
+    await expect(gameCard.getByTestId("question-count")).toBeVisible()
 
     // 게임 옵션 버튼이 표시되어야 한다
-    await expect(
-      gameCard.locator('[data-testid="game-options-button"]'),
-    ).toBeVisible()
+    await expect(gameCard.getByTestId("game-options-button")).toBeVisible()
   }
 
   async expectGamePreviewInfo() {
@@ -235,31 +228,27 @@ class DashboardPage {
   async expectSharedBadge(index: number | null = 0) {
     const idx = index ?? 0
     const gameCard = this.gameCards.nth(idx)
-    await expect(gameCard.locator('[data-testid="shared-badge"]')).toBeVisible()
+    await expect(gameCard.getByTestId("shared-badge")).toBeVisible()
   }
 
   async expectNoSharedBadge(index: number | null = 0) {
     const idx = index ?? 0
     const gameCard = this.gameCards.nth(idx)
-    await expect(
-      gameCard.locator('[data-testid="shared-badge"]'),
-    ).not.toBeVisible()
+    await expect(gameCard.getByTestId("shared-badge")).not.toBeVisible()
   }
 
   async expectNoSharedBadgeByTitle(gameTitle: string) {
-    const gameCard = this.page.locator(
-      `[data-testid="game-card"]:has-text("${gameTitle}")`,
-    )
-    await expect(
-      gameCard.locator('[data-testid="shared-badge"]'),
-    ).not.toBeVisible()
+    const gameCard = this.page
+      .getByTestId("game-card")
+      .filter({ hasText: gameTitle })
+    await expect(gameCard.getByTestId("shared-badge")).not.toBeVisible()
   }
 
   async expectSharedBadgeByTitle(gameTitle: string) {
-    const gameCard = this.page.locator(
-      `[data-testid="game-card"]:has-text("${gameTitle}")`,
-    )
-    await expect(gameCard.locator('[data-testid="shared-badge"]')).toBeVisible()
+    const gameCard = this.page
+      .getByTestId("game-card")
+      .filter({ hasText: gameTitle })
+    await expect(gameCard.getByTestId("shared-badge")).toBeVisible()
   }
 
   async expectGameOptionsMenu(index: number = 0) {
@@ -270,7 +259,7 @@ class DashboardPage {
 
     const isShared = await this.gameCards
       .nth(index)
-      .locator('[data-testid="shared-badge"]')
+      .getByTestId("shared-badge")
       .isVisible()
     if (isShared) {
       await expect(
@@ -305,8 +294,21 @@ class DashboardPage {
 test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
   let dashboardPage: DashboardPage
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
     dashboardPage = new DashboardPage(page)
+
+    // 쿠키 설정
+    await context.addCookies([
+      {
+        name: "JSESSIONID",
+        value: "test-session-123",
+        domain: "localhost",
+        path: "/",
+        sameSite: "Lax",
+      },
+    ])
+
+    // localStorage 설정
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -316,8 +318,8 @@ test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
+
     await dashboardPage.goto()
   })
 
@@ -334,8 +336,21 @@ test.describe("대시보드 E2E 테스트 - 기본 UI 확인", () => {
 test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
   let dashboardPage: DashboardPage
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
     dashboardPage = new DashboardPage(page)
+
+    // 쿠키 설정
+    await context.addCookies([
+      {
+        name: "JSESSIONID",
+        value: "test-session-123",
+        domain: "localhost",
+        path: "/",
+        sameSite: "Lax",
+      },
+    ])
+
+    // localStorage 설정
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -345,8 +360,8 @@ test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
+
     await dashboardPage.goto()
   })
 
@@ -365,8 +380,21 @@ test.describe("대시보드 E2E 테스트 - 네비게이션 기능", () => {
 test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
   let dashboardPage: DashboardPage
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
     dashboardPage = new DashboardPage(page)
+
+    // 쿠키 설정
+    await context.addCookies([
+      {
+        name: "JSESSIONID",
+        value: "test-session-123",
+        domain: "localhost",
+        path: "/",
+        sameSite: "Lax",
+      },
+    ])
+
+    // localStorage 설정
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -376,8 +404,8 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
+
     await dashboardPage.goto()
   })
 
@@ -407,8 +435,21 @@ test.describe("대시보드 E2E 테스트 - 게임 카드 기능", () => {
 test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
   let dashboardPage: DashboardPage
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, context }) => {
     dashboardPage = new DashboardPage(page)
+
+    // 쿠키 설정
+    await context.addCookies([
+      {
+        name: "JSESSIONID",
+        value: "test-session-123",
+        domain: "localhost",
+        path: "/",
+        sameSite: "Lax",
+      },
+    ])
+
+    // localStorage 설정
     await page.addInitScript(() => {
       localStorage.setItem(
         "auth_user",
@@ -418,8 +459,8 @@ test.describe("대시보드 E2E 테스트 - 게임 옵션 메뉴", () => {
           email: "test@example.com",
         }),
       )
-      document.cookie = "JSESSIONID=test-session-123; Path=/; SameSite=Lax"
     })
+
     await dashboardPage.goto()
   })
 
@@ -517,9 +558,9 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     // 게임 제목을 미리 저장
     const gameTitle = await dashboardPage.gameCards
       .nth(sharedIdx!)
-      .locator('[data-testid="game-title"]')
+      .getByTestId("game-title")
       .textContent()
-    if (!gameTitle) test.skip()
+    expect(gameTitle).toBeTruthy() // 게임 제목이 없으면 테스트 실패
 
     await dashboardPage.clickGameOptionsButton(sharedIdx!)
     await dashboardPage.clickGameUnshareButton()
@@ -542,9 +583,9 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
     // 첫 번째 게임의 제목을 미리 저장
     const firstGameTitle = await dashboardPage.gameCards
       .nth(0)
-      .locator('[data-testid="game-title"]')
+      .getByTestId("game-title")
       .textContent()
-    if (!firstGameTitle) test.skip()
+    expect(firstGameTitle).toBeTruthy() // 게임 제목이 없으면 테스트 실패
 
     await dashboardPage.clickGameOptionsButton()
     await dashboardPage.clickGameDeleteButton()
@@ -558,9 +599,9 @@ test.describe("대시보드 E2E 테스트 - Alert 팝업", () => {
 
     // 삭제된 게임이 화면에서 사라졌는지 확인
     await expect(
-      dashboardPage.page.locator(
-        `[data-testid="game-card"]:has-text("${firstGameTitle}")`,
-      ),
+      dashboardPage.page
+        .getByTestId("game-card")
+        .filter({ hasText: firstGameTitle! }),
     ).not.toBeVisible()
   })
 })
