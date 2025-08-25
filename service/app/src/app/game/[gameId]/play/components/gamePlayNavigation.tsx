@@ -23,7 +23,7 @@ export const GamePlayHeader = ({
   onExit,
 }: GamePlayHeaderProps) => {
   return (
-    <div className="mx-auto flex h-[110px] w-full shrink-0 items-center justify-between">
+    <header className="mx-auto flex h-[110px] w-full shrink-0 items-center justify-between">
       <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
         <button
           onClick={onExit}
@@ -72,6 +72,6 @@ export const GamePlayHeader = ({
           </SecondaryPlainIconButton>
         </div>
       </div>
-    </div>
+    </header>
   )
 }
