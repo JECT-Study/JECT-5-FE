@@ -66,12 +66,21 @@ async function runTests(testFiles: string[]) {
 
   try {
     return new Promise<void>((resolve, reject) => {
+      // 브래킷이 포함된 파일 경로를 따옴표로 감싸서 shell glob 해석 방지
+      const escapedTestFiles = testFiles.map((file) => `"${file}"`)
+
       const testProcess = spawn(
         "yarn",
-        ["playwright", "test", "--config=playwright.config.ts", ...testFiles],
+        [
+          "playwright",
+          "test",
+          "--config=playwright.config.ts",
+          ...escapedTestFiles,
+        ],
         {
           stdio: "inherit",
           cwd: import.meta.dirname + "/..",
+          shell: true,
         },
       )
 
@@ -216,4 +225,7 @@ async function main() {
   console.log(`\n💾 Cache updated: ${cacheFile}`)
 }
 
-main().catch(console.error)
+main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})
