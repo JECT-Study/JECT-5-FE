@@ -66,20 +66,21 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
   test("'이전 문제' 클릭 시 이전 라운드로 이동하고 진행률이 감소한다", async ({
     page,
   }) => {
-    // 2번 문제로 이동
+    // 1번 → 2번 문제로 이동하고 URL 변경 대기
     await pageObj.goToNextQuestion()
+    await page.waitForURL(/\?q=2/, { timeout: 1000 })
+
+    // 2번 → 3번 문제로 이동하고 URL 변경 대기
+    await pageObj.goToNextQuestion()
+    await page.waitForURL(/\?q=3/, { timeout: 1000 })
+
+    // 진행률 측정 후 이전 문제로 이동
     const before = await pageObj.getProgressValue()
-
     await pageObj.goToPrevQuestion()
+    await page.waitForURL(/\?q=2/, { timeout: 1000 })
+
     const after = await pageObj.getProgressValue()
-
-    await expect(page).toHaveURL(/\?q=1/)
-
-    expect(before).not.toBeNull()
-    expect(after).not.toBeNull()
-    if (before !== null && after !== null) {
-      expect(after).toBeLessThanOrEqual(before)
-    }
+    expect(after).toBeLessThanOrEqual(before!)
   })
 
   //실제 문제 개수를 알지 못하기 때문에, 정확한 value 측정보다는 비교 연산으로 테스트 진행
@@ -91,10 +92,7 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
     await expect(page).toHaveURL(/\?q=2/)
 
     const after = await pageObj.getProgressValue()
-    expect(before).not.toBeNull()
-    expect(after).not.toBeNull()
-    if (before !== null && after !== null) {
-      expect(after).toBeGreaterThanOrEqual(before)
-    }
+
+    expect(after).toBeGreaterThanOrEqual(before!)
   })
 })

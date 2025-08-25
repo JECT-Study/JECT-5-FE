@@ -55,81 +55,80 @@ export class GamePlayPOM {
     this.exitDialogCancelButton = page.getByRole("button", { name: "아니요" })
   }
 
-  async goto(gameId: string = "1", round?: number): Promise<void> {
+  async goto(gameId: string = "1", round?: number) {
     const search = round ? `?q=${round}` : ""
     await this.page.goto(`game/${gameId}/play${search}`)
-    await this.page.waitForLoadState("networkidle")
   }
 
-  async clickHomeLogo(): Promise<void> {
+  async clickHomeLogo() {
     await this.homeLogoImage.click()
   }
 
-  async goToPrevQuestion(): Promise<void> {
+  async goToPrevQuestion() {
     await this.prevQuestionButton.click()
   }
 
-  async goToNextQuestion(): Promise<void> {
+  async goToNextQuestion() {
     await this.nextQuestionButton.click()
   }
 
-  async clickExitIcon(): Promise<void> {
+  async clickExitIcon() {
     await this.exitIconButton.click()
   }
 
-  async getProgressValue(): Promise<number | null> {
+  async getProgressValue() {
     const value = await this.progressbar.getAttribute("aria-valuenow")
     return value ? Number(value) : null
   }
 
-  async toggleScoreboard(): Promise<void> {
+  async toggleScoreboard() {
     await this.scoreboardToggleButton.click()
   }
 
   // 팀 관련 접근성 셀렉터 기반
-  teamCard(teamName: string): Locator {
+  teamCard(teamName: string) {
     return this.page.getByRole("group", { name: `${teamName} 점수 카드` })
   }
 
-  teamScoreLabel(teamName: string): Locator {
+  teamScoreLabel(teamName: string) {
     return this.page.getByLabel(`${teamName} 현재 점수`)
   }
 
-  teamDecreaseButton(teamName: string): Locator {
+  teamDecreaseButton(teamName: string) {
     return this.page.getByRole("button", { name: `${teamName} 점수 감소` })
   }
 
-  teamIncreaseButton(teamName: string): Locator {
+  teamIncreaseButton(teamName: string) {
     return this.page.getByRole("button", { name: `${teamName} 점수 증가` })
   }
 
-  async increaseScore(teamName: string, times: number = 1): Promise<void> {
+  async increaseScore(teamName: string, times: number = 1) {
     const inc = this.teamIncreaseButton(teamName)
     for (let i = 0; i < times; i++) {
       await inc.click()
     }
   }
 
-  async decreaseScore(teamName: string, times: number = 1): Promise<void> {
+  async decreaseScore(teamName: string, times: number = 1) {
     const dec = this.teamDecreaseButton(teamName)
     for (let i = 0; i < times; i++) {
       await dec.click()
     }
   }
 
-  async expectTeamScore(teamName: string, expectedText: string): Promise<void> {
+  async expectTeamScore(teamName: string, expectedText: string) {
     await expect(this.teamScoreLabel(teamName)).toHaveText(expectedText)
   }
 
-  async getQuestionText(): Promise<string> {
+  async getQuestionText() {
     return (await this.questionHeading.textContent())?.trim() ?? ""
   }
 
-  async isQuestionImageVisible(): Promise<boolean> {
+  async isQuestionImageVisible() {
     return await this.questionImage.isVisible()
   }
 
-  async showAnswerAndGetText(): Promise<string> {
+  async showAnswerAndGetText() {
     await this.showAnswerButton.click()
     const answerButton = this.page
       .getByRole("button")
@@ -140,7 +139,7 @@ export class GamePlayPOM {
     return answerText
   }
 
-  async hideAnswer(): Promise<void> {
+  async hideAnswer() {
     const answerButton = this.page
       .getByRole("button")
       .filter({ hasNotText: "정답 보기" })
@@ -149,11 +148,11 @@ export class GamePlayPOM {
     await expect(this.showAnswerButton).toBeVisible()
   }
 
-  async confirmExit(): Promise<void> {
+  async confirmExit() {
     await this.exitDialogConfirmButton.click()
   }
 
-  async cancelExit(): Promise<void> {
+  async cancelExit() {
     await this.exitDialogCancelButton.click()
   }
 }

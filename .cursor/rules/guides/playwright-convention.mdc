@@ -20,6 +20,96 @@ You write concise, technical TypeScript and technical JavaScript codes with accu
 - Use `page.getByTestId` whenever `data-testid` is defined on an element or container
 - Reuse Playwright locators by using variables or constants for commonly used elements
 
+### Accessibility-First Locator Examples
+
+```typescript
+// ✅ Accessibility role-based - matches real user experience
+const buyButton = page.getByRole('button', { name: '구매하기' })
+const loginDialog = page.getByRole('alertdialog', { name: '로그인' })
+const productList = page.getByRole('list', { name: '상품 목록' })
+const productForm = page.getByRole('form', { name: '상품 주문' })
+
+// ❌ Avoid CSS selectors - dependent on implementation details
+const buyButton = page.locator('.btn-primary[data-action="buy"]')
+```
+
+## Common Anti-Patterns to Avoid
+
+### Anti-Pattern 1: Role Nesting Issues
+
+```html
+<!-- ❌ Role gets overwritten -->
+<Link role='listitem' href='/products/1'>Product Name</Link>
+
+<!-- ✅ Proper role separation -->
+<li role='listitem'>
+  <Link href='/products/1'>Product Name</Link>
+</li>
+```
+
+```typescript
+// Test code
+await page.getByRole('list').getByRole('link', { name: 'Product Name' }).click()
+```
+
+### Anti-Pattern 2: Confusing textContent with accessible name
+
+```typescript
+// ❌ Fails - alert doesn't use textContent as accessible name
+await expect(page.getByRole('alert', { name: 'Error message' })).toBeVisible()
+
+// ✅ Use filter for text content
+await expect(page.getByRole('alert').filter({ hasText: 'Error message' })).toBeVisible()
+
+// ✅ Or use explicit aria-label
+// <div role='alert' aria-label='Error notification'>{message}</div>
+await expect(page.getByRole('alert', { name: 'Error notification' })).toBeVisible()
+```
+
+### Anti-Pattern 3: Using waitForTimeout
+
+```typescript
+// ❌ Fixed timeout - slow and flaky
+await page.waitForTimeout(3000)
+const items = await page.getByRole('listitem').all()
+expect(items).toHaveLength(12)
+
+// ✅ Auto-retrying assertion - waits until condition is met
+await expect(page.getByRole('listitem')).toHaveCount(12)
+```
+
+## User Scenario Testing
+
+### Integrated Scenario Pattern
+
+Minimize external state dependencies by testing create-use-delete in a single flow:
+
+```typescript
+// ✅ Integrated scenario - independent of external state
+test('Complete cart workflow', async ({ page }) => {
+  await setupLogin(page)
+
+  // Add item (regardless of existing cart state)
+  await page.goto('/products/123')
+  await page.getByRole('button', { name: 'Add to Cart' }).click()
+
+  // Navigate to cart
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Go to Cart' }).click()
+
+  // Clear all items (regardless of quantity)
+  await page.getByRole('button', { name: 'Clear All' }).click()
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Confirm' }).click()
+
+  // Verify empty state
+  await expect(page.getByText('Your cart is empty')).toBeVisible()
+})
+
+// ❌ Separate tests - dependent on external state
+test('Empty cart display', async ({ page }) => {
+  // Assumes cart is empty... but is it really?
+})
+```
+
 ## Configuration & Setup
 
 - Use the `playwright.config.ts` file for global configuration and environment setup
@@ -30,9 +120,57 @@ You write concise, technical TypeScript and technical JavaScript codes with accu
 ## Assertions & Timing
 
 - Prefer to use web-first assertions (`toBeVisible`, `toHaveText`, etc.) whenever possible
+- **Never use `waitForTimeout()`** - always use auto-retrying web-first assertions
+- Use auto-retrying assertions: `toHaveCount()` automatically retries until condition is met, unlike `toHaveLength()` with pre-fetched elements
 - Use `expect` matchers for assertions (`toEqual`, `toContain`, `toBeTruthy`, `toHaveLength`, etc.) that can be used to assert any conditions and avoid using `assert` statements
 - Avoid hardcoded timeouts
 - Use `page.waitFor` with specific conditions or events to wait for elements or states
+
+### Auto-Retrying vs Non-Retrying Assertions
+
+```typescript
+// ❌ Non-retrying - checks once and fails immediately
+const items = await page.getByRole('listitem').all()
+expect(items).toHaveLength(12)
+
+// ✅ Auto-retrying - retries until condition is met
+await expect(page.getByRole('listitem')).toHaveCount(12)
+```
+
+## External Dependencies Management
+
+### Controllable Side Effects
+
+Combine create and delete operations in a single test to reduce state dependencies
+
+### User State Setup
+
+```typescript
+// User type setup utility
+const setupUser = async (page: Page, userType: 'guest' | 'member' | 'premium') => {
+  const testAccounts = {
+    guest: null,
+    member: 'test-member@example.com',
+    premium: 'test-premium@example.com'
+  }
+
+  if (testAccounts[userType]) {
+    await setupLogin(page, testAccounts[userType])
+  }
+}
+
+// Usage in tests
+test('Premium member purchase', async ({ page }) => {
+  await setupUser(page, 'premium')
+  // Purchase flow...
+})
+```
+
+### API Mocking Guidelines
+
+- Prioritize real API usage over mocking
+- Mock only uncontrollable external services (payment, email)
+- Consider test environment setup for external dependencies
 
 ## Page Object Model (POM) Pattern
 
@@ -56,31 +194,30 @@ export class GameSetupPage {
 
   constructor(page: Page) {
     this.page = page
-    // Initialize locators using semantic selectors
+    // Use accessibility role-based locators
     this.addTeamButton = page.getByRole("button", { name: "참가자 및 팀 추가하기" })
-    this.teamInputs = page.locator('input[name^="team-"]')
-    this.deleteButtons = page.getByRole("button", { name: "clear input" })
+    this.teamInputs = page.getByRole("textbox", { name: /팀 이름/ })
+    this.deleteButtons = page.getByRole("button", { name: "삭제" })
   }
 
   // Navigation methods
   async goto(gameId: string = "1") {
-    await this.page.goto(`http://localhost:3000/game/${gameId}/setup`)
-    await this.page.waitForLoadState("networkidle")
+    await this.page.goto(`/game/${gameId}/setup`)
   }
 
   // Action methods
-  async addTeam(): Promise<void> {
+  async addTeam(){
     await expect(this.addTeamButton).toBeEnabled()
     await this.addTeamButton.click()
   }
 
   // Getter methods
-  async getTeamCount(): Promise<number> {
+  async getTeamCount() {
     return await this.teamInputs.count()
   }
 
   // Assertion methods
-  async expectTeamToBeVisible(teamName: string): Promise<void> {
+  async expectTeamToBeVisible(teamName: string) {
     await expect(this.page.getByText(teamName)).toBeVisible()
   }
 }
@@ -90,9 +227,11 @@ export class GameSetupPage {
 
 - **Single Responsibility**: Each page object should represent one page or component
 - **Encapsulation**: Hide implementation details behind meaningful method names
-- **Semantic Locators**: Use role-based and semantic selectors within page objects
-- **Method Naming**: Use action verbs (add, delete, change) and assertion patterns (expect*)
-- **Return Types**: Action methods can return void, getter methods return data, assertion methods use Promise<void>
+- **Accessibility-First Locators**: Use role-based and semantic selectors within page objects
+- **Selective Locator Declaration**: Focus on selector-based approach, declare only necessary selectors
+- **Method Naming**: Use action verbs (add, delete, change) and assertion patterns (expect\*)
+- **No Explicit Return Types**: Let TypeScript infer return types automatically
+- Follow the guidance and best practices described on "https://playwright.dev/docs/writing-tests"
 
 #### File Organization
 
@@ -108,22 +247,26 @@ __tests__/
 ### POM Best Practices
 
 #### Constructor Pattern
+
 - Initialize `page` parameter and all locators in constructor
 - Use `readonly` for immutable properties
 - Prefer semantic selectors over CSS/XPath selectors
 
 #### Method Categories
+
 - **Navigation**: `goto()`, `navigateToSection()`
 - **Actions**: `addTeam()`, `deleteItem()`, `fillForm()`
 - **Getters**: `getTeamCount()`, `getErrorMessage()`
 - **Assertions**: `expectTeamVisible()`, `expectButtonDisabled()`
 
 #### Error Handling
+
 - Include built-in assertions in action methods when appropriate
 - Provide meaningful error messages through page object methods
 - Handle common wait conditions within page object methods
 
 #### Test Integration
+
 ```typescript
 test.describe("게임 설정 - 팀 관리", () => {
   let gameSetupPage: GameSetupPage
@@ -144,6 +287,5 @@ test.describe("게임 설정 - 팀 관리", () => {
 
 - Ensure tests run reliably in parallel without shared state conflicts
 - Avoid commenting on the resulting code
-- Focus on critical user paths, maintaining tests that are stable, maintainable, and reflect real user behavior
-- **Consider implementing POM pattern** for complex pages with multiple interactions
-- Follow the guidance and best practices described on "https://playwright.dev/docs/writing-tests"
+- Write tests that reflect real user behavior using accessibility-first locators
+- Use integrated user scenarios to minimize external dependencies
