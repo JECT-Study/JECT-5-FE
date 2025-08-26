@@ -1,203 +1,206 @@
-import * as React from "react"
+import {
+  createContext,
+  createElement,
+  type Dispatch,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react"
 
-import type { FileState, StoreAction, StoreState } from "../types"
-import { useLazyRef } from "../utils"
+import type { StoreAction, StoreState } from "../types"
 
-const ROOT_NAME = "FileUpload"
+function fileUploadReducer(state: StoreState, action: StoreAction): StoreState {
+  switch (action.type) {
+    case "ADD_FILES": {
+      const newFiles = new Map(state.files)
+      for (const file of action.files) {
+        newFiles.set(file, {
+          file,
+          progress: 0,
+          status: "idle",
+        })
+      }
+      return { ...state, files: newFiles }
+    }
 
-function createStore(
-  listeners: Set<() => void>,
-  files: Map<File, FileState>,
-  urlCache: WeakMap<File, string>,
-  invalid: boolean,
-  onValueChange?: (files: File[]) => void,
-) {
-  let state: StoreState = {
-    files,
-    dragOver: false,
-    invalid: invalid,
-  }
-
-  function reducer(state: StoreState, action: StoreAction): StoreState {
-    switch (action.type) {
-      case "ADD_FILES": {
-        for (const file of action.files) {
-          files.set(file, {
+    case "SET_FILES": {
+      const newFiles = new Map()
+      for (const file of action.files) {
+        const existingState = state.files.get(file)
+        if (existingState) {
+          newFiles.set(file, existingState)
+        } else {
+          newFiles.set(file, {
             file,
             progress: 0,
             status: "idle",
           })
         }
-
-        if (onValueChange) {
-          const fileList = Array.from(files.values()).map(
-            (fileState) => fileState.file,
-          )
-          onValueChange(fileList)
-        }
-        return { ...state, files }
       }
-
-      case "SET_FILES": {
-        const newFileSet = new Set(action.files)
-        for (const existingFile of Array.from(files.keys())) {
-          if (!newFileSet.has(existingFile)) {
-            files.delete(existingFile)
-          }
-        }
-
-        for (const file of action.files) {
-          const existingState = files.get(file)
-          if (!existingState) {
-            files.set(file, {
-              file,
-              progress: 0,
-              status: "idle",
-            })
-          }
-        }
-        return { ...state, files }
-      }
-
-      case "SET_PROGRESS": {
-        const fileState = files.get(action.file)
-        if (fileState) {
-          files.set(action.file, {
-            ...fileState,
-            progress: action.progress,
-            status: "uploading",
-          })
-        }
-        return { ...state, files }
-      }
-
-      case "SET_SUCCESS": {
-        const fileState = files.get(action.file)
-        if (fileState) {
-          files.set(action.file, {
-            ...fileState,
-            progress: 100,
-            status: "success",
-          })
-        }
-        return { ...state, files }
-      }
-
-      case "SET_ERROR": {
-        const fileState = files.get(action.file)
-        if (fileState) {
-          files.set(action.file, {
-            ...fileState,
-            error: action.error,
-            status: "error",
-          })
-        }
-        return { ...state, files }
-      }
-
-      case "REMOVE_FILE": {
-        if (urlCache) {
-          const cachedUrl = urlCache.get(action.file)
-          if (cachedUrl) {
-            URL.revokeObjectURL(cachedUrl)
-            urlCache.delete(action.file)
-          }
-        }
-
-        files.delete(action.file)
-
-        if (onValueChange) {
-          const fileList = Array.from(files.values()).map(
-            (fileState) => fileState.file,
-          )
-          onValueChange(fileList)
-        }
-        return { ...state, files }
-      }
-
-      case "SET_DRAG_OVER": {
-        return { ...state, dragOver: action.dragOver }
-      }
-
-      case "SET_INVALID": {
-        return { ...state, invalid: action.invalid }
-      }
-
-      case "CLEAR": {
-        if (urlCache) {
-          for (const file of Array.from(files.keys())) {
-            const cachedUrl = urlCache.get(file)
-            if (cachedUrl) {
-              URL.revokeObjectURL(cachedUrl)
-              urlCache.delete(file)
-            }
-          }
-        }
-
-        files.clear()
-        if (onValueChange) {
-          onValueChange([])
-        }
-        return { ...state, files, invalid: false }
-      }
-
-      default:
-        return state
+      return { ...state, files: newFiles }
     }
-  }
 
-  function getState() {
-    return state
-  }
-
-  function dispatch(action: StoreAction) {
-    state = reducer(state, action)
-    for (const listener of Array.from(listeners)) {
-      listener()
+    case "SET_PROGRESS": {
+      const newFiles = new Map(state.files)
+      const fileState = newFiles.get(action.file)
+      if (fileState) {
+        newFiles.set(action.file, {
+          ...fileState,
+          progress: action.progress,
+          status: "uploading",
+        })
+      }
+      return { ...state, files: newFiles }
     }
-  }
 
-  function subscribe(listener: () => void) {
-    listeners.add(listener)
-    return () => listeners.delete(listener)
-  }
+    case "SET_SUCCESS": {
+      const newFiles = new Map(state.files)
+      const fileState = newFiles.get(action.file)
+      if (fileState) {
+        newFiles.set(action.file, {
+          ...fileState,
+          progress: 100,
+          status: "success",
+        })
+      }
+      return { ...state, files: newFiles }
+    }
 
-  return { getState, dispatch, subscribe }
+    case "SET_ERROR": {
+      const newFiles = new Map(state.files)
+      const fileState = newFiles.get(action.file)
+      if (fileState) {
+        newFiles.set(action.file, {
+          ...fileState,
+          error: action.error,
+          status: "error",
+        })
+      }
+      return { ...state, files: newFiles }
+    }
+
+    case "REMOVE_FILE": {
+      const newFiles = new Map(state.files)
+      newFiles.delete(action.file)
+      return { ...state, files: newFiles }
+    }
+
+    case "SET_DRAG_OVER": {
+      return { ...state, dragOver: action.dragOver }
+    }
+
+    case "SET_INVALID": {
+      return { ...state, invalid: action.invalid }
+    }
+
+    case "CLEAR": {
+      return { ...state, files: new Map(), invalid: false }
+    }
+
+    default:
+      return state
+  }
 }
 
-const StoreContext = React.createContext<ReturnType<typeof createStore> | null>(
-  null,
-)
+// Context 생성
+const FileUploadStoreContext = createContext<{
+  state: StoreState
+  dispatch: Dispatch<StoreAction>
+  getFiles: () => File[]
+  addFiles: (files: File[]) => void
+  removeFile: (file: File) => void
+  setProgress: (file: File, progress: number) => void
+  setSuccess: (file: File) => void
+  setError: (file: File, error: string) => void
+  clear: () => void
+  setDragOver: (dragOver: boolean) => void
+  setInvalid: (invalid: boolean) => void
+} | null>(null)
 
-export function useStoreContext(consumerName: string) {
-  const context = React.useContext(StoreContext)
+// Provider 컴포넌트
+export function FileUploadStoreProvider({
+  children,
+  onValueChange,
+}: {
+  children: ReactNode
+  onValueChange?: (files: File[]) => void
+}) {
+  const [state, dispatch] = useReducer(fileUploadReducer, {
+    files: new Map(),
+    dragOver: false,
+    invalid: false,
+  })
+
+  // 파일 목록 변경 시 콜백 호출
+  useEffect(() => {
+    if (onValueChange) {
+      const files = Array.from(state.files.values()).map((f) => f.file)
+      onValueChange(files)
+    }
+  }, [state.files, onValueChange])
+
+  const contextValue = useMemo(
+    () => ({
+      state,
+      dispatch,
+      getFiles: () => Array.from(state.files.values()).map((f) => f.file),
+      addFiles: (files: File[]) => dispatch({ type: "ADD_FILES", files }),
+      removeFile: (file: File) => dispatch({ type: "REMOVE_FILE", file }),
+      setProgress: (file: File, progress: number) =>
+        dispatch({ type: "SET_PROGRESS", file, progress }),
+      setSuccess: (file: File) => dispatch({ type: "SET_SUCCESS", file }),
+      setError: (file: File, error: string) =>
+        dispatch({ type: "SET_ERROR", file, error }),
+      clear: () => dispatch({ type: "CLEAR" }),
+      setDragOver: (dragOver: boolean) =>
+        dispatch({ type: "SET_DRAG_OVER", dragOver }),
+      setInvalid: (invalid: boolean) =>
+        dispatch({ type: "SET_INVALID", invalid }),
+    }),
+    [state],
+  )
+
+  return createElement(
+    FileUploadStoreContext.Provider,
+    { value: contextValue },
+    children,
+  )
+}
+
+// Hook
+export function useFileUploadStore() {
+  const context = useContext(FileUploadStoreContext)
   if (!context) {
-    throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``)
+    throw new Error(
+      `useFileUploadStore must be used within FileUploadStoreProvider`,
+    )
   }
   return context
 }
 
-export function useStore<T>(selector: (state: StoreState) => T): T {
-  const store = useStoreContext(ROOT_NAME)
-
-  const lastValueRef = useLazyRef<{ value: T; state: StoreState } | null>(
-    () => null,
-  )
-
-  const getSnapshot = React.useCallback(() => {
-    const state = store.getState()
-    const prevValue = lastValueRef.current
-
-    if (prevValue && prevValue.state === state) {
-      return prevValue.value
-    }
-
-    const nextValue = selector(state)
-    lastValueRef.current = { value: nextValue, state }
-    return nextValue
-  }, [store, selector, lastValueRef])
-
-  return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot)
+// 선택적 상태 구독을 위한 hook (성능 최적화)
+export function useFileUploadSelector<T>(
+  selector: (state: StoreState) => T,
+): T {
+  const { state } = useFileUploadStore()
+  return useMemo(() => selector(state), [state, selector])
 }
 
-export { createStore, StoreContext }
+// 하위 호환성을 위한 기존 함수들
+export function useStoreContext(_consumerName: string) {
+  return useFileUploadStore()
+}
+
+export function useStore<T>(selector: (state: StoreState) => T): T {
+  return useFileUploadSelector(selector)
+}
+
+// 더 이상 사용하지 않는 함수들 (하위 호환성)
+export function createStore() {
+  console.warn("createStore is deprecated, use FileUploadStoreProvider instead")
+  return null
+}
+
+export const StoreContext = FileUploadStoreContext

@@ -2,7 +2,7 @@
 
 import { Slot } from "radix-ui"
 
-import { LIST_NAME, useFileUploadContext, useStore } from "../hooks"
+import { LIST_NAME, useFileUploadContext, useFileUploadStore } from "../hooks"
 import type { FileUploadListProps } from "../types"
 
 export function FileUploadList(props: FileUploadListProps) {
@@ -15,7 +15,8 @@ export function FileUploadList(props: FileUploadListProps) {
   } = props
 
   const context = useFileUploadContext(LIST_NAME)
-  const fileCount = useStore((state) => state.files.size)
+  const store = useFileUploadStore()
+  const fileCount = store.state.files.size
   const shouldRender = forceMount || fileCount > 0
 
   if (!shouldRender) return null

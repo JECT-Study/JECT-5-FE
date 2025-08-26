@@ -1,44 +1,51 @@
 "use client"
 
 import { Slot } from "radix-ui"
-import * as React from "react"
+import { type KeyboardEvent, type MouseEvent, useCallback } from "react"
 
-import {
-  CLEAR_NAME,
-  useFileUploadContext,
-  useStore,
-  useStoreContext,
-} from "../hooks"
+import { CLEAR_NAME, useFileUploadContext, useFileUploadStore } from "../hooks"
 import type { FileUploadClearProps } from "../types"
 
 export function FileUploadClear(props: FileUploadClearProps) {
   const {
     asChild,
-    forceMount,
-    disabled,
-    onClick: onClickProp,
     className,
+    onClick: onClickProp,
+    onKeyDown: onKeyDownProp,
     ...clearProps
   } = props
 
   const context = useFileUploadContext(CLEAR_NAME)
-  const store = useStoreContext(CLEAR_NAME)
-  const fileCount = useStore((state) => state.files.size)
+  const store = useFileUploadStore()
+  const fileCount = store.state.files.size
+  const shouldRender = fileCount > 0
 
-  const isDisabled = disabled || context.disabled
-
-  const onClick = React.useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
       onClickProp?.(event)
 
       if (event.defaultPrevented) return
 
-      store.dispatch({ type: "CLEAR" })
+      event.preventDefault()
+      store.clear()
     },
     [store, onClickProp],
   )
 
-  const shouldRender = forceMount || fileCount > 0
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      onKeyDownProp?.(event)
+
+      if (
+        !event.defaultPrevented &&
+        (event.key === "Enter" || event.key === " ")
+      ) {
+        event.preventDefault()
+        store.clear()
+      }
+    },
+    [store, onKeyDownProp],
+  )
 
   if (!shouldRender) return null
 
@@ -47,13 +54,13 @@ export function FileUploadClear(props: FileUploadClearProps) {
   return (
     <ClearPrimitive
       type="button"
-      aria-controls={context.listId}
+      aria-label={`Clear ${fileCount} file${fileCount === 1 ? "" : "s"}`}
       data-slot="file-upload-clear"
-      data-disabled={isDisabled ? "" : undefined}
+      dir={context.dir}
       {...clearProps}
       className={className}
-      disabled={isDisabled}
       onClick={onClick}
+      onKeyDown={onKeyDown}
     />
   )
 }

@@ -1,34 +1,35 @@
 "use client"
 
 import { Slot } from "radix-ui"
-import * as React from "react"
+import { useId, useMemo } from "react"
 
 import {
   FileUploadItemContext,
   ITEM_NAME,
   useFileUploadContext,
-  useStore,
+  useFileUploadStore,
 } from "../hooks"
 import type { FileUploadItemProps } from "../types"
 
 export function FileUploadItem(props: FileUploadItemProps) {
   const { value, asChild, className, ...itemProps } = props
 
-  const id = React.useId()
+  const id = useId()
   const statusId = `${id}-status`
   const nameId = `${id}-name`
   const sizeId = `${id}-size`
   const messageId = `${id}-message`
 
   const context = useFileUploadContext(ITEM_NAME)
-  const fileState = useStore((state) => state.files.get(value))
-  const fileCount = useStore((state) => state.files.size)
-  const fileIndex = useStore((state) => {
-    const files = Array.from(state.files.keys())
+  const store = useFileUploadStore()
+  const fileState = store.state.files.get(value)
+  const fileCount = store.state.files.size
+  const fileIndex = useMemo(() => {
+    const files = Array.from(store.state.files.keys())
     return files.indexOf(value) + 1
-  })
+  }, [store.state.files, value])
 
-  const itemContext = React.useMemo(
+  const itemContext = useMemo(
     () => ({
       id,
       fileState,

@@ -17,7 +17,10 @@ export {
 } from "./useFileUploadContext"
 export {
   createStore,
+  FileUploadStoreProvider,
   StoreContext,
+  useFileUploadSelector,
+  useFileUploadStore,
   useStore,
   useStoreContext,
 } from "./useFileUploadStore"

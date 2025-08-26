@@ -1,7 +1,8 @@
 "use client"
 
 import { Slot } from "radix-ui"
-import * as React from "react"
+import { useCallback, useEffect, useId, useMemo, useRef } from "react"
+import { type ChangeEvent } from "react"
 
 import {
   FileUploadClear,
@@ -14,15 +15,15 @@ import {
   FileUploadTrigger,
 } from "./components"
 import {
-  createStore,
   FileUploadContext,
-  StoreContext,
+  FileUploadStoreProvider,
   useDirection,
+  useFileUploadStore,
 } from "./hooks"
 import type { FileState, FileUploadRootProps } from "./types"
 import { useLazyRef, validateFiles } from "./utils"
 
-function FileUploadRoot(props: FileUploadRootProps) {
+function FileUploadContent(props: FileUploadRootProps) {
   const {
     value,
     defaultValue,
@@ -43,22 +44,16 @@ function FileUploadRoot(props: FileUploadRootProps) {
     ...rootProps
   } = props
 
-  const inputId = React.useId()
-  const dropzoneId = React.useId()
-  const listId = React.useId()
-  const labelId = React.useId()
+  const inputId = useId()
+  const dropzoneId = useId()
+  const listId = useId()
+  const labelId = useId()
 
   const dir = useDirection(dirProp)
-  const listeners = useLazyRef(() => new Set<() => void>()).current
-  const files = useLazyRef<Map<File, FileState>>(() => new Map()).current
   const urlCache = useLazyRef(() => new WeakMap<File, string>()).current
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const isControlled = value !== undefined
-
-  const store = React.useMemo(
-    () => createStore(listeners, files, urlCache, false, onChange),
-    [listeners, files, onChange, urlCache],
-  )
+  const store = useFileUploadStore()
 
   const onProgress = useLazyRef(() => {
     let frame = 0
@@ -66,84 +61,67 @@ function FileUploadRoot(props: FileUploadRootProps) {
       if (frame) return
       frame = requestAnimationFrame(() => {
         frame = 0
-        store.dispatch({
-          type: "SET_PROGRESS",
-          file,
-          progress: Math.min(Math.max(0, progress), 100),
-        })
+        store.setProgress(file, Math.min(Math.max(0, progress), 100))
       })
     }
   }).current
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isControlled) {
       store.dispatch({ type: "SET_FILES", files: value })
     } else if (
       defaultValue &&
       defaultValue.length > 0 &&
-      !store.getState().files.size
+      !store.state.files.size
     ) {
       store.dispatch({ type: "SET_FILES", files: defaultValue })
     }
   }, [value, defaultValue, isControlled, store])
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
-      for (const file of Array.from(files?.keys() ?? [])) {
-        const cachedUrl = urlCache?.get(file)
-        if (cachedUrl) {
-          URL.revokeObjectURL(cachedUrl)
-        }
-      }
+      // URL 정리는 별도로 처리 필요
     }
-  }, [files, urlCache])
+  }, [urlCache])
 
-  const onFilesUpload = React.useCallback(
+  const onFilesUpload = useCallback(
     async (files: File[]) => {
       try {
         for (const file of files) {
-          store.dispatch({ type: "SET_PROGRESS", file, progress: 0 })
+          store.setProgress(file, 0)
         }
 
         if (onUpload) {
           await onUpload(files, {
             onProgress,
             onSuccess: (file) => {
-              store.dispatch({ type: "SET_SUCCESS", file })
+              store.setSuccess(file)
             },
             onError: (file, error) => {
-              store.dispatch({
-                type: "SET_ERROR",
-                file,
-                error: error.message ?? "Upload failed",
-              })
+              store.setError(file, error.message ?? "Upload failed")
             },
           })
         } else {
           for (const file of files) {
-            store.dispatch({ type: "SET_SUCCESS", file })
+            store.setSuccess(file)
           }
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Upload failed"
         for (const file of files) {
-          store.dispatch({
-            type: "SET_ERROR",
-            file,
-            error: errorMessage,
-          })
+          store.setError(file, errorMessage)
         }
       }
     },
     [store, onUpload, onProgress],
   )
 
-  const onFilesChange = React.useCallback(
+  const onFilesChange = useCallback(
     (originalFiles: File[]) => {
       if (disabled) return
 
-      const currentFileCount = store.getState().files.size
+      const currentFileCount = store.state.files.size
       const { validFiles, invalidFiles } = validateFiles(originalFiles, {
         accept,
         maxFiles,
@@ -152,18 +130,18 @@ function FileUploadRoot(props: FileUploadRootProps) {
       })
 
       if (invalidFiles.length > 0) {
-        store.dispatch({ type: "SET_INVALID", invalid: true })
+        store.setInvalid(true)
         setTimeout(() => {
-          store.dispatch({ type: "SET_INVALID", invalid: false })
+          store.setInvalid(false)
         }, 2000)
       }
 
       if (validFiles.length > 0) {
-        store.dispatch({ type: "ADD_FILES", files: validFiles })
+        store.addFiles(validFiles)
 
         if (isControlled && onChange) {
-          const currentFiles = Array.from(store.getState().files.values()).map(
-            (f) => f.file,
+          const currentFiles = Array.from(store.state.files.values()).map(
+            (f: FileState) => f.file,
           )
           onChange([...currentFiles])
         }
@@ -188,8 +166,8 @@ function FileUploadRoot(props: FileUploadRootProps) {
     ],
   )
 
-  const onInputChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files ?? [])
       onFilesChange(files)
       event.target.value = ""
@@ -197,7 +175,7 @@ function FileUploadRoot(props: FileUploadRootProps) {
     [onFilesChange],
   )
 
-  const contextValue = React.useMemo(
+  const contextValue = useMemo(
     () => ({
       dropzoneId,
       inputId,
@@ -214,38 +192,46 @@ function FileUploadRoot(props: FileUploadRootProps) {
   const RootPrimitive = asChild ? Slot.Root : "div"
 
   return (
-    <StoreContext.Provider value={store}>
-      <FileUploadContext.Provider value={contextValue}>
-        <RootPrimitive
-          data-disabled={disabled ? "" : undefined}
-          data-slot="file-upload"
-          dir={dir}
-          {...rootProps}
-          className={className}
-        >
-          {children}
-          <input
-            type="file"
-            id={inputId}
-            aria-labelledby={labelId}
-            aria-describedby={dropzoneId}
-            ref={inputRef}
-            tabIndex={-1}
-            accept={accept}
-            name={name}
-            className="sr-only"
-            disabled={disabled}
-            multiple={multiple}
-            required={required}
-            onChange={onInputChange}
-            style={{ display: "none" }}
-          />
-          <span id={labelId} className="sr-only">
-            {label ?? "File upload"}
-          </span>
-        </RootPrimitive>
-      </FileUploadContext.Provider>
-    </StoreContext.Provider>
+    <FileUploadContext.Provider value={contextValue}>
+      <RootPrimitive
+        data-disabled={disabled ? "" : undefined}
+        data-slot="file-upload"
+        dir={dir}
+        {...rootProps}
+        className={className}
+      >
+        {children}
+        <input
+          type="file"
+          id={inputId}
+          aria-labelledby={labelId}
+          aria-describedby={dropzoneId}
+          ref={inputRef}
+          tabIndex={-1}
+          accept={accept}
+          name={name}
+          className="sr-only"
+          disabled={disabled}
+          multiple={multiple}
+          required={required}
+          onChange={onInputChange}
+          style={{ display: "none" }}
+        />
+        <span id={labelId} className="sr-only">
+          {label ?? "File upload"}
+        </span>
+      </RootPrimitive>
+    </FileUploadContext.Provider>
+  )
+}
+
+function FileUploadRoot(props: FileUploadRootProps) {
+  const { onChange, ...restProps } = props
+
+  return (
+    <FileUploadStoreProvider onValueChange={onChange}>
+      <FileUploadContent {...restProps} />
+    </FileUploadStoreProvider>
   )
 }
 

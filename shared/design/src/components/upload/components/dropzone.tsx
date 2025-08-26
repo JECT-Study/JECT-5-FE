@@ -1,13 +1,18 @@
 "use client"
 
 import { Slot } from "radix-ui"
-import * as React from "react"
+import {
+  type ClipboardEvent,
+  type DragEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  useCallback,
+} from "react"
 
 import {
   DROPZONE_NAME,
   useFileUploadContext,
-  useStore,
-  useStoreContext,
+  useFileUploadStore,
 } from "../hooks"
 import type { FileUploadDropzoneProps } from "../types"
 
@@ -26,12 +31,12 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
   } = props
 
   const context = useFileUploadContext(DROPZONE_NAME)
-  const store = useStoreContext(DROPZONE_NAME)
-  const dragOver = useStore((state) => state.dragOver)
-  const invalid = useStore((state) => state.invalid)
+  const store = useFileUploadStore()
+  const dragOver = store.state.dragOver
+  const invalid = store.state.invalid
 
-  const onClick = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
+  const onClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
       onClickProp?.(event)
 
       if (event.defaultPrevented) return
@@ -49,32 +54,32 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
     [context.inputRef, onClickProp],
   )
 
-  const onDragOver = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+  const onDragOver = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
       onDragOverProp?.(event)
 
       if (event.defaultPrevented) return
 
       event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: true })
+      store.setDragOver(true)
     },
     [store, onDragOverProp],
   )
 
-  const onDragEnter = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+  const onDragEnter = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
       onDragEnterProp?.(event)
 
       if (event.defaultPrevented) return
 
       event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: true })
+      store.setDragOver(true)
     },
     [store, onDragEnterProp],
   )
 
-  const onDragLeave = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+  const onDragLeave = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
       onDragLeaveProp?.(event)
 
       if (event.defaultPrevented) return
@@ -89,19 +94,19 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
       }
 
       event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
+      store.setDragOver(false)
     },
     [store, onDragLeaveProp],
   )
 
-  const onDrop = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+  const onDrop = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
       onDropProp?.(event)
 
       if (event.defaultPrevented) return
 
       event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
+      store.setDragOver(false)
 
       const files = Array.from(event.dataTransfer.files)
       const inputElement = context.inputRef.current
@@ -118,14 +123,14 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
     [store, context.inputRef, onDropProp],
   )
 
-  const onPaste = React.useCallback(
-    (event: React.ClipboardEvent<HTMLDivElement>) => {
+  const onPaste = useCallback(
+    (event: ClipboardEvent<HTMLDivElement>) => {
       onPasteProp?.(event)
 
       if (event.defaultPrevented) return
 
       event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
+      store.setDragOver(false)
 
       const items = event.clipboardData?.items
       if (!items) return
@@ -157,8 +162,8 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
     [store, context.inputRef, onPasteProp],
   )
 
-  const onKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLDivElement>) => {
       onKeyDownProp?.(event)
 
       if (
