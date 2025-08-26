@@ -1,9 +1,12 @@
 "use client"
 
-import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
+import {
+  PrimaryBoxButton,
+  SecondaryOutlineBoxButton,
+} from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
-import { Magnifier } from "@shared/design/src/icons"
+import { Add, Magnifier } from "@shared/design/src/icons"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -20,13 +23,7 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const {
-    user,
-    isLoading: authLoading,
-    isAuthenticated,
-    login,
-    logout,
-  } = useAuth()
+  const { isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -169,56 +166,55 @@ export default function GamesPage() {
         placeholder="오늘의 추천 게임은?"
         onChange={handleSearchChange}
         className="flex-1 bg-transparent text-[19px] font-medium leading-[120%] text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none"
+        aria-label="게임 검색"
       />
     </div>
   )
 
   const rightContent = (
     <>
+      <PrimaryBoxButton size="sm" _style="solid" onClick={handleCreateGame}>
+        <Add />
+        게임 만들기
+      </PrimaryBoxButton>
+
       {isAuthenticated ? (
-        <>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-text-primary">
-              {user?.nickname}
-            </span>
-          </div>
-          <div className="relative" data-user-menu>
-            <button
-              className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
-              onClick={handleAvatarClick}
-              aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
-              aria-expanded={listButton}
-              aria-haspopup="true"
-              tabIndex={0}
+        <div className="relative" data-user-menu>
+          <button
+            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
+            onClick={handleAvatarClick}
+            aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
+            aria-expanded={listButton}
+            aria-haspopup="true"
+            tabIndex={0}
+          >
+            <Image
+              src="/avatar.svg"
+              alt="사용자 아바타"
+              className="size-full rounded-full"
+              width={42}
+              height={42}
+            />
+          </button>
+          {listButton && (
+            <div
+              className="absolute right-0 top-full z-10 mt-2"
+              role="menu"
+              aria-label="사용자 메뉴"
             >
-              <Image
-                src="/avatar.svg"
-                alt="사용자 아바타"
-                className="size-full rounded-full"
-                width={42}
-                height={42}
-              />
-            </button>
-            {listButton && (
-              <div
-                className="absolute right-0 top-full z-10 mt-2"
-                role="menu"
-                aria-label="사용자 메뉴"
+              <SecondaryOutlineBoxButton
+                size="md"
+                onClick={handleLogoutClick}
+                className="whitespace-nowrap"
+                role="button"
+                aria-label="로그아웃"
+                tabIndex={0}
               >
-                <SecondaryOutlineBoxButton
-                  size="md"
-                  onClick={handleLogoutClick}
-                  className="whitespace-nowrap"
-                  role="menuitem"
-                  aria-label="로그아웃"
-                  tabIndex={0}
-                >
-                  로그아웃
-                </SecondaryOutlineBoxButton>
-              </div>
-            )}
-          </div>
-        </>
+                로그아웃
+              </SecondaryOutlineBoxButton>
+            </div>
+          )}
+        </div>
       ) : (
         <SecondaryOutlineBoxButton
           size="md"
@@ -251,7 +247,6 @@ export default function GamesPage() {
     <main className="min-h-screen bg-background-primary">
       <Navigation
         type="searchbar"
-        playGame={false}
         leftContent={leftContent}
         centerContent={centerContent}
         rightContent={rightContent}
