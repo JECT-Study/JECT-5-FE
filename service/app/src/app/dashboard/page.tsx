@@ -155,6 +155,20 @@ export default function DashboardPage() {
     setListButton(!listButton)
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (listButton && !target.closest("[data-user-menu]")) {
+        setListButton(false)
+      }
+    }
+
+    if (listButton) {
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [listButton])
+
   const handleLogoutClick = () => {
     logout()
     setListButton(false)
@@ -163,9 +177,10 @@ export default function DashboardPage() {
 
   const leftContent = (
     <button
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
+      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none"
       onClick={handleLogoClick}
       aria-label="홈으로 이동"
+      tabIndex={0}
     >
       <Image
         src="/logo.svg"
@@ -196,7 +211,7 @@ export default function DashboardPage() {
       </PrimaryBoxButton>
 
       {isAuthenticated ? (
-        <div className="relative">
+        <div className="relative" data-user-menu>
           <button
             className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
             onClick={handleAvatarClick}
@@ -214,12 +229,16 @@ export default function DashboardPage() {
             />
           </button>
           {listButton && (
-            <div className="absolute right-0 top-full z-10 mt-2">
+            <div
+              className="absolute right-0 top-full z-10 mt-2"
+              role="menu"
+              aria-label="사용자 메뉴"
+            >
               <SecondaryOutlineBoxButton
                 size="md"
                 onClick={handleLogoutClick}
                 className="whitespace-nowrap"
-                role="menuitem"
+                role="button"
                 aria-label="로그아웃"
                 tabIndex={0}
               >
