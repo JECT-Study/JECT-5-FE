@@ -95,11 +95,8 @@ export const GameLibraryGrid = ({
                       )}
                     </GameCard.Image>
                     <div className="flex h-[46px] w-[178px] items-center justify-between">
-                      <div
-                        className="line-clamp-2 h-[46px] w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
-                        data-testid="game-title"
-                      >
-                        {game.gameTitle}
+                      <div className="w-[130px] shrink-0">
+                        <GameCard.Title>{game.gameTitle}</GameCard.Title>
                       </div>
                       <GameCardOptions
                         shared={game.isShared}

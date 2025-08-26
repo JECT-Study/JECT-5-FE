@@ -53,16 +53,14 @@ interface GameCardTitleProps {
 const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
   return (
     <div className="h-[46px] w-[178px]">
-      <div
+      <h3
         className={cn(
           "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
           className,
         )}
-        role="heading"
-        aria-level={3}
       >
         {children}
-      </div>
+      </h3>
     </div>
   )
 }
