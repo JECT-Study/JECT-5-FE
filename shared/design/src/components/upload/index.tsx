@@ -31,25 +31,6 @@ function Dropzone({
   )
 }
 
-// const TriggerContent = () => {
-//   return (
-//     <div className="flex items-center justify-center gap-[22px] text-text-interactive-tertiary">
-//       <div className="typography-heading-lg-semibold">파일 업로드</div>
-//       <div className="typography-heading-sm-medium">
-//         JPG, JPEG, PNG (최대 2MB)
-//       </div>
-//     </div>
-//   )
-// }
-
-// const TriggerButton = ({ children }) => {
-//   return (
-//     <PrimaryBoxButton size="md" _style="solid">
-//       {children}
-//     </PrimaryBoxButton>
-//   )
-// }
-
 function Trigger({
   className,
   children,
