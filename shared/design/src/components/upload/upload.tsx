@@ -20,17 +20,13 @@ import {
   useDirection,
 } from "./hooks"
 import type { FileState, FileUploadRootProps } from "./types"
-import { useLazyRef } from "./utils"
+import { useLazyRef, validateFiles } from "./utils"
 
 function FileUploadRoot(props: FileUploadRootProps) {
   const {
     value,
     defaultValue,
-    onValueChange,
-    onAccept,
-    onFileAccept,
-    onFileReject,
-    onFileValidate,
+    onChange,
     onUpload,
     accept,
     maxFiles,
@@ -40,7 +36,6 @@ function FileUploadRoot(props: FileUploadRootProps) {
     name,
     asChild,
     disabled = false,
-    invalid = false,
     multiple = false,
     required = false,
     children,
@@ -61,13 +56,8 @@ function FileUploadRoot(props: FileUploadRootProps) {
   const isControlled = value !== undefined
 
   const store = React.useMemo(
-    () => createStore(listeners, files, urlCache, invalid, onValueChange),
-    [listeners, files, invalid, onValueChange, urlCache],
-  )
-
-  const acceptTypes = React.useMemo(
-    () => accept?.split(",").map((t) => t.trim()) ?? null,
-    [accept],
+    () => createStore(listeners, files, urlCache, false, onChange),
+    [listeners, files, onChange, urlCache],
   )
 
   const onProgress = useLazyRef(() => {
@@ -108,139 +98,6 @@ function FileUploadRoot(props: FileUploadRootProps) {
     }
   }, [files, urlCache])
 
-  const onFilesChange = React.useCallback(
-    (originalFiles: File[]) => {
-      if (disabled) return
-
-      let filesToProcess = [...originalFiles]
-      let invalid = false
-
-      if (maxFiles) {
-        const currentCount = store.getState().files.size
-        const remainingSlotCount = Math.max(0, maxFiles - currentCount)
-
-        if (remainingSlotCount < filesToProcess.length) {
-          const rejectedFiles = filesToProcess.slice(remainingSlotCount)
-          invalid = true
-
-          filesToProcess = filesToProcess.slice(0, remainingSlotCount)
-
-          for (const file of rejectedFiles) {
-            let rejectionMessage = `Maximum ${maxFiles} files allowed`
-
-            if (onFileValidate) {
-              const validationMessage = onFileValidate(file)
-              if (validationMessage) {
-                rejectionMessage = validationMessage
-              }
-            }
-
-            onFileReject?.(file, rejectionMessage)
-          }
-        }
-      }
-
-      const acceptedFiles: File[] = []
-      const rejectedFiles: { file: File; message: string }[] = []
-
-      for (const file of filesToProcess) {
-        let rejected = false
-        let rejectionMessage = ""
-
-        if (onFileValidate) {
-          const validationMessage = onFileValidate(file)
-          if (validationMessage) {
-            rejectionMessage = validationMessage
-            onFileReject?.(file, rejectionMessage)
-            rejected = true
-            invalid = true
-            continue
-          }
-        }
-
-        if (acceptTypes) {
-          const fileType = file.type
-          const fileExtension = `.${file.name.split(".").pop()}`
-
-          if (
-            !acceptTypes.some(
-              (type) =>
-                type === fileType ||
-                type === fileExtension ||
-                (type.includes("/*") &&
-                  fileType.startsWith(type.replace("/*", "/"))),
-            )
-          ) {
-            rejectionMessage = "File type not accepted"
-            onFileReject?.(file, rejectionMessage)
-            rejected = true
-            invalid = true
-          }
-        }
-
-        if (maxSize && file.size > maxSize) {
-          rejectionMessage = "File too large"
-          onFileReject?.(file, rejectionMessage)
-          rejected = true
-          invalid = true
-        }
-
-        if (!rejected) {
-          acceptedFiles.push(file)
-        } else {
-          rejectedFiles.push({ file, message: rejectionMessage })
-        }
-      }
-
-      if (invalid) {
-        store.dispatch({ type: "SET_INVALID", invalid })
-        setTimeout(() => {
-          store.dispatch({ type: "SET_INVALID", invalid: false })
-        }, 2000)
-      }
-
-      if (acceptedFiles.length > 0) {
-        store.dispatch({ type: "ADD_FILES", files: acceptedFiles })
-
-        if (isControlled && onValueChange) {
-          const currentFiles = Array.from(store.getState().files.values()).map(
-            (f) => f.file,
-          )
-          onValueChange([...currentFiles])
-        }
-
-        if (onAccept) {
-          onAccept(acceptedFiles)
-        }
-
-        for (const file of acceptedFiles) {
-          onFileAccept?.(file)
-        }
-
-        if (onUpload) {
-          requestAnimationFrame(() => {
-            onFilesUpload(acceptedFiles)
-          })
-        }
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      store,
-      isControlled,
-      onValueChange,
-      onAccept,
-      onFileAccept,
-      onUpload,
-      maxFiles,
-      onFileValidate,
-      onFileReject,
-      acceptTypes,
-      maxSize,
-      disabled,
-    ],
-  )
-
   const onFilesUpload = React.useCallback(
     async (files: File[]) => {
       try {
@@ -280,6 +137,55 @@ function FileUploadRoot(props: FileUploadRootProps) {
       }
     },
     [store, onUpload, onProgress],
+  )
+
+  const onFilesChange = React.useCallback(
+    (originalFiles: File[]) => {
+      if (disabled) return
+
+      const currentFileCount = store.getState().files.size
+      const { validFiles, invalidFiles } = validateFiles(originalFiles, {
+        accept,
+        maxFiles,
+        maxSize,
+        currentFileCount,
+      })
+
+      if (invalidFiles.length > 0) {
+        store.dispatch({ type: "SET_INVALID", invalid: true })
+        setTimeout(() => {
+          store.dispatch({ type: "SET_INVALID", invalid: false })
+        }, 2000)
+      }
+
+      if (validFiles.length > 0) {
+        store.dispatch({ type: "ADD_FILES", files: validFiles })
+
+        if (isControlled && onChange) {
+          const currentFiles = Array.from(store.getState().files.values()).map(
+            (f) => f.file,
+          )
+          onChange([...currentFiles])
+        }
+
+        if (onUpload) {
+          requestAnimationFrame(() => {
+            onFilesUpload(validFiles)
+          })
+        }
+      }
+    },
+    [
+      store,
+      isControlled,
+      onChange,
+      onUpload,
+      accept,
+      maxFiles,
+      maxSize,
+      disabled,
+      onFilesUpload,
+    ],
   )
 
   const onInputChange = React.useCallback(

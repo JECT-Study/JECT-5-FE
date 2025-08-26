@@ -56,7 +56,7 @@ function MyUploadComponent() {
   return (
     <FileUpload
       value={files}
-      onValueChange={setFiles}
+      onChange={setFiles}
       accept="image/*"
       maxFiles={5}
       multiple
@@ -88,7 +88,7 @@ function MyUploadComponent() {
 ## 주요 기능
 
 - ✅ **드래그 앤 드롭**: 파일을 드래그하여 업로드 가능
-- ✅ **파일 검증**: 파일 타입, 크기, 개수 제한
+- ✅ **파일 검증**: 파일 타입, 크기, 개수 제한 (내장)
 - ✅ **진행률 추적**: 업로드 진행 상황 표시
 - ✅ **접근성**: 스크린 리더 지원
 - ✅ **커스터마이징**: 각 부분을 독립적으로 스타일링 가능
@@ -148,10 +148,7 @@ function MyUploadComponent() {
     },
   },
   args: {
-    onValueChange: fn(),
-    onAccept: fn(),
-    onFileAccept: fn(),
-    onFileReject: fn(),
+    onChange: fn(),
   },
 } satisfies Meta<typeof FileUpload>
 
@@ -177,39 +174,14 @@ export const Basic: Story = {
   render: (args) => {
     const [files, setFiles] = React.useState<File[]>([])
 
-    const onFileValidate = React.useCallback(
-      (file: File): string | null => {
-        if (files.length >= 2) {
-          return "최대 2개 파일까지 업로드 가능합니다"
-        }
-
-        if (!file.type.startsWith("image/")) {
-          return "이미지 파일만 업로드 가능합니다"
-        }
-
-        const MAX_SIZE = 2 * 1024 * 1024 // 2MB
-        if (file.size > MAX_SIZE) {
-          return `파일 크기는 ${MAX_SIZE / (1024 * 1024)}MB 이하여야 합니다`
-        }
-
-        return null
-      },
-      [files],
-    )
-
-    const onFileReject = React.useCallback((file: File, message: string) => {
-      console.log(`파일 거부됨: ${message}`, file.name)
-    }, [])
-
     return (
       <FileUpload
         {...args}
         value={files}
-        onValueChange={setFiles}
-        onFileValidate={onFileValidate}
-        onFileReject={onFileReject}
+        onChange={setFiles}
         accept="image/*"
         maxFiles={2}
+        maxSize={2 * 1024 * 1024} // 2MB
         className="w-full max-w-md"
         multiple
       >
@@ -269,7 +241,7 @@ export const SingleFile: Story = {
       <FileUpload
         {...args}
         value={files}
-        onValueChange={setFiles}
+        onChange={setFiles}
         accept="image/*"
         maxFiles={1}
         className="w-full max-w-md"
@@ -334,7 +306,7 @@ export const AllFileTypes: Story = {
       <FileUpload
         {...args}
         value={files}
-        onValueChange={setFiles}
+        onChange={setFiles}
         maxFiles={5}
         className="w-full max-w-md"
         multiple
@@ -395,7 +367,7 @@ export const Disabled: Story = {
       <FileUpload
         {...args}
         value={files}
-        onValueChange={setFiles}
+        onChange={setFiles}
         disabled
         className="w-full max-w-md"
       >

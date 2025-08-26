@@ -53,11 +53,19 @@ export interface FileUploadRootProps
   > {
   value?: File[]
   defaultValue?: File[]
-  onValueChange?: (files: File[]) => void
-  onAccept?: (files: File[]) => void
-  onFileAccept?: (file: File) => void
-  onFileReject?: (file: File, message: string) => void
-  onFileValidate?: (file: File) => string | null | undefined
+  onChange?: (files: File[]) => void
+
+  accept?: string
+  maxFiles?: number
+  maxSize?: number
+
+  disabled?: boolean
+  multiple?: boolean
+  required?: boolean
+
+  label?: string
+  name?: string
+
   onUpload?: (
     files: File[],
     options: {
@@ -66,17 +74,18 @@ export interface FileUploadRootProps
       onError: (file: File, error: Error) => void
     },
   ) => Promise<void> | void
-  accept?: string
-  maxFiles?: number
-  maxSize?: number
+
   dir?: Direction
-  label?: string
-  name?: string
   asChild?: boolean
-  disabled?: boolean
+}
+
+export interface FileUploadRootPropsLegacy extends FileUploadRootProps {
+  onValueChange?: (files: File[]) => void
+  onAccept?: (files: File[]) => void
+  onFileAccept?: (file: File) => void
+  onFileReject?: (file: File, message: string) => void
+  onFileValidate?: (file: File) => string | null | undefined
   invalid?: boolean
-  multiple?: boolean
-  required?: boolean
 }
 
 export interface FileUploadDropzoneProps
