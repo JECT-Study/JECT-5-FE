@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { SecondaryGhostIconButton, SecondaryOutlineBoxButton } from "../components/button"
+import {
+  SecondaryGhostIconButton,
+  SecondaryOutlineBoxButton,
+} from "../components/button"
 import { Navigation } from "../components/navigation"
 import { Magnifier, Sun } from "../icons"
 
@@ -64,7 +67,6 @@ import { Navigation } from "@shared/design/src/components/navigation"
 // 검색바가 있는 네비게이션
 <Navigation
   type="searchbar"
-  playGame={false}
   leftContent={<Logo />}
   centerContent={<SearchBar />}
   rightContent={<LoginButton />}
@@ -73,7 +75,6 @@ import { Navigation } from "@shared/design/src/components/navigation"
 // 제목이 있는 네비게이션
 <Navigation
   type="title"
-  playGame={false}
   leftContent={<Logo />}
   centerContent={<h1>내 게임</h1>}
   rightContent={<UserMenu />}
@@ -95,18 +96,23 @@ import { Navigation } from "@shared/design/src/components/navigation"
 ### 🎨 디자인 토큰
 - 모든 색상과 간격은 디자인 시스템 기반
 - Figma와 완벽히 동기화
-        `
-      }
-    }
+        `,
+      },
+    },
   },
   tags: ["autodocs"],
   argTypes: {
     type: {
       control: { type: "select" },
-      options: ["untitle", "title", "searchbar", "createGame", "startGame", "progressbar", "onGame"],
-    },
-    playGame: {
-      control: { type: "boolean" },
+      options: [
+        "untitle",
+        "title",
+        "searchbar",
+        "createGame",
+        "startGame",
+        "progressbar",
+        "onGame",
+      ],
     },
   },
 }
@@ -165,7 +171,6 @@ const ProgressBar = () => (
 export const SearchBarNavigation: Story = {
   args: {
     type: "searchbar",
-    playGame: false,
     leftContent: <Logo />,
     centerContent: <SearchBar />,
     rightContent: <LoginButton />,
@@ -175,7 +180,6 @@ export const SearchBarNavigation: Story = {
 export const TitleNavigation: Story = {
   args: {
     type: "title",
-    playGame: false,
     leftContent: <Logo />,
     centerContent: <Title>내 게임</Title>,
     rightContent: <LoginButton />,
@@ -185,7 +189,6 @@ export const TitleNavigation: Story = {
 export const UntitleNavigation: Story = {
   args: {
     type: "untitle",
-    playGame: false,
     leftContent: <Logo />,
     rightContent: <LoginButton />,
   },
@@ -194,7 +197,6 @@ export const UntitleNavigation: Story = {
 export const CreateGameNavigation: Story = {
   args: {
     type: "createGame",
-    playGame: false,
     leftContent: <Logo />,
     rightContent: <LoginButton />,
   },
@@ -203,7 +205,6 @@ export const CreateGameNavigation: Story = {
 export const StartGameNavigation: Story = {
   args: {
     type: "startGame",
-    playGame: true,
     leftContent: <Logo />,
     centerContent: <Title>참가자 설정</Title>,
     rightContent: <LoginButton />,
@@ -213,7 +214,6 @@ export const StartGameNavigation: Story = {
 export const ProgressBarNavigation: Story = {
   args: {
     type: "progressbar",
-    playGame: true,
     leftContent: <Logo />,
     centerContent: <ProgressBar />,
     rightContent: <LoginButton />,
@@ -223,7 +223,6 @@ export const ProgressBarNavigation: Story = {
 export const OnGameNavigation: Story = {
   args: {
     type: "onGame",
-    playGame: true,
     leftContent: <Logo />,
     centerContent: <Title>게임 종료</Title>,
     rightContent: <LoginButton />,
