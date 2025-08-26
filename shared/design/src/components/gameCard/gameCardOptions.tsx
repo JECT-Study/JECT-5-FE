@@ -24,10 +24,7 @@ export function GameCardOptions({
   return (
     <DropdownMenuRoot>
       <DropdownMenuTrigger asChild>
-        <SecondaryPlainIconButton
-          aria-label="게임 옵션 메뉴 열기"
-          data-testid="game-options-button"
-        >
+        <SecondaryPlainIconButton aria-label="게임 옵션 메뉴 열기">
           <MoreDot />
         </SecondaryPlainIconButton>
       </DropdownMenuTrigger>
