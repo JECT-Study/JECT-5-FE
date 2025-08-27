@@ -77,6 +77,7 @@ export function FileUploadArea() {
 
   return (
     <FileUpload
+      key={selectedQuestion?.id}
       onChange={handleFileChange}
       onUpload={handleUpload}
       onValidationError={handleValidationError}
