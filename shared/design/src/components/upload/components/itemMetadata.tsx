@@ -37,6 +37,7 @@ export function FileUploadItemMetadata(props: FileUploadItemMetadataProps) {
         <>
           <span
             id={itemContext.nameId}
+            aria-label={`파일명: ${itemContext.fileState.file.name}`}
             className={
               size === "sm" ? "text-[13px] font-normal leading-snug" : undefined
             }
@@ -45,12 +46,17 @@ export function FileUploadItemMetadata(props: FileUploadItemMetadataProps) {
           </span>
           <span
             id={itemContext.sizeId}
+            aria-label={`파일 크기: ${formatBytes(itemContext.fileState.file.size)}`}
             className={size === "sm" ? "text-[11px] leading-snug" : undefined}
           >
             {formatBytes(itemContext.fileState.file.size)}
           </span>
           {itemContext.fileState.error && (
-            <span id={itemContext.messageId}>
+            <span
+              id={itemContext.messageId}
+              role="alert"
+              aria-label={`업로드 오류: ${itemContext.fileState.error}`}
+            >
               {itemContext.fileState.error}
             </span>
           )}

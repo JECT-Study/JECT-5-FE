@@ -24,6 +24,7 @@ export function FileUploadItemProgress(props: FileUploadItemProgressProps) {
   if (!shouldRender) return null
 
   const ItemProgressPrimitive = asChild ? Slot.Root : "div"
+  const progressLabel = `${itemContext.fileState.file.name} 업로드 진행률`
 
   switch (variant) {
     case "circular": {
@@ -34,10 +35,11 @@ export function FileUploadItemProgress(props: FileUploadItemProgressProps) {
       return (
         <ItemProgressPrimitive
           role="progressbar"
+          aria-label={progressLabel}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={itemContext.fileState.progress}
-          aria-valuetext={`${itemContext.fileState.progress}%`}
+          aria-valuetext={`${itemContext.fileState.progress}% 완료`}
           aria-labelledby={itemContext.nameId}
           data-slot="file-upload-progress"
           {...progressProps}
@@ -77,10 +79,11 @@ export function FileUploadItemProgress(props: FileUploadItemProgressProps) {
       return (
         <ItemProgressPrimitive
           role="progressbar"
+          aria-label={progressLabel}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={progressPercentage}
-          aria-valuetext={`${progressPercentage}%`}
+          aria-valuetext={`${progressPercentage}% 완료`}
           aria-labelledby={itemContext.nameId}
           data-slot="file-upload-progress"
           {...progressProps}
@@ -96,10 +99,11 @@ export function FileUploadItemProgress(props: FileUploadItemProgressProps) {
       return (
         <ItemProgressPrimitive
           role="progressbar"
+          aria-label={progressLabel}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={itemContext.fileState.progress}
-          aria-valuetext={`${itemContext.fileState.progress}%`}
+          aria-valuetext={`${itemContext.fileState.progress}% 완료`}
           aria-labelledby={itemContext.nameId}
           data-slot="file-upload-progress"
           {...progressProps}

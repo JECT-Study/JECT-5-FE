@@ -26,6 +26,7 @@ export function FileUploadList(props: FileUploadListProps) {
   return (
     <ListPrimitive
       role="list"
+      aria-label="업로드된 파일 목록"
       id={context.listId}
       aria-orientation={orientation}
       data-orientation={orientation}

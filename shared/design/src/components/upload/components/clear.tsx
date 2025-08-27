@@ -50,11 +50,12 @@ export function FileUploadClear(props: FileUploadClearProps) {
   if (!shouldRender) return null
 
   const ClearPrimitive = asChild ? Slot.Root : "button"
+  const clearLabel = `전체 파일 ${fileCount}개 삭제`
 
   return (
     <ClearPrimitive
       type="button"
-      aria-label={`Clear ${fileCount} file${fileCount === 1 ? "" : "s"}`}
+      aria-label={clearLabel}
       data-slot="file-upload-clear"
       dir={context.dir}
       {...clearProps}

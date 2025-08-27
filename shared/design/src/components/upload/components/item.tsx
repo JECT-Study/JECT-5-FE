@@ -57,6 +57,7 @@ export function FileUploadItem(props: FileUploadItemProps) {
     <FileUploadItemContext.Provider value={itemContext}>
       <ItemPrimitive
         role="listitem"
+        aria-label={`파일: ${fileState.file.name}`}
         id={id}
         aria-setsize={fileCount}
         aria-posinset={fileIndex}

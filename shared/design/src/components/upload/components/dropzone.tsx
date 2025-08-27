@@ -182,6 +182,7 @@ export function FileUploadDropzone(props: FileUploadDropzoneProps) {
   return (
     <DropzonePrimitive
       role="region"
+      aria-label="파일 드래그 앤 드롭 영역"
       id={context.dropzoneId}
       aria-controls={`${context.inputId} ${context.listId}`}
       aria-disabled={context.disabled}

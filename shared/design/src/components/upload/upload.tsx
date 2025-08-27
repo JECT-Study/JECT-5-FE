@@ -194,6 +194,8 @@ function FileUploadContent(props: FileUploadRootProps) {
   return (
     <FileUploadContext.Provider value={contextValue}>
       <RootPrimitive
+        role="region"
+        aria-label={label ?? "파일 업로드"}
         data-disabled={disabled ? "" : undefined}
         data-slot="file-upload"
         dir={dir}
@@ -204,6 +206,7 @@ function FileUploadContent(props: FileUploadRootProps) {
         <input
           type="file"
           id={inputId}
+          aria-label="파일 선택"
           aria-labelledby={labelId}
           aria-describedby={dropzoneId}
           ref={inputRef}
@@ -218,7 +221,7 @@ function FileUploadContent(props: FileUploadRootProps) {
           style={{ display: "none" }}
         />
         <span id={labelId} className="sr-only">
-          {label ?? "File upload"}
+          {label ?? "파일 업로드"}
         </span>
       </RootPrimitive>
     </FileUploadContext.Provider>

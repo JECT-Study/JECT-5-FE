@@ -52,11 +52,12 @@ export function FileUploadItemDelete(props: FileUploadItemDeleteProps) {
   )
 
   const DeletePrimitive = asChild ? Slot.Root : "button"
+  const deleteLabel = `${itemContext.fileState?.file.name ?? "파일"} 삭제`
 
   return (
     <DeletePrimitive
       type="button"
-      aria-label={`Remove ${itemContext.fileState?.file.name ?? "file"}`}
+      aria-label={deleteLabel}
       aria-describedby={itemContext.messageId}
       data-slot="file-upload-item-delete"
       dir={context.dir}
