@@ -10,7 +10,6 @@ import Image from "next/image"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import { useGamePopupActions } from "../../model/useGamePopupActions"
-import { validateImageFile } from "../../utils/fileValidation"
 
 export function FileUploadArea() {
   const { actions, selectors } = useGameCreationContext()
@@ -20,19 +19,13 @@ export function FileUploadArea() {
   const hasImage =
     selectedQuestion?.imageUrl || selectedQuestion?.previewImageUrl
 
-  const handleFileUpload = (files: File[]) => {
-    if (!selectedQuestion) {
+  const handleFileChange = (files: File[]) => {
+    if (!selectedQuestion || files.length === 0) {
       return
     }
 
     const file = files[0]
     if (!file) return
-
-    const validation = validateImageFile(file)
-    if (!validation.isValid) {
-      showFileUploadError()
-      return
-    }
 
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -42,8 +35,56 @@ export function FileUploadArea() {
     reader.readAsDataURL(file)
   }
 
+  const handleUpload = async (
+    files: File[],
+    options: {
+      onProgress: (file: File, progress: number) => void
+      onSuccess: (file: File) => void
+      onError: (file: File, error: Error) => void
+    },
+  ) => {
+    try {
+      for (const file of files) {
+        options.onSuccess(file)
+      }
+    } catch (error) {
+      console.error("File upload error:", error)
+      showFileUploadError()
+      for (const file of files) {
+        options.onError(file, error as Error)
+      }
+    }
+  }
+
+  const handleValidationError = (
+    errors: Array<{
+      file: File
+      type: "size" | "format" | "count" | "unknown"
+      message: string
+    }>,
+  ) => {
+    // 에러 타입별로 적절한 처리
+    const hasSizeError = errors.some((error) => error.type === "size")
+    const hasFormatError = errors.some((error) => error.type === "format")
+    const hasCountError = errors.some((error) => error.type === "count")
+
+    // 현재는 모든 검증 에러에 대해 동일한 팝업을 표시
+    // 향후 필요에 따라 에러 타입별로 다른 팝업을 표시할 수 있음
+    if (hasSizeError || hasFormatError || hasCountError) {
+      showFileUploadError()
+    }
+  }
+
   return (
-    <FileUpload onAccept={handleFileUpload}>
+    <FileUpload
+      onChange={handleFileChange}
+      onUpload={handleUpload}
+      onValidationError={handleValidationError}
+      accept="image/jpeg,image/jpg,image/png"
+      maxFiles={1}
+      maxSize={2 * 1024 * 1024}
+      label="이미지 업로드"
+    >
       <Dropzone className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]">
         {hasImage ? (
           <div className="group relative size-full">

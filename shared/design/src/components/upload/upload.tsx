@@ -29,6 +29,7 @@ function FileUploadContent(props: FileUploadRootProps) {
     defaultValue,
     onChange,
     onUpload,
+    onValidationError,
     accept,
     maxFiles,
     maxSize,
@@ -134,9 +135,38 @@ function FileUploadContent(props: FileUploadRootProps) {
         setTimeout(() => {
           store.setInvalid(false)
         }, 2000)
+
+        if (onValidationError) {
+          const errors = invalidFiles.map((item) => {
+            let type: "size" | "format" | "count" | "unknown" = "unknown"
+
+            if (item.error.includes("크기") || item.error.includes("초과")) {
+              type = "size"
+            } else if (item.error.includes("형식")) {
+              type = "format"
+            } else if (
+              item.error.includes("최대") &&
+              item.error.includes("개")
+            ) {
+              type = "count"
+            }
+
+            return {
+              file: item.file,
+              type,
+              message: item.error,
+            }
+          })
+          onValidationError(errors)
+        }
       }
 
       if (validFiles.length > 0) {
+        if (maxFiles === 1 && store.state.files.size > 0) {
+          const existingFiles = Array.from(store.state.files.keys())
+          existingFiles.forEach((file) => store.removeFile(file))
+        }
+
         store.addFiles(validFiles)
 
         if (isControlled && onChange) {
@@ -163,6 +193,7 @@ function FileUploadContent(props: FileUploadRootProps) {
       maxSize,
       disabled,
       onFilesUpload,
+      onValidationError,
     ],
   )
 
@@ -239,7 +270,6 @@ function FileUploadRoot(props: FileUploadRootProps) {
 }
 
 export {
-  FileUploadClear as Clear,
   FileUploadDropzone as Dropzone,
   FileUploadRoot as FileUpload,
   FileUploadClear,
@@ -249,14 +279,12 @@ export {
   FileUploadItemMetadata,
   FileUploadItemProgress,
   FileUploadList,
-  //
   FileUploadTrigger,
   FileUploadItem as Item,
   FileUploadItemDelete as ItemDelete,
   FileUploadItemMetadata as ItemMetadata,
   FileUploadItemProgress as ItemProgress,
   FileUploadList as List,
-  //
   FileUploadRoot as Root,
   FileUploadTrigger as Trigger,
 }
