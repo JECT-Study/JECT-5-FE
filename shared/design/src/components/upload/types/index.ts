@@ -84,15 +84,6 @@ export interface FileUploadRootProps
   asChild?: boolean
 }
 
-export interface FileUploadRootPropsLegacy extends FileUploadRootProps {
-  onValueChange?: (files: File[]) => void
-  onAccept?: (files: File[]) => void
-  onFileAccept?: (file: File) => void
-  onFileReject?: (file: File, message: string) => void
-  onFileValidate?: (file: File) => string | null | undefined
-  invalid?: boolean
-}
-
 export interface FileUploadDropzoneProps
   extends ComponentPropsWithoutRef<"div"> {
   asChild?: boolean

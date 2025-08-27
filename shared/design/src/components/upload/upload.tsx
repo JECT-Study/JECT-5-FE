@@ -263,7 +263,7 @@ function FileUploadRoot(props: FileUploadRootProps) {
   const { onChange, ...restProps } = props
 
   return (
-    <FileUploadStoreProvider onValueChange={onChange}>
+    <FileUploadStoreProvider onChange={onChange}>
       <FileUploadContent {...restProps} />
     </FileUploadStoreProvider>
   )

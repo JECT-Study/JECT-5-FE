@@ -122,10 +122,10 @@ const FileUploadStoreContext = createContext<{
 // Provider 컴포넌트
 export function FileUploadStoreProvider({
   children,
-  onValueChange,
+  onChange,
 }: {
   children: ReactNode
-  onValueChange?: (files: File[]) => void
+  onChange?: (files: File[]) => void
 }) {
   const [state, dispatch] = useReducer(fileUploadReducer, {
     files: new Map(),
@@ -135,11 +135,11 @@ export function FileUploadStoreProvider({
 
   // 파일 목록 변경 시 콜백 호출
   useEffect(() => {
-    if (onValueChange) {
+    if (onChange) {
       const files = Array.from(state.files.values()).map((f) => f.file)
-      onValueChange(files)
+      onChange(files)
     }
-  }, [state.files, onValueChange])
+  }, [state.files, onChange])
 
   const contextValue = useMemo(
     () => ({
