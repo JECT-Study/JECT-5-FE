@@ -75,6 +75,14 @@ export interface FileUploadRootProps
     },
   ) => Promise<void> | void
 
+  onValidationError?: (
+    errors: Array<{
+      file: File
+      type: "size" | "format" | "count" | "unknown"
+      message: string
+    }>,
+  ) => void
+
   dir?: Direction
   asChild?: boolean
 }

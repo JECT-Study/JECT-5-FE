@@ -51,7 +51,7 @@ export function validateFile(
     if (!isAccepted) {
       return {
         isValid: false,
-        error: "File type not accepted",
+        error: "지원하지 않는 파일 형식입니다",
       }
     }
   }
@@ -59,7 +59,7 @@ export function validateFile(
   if (maxSize && file.size > maxSize) {
     return {
       isValid: false,
-      error: "File too large",
+      error: `파일 크기가 ${formatBytes(maxSize)}를 초과합니다`,
     }
   }
 
@@ -79,13 +79,18 @@ export function validateFiles(
 
   // 최대 파일 수 검증
   if (maxFiles) {
-    const remainingSlots = Math.max(0, maxFiles - currentFileCount)
+    const isReplacement =
+      maxFiles === 1 && currentFileCount === 1 && files.length === 1
+    const remainingSlots = isReplacement
+      ? 1
+      : Math.max(0, maxFiles - currentFileCount)
+
     if (files.length > remainingSlots) {
       const excessFiles = files.slice(remainingSlots)
       for (const file of excessFiles) {
         invalidFiles.push({
           file,
-          error: `Maximum ${maxFiles} files allowed`,
+          error: `최대 ${maxFiles}개 파일만 업로드할 수 있습니다`,
         })
       }
       files = files.slice(0, remainingSlots)
