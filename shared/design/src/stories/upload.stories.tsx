@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import * as React from "react"
+import { useState } from "react"
 import { fn } from "storybook/test"
 
 import {
@@ -172,7 +172,7 @@ export const Basic: Story = {
     },
   },
   render: (args) => {
-    const [files, setFiles] = React.useState<File[]>([])
+    const [files, setFiles] = useState<File[]>([])
 
     return (
       <FileUpload
@@ -235,7 +235,7 @@ export const SingleFile: Story = {
     },
   },
   render: (args) => {
-    const [files, setFiles] = React.useState<File[]>([])
+    const [files, setFiles] = useState<File[]>([])
 
     return (
       <FileUpload
@@ -300,7 +300,7 @@ export const AllFileTypes: Story = {
     },
   },
   render: (args) => {
-    const [files, setFiles] = React.useState<File[]>([])
+    const [files, setFiles] = useState<File[]>([])
 
     return (
       <FileUpload
@@ -361,7 +361,7 @@ export const Disabled: Story = {
     },
   },
   render: (args) => {
-    const [files, setFiles] = React.useState<File[]>([])
+    const [files, setFiles] = useState<File[]>([])
 
     return (
       <FileUpload

@@ -1,4 +1,4 @@
-import * as React from "react"
+import { type ComponentPropsWithoutRef, type RefObject } from "react"
 
 export type Direction = "ltr" | "rtl"
 
@@ -33,7 +33,7 @@ export interface FileUploadContextValue {
   labelId: string
   disabled: boolean
   dir: Direction
-  inputRef: React.RefObject<HTMLInputElement | null>
+  inputRef: RefObject<HTMLInputElement | null>
   urlCache: WeakMap<File, string>
 }
 
@@ -47,10 +47,7 @@ export interface FileUploadItemContextValue {
 }
 
 export interface FileUploadRootProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<"div">,
-    "defaultValue" | "onChange"
-  > {
+  extends Omit<ComponentPropsWithoutRef<"div">, "defaultValue" | "onChange"> {
   value?: File[]
   defaultValue?: File[]
   onChange?: (files: File[]) => void
@@ -97,36 +94,34 @@ export interface FileUploadRootPropsLegacy extends FileUploadRootProps {
 }
 
 export interface FileUploadDropzoneProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+  extends ComponentPropsWithoutRef<"div"> {
   asChild?: boolean
 }
 
 export interface FileUploadTriggerProps
-  extends React.ComponentPropsWithoutRef<"button"> {
+  extends ComponentPropsWithoutRef<"button"> {
   asChild?: boolean
 }
 
-export interface FileUploadListProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface FileUploadListProps extends ComponentPropsWithoutRef<"div"> {
   orientation?: "horizontal" | "vertical"
   asChild?: boolean
   forceMount?: boolean
 }
 
-export interface FileUploadItemProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface FileUploadItemProps extends ComponentPropsWithoutRef<"div"> {
   value: File
   asChild?: boolean
 }
 
 export interface FileUploadItemMetadataProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+  extends ComponentPropsWithoutRef<"div"> {
   asChild?: boolean
   size?: "default" | "sm"
 }
 
 export interface FileUploadItemProgressProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+  extends ComponentPropsWithoutRef<"div"> {
   variant?: "linear" | "circular" | "fill"
   size?: number
   asChild?: boolean
@@ -134,12 +129,12 @@ export interface FileUploadItemProgressProps
 }
 
 export interface FileUploadItemDeleteProps
-  extends React.ComponentPropsWithoutRef<"button"> {
+  extends ComponentPropsWithoutRef<"button"> {
   asChild?: boolean
 }
 
 export interface FileUploadClearProps
-  extends React.ComponentPropsWithoutRef<"button"> {
+  extends ComponentPropsWithoutRef<"button"> {
   forceMount?: boolean
   asChild?: boolean
 }

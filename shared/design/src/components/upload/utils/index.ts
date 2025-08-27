@@ -1,13 +1,13 @@
-import * as React from "react"
+import { type MutableRefObject, useRef } from "react"
 
 export function useLazyRef<T>(fn: () => T) {
-  const ref = React.useRef<T | null>(null)
+  const ref = useRef<T | null>(null)
 
   if (ref.current === null) {
     ref.current = fn()
   }
 
-  return ref as React.MutableRefObject<T>
+  return ref as MutableRefObject<T>
 }
 
 export function formatBytes(bytes: number) {

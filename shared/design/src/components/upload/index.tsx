@@ -1,4 +1,4 @@
-import * as React from "react"
+import { type ComponentPropsWithoutRef } from "react"
 
 import { cn } from "../../utils/cn"
 import {
@@ -17,7 +17,7 @@ function Dropzone({
   className,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof FileUploadDropzone>) {
+}: ComponentPropsWithoutRef<typeof FileUploadDropzone>) {
   return (
     <FileUploadDropzone
       className={cn(
@@ -35,7 +35,7 @@ function Trigger({
   className,
   children,
   ...props
-}: React.ComponentPropsWithoutRef<typeof FileUploadTrigger>) {
+}: ComponentPropsWithoutRef<typeof FileUploadTrigger>) {
   return (
     <FileUploadTrigger
       className={cn("flex items-center justify-center", className)}
