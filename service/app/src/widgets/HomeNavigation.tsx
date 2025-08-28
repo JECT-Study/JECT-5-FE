@@ -179,9 +179,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="md"
                 onClick={handleLoginClick}
                 disabled={authLoading}
-                aria-label={
-                  authLoading ? "로그인 처리 중" : "카카오 간편 로그인"
-                }
+                aria-label="카카오 간편 로그인 버튼"
                 aria-busy={authLoading}
               >
                 <Image

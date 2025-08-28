@@ -186,7 +186,7 @@ export default function GamesPage() {
             <button
               className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
               onClick={handleAvatarClick}
-              aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
+              aria-label="사용자 메뉴 버튼"
               aria-expanded={listButton}
               aria-haspopup="true"
               tabIndex={0}
