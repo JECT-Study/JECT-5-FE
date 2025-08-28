@@ -1,5 +1,6 @@
+import type { MouseEvent } from "react"
+
 import { Edit, MoreDot, Trash, Unshare, Upload } from "../../icons"
-import { stopAnd } from "../../utils/eventHandlers"
 import { SecondaryPlainIconButton } from "../button"
 import {
   DropdownMenuContent,
@@ -15,13 +16,20 @@ export type GameCardOptionsProps = {
   onDelete?: () => void
 }
 
-export function GameCardOptions({ shared, onEdit, onShare, onDelete }: GameCardOptionsProps) {
+export function GameCardOptions({
+  shared,
+  onEdit,
+  onShare,
+  onDelete,
+}: GameCardOptionsProps) {
   return (
     <DropdownMenuRoot>
       <DropdownMenuTrigger asChild>
         <SecondaryPlainIconButton
           aria-label="게임 옵션"
-          onClick={stopAnd()}
+          onClick={(e: MouseEvent<HTMLButtonElement>) => {
+            e.stopPropagation()
+          }}
           data-testid="game-options-button"
         >
           <MoreDot />
@@ -35,16 +43,20 @@ export function GameCardOptions({ shared, onEdit, onShare, onDelete }: GameCardO
       >
         <DropdownMenuItem
           type="icon"
-          onClick={stopAnd(onEdit)}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation()
+            onEdit?.()
+          }}
         >
           <Edit />
-          <span className="text-text-interactive-secondary">
-            게임 수정
-          </span>
+          <span className="text-text-interactive-secondary">게임 수정</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           type="icon"
-          onClick={stopAnd(onShare)}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation()
+            onShare?.()
+          }}
         >
           {shared ? <Unshare /> : <Upload />}
           <span className="text-text-interactive-secondary">
@@ -53,12 +65,13 @@ export function GameCardOptions({ shared, onEdit, onShare, onDelete }: GameCardO
         </DropdownMenuItem>
         <DropdownMenuItem
           type="icon"
-          onClick={stopAnd(onDelete)}
+          onClick={(e: MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation()
+            onDelete?.()
+          }}
         >
           <Trash />
-          <span className="text-text-interactive-secondary">
-            게임 삭제
-          </span>
+          <span className="text-text-interactive-secondary">게임 삭제</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenuRoot>
