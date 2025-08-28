@@ -196,6 +196,47 @@ async function main() {
     const testFileContent = fs.readFileSync(testFile, "utf8")
     combinedContent += testFileContent
 
+    // 테스트코드에서 import하는 파일에 대한 해시 계시나
+    // POM을 찾는 것이 목적 - 간단하게 처리
+    const importPattern =
+      /(?:import\s+(?:{[^}]*}|\*\s+as\s+\w+|\w+)\s+from\s+)?['"]([^'"]+)['"]/g
+    let match
+    while ((match = importPattern.exec(testFileContent)) !== null) {
+      const importPath = match[1] || match[2]
+
+      if (
+        importPath &&
+        (importPath.startsWith("./") || importPath.startsWith("../"))
+      ) {
+        try {
+          const testFileDir = path.dirname(testFile)
+          const globPattern = path.resolve(testFileDir, importPath)
+
+          const files: string[] = []
+
+          const extensions = [".ts", ".tsx", ".js", ".jsx"]
+
+          extensions.forEach((ext) => {
+            const file = fs.existsSync(globPattern + ext)
+            if (file) {
+              files.push(globPattern + ext)
+            }
+          })
+
+          if (files.length > 0) {
+            const actualPath = path.resolve(testFileDir, files[0])
+            const importContent = fs.readFileSync(actualPath, "utf8")
+            combinedContent += importContent
+          }
+        } catch (error) {
+          console.warn(
+            `Warning: Could not read import file ${importPath}:`,
+            error,
+          )
+        }
+      }
+    }
+
     //서버 해시계산
     const serverPagePath = path.join(buildDir, "server/app", route, "page.js")
     const serverPageContent = fs.readFileSync(serverPagePath, "utf8")
