@@ -59,7 +59,7 @@ export const Selected: Story = {
   ),
 }
 
-export const Error: Story = {
+export const ErrorState: Story = {
   args: {
     state: "error",
     children: "placeholder" as React.ReactNode,
