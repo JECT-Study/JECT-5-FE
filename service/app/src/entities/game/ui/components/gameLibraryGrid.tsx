@@ -1,7 +1,10 @@
 "use client"
 
 import { GameCard } from "@shared/design/src/components/gameCard"
+import { GameCardOptions } from "@shared/design/src/components/gameCard/gameCardOptions"
+import { MyGameCard } from "@shared/design/src/components/gameCard/myGameCard"
 import { GameCreate } from "@shared/design/src/components/gameCreate"
+import Image from "next/image"
 
 import type { GameListItem } from "@/entities/game/model"
 import { useIntersectionObserver } from "@/entities/game/model/useInfiniteGameList"
@@ -64,18 +67,76 @@ export const GameLibraryGrid = ({
                 onClick={() => onGameClick?.(game)}
                 className="cursor-pointer"
               >
-                <GameCard
-                type={isDashboard ? "myGame" : "libraryGame"}
-                title={game.gameTitle}
-                questionCount={game.questionCount}
-                imageUrl={game.gameThumbnailUrl || undefined}
-                shared={game.isShared}
-                onEdit={isDashboard ? () => onEditGame?.(game) : undefined}
-                onShare={isDashboard ? () => onShareGame?.(game) : undefined}
-                onDelete={
-                  isDashboard ? () => onDeleteGame?.(game) : undefined
-                }
-              />
+                {isDashboard ? (
+                  <MyGameCard>
+                    <GameCard.Image>
+                      {game.gameThumbnailUrl ? (
+                        <Image
+                          src={game.gameThumbnailUrl}
+                          alt={game.gameTitle}
+                          fill
+                          className="rounded-[10px] object-cover"
+                          sizes="178px"
+                          placeholder="blur"
+                          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
+                          <span className="text-[14px] font-medium text-gray-500">
+                            이미지 없음
+                          </span>
+                        </div>
+                      )}
+                      <GameCard.Badge className="left-[8px] top-[8px]">
+                        {game.questionCount}문제
+                      </GameCard.Badge>
+                      {game.isShared && (
+                        <GameCard.SharedBadge>공유</GameCard.SharedBadge>
+                      )}
+                    </GameCard.Image>
+                    <div className="flex h-[46px] w-[178px] items-center justify-between">
+                      <div
+                        className="line-clamp-2 h-[46px] w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
+                        data-testid="game-title"
+                      >
+                        {game.gameTitle}
+                      </div>
+                      <GameCardOptions
+                        shared={game.isShared}
+                        onEdit={() => onEditGame?.(game)}
+                        onShare={() => onShareGame?.(game)}
+                        onDelete={() => onDeleteGame?.(game)}
+                      />
+                    </div>
+                  </MyGameCard>
+                ) : (
+                  <GameCard>
+                    <GameCard.Image>
+                      {game.gameThumbnailUrl ? (
+                        <Image
+                          src={game.gameThumbnailUrl}
+                          alt={game.gameTitle}
+                          fill
+                          className="rounded-[10px] object-cover"
+                          sizes="178px"
+                          placeholder="blur"
+                          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
+                          <span className="text-[14px] font-medium text-gray-500">
+                            이미지 없음
+                          </span>
+                        </div>
+                      )}
+                      <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
+                      {game.isShared && (
+                        <GameCard.SharedBadge>공유</GameCard.SharedBadge>
+                      )}
+                    </GameCard.Image>
+                    <GameCard.Title>{game.gameTitle}</GameCard.Title>
+                  </GameCard>
+                )}
               </div>
             ))}
       </div>

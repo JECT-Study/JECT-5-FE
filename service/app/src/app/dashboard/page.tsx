@@ -15,10 +15,7 @@ import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
-import {
-  deleteGame,
-  getGameDetail,
-} from "@/entities/game/api"
+import { deleteGame, getGameDetail } from "@/entities/game/api"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
 import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
@@ -201,9 +198,9 @@ export default function DashboardPage() {
       {isAuthenticated ? (
         <div className="relative">
           <button
-            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
             onClick={handleAvatarClick}
-            aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
+            aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
             aria-expanded={listButton}
             aria-haspopup="true"
             tabIndex={0}
@@ -259,9 +256,7 @@ export default function DashboardPage() {
           {leftContent}
         </div>
 
-        <div className="flex w-[1080px] justify-center">
-          {centerContent}
-        </div>
+        <div className="flex w-[1080px] justify-center">{centerContent}</div>
 
         <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
           <div className="flex items-center justify-end gap-4 px-10">

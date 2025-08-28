@@ -1,8 +1,6 @@
 "use client"
 
-import {
-  SecondaryOutlineBoxButton,
-} from "@shared/design/src/components/button"
+import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Magnifier } from "@shared/design/src/icons"
@@ -22,7 +20,13 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const { user, isLoading: authLoading, isAuthenticated, login, logout } = useAuth()
+  const {
+    user,
+    isLoading: authLoading,
+    isAuthenticated,
+    login,
+    logout,
+  } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -38,10 +42,10 @@ export default function GamesPage() {
 
   const filteredGames = games.filter((game) => {
     if (!searchQuery.trim()) return true
-    
-    const query = searchQuery.toLowerCase().replace(/\s/g, '')
-    const title = game.gameTitle.toLowerCase().replace(/\s/g, '')
-    
+
+    const query = searchQuery.toLowerCase().replace(/\s/g, "")
+    const title = game.gameTitle.toLowerCase().replace(/\s/g, "")
+
     return title.includes(query)
   })
 
@@ -129,20 +133,20 @@ export default function GamesPage() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element
-      if (listButton && !target.closest('[data-user-menu]')) {
+      if (listButton && !target.closest("[data-user-menu]")) {
         setListButton(false)
       }
     }
 
     if (listButton) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside)
+      return () => document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [listButton])
 
   const leftContent = (
     <button
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none"
       onClick={handleLogoClick}
       aria-label="홈으로 이동"
       tabIndex={0}
@@ -180,9 +184,9 @@ export default function GamesPage() {
           </div>
           <div className="relative" data-user-menu>
             <button
-              className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-border-interactive-primary focus:ring-offset-2 focus:ring-offset-background-tertiary"
+              className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
               onClick={handleAvatarClick}
-              aria-label={`사용자 메뉴 ${listButton ? '닫기' : '열기'}`}
+              aria-label="사용자 메뉴 버튼"
               aria-expanded={listButton}
               aria-haspopup="true"
               tabIndex={0}
