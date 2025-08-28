@@ -7,7 +7,41 @@ const { spawn } = await import("child_process")
 const buildDir = path.join(import.meta.dirname, "../.next")
 const cacheFile = path.join(import.meta.dirname, "../test-cache-map.json")
 
-async function findRoutes(pattern: string = "**/*.spec.ts") {
+function calculateHash(content: string) {
+  return crypto.createHash("sha256").update(content).digest("hex")
+}
+
+// sourceMap에서 sourcesContent만 추출하는 함수
+function parseSourceMap(content: string) {
+  try {
+    // sourceMappingURL= 라인을 찾기
+    const sourceMapMatch = content.match(
+      /\/\/# sourceMappingURL=data:application\/json;charset=utf-8;base64,([^\s]+)/,
+    )
+    if (!sourceMapMatch || !sourceMapMatch[1]) {
+      return content
+    }
+
+    // base64 부분 추출 및 디코딩
+    const base64Data = sourceMapMatch[1]
+    const decodedData = Buffer.from(base64Data, "base64").toString("utf-8")
+    // JSON 파싱해서 sourcesContent만 추출
+    const sourceMap = JSON.parse(decodedData)
+
+    if (sourceMap.sourcesContent && Array.isArray(sourceMap.sourcesContent)) {
+      // sourcesContent 배열의 모든 내용을 합쳐서 반환
+      return sourceMap.sourcesContent.join("")
+    }
+    console.log("없음")
+    return content
+  } catch (error) {
+    console.error("Error parsing source map:", error)
+    return content
+  }
+}
+
+//e2e 테스트파일의 실제 테스트 라우트 찾기
+async function findTestRoutes(pattern: string = "**/*.spec.ts") {
   const testFiles = await glob(pattern)
 
   // 테스트 파일 경로를 실제 Next.js 라우트로 변환
@@ -66,7 +100,6 @@ async function runTests(testFiles: string[]) {
 
   try {
     return new Promise<void>((resolve, reject) => {
-      // 브래킷이 포함된 파일 경로를 따옴표로 감싸서 shell glob 해석 방지
       const escapedTestFiles = testFiles.map((file) => `"${file}"`)
 
       const testProcess = spawn(
@@ -127,7 +160,7 @@ const buildManifest = JSON.parse(fs.readFileSync(buildManifestPath, "utf8"))
 
 // 실행 및 캐시 기반 테스트 실행
 async function main() {
-  const { testFiles, routes } = await findRoutes()
+  const { testFiles, routes } = await findTestRoutes()
   const cache = loadCache()
   const newCache: Record<string, string> = {}
   const testsToRun: string[] = []
@@ -138,73 +171,74 @@ async function main() {
     const route = routes[i]
     const testFile = testFiles[i]
 
-    const matchingKey = Object.keys(routeManifest).filter(
+    //client 파일 해시 계산
+    const matchingKey = Object.keys(routeManifest).find(
       (key) => routeManifest[key] === route,
-    )[0]
-    const buildFiles = buildManifest["pages"][matchingKey]
+    )
+
+    const buildFiles = buildManifest["pages"][matchingKey!]
+
+    let combinedContent = "" //전체 파일들을 모아서 해시 계산
 
     if (buildFiles && Array.isArray(buildFiles)) {
-      // 빌드 파일들의 내용을 읽어서 해시 생성
-      let combinedContent = ""
-
       buildFiles.forEach((file) => {
         try {
           const filePath = path.join(buildDir, file)
           const content = fs.readFileSync(filePath, "utf8")
-          combinedContent += content
+
+          combinedContent += parseSourceMap(content)
         } catch (error) {
           console.warn(`Warning: Could not read file ${file}:`, error)
         }
       })
+    }
+    //테스트파일 해시 계산
+    const testFileContent = fs.readFileSync(testFile, "utf8")
+    combinedContent += testFileContent
 
-      const testFileContent = fs.readFileSync(testFile, "utf8")
-      combinedContent += testFileContent
+    //서버 해시계산
+    const serverPagePath = path.join(buildDir, "server/app", route, "page.js")
+    const serverPageContent = fs.readFileSync(serverPagePath, "utf8")
 
-      const currentHash = crypto
-        .createHash("sha256")
-        .update(combinedContent)
-        .digest("hex")
+    if (serverPageContent) {
+      combinedContent += parseSourceMap(serverPageContent)
+    }
 
-      const cachedHash = cache[testFile]
+    const nftPath = path.join(buildDir, "server/app", route, "page.js.nft.json")
 
-      if (cachedHash === currentHash) {
-        console.log(`✅ Cache HIT: ${testFile} (${route})`)
-      } else {
-        console.log(`❌ Cache MISS: ${testFile} (${route})`)
-        testsToRun.push(testFile)
-      }
+    const nftJson = JSON.parse(fs.readFileSync(nftPath, "utf8"))
 
-      // 새 캐시에 현재 해시 저장
-      newCache[testFile] = currentHash
-    } else {
-      console.log(`⚠️  No build files found for route: ${route}`)
+    if (nftJson) {
+      // NFT 파일의 상대 경로는 빌드된 JS 파일의 디렉토리를 기준으로 함
+      const jsFileDir = path.dirname(nftPath)
 
-      // 빌드 파일이 없어도 테스트 파일 해시는 계산
-      try {
-        const testFileContent = fs.readFileSync(testFile, "utf8")
-        const currentHash = crypto
-          .createHash("sha256")
-          .update(testFileContent)
-          .digest("hex")
-
-        const cachedHash = cache[testFile]
-
-        if (cachedHash === currentHash) {
-          console.log(`✅ Cache HIT: ${testFile} (${route}) - test file only`)
-        } else {
-          console.log(
-            `❌ Cache MISS: ${testFile} (${route}) - test file changed`,
-          )
-          testsToRun.push(testFile)
+      nftJson["files"].forEach((file: string) => {
+        if (
+          file.includes("package.json") ||
+          file.includes("webpack-runtime.js") ||
+          file.includes("page_client-reference-manifest.js")
+        ) {
+          return
         }
 
-        newCache[testFile] = currentHash
-      } catch (error) {
-        console.warn(`Warning: Could not read test file ${testFile}:`, error)
-        // 테스트 파일을 읽을 수 없으면 실행
-        testsToRun.push(testFile)
-      }
+        const filePath = path.resolve(jsFileDir, file)
+        const content = fs.readFileSync(filePath, "utf8")
+
+        combinedContent += parseSourceMap(content) || content
+      })
     }
+
+    const currentHash = calculateHash(combinedContent)
+
+    if (cache[testFile] === currentHash) {
+      console.log(`✅ Cache HIT: ${testFile} (${route})`)
+    } else {
+      console.log(`❌ Cache MISS: ${testFile} (${route})`)
+
+      testsToRun.push(testFile)
+    }
+
+    newCache[testFile] = currentHash
   }
 
   console.log(`\n📊 Summary:`)
