@@ -1,5 +1,6 @@
 "use client"
 
+import type { MouseEvent } from "react"
 import { createContext, useContext } from "react"
 
 import { Arrow, Trash } from "../../icons"
@@ -122,7 +123,10 @@ const QuestionDeleteButton = ({
   return (
     <div className={`absolute bottom-4 left-4 ${className}`}>
       <DestructiveSolidIconButton
-        onClick={onDelete}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation()
+          onDelete?.()
+        }}
         disabled={!canDelete}
         aria-label="질문 삭제"
         size="md"
@@ -150,7 +154,10 @@ const QuestionMoveButtons = ({
       className={`absolute right-4 top-5 flex flex-col items-center gap-5 ${className}`}
     >
       <SecondaryPlainIconButton
-        onClick={onMoveUp}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation()
+          onMoveUp?.()
+        }}
         size="md"
         aria-label="위로 이동"
       >
@@ -158,7 +165,10 @@ const QuestionMoveButtons = ({
       </SecondaryPlainIconButton>
 
       <SecondaryPlainIconButton
-        onClick={onMoveDown}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation()
+          onMoveDown?.()
+        }}
         size="md"
         aria-label="아래로 이동"
       >
