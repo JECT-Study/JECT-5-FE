@@ -100,7 +100,11 @@ async function runTests(testFiles: string[]) {
 
   try {
     return new Promise<void>((resolve, reject) => {
-      const escapedTestFiles = testFiles.map((file) => `"${file}"`)
+      const escapedTestFiles = testFiles.map((file) => {
+        // 대괄호만 escape 처리
+        const escaped = file.replace(/\[/g, "\\[").replace(/\]/g, "\\]")
+        return `"${escaped}"`
+      })
 
       const testProcess = spawn(
         "yarn",
