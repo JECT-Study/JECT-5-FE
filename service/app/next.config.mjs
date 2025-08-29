@@ -26,7 +26,7 @@ const nextConfig = {
 
     return {
       ...config,
-      devtool: process.env.NODE_ENV === "test" ? "inline-source-map" : false,
+      devtool: process.env.NEXT_PUBLIC_TEST ? "inline-source-map" : false,
     }
   },
   images: {
@@ -46,7 +46,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  productionBrowserSourceMaps: process.env.NODE_ENV !== "production",
+  productionBrowserSourceMaps: !!process.env.NEXT_PUBLIC_TEST,
 }
 
 export default nextConfig
