@@ -20,7 +20,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: "yarn dev",
+        command: process.env.CI ? "NEXT_PUBLIC_TEST=1 yarn start" : "yarn dev",
         url: "http://localhost:3000",
         reuseExistingServer: true,
       },

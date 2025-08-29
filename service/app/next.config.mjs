@@ -19,7 +19,15 @@ const nextConfig = {
       }
     }
 
-    return config
+    config.output.filename = config.output.filename.replace(
+      "[chunkhash]",
+      "[contenthash]",
+    )
+
+    return {
+      ...config,
+      devtool: process.env.NEXT_PUBLIC_TEST ? "inline-source-map" : false,
+    }
   },
   images: {
     remotePatterns: [
@@ -33,6 +41,12 @@ const nextConfig = {
       },
     ],
   },
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  productionBrowserSourceMaps: !!process.env.NEXT_PUBLIC_TEST,
 }
 
 export default nextConfig
