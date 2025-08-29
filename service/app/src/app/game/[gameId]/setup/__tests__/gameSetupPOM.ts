@@ -19,7 +19,7 @@ export class GameSetupPOM {
     this.startButton = page.getByRole("button", { name: "게임 시작" })
   }
 
-  async goto(gameId: string = "1") {
+  async goto(gameId: string = "2") {
     await this.page.goto(`game/${gameId}/setup`)
     await this.page.waitForLoadState("networkidle")
   }

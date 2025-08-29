@@ -13,10 +13,12 @@ interface GamePlayContentProps {
 
 export const GamePlayContent = ({ currentQuestion }: GamePlayContentProps) => {
   const [showAnswer, setShowAnswer] = useState(false)
-
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-center">
-      <h1 className="typography-heading-4xl-bold mb-[118px] max-w-[1080px] text-center text-text-primary">
+      <h1
+        className="typography-heading-4xl-bold mb-[118px] max-w-[1080px] text-center text-text-primary"
+        id="special"
+      >
         {currentQuestion.questionText}
       </h1>
 
@@ -39,6 +41,7 @@ export const GamePlayContent = ({ currentQuestion }: GamePlayContentProps) => {
         <SecondaryOutlineBoxButton
           size="lg"
           onClick={() => setShowAnswer(false)}
+          aria-label="wefwefwef"
         >
           {currentQuestion?.questionAnswer}
         </SecondaryOutlineBoxButton>
