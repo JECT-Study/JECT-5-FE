@@ -26,7 +26,7 @@ const nextConfig = {
 
     return {
       ...config,
-      devtool: isServer ? "inline-source-map" : false,
+      devtool: process.env.NODE_ENV === "test" ? "inline-source-map" : false,
     }
   },
   images: {
