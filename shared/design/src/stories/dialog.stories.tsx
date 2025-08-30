@@ -67,7 +67,8 @@ import {
  * ## 사용 설명
  * 1. `DialogClose`는 `asChild`와 함께 사용하기
  *    - DialogClose는 닫기 기능만 제공하고 스타일은 없으므로, asChild prop을 사용해 DialogButton 컴포넌트에 닫기 기능을 전달하면서, 깔끔한 html구조를 유지할 수 있습니다
- *    ```ts
+ *
+ *    ```tsx
  *    <DialogClose asChild>
  *      <DialogButton.Primary>확인</DialogButton.Primary>
  *    </DialogClose>
@@ -75,7 +76,8 @@ import {
  *
  * 2. `DialogButton`은 객체 패턴으로 사용하기
  *    - DialogButton은 footer의 버튼 overrides에 대응하기 위해 여러 버튼 스타일을 제공하는 객체형태로, dot notation으로 원하는 스타일을 선택해서 사용합니다.
- *    ```ts
+ *
+ *    ```tsx
  *    // PrimaryBoxButton 기반
  *    <DialogButton.Primary>확인</DialogButton.Primary>
  *
