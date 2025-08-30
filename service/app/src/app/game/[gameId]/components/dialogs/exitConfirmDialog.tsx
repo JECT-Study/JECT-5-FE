@@ -30,7 +30,7 @@ export function openExitConfirmDialog({
     <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent>
         <DialogHeader>{title}</DialogHeader>
-        <DialogFooter variant="title">
+        <DialogFooter>
           <DialogClose asChild>
             <DialogButton.Secondary
               onClick={() => {

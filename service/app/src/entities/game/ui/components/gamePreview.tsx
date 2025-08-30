@@ -1,10 +1,10 @@
 "use client"
 
+import { Dialog, DialogContent } from "@ject-5-fe/design/components/dialog"
 import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
 } from "@shared/design/src/components/button"
-import { Dialog, DialogContent } from "@shared/design/src/components/dialog"
 import { GameCard } from "@shared/design/src/components/gameCard"
 import { Cross, Play } from "@shared/design/src/icons"
 import Image from "next/image"
