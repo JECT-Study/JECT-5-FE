@@ -1512,7 +1512,6 @@ __metadata:
     eslint-plugin-storybook: "npm:^9.0.9"
     playwright: "npm:^1.53.1"
     postcss: "npm:^8.5.5"
-    postcss-import: "npm:^16.1.1"
     radix-ui: "npm:^1.4.2"
     react: "npm:^18"
     react-dom: "npm:^18"
