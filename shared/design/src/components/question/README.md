@@ -256,7 +256,7 @@ COMPONENT_SET "question"
 
 ```typescript
 // 현재 구현
-<Question state="default" title="첫 번째 질문">
+<Question state="default">
   <Question.Title>첫 번째 질문</Question.Title>
   <Question.Image>
     <img src="/image.jpg" alt="질문 이미지" />
@@ -306,14 +306,14 @@ COMPONENT_SET "question"
 ```typescript
 interface QuestionRootProps {
   state: "default" | "selected" | "error"
-  title?: string      // 접근성을 위한 제목
   onClick?: () => void // 인터랙션 지원
   // image (boolean) 속성 삭제
 }
 ```
 
 **이유:**
-- **동적 상태**: 런타임에 상태 변경 가능
+- **동적 상태**: 런타임에 상태 변경 가능, `state="error"`로 에러 처리 통합
+- **자동 접근성**: `Question.Title`에서 자동으로 접근성 라벨 생성
 - **인터랙션**: 클릭 등 사용자 상호작용 지원
 - 합성 컴포넌트 패턴으로 충분히 처리 가능한 불필요한 속성 (image) 삭제
 
@@ -322,7 +322,7 @@ interface QuestionRootProps {
 **변경 후 (현재):**
 ```typescript
 // shared/design 패키지에서는 일반 img 태그 사용 (Next.js 독립적)
-<Question state="default" title="질문 제목">
+<Question state="default">
   <Question.Image>
     <img 
       src="/question-images/sample.jpg"
@@ -345,7 +345,7 @@ interface QuestionRootProps {
 } />
 
 // service/app에서 Next.js Image 사용 시
-<Question state="default" title="질문 제목">
+<Question state="default">
   <Question.Image>
     <Image 
       src="/question-images/sample.jpg"
@@ -374,8 +374,8 @@ interface QuestionRootProps {
 
 **변경 후 (현재):**
 ```typescript
-<Question state="selected" title="질문 제목" onClick={handleClick}>
-  <Question.Title>사용자 정의 제목</Question.Title>
+<Question state="selected" onClick={handleClick}>
+  <Question.Title>사용자 정의 제목</Question.Title>  {/* 자동으로 접근성 라벨로 사용됨 */}
   <Question.Image fallback={<CustomFallback />} />
   <Question.DeleteButton canDelete={canDelete} onDelete={onDelete} />
 </Question>

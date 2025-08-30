@@ -1,7 +1,13 @@
 "use client"
 
-import type { MouseEvent } from "react"
-import { createContext, useContext } from "react"
+import { type MouseEvent } from "react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 
 import { Arrow, Trash } from "../../icons"
 import { DestructiveSolidIconButton, SecondaryPlainIconButton } from "../button"
@@ -11,7 +17,8 @@ type QuestionState = "default" | "selected" | "error"
 interface QuestionContextType {
   state: QuestionState
   onClick?: () => void
-  title?: string
+  accessibilityTitle?: string
+  setAccessibilityTitle: (title: string) => void
 }
 
 const QuestionContext = createContext<QuestionContextType | null>(null)
@@ -30,7 +37,6 @@ interface QuestionRootProps {
   onClick?: () => void
   children: React.ReactNode
   className?: string
-  title?: string
 }
 
 const QuestionRoot = ({
@@ -38,8 +44,12 @@ const QuestionRoot = ({
   onClick,
   children,
   className = "",
-  title,
 }: QuestionRootProps) => {
+  const [accessibilityTitle, setAccessibilityTitleState] = useState<string>("")
+
+  const setAccessibilityTitle = useCallback((title: string) => {
+    setAccessibilityTitleState(title)
+  }, [])
   const getStateClasses = () => {
     switch (state) {
       case "selected":
@@ -51,10 +61,14 @@ const QuestionRoot = ({
     }
   }
 
-  const accessibleName = title ? `질문: ${title}` : "질문 카드"
+  const accessibleName = accessibilityTitle
+    ? `질문: ${accessibilityTitle}`
+    : "질문 카드"
 
   return (
-    <QuestionContext.Provider value={{ state, onClick, title }}>
+    <QuestionContext.Provider
+      value={{ state, onClick, accessibilityTitle, setAccessibilityTitle }}
+    >
       <div
         role="group"
         aria-label={accessibleName}
@@ -74,7 +88,13 @@ interface QuestionTitleProps {
 }
 
 const QuestionTitle = ({ children, className = "" }: QuestionTitleProps) => {
-  const { state } = useQuestionContext()
+  const { state, setAccessibilityTitle } = useQuestionContext()
+
+  useEffect(() => {
+    if (typeof children === "string") {
+      setAccessibilityTitle(children)
+    }
+  }, [children, setAccessibilityTitle])
 
   return (
     <h3
@@ -125,9 +145,11 @@ const QuestionDeleteButton = ({
   canDelete = true,
   className = "",
 }: QuestionDeleteButtonProps) => {
-  const { title } = useQuestionContext()
+  const { accessibilityTitle } = useQuestionContext()
 
-  const deleteLabel = title ? `${title} 질문 삭제` : "질문 삭제"
+  const deleteLabel = accessibilityTitle
+    ? `${accessibilityTitle} 질문 삭제`
+    : "질문 삭제"
 
   return (
     <div className={`absolute bottom-4 left-4 ${className}`}>
@@ -158,10 +180,14 @@ const QuestionMoveButtons = ({
   onMoveDown,
   className = "",
 }: QuestionMoveButtonsProps) => {
-  const { title } = useQuestionContext()
+  const { accessibilityTitle } = useQuestionContext()
 
-  const upLabel = title ? `${title} 질문 위로 이동` : "질문 위로 이동"
-  const downLabel = title ? `${title} 질문 아래로 이동` : "질문 아래로 이동"
+  const upLabel = accessibilityTitle
+    ? `${accessibilityTitle} 질문 위로 이동`
+    : "질문 위로 이동"
+  const downLabel = accessibilityTitle
+    ? `${accessibilityTitle} 질문 아래로 이동`
+    : "질문 아래로 이동"
 
   return (
     <div
