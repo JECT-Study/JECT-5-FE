@@ -1,12 +1,40 @@
+"use client"
 import "./dialog.css"
 
 import { Dialog as DialogPrimitive } from "radix-ui"
-import { type ComponentProps, forwardRef } from "react"
+import {
+  type ComponentProps,
+  createContext,
+  forwardRef,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 
 import { cn } from "../../utils/cn"
 import { DestructiveSolidBoxButton } from "../button"
 import { PrimaryBoxButton } from "../button/primaryBoxButton"
 import { SecondaryPlainBoxButton } from "../button/secondaryPlainBoxButton"
+
+interface DialogA11yContextValue {
+  hasHeader: boolean
+  hasBody: boolean
+  setHasHeader: (hasHeader: boolean) => void
+  setHasBody: (hasBody: boolean) => void
+}
+
+//Header,Body 존재 여부를 추적하는 컨텍스트
+const DialogA11yContext = createContext<DialogA11yContextValue | null>(null)
+
+const useDialogA11y = () => {
+  const context = useContext(DialogA11yContext)
+  if (!context) {
+    throw new Error(
+      "useDialogA11y must be used within a DialogContent component",
+    )
+  }
+  return context
+}
 
 export const Dialog = DialogPrimitive.Root
 
@@ -33,31 +61,53 @@ export const DialogContent = forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     role?: "dialog" | "alertdialog"
   }
->(({ className, children, role = "dialog", ...props }, ref) => (
-  <DialogPrimitive.Portal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      role={role}
-      data-slot="dialog-content"
-      {...props}
-      className={cn(
-        "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto rounded-[10px] bg-background-interactive-primary-sub p-5",
-        className,
-      )}
-    >
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPrimitive.Portal>
-))
+>(({ className, children, role = "dialog", ...props }, ref) => {
+  const [hasHeader, setHasHeader] = useState(false)
+  const [hasBody, setHasBody] = useState(false)
+
+  return (
+    <DialogPrimitive.Portal>
+      <DialogOverlay />
+      <DialogA11yContext.Provider
+        value={{
+          hasHeader,
+          hasBody,
+          setHasHeader,
+          setHasBody,
+        }}
+      >
+        <DialogPrimitive.Content
+          ref={ref}
+          role={role}
+          data-slot="dialog-content"
+          {...(!hasBody && { "aria-describedby": undefined })}
+          {...props}
+          className={cn(
+            "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto rounded-[10px] bg-background-interactive-primary-sub p-5",
+            className,
+          )}
+        >
+          {children}
+        </DialogPrimitive.Content>
+      </DialogA11yContext.Provider>
+    </DialogPrimitive.Portal>
+  )
+})
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 export const DialogHeader = ({
   className,
   children,
   ...props
-}: DialogPrimitive.DialogTitleProps) => (
-  <>
+}: DialogPrimitive.DialogTitleProps) => {
+  const { setHasHeader } = useDialogA11y()
+
+  useEffect(() => {
+    setHasHeader(true)
+    return () => setHasHeader(false)
+  }, [setHasHeader])
+
+  return (
     <DialogPrimitive.Title
       data-slot="dialog-header"
       className={cn(
@@ -68,25 +118,42 @@ export const DialogHeader = ({
     >
       {children}
     </DialogPrimitive.Title>
-  </>
-)
+  )
+}
 DialogHeader.displayName = "DialogHeader"
 
 export const DialogBody = ({
   className,
+  srTitle,
   ...props
-}: DialogPrimitive.DialogDescriptionProps) => (
-  <>
-    <DialogPrimitive.Description
-      data-slot="dialog-body"
-      className={cn(
-        "typography-body-lg-medium flex w-full flex-col items-center justify-center p-2.5 text-center text-text-secondary",
-        className,
+}: DialogPrimitive.DialogDescriptionProps & {
+  srTitle?: string
+}) => {
+  const { hasHeader, setHasBody } = useDialogA11y()
+
+  useEffect(() => {
+    setHasBody(true)
+    return () => setHasBody(false)
+  }, [setHasBody])
+
+  return (
+    <>
+      {!hasHeader && (
+        <DialogPrimitive.Title className="sr-only">
+          {srTitle}
+        </DialogPrimitive.Title>
       )}
-      {...props}
-    />
-  </>
-)
+      <DialogPrimitive.Description
+        data-slot="dialog-body"
+        className={cn(
+          "typography-body-lg-medium flex w-full flex-col items-center justify-center p-2.5 text-center text-text-secondary",
+          className,
+        )}
+        {...props}
+      />
+    </>
+  )
+}
 DialogBody.displayName = "DialogBody"
 
 export const DialogFooter = ({
