@@ -16,12 +16,12 @@ export function QuestionList() {
       aria-label="게임 문제 목록"
     >
       <div className="flex w-[350px] flex-col items-start gap-6">
-        {state.questions.map((question, index) => {
+        {state.questions.map((question) => {
           const questionSelectors = getQuestionSelectors(question.id)
           const isSelected = questionSelectors.isSelected
 
           return (
-            <div key={question.id} data-testid={`question-item-${index}`}>
+            <div key={question.id}>
               <Question
                 state={
                   isSelected
