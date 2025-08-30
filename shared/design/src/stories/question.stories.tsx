@@ -14,9 +14,6 @@ const meta = {
       control: { type: "select" },
       options: ["default", "selected", "error"],
     },
-    hasError: {
-      control: { type: "boolean" },
-    },
     onClick: { action: "clicked" },
   },
 } satisfies Meta<typeof Question>
@@ -79,15 +76,10 @@ export const ErrorState: Story = {
 export const SelectedWithError: Story = {
   args: {
     state: "selected",
-    hasError: true,
     children: "placeholder" as React.ReactNode,
   },
   render: (args) => (
-    <Question
-      state={args.state}
-      hasError={args.hasError}
-      onClick={args.onClick}
-    >
+    <Question state={args.state} onClick={args.onClick}>
       <Question.Title>선택된 상태이지만 에러가 있는 질문입니다</Question.Title>
       <Question.Image />
       <Question.DeleteButton />

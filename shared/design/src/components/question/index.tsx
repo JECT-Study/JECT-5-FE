@@ -11,7 +11,7 @@ type QuestionState = "default" | "selected" | "error"
 interface QuestionContextType {
   state: QuestionState
   onClick?: () => void
-  hasError?: boolean
+  title?: string
 }
 
 const QuestionContext = createContext<QuestionContextType | null>(null)
@@ -30,7 +30,7 @@ interface QuestionRootProps {
   onClick?: () => void
   children: React.ReactNode
   className?: string
-  hasError?: boolean
+  title?: string
 }
 
 const QuestionRoot = ({
@@ -38,7 +38,7 @@ const QuestionRoot = ({
   onClick,
   children,
   className = "",
-  hasError = false,
+  title,
 }: QuestionRootProps) => {
   const getStateClasses = () => {
     switch (state) {
@@ -51,9 +51,14 @@ const QuestionRoot = ({
     }
   }
 
+  const accessibleName = title ? `질문: ${title}` : "질문 카드"
+
   return (
-    <QuestionContext.Provider value={{ state, onClick, hasError }}>
+    <QuestionContext.Provider value={{ state, onClick, title }}>
       <div
+        role="group"
+        aria-label={accessibleName}
+        data-state={state}
         className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-[10px] border-2 bg-background-primary p-5 ${getStateClasses()} ${className}`}
         onClick={onClick}
       >
@@ -69,13 +74,13 @@ interface QuestionTitleProps {
 }
 
 const QuestionTitle = ({ children, className = "" }: QuestionTitleProps) => {
-  const { state, hasError } = useQuestionContext()
+  const { state } = useQuestionContext()
 
   return (
     <h3
       className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-[157px] pt-1 text-text-primary ${className}`}
     >
-      {hasError || state === "error" ? <>❗ {children}</> : children}
+      {state === "error" ? <>❗ {children}</> : children}
     </h3>
   )
 }
@@ -120,6 +125,10 @@ const QuestionDeleteButton = ({
   canDelete = true,
   className = "",
 }: QuestionDeleteButtonProps) => {
+  const { title } = useQuestionContext()
+
+  const deleteLabel = title ? `${title} 질문 삭제` : "질문 삭제"
+
   return (
     <div className={`absolute bottom-4 left-4 ${className}`}>
       <DestructiveSolidIconButton
@@ -128,7 +137,7 @@ const QuestionDeleteButton = ({
           onDelete?.()
         }}
         disabled={!canDelete}
-        aria-label="질문 삭제"
+        aria-label={deleteLabel}
         size="md"
       >
         <Trash />
@@ -149,6 +158,11 @@ const QuestionMoveButtons = ({
   onMoveDown,
   className = "",
 }: QuestionMoveButtonsProps) => {
+  const { title } = useQuestionContext()
+
+  const upLabel = title ? `${title} 질문 위로 이동` : "질문 위로 이동"
+  const downLabel = title ? `${title} 질문 아래로 이동` : "질문 아래로 이동"
+
   return (
     <div
       className={`absolute right-4 top-5 flex flex-col items-center gap-5 ${className}`}
@@ -159,7 +173,7 @@ const QuestionMoveButtons = ({
           onMoveUp?.()
         }}
         size="md"
-        aria-label="위로 이동"
+        aria-label={upLabel}
       >
         <Arrow />
       </SecondaryPlainIconButton>
@@ -170,7 +184,7 @@ const QuestionMoveButtons = ({
           onMoveDown?.()
         }}
         size="md"
-        aria-label="아래로 이동"
+        aria-label={downLabel}
       >
         <Arrow className="rotate-180" />
       </SecondaryPlainIconButton>
