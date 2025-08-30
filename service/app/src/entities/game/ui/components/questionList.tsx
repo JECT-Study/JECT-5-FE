@@ -22,15 +22,15 @@ export function QuestionList() {
           const isSelected = questionSelectors.isSelected
 
           return (
-            <div
-              key={question.id}
-              role="listitem"
-              aria-label={`문제 ${index + 1}: ${question.text || "질문을 입력해주세요"}`}
-              data-testid={`question-item-${index}`}
-            >
+            <div key={question.id} data-testid={`question-item-${index}`}>
               <Question
-                state={isSelected ? "selected" : "default"}
-                hasError={!validateQuestion(question)}
+                state={
+                  isSelected
+                    ? "selected"
+                    : !validateQuestion(question)
+                      ? "error"
+                      : "default"
+                }
                 onClick={() => actions.selectQuestion(question.id)}
               >
                 <Question.Title>
