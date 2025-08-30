@@ -1,4 +1,5 @@
-import { cva } from "class-variance-authority"
+import "./dialog.css"
+
 import { Dialog as DialogPrimitive } from "radix-ui"
 import { type ComponentProps, forwardRef } from "react"
 
@@ -6,19 +7,6 @@ import { cn } from "../../utils/cn"
 import { DestructiveSolidBoxButton } from "../button"
 import { PrimaryBoxButton } from "../button/primaryBoxButton"
 import { SecondaryPlainBoxButton } from "../button/secondaryPlainBoxButton"
-
-const spacer = cva("", {
-  variants: {
-    style: {
-      title: "h-[27px]",
-      onlyTitle: "h-[27px]",
-      onlyBody: "h-[15px]",
-    },
-  },
-  defaultVariants: {
-    style: "title",
-  },
-})
 
 export const Dialog = DialogPrimitive.Root
 
@@ -51,9 +39,10 @@ export const DialogContent = forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       role={role}
+      data-slot="dialog-content"
       {...props}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto bg-background-interactive-primary-sub p-5",
+        "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto rounded-[10px] bg-background-interactive-primary-sub p-5",
         className,
       )}
     >
@@ -67,9 +56,10 @@ export const DialogHeader = ({
   className,
   children,
   ...props
-}: ComponentProps<"div">) => (
+}: DialogPrimitive.DialogTitleProps) => (
   <>
     <DialogPrimitive.Title
+      data-slot="dialog-header"
       className={cn(
         "typography-heading-md-semibold flex w-full flex-col items-center justify-center p-2.5 text-center text-text-primary",
         className,
@@ -82,9 +72,13 @@ export const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
-export const DialogBody = ({ className, ...props }: ComponentProps<"div">) => (
+export const DialogBody = ({
+  className,
+  ...props
+}: DialogPrimitive.DialogDescriptionProps) => (
   <>
     <DialogPrimitive.Description
+      data-slot="dialog-body"
       className={cn(
         "typography-body-lg-medium flex w-full flex-col items-center justify-center p-2.5 text-center text-text-secondary",
         className,
@@ -97,14 +91,12 @@ DialogBody.displayName = "DialogBody"
 
 export const DialogFooter = ({
   className,
-  variant = "title",
   ...props
-}: ComponentProps<"div"> & {
-  variant?: "title" | "onlyTitle" | "onlyBody"
-}) => (
+}: ComponentProps<"div">) => (
   <>
-    <div className={spacer({ style: variant })} />
+    <div data-slot="dialog-spacer" />
     <div
+      data-slot="dialog-footer"
       className={cn(
         "flex w-full items-center justify-center gap-2 *:flex-1",
         className,
@@ -139,5 +131,3 @@ export const DialogButton = {
     </DestructiveSolidBoxButton>
   ),
 }
-
-export { CustomDialog } from "./customDialog"
