@@ -158,11 +158,12 @@ Question
 
 #### `aria-label={accessibleName}`
 - **목적**: 각 질문 카드를 구체적으로 구분할 수 있는 접근 가능한 이름 제공
-- **값**: `title ? \`질문: ${title}\` : "질문 카드"`
+- **값**: `index ? \`${index}번째 문제\` : "질문 카드"`
 - **이유**: 
-  - 스크린 리더 사용자가 어떤 질문인지 즉시 파악 가능
-  - E2E 테스트에서 특정 질문을 정확히 선택 가능
-- **E2E 테스트**: `page.getByRole('group', { name: '질문: 첫 번째 문제입니다' })`로 특정 질문 선택
+  - **순서 기반 식별**: 질문 내용 대신 순서로 식별하여 더 안정적이고 간결함
+  - **동적 업데이트**: 질문 순서가 변경되면 자동으로 라벨도 업데이트됨
+  - **E2E 테스트 안정성**: 질문 내용이 바뀌어도 순서 기반으로 안정적인 선택 가능
+- **E2E 테스트**: `page.getByRole('group', { name: '1번째 문제' })`로 첫 번째 질문 선택
 
 #### `data-state={state}`
 - **목적**: 질문의 현재 상태를 명시적으로 표현
@@ -198,15 +199,16 @@ Question
 #### `aria-label` 속성 (모든 아이콘 버튼)
 - **목적**: 텍스트가 없는 아이콘 버튼에 명확한 기능 설명 제공
 - **값**: 
-  - 삭제 버튼: `"${title} 질문 삭제"` 또는 `"질문 삭제"`
-  - 위로 이동: `"${title} 질문 위로 이동"` 또는 `"질문 위로 이동"`
-  - 아래로 이동: `"${title} 질문 아래로 이동"` 또는 `"질문 아래로 이동"`
+  - 삭제 버튼: `"${index}번째 문제 삭제"` 또는 `"질문 삭제"`
+  - 위로 이동: `"${index}번째 문제 위로 이동"` 또는 `"질문 위로 이동"`
+  - 아래로 이동: `"${index}번째 문제 아래로 이동"` 또는 `"질문 아래로 이동"`
 - **이유**:
   - **아이콘만으로는 기능을 알 수 없음**: Trash, Arrow 아이콘만으로는 구체적인 동작을 파악하기 어려움
   - **스크린 리더 지원**: 시각적 정보에 의존할 수 없는 사용자를 위한 필수 정보
-  - **구체적인 컨텍스트 제공**: 어떤 질문에 대한 동작인지 명확히 표시
+  - **순서 기반 컨텍스트**: 질문 내용 대신 순서로 어떤 문제에 대한 동작인지 명확히 표시
+  - **동적 업데이트**: 질문 순서 변경 시 버튼 라벨도 자동으로 업데이트됨
   - **E2E 테스트 안정성**: 버튼의 시각적 위치나 아이콘 이미지가 변경되어도 기능 기반으로 선택 가능
-- **E2E 테스트**: `page.getByRole('button', { name: '첫 번째 문제 질문 삭제' })`
+- **E2E 테스트**: `page.getByRole('button', { name: '1번째 문제 삭제' })`
 
 ### 3. **Radix UI와의 호환성 고려사항**
 
@@ -225,6 +227,45 @@ Question
 **`aria-label` (버튼에서 유지)**
 - **이유**: Radix UI의 BaseButton이 표준 HTML `<button>` 요소를 사용하므로 안전
 - **근거**: HTML 표준에서 button 요소의 `aria-label`은 공식 지원 속성
+
+### 4. **순서 기반 접근성의 장점**
+
+#### **동적 업데이트 지원**
+```typescript
+// QuestionList에서 질문 순서 변경 시
+{state.questions.map((question, index) => (
+  <Question 
+    index={index + 1}  // 배열 순서에 따라 자동 업데이트
+    state={...}
+  >
+    <Question.Title>{question.text}</Question.Title>
+  </Question>
+))}
+```
+
+**Before (순서 변경 전):**
+- "1번째 문제" (첫 번째 질문)
+- "2번째 문제" (두 번째 질문)  
+- "3번째 문제" (세 번째 질문)
+
+**After (두 번째 질문을 첫 번째로 이동):**
+- "1번째 문제" (원래 두 번째였던 질문) ✅ 자동 업데이트
+- "2번째 문제" (원래 첫 번째였던 질문) ✅ 자동 업데이트
+- "3번째 문제" (세 번째 질문 그대로)
+
+#### **E2E 테스트에서의 활용**
+```typescript
+// 순서 기반으로 안정적인 테스트 작성
+test('질문 순서 변경', async ({ page }) => {
+  // 2번째 문제를 위로 이동
+  await page.getByRole('button', { name: '2번째 문제 위로 이동' }).click()
+  
+  // 순서가 바뀐 후 첫 번째 질문 확인 (자동으로 라벨 업데이트됨)
+  await expect(page.getByRole('group', { name: '1번째 문제' })).toBeVisible()
+})
+```
+
+이러한 순서 기반 접근성 설계를 통해 Question 컴포넌트는 스크린 리더 사용자와 E2E 테스트 모두에서 안정적이고 예측 가능한 동작을 보장합니다.
 
 
 ## 🔄 Figma 디자인 대비 리팩토링 변경사항
@@ -306,6 +347,7 @@ COMPONENT_SET "question"
 ```typescript
 interface QuestionRootProps {
   state: "default" | "selected" | "error"
+  index?: number      // 순서 기반 접근성 (1부터 시작)
   onClick?: () => void // 인터랙션 지원
   // image (boolean) 속성 삭제
 }
@@ -313,7 +355,8 @@ interface QuestionRootProps {
 
 **이유:**
 - **동적 상태**: 런타임에 상태 변경 가능, `state="error"`로 에러 처리 통합
-- **자동 접근성**: `Question.Title`에서 자동으로 접근성 라벨 생성
+- **순서 기반 접근성**: `index` prop으로 "n번째 문제" 라벨 자동 생성
+- **동적 업데이트**: 질문 순서 변경 시 접근성 라벨도 자동 업데이트
 - **인터랙션**: 클릭 등 사용자 상호작용 지원
 - 합성 컴포넌트 패턴으로 충분히 처리 가능한 불필요한 속성 (image) 삭제
 
@@ -374,11 +417,16 @@ interface QuestionRootProps {
 
 **변경 후 (현재):**
 ```typescript
-<Question state="selected" onClick={handleClick}>
-  <Question.Title>사용자 정의 제목</Question.Title>  {/* 자동으로 접근성 라벨로 사용됨 */}
+<Question index={1} state="selected" onClick={handleClick}>  {/* index로 순서 기반 접근성 */}
+  <Question.Title>사용자 정의 제목</Question.Title>
   <Question.Image fallback={<CustomFallback />} />
   <Question.DeleteButton canDelete={canDelete} onDelete={onDelete} />
 </Question>
 ```
+
+**접근성 라벨 결과:**
+- Question 카드: `aria-label="1번째 문제"`
+- 삭제 버튼: `aria-label="1번째 문제 삭제"`
+- 이동 버튼: `aria-label="1번째 문제 위로 이동"`
 
 
