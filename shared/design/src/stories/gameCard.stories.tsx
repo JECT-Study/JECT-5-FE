@@ -12,12 +12,75 @@ const meta = {
   component: GameCard,
   parameters: {
     layout: "centered",
-    tags: ["autodocs"],
-    argTypes: {
-      title: {
-        control: { type: "text" },
-        description: "게임 카드 제목",
+    docs: {
+      description: {
+        component: `
+## 🎮 GameCard 컴포넌트 - 게임 카드 표시
+
+게임 목록에서 사용되는 게임 카드 컴포넌트입니다. **Compound Component Pattern**을 사용하여 유연한 구성이 가능합니다.
+
+### 🏗️ 주요 특징
+
+- **Radix UI 기반**: DropdownMenu와 BaseButton(Slot)을 사용한 안정적인 접근성
+- **유연한 레이아웃**: Dashboard와 Library 두 가지 스타일 지원
+- **동적 배지**: 문제 수와 공유 상태에 따른 자동 배지 표시
+- **옵션 메뉴**: 편집/공유/삭제 기능이 포함된 별도 컴포넌트
+
+### 📱 언제 사용하나요?
+
+- **게임 라이브러리**: 전체 게임 목록 표시
+- **대시보드**: 내 게임 관리 (옵션 메뉴 포함)
+- **게임 탐색**: 다른 사용자의 공유 게임 브라우징
+
+### ⚠️ 주의사항
+
+- shared/design에서는 일반 img 태그 사용 (Next.js 독립적)
+- 이미지 크기는 178×178px 권장
+- Dashboard 스타일에서는 GameCardOptions 별도 배치 필요
+
+### 🔗 관련 컴포넌트
+
+- \`GameCardOptions\`: 옵션 드롭다운 메뉴
+- \`SecondaryPlainIconButton\`: 옵션 메뉴 트리거
+- \`DropdownMenu\`: Radix UI 기반 메뉴 시스템
+
+### 🔄 Figma 디자인 대비 주요 변경사항
+
+#### 1. **Compound Component Pattern 도입**
+**변경 전 (Figma)**: 5개 고정 배리언트 (\`type × optionView\` 조합)  
+**변경 후 (현재)**: 유연한 조합 가능한 합성 컴포넌트
+
+\`\`\`typescript
+// Figma: 고정된 배리언트
+<GameCardComponent variant="type=myGame,optionView=true" />
+
+// 현재: 자유로운 구성
+<GameCard title="게임 제목">
+  <GameCard.Image>
+    <img src="/image.jpg" alt="게임 이미지" />
+    <GameCard.Badge>10문제</GameCard.Badge>
+    {isShared && <GameCard.SharedBadge>공유</GameCard.SharedBadge>}
+  </GameCard.Image>
+  <GameCard.Title>게임 제목</GameCard.Title>
+</GameCard>
+\`\`\`
+
+#### 2. **옵션 메뉴 분리**
+**변경 전**: 컴포넌트에 내장된 드롭다운  
+**변경 후**: 별도 \`GameCardOptions\` 컴포넌트로 분리
+
+#### 3. **이미지 처리 방식 개선**
+**프레임워크 독립적**: Next.js Image와 일반 img 태그 모두 지원
+        `,
       },
+    },
+    tags: ["autodocs"],
+  },
+  argTypes: {
+    title: {
+      control: { type: "text" },
+      description:
+        "**게임 카드 접근성 라벨**\n- 선택적 prop으로 제공 시 `{title} 게임 카드`로 aria-label 생성\n- E2E 테스트에서 특정 게임 카드 식별에 활용",
     },
   },
 } satisfies Meta<typeof GameCard>
