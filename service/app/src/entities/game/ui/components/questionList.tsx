@@ -14,7 +14,6 @@ export function QuestionList() {
       className="flex w-[400px] flex-col items-center bg-background-tertiary p-[25px_25px_0_25px]"
       role="list"
       aria-label="게임 문제 목록"
-      data-testid="question-list"
     >
       <div className="flex w-[350px] flex-col items-start gap-6">
         {state.questions.map((question, index) => {
@@ -22,15 +21,16 @@ export function QuestionList() {
           const isSelected = questionSelectors.isSelected
 
           return (
-            <div
-              key={question.id}
-              role="listitem"
-              aria-label={`문제 ${index + 1}: ${question.text || "질문을 입력해주세요"}`}
-              data-testid={`question-item-${index}`}
-            >
+            <div key={question.id}>
               <Question
-                state={isSelected ? "selected" : "default"}
-                hasError={!validateQuestion(question)}
+                index={index + 1}
+                state={
+                  isSelected
+                    ? "selected"
+                    : !validateQuestion(question)
+                      ? "error"
+                      : "default"
+                }
                 onClick={() => actions.selectQuestion(question.id)}
               >
                 <Question.Title>
