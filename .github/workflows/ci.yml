@@ -75,6 +75,15 @@ jobs:
       - name: Run E2E test with cache
         run: yarn workspace @ject-5-fe/app run test:e2e-cached
 
+      - name: build vercel preview with custom action
+        uses: ./.github/actions/vercel-deploy
+        id: custom-vercel-deploy
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORGID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECTID }}
+
       - name: build vercel preview
         uses: amondnet/vercel-action@v20
         id: vercel-preview-deploy

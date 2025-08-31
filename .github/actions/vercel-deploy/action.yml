@@ -1,0 +1,31 @@
+name: "Custom Vercel Deploy"
+description: "커스텀 Vercel 배포 액션 inspired by amondnet/vercel-action@v20"
+author: "Custom Team"
+
+inputs:
+  vercel-token:
+    description: "Vercel 토큰"
+    required: true
+  github-token:
+    description: "GitHub 토큰"
+    required: false
+  vercel-org-id:
+    description: "Vercel org ID"
+    required: false
+  vercel-project-id:
+    description: "Vercel 프로젝트 ID"
+    required: false
+  vercel-args:
+    description: "추가로 전달할 Vercel CLI args (예: --prod)"
+    required: false
+    default: ""
+
+outputs:
+  preview-url:
+    description: "preview URL"
+  deployment-id:
+    description: "Vercel deployment ID"
+
+runs:
+  using: "node22"
+  main: "action.js"
