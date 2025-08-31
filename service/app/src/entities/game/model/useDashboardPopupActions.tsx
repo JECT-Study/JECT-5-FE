@@ -25,7 +25,7 @@ export function useDashboardPopupActions() {
               등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이
               불가능합니다.
             </DialogBody>
-            <DialogFooter variant="title">
+            <DialogFooter>
               <DialogButton.Secondary onClick={() => close()}>
                 아니요
               </DialogButton.Secondary>
@@ -53,7 +53,7 @@ export function useDashboardPopupActions() {
             <DialogBody>
               이 게임은 더 이상 다른 사용자에게 표시되지 않습니다.
             </DialogBody>
-            <DialogFooter variant="title">
+            <DialogFooter>
               <DialogButton.Secondary onClick={() => close()}>
                 아니요
               </DialogButton.Secondary>
@@ -79,7 +79,7 @@ export function useDashboardPopupActions() {
           <DialogContent role="alertdialog">
             <DialogHeader>게임을 삭제하시겠습니까?</DialogHeader>
             <DialogBody>삭제된 게임은 복구할 수 없습니다.</DialogBody>
-            <DialogFooter variant="title">
+            <DialogFooter>
               <DialogButton.Secondary onClick={() => close()}>
                 아니요
               </DialogButton.Secondary>

@@ -9542,7 +9542,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/47b6a1e96d9263894da150bbb2c98c123b1630a0a88eb55c2129938557c51e8e55edf1d43364f7721b472fb4977e9567541f9c504a69ccf8138d0128cb682561
+  checksum: 10c0/0ebd8fce04e396b9b40152754ccecb5b2b4f3f8774e6ca2b4175b3dcb86e09f11bc2d33d04dd282b0d770382d9669337a08ca1e6a620cd38471bed3caf781daa
   languageName: node
   linkType: hard
 

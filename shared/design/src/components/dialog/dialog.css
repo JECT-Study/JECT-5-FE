@@ -1,0 +1,11 @@
+[data-slot="dialog-content"]:has([data-slot="dialog-header"]):has([data-slot="dialog-body"]) [data-slot="dialog-spacer"] {
+  height: 28px; /* title variant */
+}
+
+[data-slot="dialog-content"]:has([data-slot="dialog-header"]):not(:has([data-slot="dialog-body"])) [data-slot="dialog-spacer"] {
+  height: 28px; /* onlyTitle variant */
+}
+
+[data-slot="dialog-content"]:not(:has([data-slot="dialog-header"])):has([data-slot="dialog-body"]) [data-slot="dialog-spacer"] {
+  height: 16px; /* onlyBody variant */
+}

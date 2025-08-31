@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { useState } from "react"
 
 import {
   Dialog,
@@ -11,12 +10,24 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "../components/dialog"
-import { CustomDialog } from "../components/dialog/customDialog"
 
 /**
  * # Dialog Component
  *
- * 다양한 스타일의 모달 대화상자를 제공하는 컴포넌트입니다.
+ * 다양한 스타일의 다이얼로그를 제공하는 컴포넌트입니다.
+ *
+ * ## 접근성 향상 기능
+ *
+ * **srTitle**: DialogHeader가 없는 경우 스크린 리더 전용 제목을 제공할 수 있습니다.
+ * - 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있어 접근성을 향상시킵니다
+ * - DialogHeader가 존재하면 자동으로 무시됩니다
+ * - WCAG 가이드라인에 따라 모든 다이얼로그는 적절한 제목을 가져야 합니다
+ *
+ * ```tsx
+ * <DialogBody srTitle="삭제 확인">
+ *   정말로 이 항목을 삭제하시겠습니까?
+ * </DialogBody>
+ * ```
  *
  * ## 사용법
  *
@@ -27,17 +38,26 @@ import { CustomDialog } from "../components/dialog/customDialog"
  *   DialogContent,
  *   DialogHeader,
  *   DialogBody,
- *   DialogClose
- * } from "../components/dialog"
+ *   DialogFooter,
+ *   DialogClose,
+ *   DialogButton
+ * } from "@ject-5-fe/design/components/dialog"
  *
  * function MyDialog() {
  *   return (
  *     <Dialog>
- *       <DialogTrigger>대화상자 열기</DialogTrigger>
+ *       <DialogTrigger>다이얼로그 열기</DialogTrigger>
  *       <DialogContent>
  *         <DialogHeader>제목</DialogHeader>
  *         <DialogBody>내용을 입력하세요</DialogBody>
- *         <DialogClose>닫기</DialogClose>
+ *         <DialogFooter>
+ *           <DialogClose asChild>
+ *             <DialogButton.Secondary>취소</DialogButton.Secondary>
+ *           </DialogClose>
+ *           <DialogClose asChild>
+ *             <DialogButton.Primary>확인</DialogButton.Primary>
+ *           </DialogClose>
+ *         </DialogFooter>
  *       </DialogContent>
  *     </Dialog>
  *   )
@@ -45,12 +65,61 @@ import { CustomDialog } from "../components/dialog/customDialog"
  * ```
  *
  * ## 구성 요소
- * - `Dialog`: 대화상자의 루트 컴포넌트
- * - `DialogTrigger`: 대화상자를 여는 트리거 버튼
- * - `DialogContent`: 대화상자의 메인 콘텐츠 영역
- * - `DialogHeader`: 대화상자의 제목 영역
- * - `DialogBody`: 대화상자의 본문 영역
- * - `DialogClose`: 대화상자를 닫는 버튼
+ * - `Dialog`: 다이얼로그의 루트 컴포넌트
+ *   - `DialogTrigger`: 다이얼로그를 여는 트리거 버튼
+ *   - `DialogContent`: 다이얼로그의 메인 콘텐츠 영역
+ *     - `DialogHeader`: 다이얼로그의 제목 영역 (선택적)
+ *     - `DialogBody`: 다이얼로그의 본문 영역 (선택적)
+ *     - `DialogFooter`: 다이얼로그의 하단 버튼 영역
+ *       - `DialogClose`: 다이얼로그를 닫는 버튼 로직 (스타일 없음)
+ *         - `DialogButton`: 다이얼로그용 버튼 컴포넌트들 (스타일 있음)
+ *           - `DialogButton.Primary`: PrimaryBoxButton 기반 (파란색)
+ *           - `DialogButton.Secondary`: SecondaryPlainBoxButton 기반 (회색)
+ *           - `DialogButton.Destructive`: DestructiveSolidBoxButton 기반 (빨간색)
+ *
+ * ## 사용 설명
+ * 1. `DialogClose`는 `asChild`와 함께 사용하기
+ *    - DialogClose는 닫기 기능만 제공하고 스타일은 없으므로, asChild prop을 사용해 DialogButton 컴포넌트에 닫기 기능을 전달하면서, 깔끔한 html구조를 유지할 수 있습니다
+ *
+ *    ```tsx
+ *    <DialogClose asChild>
+ *      <DialogButton.Primary>확인</DialogButton.Primary>
+ *    </DialogClose>
+ *    ```
+ *
+ * 2. `DialogButton`은 객체 패턴으로 사용하기
+ *    - DialogButton은 footer의 버튼 overrides에 대응하기 위해 여러 버튼 스타일을 제공하는 객체형태로, dot notation으로 원하는 스타일을 선택해서 사용합니다.
+ *
+ *    ```tsx
+ *    // PrimaryBoxButton 기반
+ *    <DialogButton.Primary>확인</DialogButton.Primary>
+ *
+ *    // SecondaryPlainBoxButton 기반
+ *    <DialogButton.Secondary>취소</DialogButton.Secondary>
+ *
+ *    // DestructiveSolidBoxButton 기반
+ *    <DialogButton.Destructive>삭제</DialogButton.Destructive>
+ *    ```
+ *
+ * 3. 접근성을 위한 `srTitle` 사용하기
+ *    - WCAG 접근성 원칙에 의하면, DialogHeader와 DialogBody를 모두 사용해야 하지만, UI 상 그렇지 않은 경우가 존재합니다
+ *    - DialogHeader를 사용하지 않는 다이얼로그에서는 DialogBody의 prop으로, 스크린 리더 사용자를 위한 srTitle을 추가할 수 있습니다
+ *    - srTitle은 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있는 제목을 제공합니다
+ *
+ *    ```tsx
+ *    <DialogBody srTitle="삭제 확인">
+ *      정말로 삭제하시겠습니까?
+ *    </DialogBody>
+ *    ```
+ *
+ * ## 피그마 구현과 다른점
+ * 피그마의 Dialog 컴포넌트에는 `style,type` variant가 있지만, 실제 구현에서는 사용하지 않습니다
+ *
+ * - **피그마**: Dialog variant로 style = `onlyTitle`, `onlyBody` 등을 선택
+ * - **실제 구현**: 필요한 컴포넌트만 조합해서 사용
+ *   - 제목만 필요한 경우: `DialogHeader`만 사용
+ *   - 본문만 필요한 경우: `DialogBody`만 사용
+ *   - 제목과 본문 모두 필요한 경우: `DialogHeader`와 `DialogBody` 모두 사용
  */
 
 const meta = {
@@ -63,7 +132,7 @@ const meta = {
   argTypes: {
     children: {
       control: false,
-      description: "대화상자 내부 콘텐츠",
+      description: "다이얼로그 내부 콘텐츠",
     },
   },
 } satisfies Meta<typeof DialogContent>
@@ -75,7 +144,7 @@ export const Basic: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-        기본 대화상자 열기
+        기본 다이얼로그 열기
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>이 게임을 라이브러리에 등록하시겠습니까?</DialogHeader>
@@ -99,7 +168,7 @@ export const WithTitleOnly: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
-        제목만 있는 대화상자
+        제목만 있는 다이얼로그
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>이 게임을 라이브러리에 등록하시겠습니까?</DialogHeader>
@@ -120,7 +189,7 @@ export const WithBodyOnly: Story = {
   render: () => (
     <Dialog>
       <DialogTrigger className="rounded bg-orange-500 px-4 py-2 text-white hover:bg-orange-600">
-        본문만 있는 대화상자
+        본문만 있는 다이얼로그
       </DialogTrigger>
       <DialogContent>
         <DialogBody>
@@ -139,23 +208,18 @@ export const WithBodyOnly: Story = {
   ),
 }
 
-export const ConfirmationDialog: Story = {
+export const SingleButton: Story = {
   render: () => (
     <Dialog>
-      <DialogTrigger className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">
-        확인 대화상자
+      <DialogTrigger className="rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600">
+        버튼 하나만 있는 다이얼로그
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>이 게임을 라이브러리에 등록하시겠습니까?</DialogHeader>
-        <DialogBody>
-          등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이 불가능합니다.
-        </DialogBody>
+        <DialogHeader>알림</DialogHeader>
+        <DialogBody>작업이 성공적으로 완료되었습니다.</DialogBody>
         <DialogFooter>
           <DialogClose asChild>
-            <DialogButton.Secondary>취소</DialogButton.Secondary>
-          </DialogClose>
-          <DialogClose asChild>
-            <DialogButton.Primary>삭제</DialogButton.Primary>
+            <DialogButton.Secondary>확인</DialogButton.Secondary>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
@@ -163,86 +227,47 @@ export const ConfirmationDialog: Story = {
   ),
 }
 
-export const Controlled: Story = {
-  render: () => {
-    const [open, setOpen] = useState(false)
+export const WithSrOnlyTitle: Story = {
+  render: () => (
+    <Dialog>
+      <DialogTrigger className="rounded bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-700">
+        srTitle을 활용한 다이얼로그
+      </DialogTrigger>
+      <DialogContent>
+        <DialogBody srTitle="게임 삭제 확인">
+          정말로 이 게임을 삭제하시겠습니까? 삭제된 게임은 복구할 수 없습니다.
+        </DialogBody>
+        <DialogFooter>
+          <DialogClose asChild>
+            <DialogButton.Secondary>취소</DialogButton.Secondary>
+          </DialogClose>
+          <DialogClose asChild>
+            <DialogButton.Destructive>삭제</DialogButton.Destructive>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**접근성 향상을 위한 srTitle 사용 예시**
 
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className="rounded bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-600">
-          제어되는 대화상자
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>이 게임을 라이브러리에 등록하시겠습니까?</DialogHeader>
-          <DialogBody>
-            등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이
-            불가능합니다.
-          </DialogBody>
-          <DialogFooter>
-            <DialogClose asChild>
-              <DialogButton.Secondary>아니요</DialogButton.Secondary>
-            </DialogClose>
-            <DialogClose asChild>
-              <DialogButton.Primary>네</DialogButton.Primary>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    )
+DialogHeader가 없는 경우, 스크린 리더 사용자를 위해 \`srTitle\` prop을 사용할 수 있습니다.
+
+- \`srTitle\`은 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있는 제목을 제공합니다
+- DialogHeader가 존재하면 srTitle은 무시됩니다
+
+\`\`\`tsx
+<DialogBody srTitle="게임 삭제 확인">
+  정말로 이 게임을 삭제하시겠습니까?
+</DialogBody>
+\`\`\`
+
+개발자 도구에서 Elements 탭을 확인하면 \`sr-only\` 클래스가 적용된 숨겨진 제목 요소를 볼 수 있습니다.
+        `,
+      },
+    },
   },
-}
-
-export const VariantTitle: Story = {
-  render: () => (
-    <CustomDialog
-      variant="title"
-      trigger={
-        <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-          타이틀+본문 다이얼로그 열기
-        </button>
-      }
-      title="이 게임을 라이브러리에 등록하시겠습니까?"
-      description="등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이 불가능합니다."
-      onConfirm={() => alert("확인")}
-      onCancel={() => alert("취소")}
-      confirmText="네"
-      cancelText="아니요"
-    />
-  ),
-}
-
-export const VariantOnlyTitle: Story = {
-  render: () => (
-    <CustomDialog
-      variant="onlyTitle"
-      trigger={
-        <button className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600">
-          타이틀만 다이얼로그 열기
-        </button>
-      }
-      title="이 게임을 라이브러리에 등록하시겠습니까?"
-      onConfirm={() => alert("확인")}
-      onCancel={() => alert("취소")}
-      confirmText="네"
-      cancelText="아니요"
-    />
-  ),
-}
-
-export const VariantOnlyBody: Story = {
-  render: () => (
-    <CustomDialog
-      variant="onlyBody"
-      trigger={
-        <button className="rounded bg-orange-500 px-4 py-2 text-white hover:bg-orange-600">
-          본문만 다이얼로그 열기
-        </button>
-      }
-      description="등록된 게임은 모든 사용자와 공유되며, 등록 후에는 수정이 불가능합니다."
-      onConfirm={() => alert("확인")}
-      onCancel={() => alert("취소")}
-      confirmText="네"
-      cancelText="아니요"
-    />
-  ),
 }
