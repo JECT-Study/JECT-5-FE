@@ -71,8 +71,7 @@ interface GameCardBadgeProps {
 const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
   return (
     <div
-      role="status"
-      aria-label={`문제 수: ${children}`}
+      aria-label="문제 수 배지"
       className={cn(
         "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
         className,
