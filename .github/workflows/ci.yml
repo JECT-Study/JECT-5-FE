@@ -32,7 +32,7 @@ jobs:
             .yarn/install-state.gz
           key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            yarn-${{ runner.os }}-
+            yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn install --immutable
