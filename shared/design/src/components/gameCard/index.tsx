@@ -74,7 +74,7 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
       role="status"
       aria-label={`문제 수: ${children}`}
       className={cn(
-        "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-primary px-[5px] py-[2px]",
+        "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
         className,
       )}
     >
