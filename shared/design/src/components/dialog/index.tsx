@@ -122,11 +122,19 @@ export const DialogHeader = ({
 }
 DialogHeader.displayName = "DialogHeader"
 
+/**
+ * DialogBody 컴포넌트
+ *
+ * @param srTitle - DialogHeader를 사용하지 않을 경우 스크린 리더 전용으로 제공할 제목.
+ *                  시각적으로는 숨겨지지만 스크린 리더가 읽을 수 있습니다.
+ *
+ */
 export const DialogBody = ({
   className,
   srTitle,
   ...props
 }: DialogPrimitive.DialogDescriptionProps & {
+  /** DialogHeader가 없을 때 스크린 리더 전용으로 제공할 제목 */
   srTitle?: string
 }) => {
   const { hasHeader, setHasBody } = useDialogA11y()

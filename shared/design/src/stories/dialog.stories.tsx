@@ -16,6 +16,19 @@ import {
  *
  * 다양한 스타일의 다이얼로그를 제공하는 컴포넌트입니다.
  *
+ * ## 접근성 향상 기능
+ *
+ * **srTitle**: DialogHeader가 없는 경우 스크린 리더 전용 제목을 제공할 수 있습니다.
+ * - 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있어 접근성을 향상시킵니다
+ * - DialogHeader가 존재하면 자동으로 무시됩니다
+ * - WCAG 가이드라인에 따라 모든 다이얼로그는 적절한 제목을 가져야 합니다
+ *
+ * ```tsx
+ * <DialogBody srTitle="삭제 확인">
+ *   정말로 이 항목을 삭제하시겠습니까?
+ * </DialogBody>
+ * ```
+ *
  * ## 사용법
  *
  * ```tsx
@@ -86,6 +99,17 @@ import {
  *
  *    // DestructiveSolidBoxButton 기반
  *    <DialogButton.Destructive>삭제</DialogButton.Destructive>
+ *    ```
+ *
+ * 3. 접근성을 위한 `srTitle` 사용하기
+ *    - WCAG 접근성 원칙에 의하면, DialogHeader와 DialogBody를 모두 사용해야 하지만, UI 상 그렇지 않은 경우가 존재합니다
+ *    - DialogHeader를 사용하지 않는 다이얼로그에서는 DialogBody의 prop으로, 스크린 리더 사용자를 위한 srTitle을 추가할 수 있습니다
+ *    - srTitle은 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있는 제목을 제공합니다
+ *
+ *    ```tsx
+ *    <DialogBody srTitle="삭제 확인">
+ *      정말로 삭제하시겠습니까?
+ *    </DialogBody>
  *    ```
  *
  * ## 피그마 구현과 다른점
@@ -201,4 +225,49 @@ export const SingleButton: Story = {
       </DialogContent>
     </Dialog>
   ),
+}
+
+export const WithSrOnlyTitle: Story = {
+  render: () => (
+    <Dialog>
+      <DialogTrigger className="rounded bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-700">
+        srTitle을 활용한 다이얼로그
+      </DialogTrigger>
+      <DialogContent>
+        <DialogBody srTitle="게임 삭제 확인">
+          정말로 이 게임을 삭제하시겠습니까? 삭제된 게임은 복구할 수 없습니다.
+        </DialogBody>
+        <DialogFooter>
+          <DialogClose asChild>
+            <DialogButton.Secondary>취소</DialogButton.Secondary>
+          </DialogClose>
+          <DialogClose asChild>
+            <DialogButton.Destructive>삭제</DialogButton.Destructive>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: `
+**접근성 향상을 위한 srTitle 사용 예시**
+
+DialogHeader가 없는 경우, 스크린 리더 사용자를 위해 \`srTitle\` prop을 사용할 수 있습니다.
+
+- \`srTitle\`은 시각적으로는 보이지 않지만 스크린 리더가 읽을 수 있는 제목을 제공합니다
+- DialogHeader가 존재하면 srTitle은 무시됩니다
+
+\`\`\`tsx
+<DialogBody srTitle="게임 삭제 확인">
+  정말로 이 게임을 삭제하시겠습니까?
+</DialogBody>
+\`\`\`
+
+개발자 도구에서 Elements 탭을 확인하면 \`sr-only\` 클래스가 적용된 숨겨진 제목 요소를 볼 수 있습니다.
+        `,
+      },
+    },
+  },
 }
