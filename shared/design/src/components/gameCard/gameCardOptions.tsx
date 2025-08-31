@@ -30,7 +30,6 @@ export function GameCardOptions({
           onClick={(e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation()
           }}
-          data-testid="game-options-button"
         >
           <MoreDot />
         </SecondaryPlainIconButton>
