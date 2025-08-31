@@ -66,7 +66,7 @@ export const GameLibraryGrid = ({
                 onClick={() => onGameClick?.(game)}
                 className="cursor-pointer"
               >
-                <GameCard>
+                <GameCard title={game.gameTitle}>
                   <GameCard.Image>
                     {game.gameThumbnailUrl ? (
                       <Image
