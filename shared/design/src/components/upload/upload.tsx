@@ -3,16 +3,37 @@
 import { Slot } from "radix-ui"
 import * as React from "react"
 
-const ROOT_NAME = "FileUpload"
-const DROPZONE_NAME = "FileUploadDropzone"
-const TRIGGER_NAME = "FileUploadTrigger"
-const LIST_NAME = "FileUploadList"
-const ITEM_NAME = "FileUploadItem"
-// const ITEM_PREVIEW_NAME = "FileUploadItemPreview"
-const ITEM_METADATA_NAME = "FileUploadItemMetadata"
-const ITEM_PROGRESS_NAME = "FileUploadItemProgress"
-const ITEM_DELETE_NAME = "FileUploadItemDelete"
-const CLEAR_NAME = "FileUploadClear"
+import {
+  COMPONENT_NAMES,
+  type Direction,
+  type FileState,
+  type FileUploadClearProps,
+  type FileUploadContextValue,
+  type FileUploadDropzoneProps,
+  type FileUploadItemContextValue,
+  type FileUploadItemDeleteProps,
+  type FileUploadItemMetadataProps,
+  type FileUploadItemProgressProps,
+  type FileUploadItemProps,
+  type FileUploadListProps,
+  type FileUploadRootProps,
+  type FileUploadStore,
+  type FileUploadTriggerProps,
+  type StoreAction,
+  type StoreState,
+} from "./types"
+
+const {
+  ROOT: ROOT_NAME,
+  DROPZONE: DROPZONE_NAME,
+  TRIGGER: TRIGGER_NAME,
+  LIST: LIST_NAME,
+  ITEM: ITEM_NAME,
+  ITEM_METADATA: ITEM_METADATA_NAME,
+  ITEM_PROGRESS: ITEM_PROGRESS_NAME,
+  ITEM_DELETE: ITEM_DELETE_NAME,
+  CLEAR: CLEAR_NAME,
+} = COMPONENT_NAMES
 
 function useLazyRef<T>(fn: () => T) {
   const ref = React.useRef<T | null>(null)
@@ -24,38 +45,12 @@ function useLazyRef<T>(fn: () => T) {
   return ref as React.MutableRefObject<T>
 }
 
-type Direction = "ltr" | "rtl"
-
 const DirectionContext = React.createContext<Direction | undefined>(undefined)
 
 function useDirection(dirProp?: Direction): Direction {
   const contextDir = React.useContext(DirectionContext)
   return dirProp ?? contextDir ?? "ltr"
 }
-
-interface FileState {
-  file: File
-  progress: number
-  error?: string
-  status: "idle" | "uploading" | "error" | "success"
-}
-
-interface StoreState {
-  files: Map<File, FileState>
-  dragOver: boolean
-  invalid: boolean
-}
-
-type StoreAction =
-  | { type: "ADD_FILES"; files: File[] }
-  | { type: "SET_FILES"; files: File[] }
-  | { type: "SET_PROGRESS"; file: File; progress: number }
-  | { type: "SET_SUCCESS"; file: File }
-  | { type: "SET_ERROR"; file: File; error: string }
-  | { type: "REMOVE_FILE"; file: File }
-  | { type: "SET_DRAG_OVER"; dragOver: boolean }
-  | { type: "SET_INVALID"; invalid: boolean }
-  | { type: "CLEAR" }
 
 function createStore(
   listeners: Set<() => void>,
@@ -217,9 +212,7 @@ function createStore(
   return { getState, dispatch, subscribe }
 }
 
-const StoreContext = React.createContext<ReturnType<typeof createStore> | null>(
-  null,
-)
+const StoreContext = React.createContext<FileUploadStore | null>(null)
 
 function useStoreContext(consumerName: string) {
   const context = React.useContext(StoreContext)
@@ -252,17 +245,6 @@ function useStore<T>(selector: (state: StoreState) => T): T {
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot)
 }
 
-interface FileUploadContextValue {
-  inputId: string
-  dropzoneId: string
-  listId: string
-  labelId: string
-  disabled: boolean
-  dir: Direction
-  inputRef: React.RefObject<HTMLInputElement | null>
-  urlCache: WeakMap<File, string>
-}
-
 const FileUploadContext = React.createContext<FileUploadContextValue | null>(
   null,
 )
@@ -273,39 +255,6 @@ function useFileUploadContext(consumerName: string) {
     throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``)
   }
   return context
-}
-
-interface FileUploadRootProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<"div">,
-    "defaultValue" | "onChange"
-  > {
-  value?: File[]
-  defaultValue?: File[]
-  onValueChange?: (files: File[]) => void
-  onAccept?: (files: File[]) => void
-  onFileAccept?: (file: File) => void
-  onFileReject?: (file: File, message: string) => void
-  onFileValidate?: (file: File) => string | null | undefined
-  onUpload?: (
-    files: File[],
-    options: {
-      onProgress: (file: File, progress: number) => void
-      onSuccess: (file: File) => void
-      onError: (file: File, error: Error) => void
-    },
-  ) => Promise<void> | void
-  accept?: string
-  maxFiles?: number
-  maxSize?: number
-  dir?: Direction
-  label?: string
-  name?: string
-  asChild?: boolean
-  disabled?: boolean
-  invalid?: boolean
-  multiple?: boolean
-  required?: boolean
 }
 
 function FileUploadRoot(props: FileUploadRootProps) {
@@ -629,11 +578,6 @@ function FileUploadRoot(props: FileUploadRootProps) {
   )
 }
 
-interface FileUploadDropzoneProps
-  extends React.ComponentPropsWithoutRef<"div"> {
-  asChild?: boolean
-}
-
 function FileUploadDropzone(props: FileUploadDropzoneProps) {
   const {
     asChild,
@@ -823,11 +767,6 @@ function FileUploadDropzone(props: FileUploadDropzoneProps) {
   )
 }
 
-interface FileUploadTriggerProps
-  extends React.ComponentPropsWithoutRef<"button"> {
-  asChild?: boolean
-}
-
 function FileUploadTrigger(props: FileUploadTriggerProps) {
   const { asChild, onClick: onClickProp, ...triggerProps } = props
   const context = useFileUploadContext(TRIGGER_NAME)
@@ -856,12 +795,6 @@ function FileUploadTrigger(props: FileUploadTriggerProps) {
       onClick={onClick}
     />
   )
-}
-
-interface FileUploadListProps extends React.ComponentPropsWithoutRef<"div"> {
-  orientation?: "horizontal" | "vertical"
-  asChild?: boolean
-  forceMount?: boolean
 }
 
 function FileUploadList(props: FileUploadListProps) {
@@ -896,15 +829,6 @@ function FileUploadList(props: FileUploadListProps) {
   )
 }
 
-interface FileUploadItemContextValue {
-  id: string
-  fileState: FileState | undefined
-  nameId: string
-  sizeId: string
-  statusId: string
-  messageId: string
-}
-
 const FileUploadItemContext =
   React.createContext<FileUploadItemContextValue | null>(null)
 
@@ -914,11 +838,6 @@ function useFileUploadItemContext(consumerName: string) {
     throw new Error(`\`${consumerName}\` must be used within \`${ITEM_NAME}\``)
   }
   return context
-}
-
-interface FileUploadItemProps extends React.ComponentPropsWithoutRef<"div"> {
-  value: File
-  asChild?: boolean
 }
 
 function FileUploadItem(props: FileUploadItemProps) {
@@ -941,7 +860,7 @@ function FileUploadItem(props: FileUploadItemProps) {
   const itemContext = React.useMemo(
     () => ({
       id,
-      fileState,
+      fileState: fileState ?? null,
       nameId,
       sizeId,
       statusId,
@@ -1042,12 +961,6 @@ function formatBytes(bytes: number) {
 //   )
 // }
 
-interface FileUploadItemMetadataProps
-  extends React.ComponentPropsWithoutRef<"div"> {
-  asChild?: boolean
-  size?: "default" | "sm"
-}
-
 function FileUploadItemMetadata(props: FileUploadItemMetadataProps) {
   const {
     asChild,
@@ -1096,13 +1009,6 @@ function FileUploadItemMetadata(props: FileUploadItemMetadataProps) {
       )}
     </ItemMetadataPrimitive>
   )
-}
-interface FileUploadItemProgressProps
-  extends React.ComponentPropsWithoutRef<"div"> {
-  variant?: "linear" | "circular" | "fill"
-  size?: number
-  asChild?: boolean
-  forceMount?: boolean
 }
 
 function FileUploadItemProgress(props: FileUploadItemProgressProps) {
@@ -1216,11 +1122,6 @@ function FileUploadItemProgress(props: FileUploadItemProgressProps) {
   }
 }
 
-interface FileUploadItemDeleteProps
-  extends React.ComponentPropsWithoutRef<"button"> {
-  asChild?: boolean
-}
-
 function FileUploadItemDelete(props: FileUploadItemDeleteProps) {
   const { asChild, onClick: onClickProp, className, ...deleteProps } = props
 
@@ -1256,12 +1157,6 @@ function FileUploadItemDelete(props: FileUploadItemDeleteProps) {
       onClick={onClick}
     />
   )
-}
-
-interface FileUploadClearProps
-  extends React.ComponentPropsWithoutRef<"button"> {
-  forceMount?: boolean
-  asChild?: boolean
 }
 
 function FileUploadClear(props: FileUploadClearProps) {
