@@ -1,10 +1,10 @@
 import * as React from "react"
 
 import { cn } from "../../utils/cn"
+import { FileUploadDropzone } from "./components/dropzone"
 import {
   FileUpload,
   FileUploadClear,
-  FileUploadDropzone,
   FileUploadItem,
   FileUploadItemDelete,
   FileUploadItemMetadata,
