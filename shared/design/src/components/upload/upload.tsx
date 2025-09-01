@@ -4,6 +4,11 @@ import { Slot } from "radix-ui"
 import * as React from "react"
 
 import {
+  createClickHandler,
+  createDragHandlers,
+  createKeyboardHandler,
+} from "./core/dragAndDrop"
+import {
   createStore,
   StoreContext,
   useLazyRef,
@@ -339,144 +344,45 @@ function FileUploadDropzone(props: FileUploadDropzoneProps) {
   const dragOver = useStore((state) => state.dragOver)
   const invalid = useStore((state) => state.invalid)
 
+  // 드래그 앤 드롭 핸들러들 생성
+  const dragHandlers = React.useMemo(
+    () =>
+      createDragHandlers({
+        store,
+        inputRef: context.inputRef,
+        existingHandlers: {
+          onDragOver: onDragOverProp,
+          onDragEnter: onDragEnterProp,
+          onDragLeave: onDragLeaveProp,
+          onDrop: onDropProp,
+          onPaste: onPasteProp,
+        },
+      }),
+    [
+      store,
+      context.inputRef,
+      onDragOverProp,
+      onDragEnterProp,
+      onDragLeaveProp,
+      onDropProp,
+      onPasteProp,
+    ],
+  )
+
+  // 클릭 핸들러 생성
   const onClick = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      onClickProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      const target = event.target
-
-      const isFromTrigger =
-        target instanceof HTMLElement &&
-        target.closest('[data-slot="file-upload-trigger"]')
-
-      if (!isFromTrigger) {
-        context.inputRef.current?.click()
-      }
+      const handler = createClickHandler(context.inputRef, onClickProp)
+      handler(event)
     },
     [context.inputRef, onClickProp],
   )
 
-  const onDragOver = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      onDragOverProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: true })
-    },
-    [store, onDragOverProp],
-  )
-
-  const onDragEnter = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      onDragEnterProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: true })
-    },
-    [store, onDragEnterProp],
-  )
-
-  const onDragLeave = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      onDragLeaveProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      const relatedTarget = event.relatedTarget
-      if (
-        relatedTarget &&
-        relatedTarget instanceof Node &&
-        event.currentTarget.contains(relatedTarget)
-      ) {
-        return
-      }
-
-      event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
-    },
-    [store, onDragLeaveProp],
-  )
-
-  const onDrop = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      onDropProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
-
-      const files = Array.from(event.dataTransfer.files)
-      const inputElement = context.inputRef.current
-      if (!inputElement) return
-
-      const dataTransfer = new DataTransfer()
-      for (const file of files) {
-        dataTransfer.items.add(file)
-      }
-
-      inputElement.files = dataTransfer.files
-      inputElement.dispatchEvent(new Event("change", { bubbles: true }))
-    },
-    [store, context.inputRef, onDropProp],
-  )
-
-  const onPaste = React.useCallback(
-    (event: React.ClipboardEvent<HTMLDivElement>) => {
-      onPasteProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      event.preventDefault()
-      store.dispatch({ type: "SET_DRAG_OVER", dragOver: false })
-
-      const items = event.clipboardData?.items
-      if (!items) return
-
-      const files: File[] = []
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        if (item?.kind === "file") {
-          const file = item.getAsFile()
-          if (file) {
-            files.push(file)
-          }
-        }
-      }
-
-      if (files.length === 0) return
-
-      const inputElement = context.inputRef.current
-      if (!inputElement) return
-
-      const dataTransfer = new DataTransfer()
-      for (const file of files) {
-        dataTransfer.items.add(file)
-      }
-
-      inputElement.files = dataTransfer.files
-      inputElement.dispatchEvent(new Event("change", { bubbles: true }))
-    },
-    [store, context.inputRef, onPasteProp],
-  )
-
+  // 키보드 핸들러 생성
   const onKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      onKeyDownProp?.(event)
-
-      if (
-        !event.defaultPrevented &&
-        (event.key === "Enter" || event.key === " ")
-      ) {
-        event.preventDefault()
-        context.inputRef.current?.click()
-      }
+      const handler = createKeyboardHandler(context.inputRef, onKeyDownProp)
+      handler(event)
     },
     [context.inputRef, onKeyDownProp],
   )
@@ -499,12 +405,12 @@ function FileUploadDropzone(props: FileUploadDropzoneProps) {
       {...dropzoneProps}
       className={className}
       onClick={onClick}
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDragEnter={dragHandlers.onDragEnter}
+      onDragLeave={dragHandlers.onDragLeave}
+      onDragOver={dragHandlers.onDragOver}
+      onDrop={dragHandlers.onDrop}
       onKeyDown={onKeyDown}
-      onPaste={onPaste}
+      onPaste={dragHandlers.onPaste}
     />
   )
 }
@@ -652,56 +558,6 @@ function formatBytes(bytes: number) {
   const i = Math.floor(Math.log(bytes) / Math.log(1024))
   return `${(bytes / 1024 ** i).toFixed(i ? 1 : 0)} ${sizes[i]}`
 }
-
-// interface FileUploadItemPreviewProps
-//   extends React.ComponentPropsWithoutRef<"div"> {
-//   render?: (file: File) => React.ReactNode
-//   asChild?: boolean
-// }
-
-// function FileUploadItemPreview(props: FileUploadItemPreviewProps) {
-//   const { render, asChild, children, className, ...previewProps } = props
-
-//   const itemContext = useFileUploadItemContext(ITEM_PREVIEW_NAME)
-//   const context = useFileUploadContext(ITEM_PREVIEW_NAME)
-
-//   const onPreviewRender = React.useCallback(
-//     (file: File) => {
-//       if (render) return render(file)
-
-//       if (itemContext.fileState?.file.type.startsWith("image/")) {
-//         let url = context.urlCache.get(file)
-//         if (!url) {
-//           url = URL.createObjectURL(file)
-//           context.urlCache.set(file, url)
-//         }
-
-//         return (
-//           <img src={url} alt={file.name} className="size-full object-cover" />
-//         )
-//       }
-
-//       return getFileIcon(file)
-//     },
-//     [render, itemContext.fileState?.file.type, context.urlCache],
-//   )
-
-//   if (!itemContext.fileState) return null
-
-//   const ItemPreviewPrimitive = asChild ? Slot.Root : "div"
-
-//   return (
-//     <ItemPreviewPrimitive
-//       aria-labelledby={itemContext.nameId}
-//       data-slot="file-upload-preview"
-//       {...previewProps}
-//       className={className}
-//     >
-//       {onPreviewRender(itemContext.fileState.file)}
-//       {children}
-//     </ItemPreviewPrimitive>
-//   )
-// }
 
 function FileUploadItemMetadata(props: FileUploadItemMetadataProps) {
   const {
