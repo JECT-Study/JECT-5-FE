@@ -15,7 +15,13 @@ import {
   useStore,
   useStoreContext,
 } from "./core/store"
-import { validateFiles } from "./core/validation"
+import {
+  createFilesChangeHandler,
+  createFilesUploadHandler,
+  createInputChangeHandler,
+  createProgressThrottle,
+  createTriggerClickHandler,
+} from "./core/uploadManager"
 import {
   COMPONENT_NAMES,
   type Direction,
@@ -113,11 +119,9 @@ function FileUploadRoot(props: FileUploadRootProps) {
   )
 
   const onProgress = useLazyRef(() => {
-    let frame = 0
+    const throttle = createProgressThrottle()
     return (file: File, progress: number) => {
-      if (frame) return
-      frame = requestAnimationFrame(() => {
-        frame = 0
+      throttle(() => {
         store.dispatch({
           type: "SET_PROGRESS",
           file,
@@ -152,100 +156,36 @@ function FileUploadRoot(props: FileUploadRootProps) {
 
   const onFilesUpload = React.useCallback(
     async (files: File[]) => {
-      try {
-        for (const file of files) {
-          store.dispatch({ type: "SET_PROGRESS", file, progress: 0 })
-        }
-
-        if (onUpload) {
-          await onUpload(files, {
-            onProgress,
-            onSuccess: (file) => {
-              store.dispatch({ type: "SET_SUCCESS", file })
-            },
-            onError: (file, error) => {
-              store.dispatch({
-                type: "SET_ERROR",
-                file,
-                error: error.message ?? "Upload failed",
-              })
-            },
-          })
-        } else {
-          for (const file of files) {
-            store.dispatch({ type: "SET_SUCCESS", file })
-          }
-        }
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Upload failed"
-        for (const file of files) {
-          store.dispatch({
-            type: "SET_ERROR",
-            file,
-            error: errorMessage,
-          })
-        }
-      }
+      const handler = createFilesUploadHandler({
+        store,
+        onUpload,
+        onProgress,
+      })
+      await handler(files)
     },
     [store, onUpload, onProgress],
   )
 
   const onFilesChange = React.useCallback(
     (originalFiles: File[]) => {
-      if (disabled) return
-
-      // 현재 파일 개수 조회
-      const currentFileCount = store.getState().files.size
-
-      // 파일 검증 실행
-      const validationResult = validateFiles(originalFiles, {
-        acceptTypes,
-        maxSize,
-        maxFiles,
-        currentFileCount,
-        validator: onFileValidate,
-        onFileReject,
+      const handler = createFilesChangeHandler({
+        store,
+        isControlled,
+        onValueChange,
+        onAccept,
+        onFileAccept,
+        onUpload,
+        disabled,
+        validation: {
+          acceptTypes,
+          maxSize,
+          maxFiles,
+          validator: onFileValidate,
+          onFileReject,
+        },
+        onFilesUpload,
       })
-
-      const { acceptedFiles, hasInvalid } = validationResult
-
-      // 검증 실패 시 invalid 상태 설정 (2초 후 자동 해제)
-      if (hasInvalid) {
-        store.dispatch({ type: "SET_INVALID", invalid: true })
-        setTimeout(() => {
-          store.dispatch({ type: "SET_INVALID", invalid: false })
-        }, 2000)
-      }
-
-      // 수락된 파일들 처리
-      if (acceptedFiles.length > 0) {
-        store.dispatch({ type: "ADD_FILES", files: acceptedFiles })
-
-        // 제어된 모드에서 값 변경 알림
-        if (isControlled && onValueChange) {
-          const currentFiles = Array.from(store.getState().files.values()).map(
-            (f) => f.file,
-          )
-          onValueChange([...currentFiles])
-        }
-
-        // 콜백 함수들 실행
-        if (onAccept) {
-          onAccept(acceptedFiles)
-        }
-
-        for (const file of acceptedFiles) {
-          onFileAccept?.(file)
-        }
-
-        // 업로드 함수가 있다면 업로드 시작
-        if (onUpload) {
-          requestAnimationFrame(() => {
-            onFilesUpload(acceptedFiles)
-          })
-        }
-      }
+      handler(originalFiles)
     },
     [
       store,
@@ -266,9 +206,8 @@ function FileUploadRoot(props: FileUploadRootProps) {
 
   const onInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(event.target.files ?? [])
-      onFilesChange(files)
-      event.target.value = ""
+      const handler = createInputChangeHandler(onFilesChange)
+      handler(event)
     },
     [onFilesChange],
   )
@@ -421,11 +360,8 @@ function FileUploadTrigger(props: FileUploadTriggerProps) {
 
   const onClick = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      onClickProp?.(event)
-
-      if (event.defaultPrevented) return
-
-      context.inputRef.current?.click()
+      const handler = createTriggerClickHandler(context.inputRef, onClickProp)
+      handler(event)
     },
     [context.inputRef, onClickProp],
   )

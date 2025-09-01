@@ -78,7 +78,7 @@ export type UploadFunction = (
 // ==================== Validation ====================
 
 /** 파일 검증 함수 타입 */
-export type FileValidator = (file: File) => string | null | undefined
+export type FileValidator = (file: File) => string | null
 
 /** 파일 검증 규칙 */
 export interface ValidationRules {
