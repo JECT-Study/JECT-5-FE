@@ -49,6 +49,7 @@ export const PlayerStatus = ({
               <span
                 className="typography-heading-lg-semibold"
                 aria-label={`${name} 현재 점수`}
+                role="status"
               >
                 {score}
               </span>
