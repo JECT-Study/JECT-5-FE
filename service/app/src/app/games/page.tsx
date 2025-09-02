@@ -1,6 +1,5 @@
 "use client"
 
-import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Magnifier } from "@shared/design/src/icons"
@@ -17,17 +16,12 @@ import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 import AvatarButton from "@/widgets/components/avatarButton"
+import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
 
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const {
-    user,
-    logout,
-    isLoading: authLoading,
-    isAuthenticated,
-    login,
-  } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -100,19 +94,6 @@ export default function GamesPage() {
     setSearchQuery(e.target.value)
   }
 
-  const handleLogin = async () => {
-    if (process.env.NODE_ENV === "development") {
-      try {
-        await login("someValidCode")
-      } catch (error) {
-        console.error("Login error:", error)
-      }
-      return
-    }
-
-    window.location.href = "/login"
-  }
-
   const handleThemeToggle = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
@@ -169,22 +150,7 @@ export default function GamesPage() {
           />
         </>
       ) : (
-        <SecondaryOutlineBoxButton
-          size="md"
-          onClick={handleLogin}
-          disabled={authLoading}
-          aria-label={authLoading ? "로그인 처리 중" : "카카오 간편 로그인"}
-          aria-busy={authLoading}
-        >
-          <Image
-            src="/kakao-logo.svg"
-            alt="카카오 로고"
-            className="size-8"
-            width={32}
-            height={32}
-          />
-          간편로그인해서 게임 만들기
-        </SecondaryOutlineBoxButton>
+        <KakaoLoginButton />
       )}
 
       {mounted && (
