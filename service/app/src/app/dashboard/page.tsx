@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  PrimaryBoxButton,
-  SecondaryOutlineBoxButton,
-} from "@shared/design/src/components/button"
+import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
@@ -21,13 +18,13 @@ import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import AvatarButton from "@/widgets/components/avatarButton"
 
 export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { isLoading: _authLoading, isAuthenticated, logout } = useAuth()
-  const [listButton, setListButton] = useState(false)
+  const { logout, user } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -103,7 +100,6 @@ export default function DashboardPage() {
   }
 
   const handleEditGame = (game: GameListItem) => {
-    console.log("Edit game:", game.gameId)
     router.push(`/create?gameId=${game.gameId}`)
   }
 
@@ -132,7 +128,6 @@ export default function DashboardPage() {
       try {
         const response = await deleteGame(game.gameId)
         if (response.result === "SUCCESS") {
-          console.log("Game deleted successfully")
           queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
         } else {
           console.error("Failed to delete game")
@@ -151,13 +146,8 @@ export default function DashboardPage() {
     router.push("/")
   }
 
-  const handleAvatarClick = () => {
-    setListButton(!listButton)
-  }
-
   const handleLogoutClick = () => {
     logout()
-    setListButton(false)
     router.push("/")
   }
 
@@ -195,50 +185,7 @@ export default function DashboardPage() {
         게임 만들기
       </PrimaryBoxButton>
 
-      {isAuthenticated ? (
-        <div className="relative">
-          <button
-            className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
-            onClick={handleAvatarClick}
-            aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
-            aria-expanded={listButton}
-            aria-haspopup="true"
-            tabIndex={0}
-          >
-            <Image
-              src="/avatar.svg"
-              alt="사용자 아바타"
-              className="size-full rounded-full"
-              width={42}
-              height={42}
-            />
-          </button>
-          {listButton && (
-            <div className="absolute right-0 top-full z-10 mt-2">
-              <SecondaryOutlineBoxButton
-                size="md"
-                onClick={handleLogoutClick}
-                className="whitespace-nowrap"
-                role="menuitem"
-                aria-label="로그아웃"
-                tabIndex={0}
-              >
-                로그아웃
-              </SecondaryOutlineBoxButton>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex size-[42px] items-center justify-center rounded-full bg-gray-300">
-          <Image
-            src="/avatar.svg"
-            alt="기본 아바타"
-            className="size-full rounded-full"
-            width={42}
-            height={42}
-          />
-        </div>
-      )}
+      <AvatarButton onClick={handleLogoutClick} src={user?.profileImageUrl} />
 
       {mounted && (
         <ThemeToggle

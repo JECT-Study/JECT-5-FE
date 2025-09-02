@@ -16,19 +16,19 @@ import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import AvatarButton from "@/widgets/components/avatarButton"
 
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const {
     user,
+    logout,
     isLoading: authLoading,
     isAuthenticated,
     login,
-    logout,
   } = useAuth()
   const { setTheme, resolvedTheme } = useTheme()
-  const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -121,28 +121,9 @@ export default function GamesPage() {
     router.push("/")
   }
 
-  const handleAvatarClick = () => {
-    setListButton(!listButton)
-  }
-
   const handleLogoutClick = () => {
     logout()
-    setListButton(false)
   }
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element
-      if (listButton && !target.closest("[data-user-menu]")) {
-        setListButton(false)
-      }
-    }
-
-    if (listButton) {
-      document.addEventListener("mousedown", handleClickOutside)
-      return () => document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [listButton])
 
   const leftContent = (
     <button
@@ -182,42 +163,10 @@ export default function GamesPage() {
               {user?.nickname}
             </span>
           </div>
-          <div className="relative" data-user-menu>
-            <button
-              className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
-              onClick={handleAvatarClick}
-              aria-label="사용자 메뉴 버튼"
-              aria-expanded={listButton}
-              aria-haspopup="true"
-              tabIndex={0}
-            >
-              <Image
-                src="/avatar.svg"
-                alt="사용자 아바타"
-                className="size-full rounded-full"
-                width={42}
-                height={42}
-              />
-            </button>
-            {listButton && (
-              <div
-                className="absolute right-0 top-full z-10 mt-2"
-                role="menu"
-                aria-label="사용자 메뉴"
-              >
-                <SecondaryOutlineBoxButton
-                  size="md"
-                  onClick={handleLogoutClick}
-                  className="whitespace-nowrap"
-                  role="menuitem"
-                  aria-label="로그아웃"
-                  tabIndex={0}
-                >
-                  로그아웃
-                </SecondaryOutlineBoxButton>
-              </div>
-            )}
-          </div>
+          <AvatarButton
+            onClick={handleLogoutClick}
+            src={user?.profileImageUrl}
+          />
         </>
       ) : (
         <SecondaryOutlineBoxButton
