@@ -26,11 +26,11 @@ export function GameCardOptions({
     <DropdownMenuRoot>
       <DropdownMenuTrigger asChild>
         <SecondaryPlainIconButton
+          size="sm"
           aria-label="게임 옵션"
           onClick={(e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation()
           }}
-          data-testid="game-options-button"
         >
           <MoreDot />
         </SecondaryPlainIconButton>
