@@ -1,0 +1,22 @@
+"use client"
+
+import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { useRouter } from "next/navigation"
+
+export default function LoginError() {
+  const router = useRouter()
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background-primary">
+      <div className="flex flex-col items-center gap-8 text-center">
+        <p className="typography-heading-lg-semibold text-text-primary">
+          로그인 처리 중 오류가 발생했습니다.
+        </p>
+        <div className="flex items-center gap-2">
+          <PrimaryBoxButton size="md" onClick={() => router.replace("/")}>
+            홈으로 이동
+          </PrimaryBoxButton>
+        </div>
+      </div>
+    </div>
+  )
+}
