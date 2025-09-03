@@ -4,8 +4,6 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
 
-import { MSWProvider } from "../mocks/mswProvider"
-import { OverlayProviderWrapper } from "./overlayProvider"
 import { Providers } from "./providers"
 
 export const metadata: Metadata = {
@@ -31,11 +29,7 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
-        <MSWProvider>
-          <Providers>
-            <OverlayProviderWrapper>{children}</OverlayProviderWrapper>
-          </Providers>
-        </MSWProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
