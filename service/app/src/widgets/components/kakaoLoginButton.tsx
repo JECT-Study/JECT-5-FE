@@ -1,3 +1,5 @@
+"use client"
+
 import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
