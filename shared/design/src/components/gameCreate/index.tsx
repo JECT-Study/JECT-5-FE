@@ -14,7 +14,7 @@ export const GameCreate = ({ onClick, className = "" }: GameCreateProps) => {
       aria-label="게임 만들기"
     >
       {/* Icon */}
-      <div className="flex h-[168px] w-[178px] items-center justify-center">
+      <div className="flex size-[178px] items-center justify-center">
         <img
           src="/create-game-icon.svg"
           alt="게임 만들기 아이콘"
@@ -30,4 +30,4 @@ export const GameCreate = ({ onClick, className = "" }: GameCreateProps) => {
       </h3>
     </div>
   )
-} 
+}

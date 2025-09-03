@@ -6,15 +6,18 @@ import { cn } from "../../utils/cn"
 interface GameCardProps {
   children: ReactNode
   className?: string
+  title?: string
 }
 
 const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
-  ({ children, className }, ref) => {
+  ({ children, className, title }, ref) => {
+    const accessibleName = title ? `${title} 게임 카드` : "게임 카드"
     return (
       <div
         ref={ref}
+        role="group"
+        aria-label={accessibleName}
         className={cn("relative", className)}
-        data-testid="game-card"
       >
         <div className="flex flex-col gap-[14px]">{children}</div>
       </div>
@@ -48,15 +51,14 @@ interface GameCardTitleProps {
 const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
   return (
     <div className="h-[46px] w-[178px]">
-      <div
+      <h3
         className={cn(
           "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
           className,
         )}
-        data-testid="game-title"
       >
         {children}
-      </div>
+      </h3>
     </div>
   )
 }
@@ -69,11 +71,11 @@ interface GameCardBadgeProps {
 const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
   return (
     <div
+      aria-label="문제 수 배지"
       className={cn(
-        "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-primary px-[5px] py-[2px]",
+        "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
         className,
       )}
-      data-testid="question-count"
     >
       <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
         {children}
@@ -85,11 +87,12 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
 const GameCardSharedBadge = ({ children, className }: GameCardBadgeProps) => {
   return (
     <div
+      role="status"
+      aria-label="공유 배지"
       className={cn(
         "absolute bottom-2 left-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
         className,
       )}
-      data-testid="shared-badge"
     >
       <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
         {children}
