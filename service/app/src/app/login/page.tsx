@@ -8,11 +8,10 @@ export default function KakaoLoginPage() {
 
   const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID
   const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI
-  if (!kakaoClientId || !redirectUri) {
-    throw new Error("KAKAO 환경변수가 정의되지 않았습니다.")
-  }
 
   useEffect(() => {
+    if (!kakaoClientId || !redirectUri) return
+
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
 
     router.replace(kakaoAuthUrl)
