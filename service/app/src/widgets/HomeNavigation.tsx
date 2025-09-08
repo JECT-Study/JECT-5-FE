@@ -44,6 +44,10 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     logout()
   }
 
+  const handleKakaoLogin = () => {
+    router.push("/login")
+  }
+
   return (
     <nav
       className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary ${className}`}
@@ -95,7 +99,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
               <AvatarButton onClick={handleLogoutClick} />
             </>
           ) : (
-            <KakaoLoginButton />
+            <KakaoLoginButton onClick={handleKakaoLogin} />
           )}
           {mounted && (
             <ThemeToggle

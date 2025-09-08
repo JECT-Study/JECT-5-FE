@@ -84,6 +84,10 @@ export default function GamesPage() {
     }
   }
 
+  const handleKakaoLogin = () => {
+    router.push("/login")
+  }
+
   const handleLoadMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
@@ -150,7 +154,7 @@ export default function GamesPage() {
           />
         </>
       ) : (
-        <KakaoLoginButton />
+        <KakaoLoginButton onClick={handleKakaoLogin} />
       )}
 
       {mounted && (
