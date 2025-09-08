@@ -47,8 +47,8 @@ export default plugin(
   },
   {
     theme: {
-      spacing: spacingTheme,
       extend: {
+        spacing: spacingTheme,
         borderRadius: radiusTheme,
         colors: colorTheme,
         typography: typographyTheme,
