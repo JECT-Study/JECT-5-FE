@@ -1,10 +1,7 @@
 "use client"
 
-import {
-  PrimaryBoxButton,
-} from "@shared/design/src/components/button"
-import { Control, Field, Root } from "@shared/design/src/components/input"
-import { ErrorText } from "@shared/design/src/components/input"
+import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import * as TextField from "@shared/design/src/components/textField"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
@@ -21,6 +18,8 @@ export function CreateGameNavigation() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  console.log(state)
 
   const handleGameNameChange = (value: string) => {
     actions.setGameName(value)
@@ -43,25 +42,23 @@ export function CreateGameNavigation() {
       className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary px-10`}
     >
       <div className="flex w-[420px] items-center gap-2.5 bg-background-tertiary px-10">
-        <Root>
-          <Field
-            type="noIcon"
-            state={selectors.gameNameError ? "error" : "default"}
-            name="gameTitle"
-            className="bg-background-interactive-input-primary"
-          >
-            <Control
+        <TextField.Root
+          name="gameTitle"
+          state={selectors.gameNameError ? "error" : "default"}
+        >
+          <TextField.InputWrapper className="bg-background-interactive-input-primary">
+            <TextField.Input
               placeholder="게임 이름 입력"
               value={state.gameName}
-              onChange={handleGameNameChange}
+              onChange={(e) => handleGameNameChange(e.target.value)}
               onFocus={handleGameNameFocus}
               onBlur={handleGameNameBlur}
             />
-            {selectors.gameNameError && (
-              <ErrorText>{selectors.gameNameError}</ErrorText>
-            )}
-          </Field>
-        </Root>
+          </TextField.InputWrapper>
+          {selectors.gameNameError && (
+            <TextField.ErrorText>{selectors.gameNameError}</TextField.ErrorText>
+          )}
+        </TextField.Root>
       </div>
 
       <div className="flex w-[420px] items-center justify-end gap-4 px-10">

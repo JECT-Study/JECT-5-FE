@@ -1,7 +1,11 @@
 "use client"
 
-import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
-import * as InputComponents from "@ject-5-fe/design/components/input"
+import {
+  DestructiveSolidIconButton,
+  PrimaryBoxButton,
+} from "@ject-5-fe/design/components/button"
+import * as TextField from "@ject-5-fe/design/components/textField"
+import { Trash } from "@ject-5-fe/design/icons"
 import { useMemo } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { useShallow } from "zustand/react/shallow"
@@ -28,13 +32,11 @@ export function TeamInputForm() {
   const teamErrors = useMemo(() => getTeamErrors(teams), [teams])
 
   return (
-    <InputComponents.Root
+    <form
       className="flex w-full flex-col gap-6"
       onSubmit={(e) => {
         e.preventDefault()
-        if (teams.length >= MAX_TEAMS) {
-          return
-        }
+        if (teams.length >= MAX_TEAMS) return
 
         addTeam({
           id: uuidv4(),
@@ -44,36 +46,39 @@ export function TeamInputForm() {
         })
       }}
     >
-      {teams.map((team, index) => (
-        <InputComponents.Field
-          name={`team-${team.id}-${index}`}
-          type="reset"
-          state={teamErrors[team.id] ? "error" : "default"}
-          key={team.id}
-        >
-          <InputComponents.Control
-            value={team.name}
-            onChange={(value) => {
-              if (value.length > MAX_TEAM_NAME_LENGTH) {
-                return
-              }
-              updateTeamName(team.id, value.trim())
-            }}
-            onReset={() => {
-              if (teams.length > MIN_TEAMS) {
-                removeTeam(team.id)
-              }
-            }}
-            maxLength={MAX_TEAM_NAME_LENGTH}
-            max={MAX_TEAM_NAME_LENGTH}
-          />
-          {teamErrors[team.id] && (
-            <InputComponents.ErrorText>
-              {teamErrors[team.id]}
-            </InputComponents.ErrorText>
-          )}
-        </InputComponents.Field>
-      ))}
+      {teams.map((team, index) => {
+        const name = `team-${team.id}-${index}`
+        const state = teamErrors[team.id] ? "error" : "default"
+        return (
+          <TextField.Root name={name} state={state} key={team.id}>
+            <TextField.InputWrapper>
+              <TextField.Input
+                value={team.name}
+                onChange={(e) => {
+                  const value = e.target.value
+                  if (value.length > MAX_TEAM_NAME_LENGTH) return
+                  updateTeamName(team.id, value.trim())
+                }}
+                maxLength={MAX_TEAM_NAME_LENGTH}
+              />
+              <DestructiveSolidIconButton
+                type="button"
+                aria-label="clear input"
+                onClick={() => {
+                  if (teams.length > MIN_TEAMS) {
+                    removeTeam(team.id)
+                  }
+                }}
+              >
+                <Trash />
+              </DestructiveSolidIconButton>
+            </TextField.InputWrapper>
+            {teamErrors[team.id] && (
+              <TextField.ErrorText>{teamErrors[team.id]}</TextField.ErrorText>
+            )}
+          </TextField.Root>
+        )
+      })}
       <PrimaryBoxButton
         size="xl"
         _style="solid"
@@ -81,6 +86,6 @@ export function TeamInputForm() {
       >
         참가자 및 팀 추가하기
       </PrimaryBoxButton>
-    </InputComponents.Root>
+    </form>
   )
 }

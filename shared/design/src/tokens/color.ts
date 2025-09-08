@@ -18,23 +18,31 @@ if (!primitiveColorCollection || !semanticColorCollection) {
   throw new Error("Collection not found")
 }
 
-const primitiveColor = primitiveColorCollection.modes[0].variables.reduce(
-  (acc, variable) => {
-    if (typeof variable.value === "object") {
-      throw new Error("primitive color is not string")
-    }
-    const name = `--${convertName(variable.name)}`
-    acc[name] = variable.value as string
-    return acc
-  },
-  {} as Record<string, string>,
-)
+const primitiveColor = primitiveColorCollection.modes[0].variables
+  // color 타입만 처리
+  .filter((variable) => variable.type === "color")
+  .reduce(
+    (acc, variable) => {
+      if (typeof variable.value === "object") {
+        throw new Error("primitive color is not string")
+      }
+      const name = `--${convertName(variable.name)}`
+      acc[name] = variable.value as string
+      return acc
+    },
+    {} as Record<string, string>,
+  )
 
 const semanticColorLight = semanticColorCollection.modes
   .filter((mode) => mode.name === "light")[0]
-  .variables.reduce(
+  .variables.filter((variable) => variable.type === "color")
+  .reduce(
     (acc, variable) => {
-      if (typeof variable.value !== "object" || !("name" in variable.value)) {
+      if (
+        variable.type !== "color" ||
+        typeof variable.value !== "object" ||
+        !("name" in variable.value)
+      ) {
         throw new Error("semantic color alias value should have name property")
       }
       const key = `--${convertName(variable.name)}`
@@ -48,9 +56,14 @@ const semanticColorLight = semanticColorCollection.modes
 
 const semanticColorDark = semanticColorCollection.modes
   .filter((mode) => mode.name === "dark")[0]
-  .variables.reduce(
+  .variables.filter((variable) => variable.type === "color") //컬러 타입만 처리
+  .reduce(
     (acc, variable) => {
-      if (typeof variable.value !== "object" || !("name" in variable.value)) {
+      if (
+        variable.type !== "color" ||
+        typeof variable.value !== "object" ||
+        !("name" in variable.value)
+      ) {
         throw new Error("semantic color alias value should have name property")
       }
       const key = `--${convertName(variable.name)}`
