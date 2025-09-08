@@ -2,17 +2,22 @@
 
 import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 
-export const KakaoLoginButton = () => {
-  const router = useRouter()
+interface KakaoLoginButtonProps {
+  onClick?: () => void
+  className?: string
+}
 
-  const handleLogin = async () => {
-    router.push("/login")
-  }
-
+export const KakaoLoginButton = ({
+  onClick,
+  className,
+}: KakaoLoginButtonProps) => {
   return (
-    <SecondaryOutlineBoxButton size="md" onClick={handleLogin}>
+    <SecondaryOutlineBoxButton
+      size="md"
+      onClick={onClick}
+      className={className}
+    >
       <Image
         src="/kakao-logo.svg"
         alt="카카오 로고"
