@@ -35,6 +35,8 @@ export function useAuth() {
   return {
     isAuthenticated: !!sessionQuery.data,
     isCheckingSession: sessionQuery.isLoading,
+    isLoading: sessionQuery.isLoading, // 기존 코드 호환성
+    user: null, // 임시로 null, 추후 구현 필요
     refetch: sessionQuery.refetch,
     isError: sessionQuery.isError,
     logout: logoutMutation.mutate,

@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  PrimaryBoxButton,
-  SecondaryOutlineBoxButton,
-} from "@shared/design/src/components/button"
+import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import Image from "next/image"
@@ -13,6 +10,9 @@ import { useEffect, useState } from "react"
 
 import { useAuth } from "@/entities/auth"
 
+import AvatarButton from "./components/avatarButton"
+import { KakaoLoginButton } from "./components/kakaoLoginButton"
+
 interface HomeNavigationProps {
   isLoggedIn?: boolean
   className?: string
@@ -20,9 +20,8 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { isLoading: authLoading, isAuthenticated, logout, login } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
   const { theme, setTheme, resolvedTheme } = useTheme()
-  const [listButton, setListButton] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -41,51 +40,13 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
 
-  const handleAvatarClick = () => {
-    setListButton(!listButton)
-  }
-
-  const handleAvatarKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault()
-      setListButton(!listButton)
-    } else if (event.key === "Escape" && listButton) {
-      setListButton(false)
-    }
-  }
-
-  const handleLoginClick = async () => {
-    if (process.env.NODE_ENV === "development") {
-      try {
-        await login("someValidCode")
-      } catch (error) {
-        console.error("Login error:", error)
-      }
-      return
-    }
-
-    window.location.href = "/login"
-  }
-
   const handleLogoutClick = () => {
     logout()
-    setListButton(false)
   }
 
-  // 외부 클릭 시 메뉴 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element
-      if (listButton && !target.closest("[data-user-menu]")) {
-        setListButton(false)
-      }
-    }
-
-    if (listButton) {
-      document.addEventListener("mousedown", handleClickOutside)
-      return () => document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [listButton])
+  const handleKakaoLogin = () => {
+    router.push("/login")
+  }
 
   return (
     <nav
@@ -135,64 +96,10 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 게임 만들기
               </PrimaryBoxButton>
 
-              <div className="relative" data-user-menu>
-                <button
-                  className="flex size-[42px] cursor-pointer items-center justify-center rounded-full bg-gray-300 focus:outline-none"
-                  onClick={handleAvatarClick}
-                  onKeyDown={handleAvatarKeyDown}
-                  aria-label={`사용자 메뉴 ${listButton ? "닫기" : "열기"}`}
-                  aria-expanded={listButton}
-                  aria-haspopup="true"
-                  tabIndex={0}
-                >
-                  <Image
-                    src="/avatar.svg"
-                    alt="사용자 아바타"
-                    className="size-full rounded-full"
-                    width={42}
-                    height={42}
-                  />
-                </button>
-                {listButton && (
-                  <div
-                    className="absolute right-0 top-full z-10 mt-2"
-                    role="menu"
-                    aria-label="사용자 메뉴"
-                  >
-                    <SecondaryOutlineBoxButton
-                      size="md"
-                      onClick={handleLogoutClick}
-                      className="whitespace-nowrap"
-                      role="menuitem"
-                      aria-label="로그아웃"
-                      tabIndex={0}
-                    >
-                      로그아웃
-                    </SecondaryOutlineBoxButton>
-                  </div>
-                )}
-              </div>
+              <AvatarButton onClick={handleLogoutClick} />
             </>
           ) : (
-            <>
-              <SecondaryOutlineBoxButton
-                size="md"
-                onClick={handleLoginClick}
-                disabled={authLoading}
-                aria-label="카카오 간편 로그인 버튼"
-                aria-busy={authLoading}
-              >
-                <Image
-                  src="/kakao-logo.svg"
-                  alt="카카오 로고"
-                  className="size-8"
-                  width={32}
-                  height={32}
-                  aria-hidden="true"
-                />
-                간편로그인해서 게임 만들기
-              </SecondaryOutlineBoxButton>
-            </>
+            <KakaoLoginButton onClick={handleKakaoLogin} />
           )}
           {mounted && (
             <ThemeToggle
