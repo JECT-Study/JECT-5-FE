@@ -1,9 +1,6 @@
 "use client"
 
-import {
-  PrimaryBoxButton,
-  SecondaryOutlineBoxButton,
-} from "@shared/design/src/components/button"
+import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import Image from "next/image"
@@ -14,6 +11,7 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@/entities/auth"
 
 import AvatarButton from "./components/avatarButton"
+import { KakaoLoginButton } from "./components/kakaoLoginButton"
 
 interface HomeNavigationProps {
   isLoggedIn?: boolean
@@ -22,7 +20,7 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { isLoading: authLoading, isAuthenticated, logout, login } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -42,21 +40,12 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
 
-  const handleLoginClick = async () => {
-    if (process.env.NODE_ENV === "development") {
-      try {
-        await login("someValidCode")
-      } catch (error) {
-        console.error("Login error:", error)
-      }
-      return
-    }
-
-    window.location.href = "/login"
-  }
-
   const handleLogoutClick = () => {
     logout()
+  }
+
+  const handleKakaoLogin = () => {
+    router.push("/login")
   }
 
   return (
@@ -110,25 +99,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
               <AvatarButton onClick={handleLogoutClick} />
             </>
           ) : (
-            <>
-              <SecondaryOutlineBoxButton
-                size="md"
-                onClick={handleLoginClick}
-                disabled={authLoading}
-                aria-label="카카오 간편 로그인 버튼"
-                aria-busy={authLoading}
-              >
-                <Image
-                  src="/kakao-logo.svg"
-                  alt="카카오 로고"
-                  className="size-8"
-                  width={32}
-                  height={32}
-                  aria-hidden="true"
-                />
-                간편로그인해서 게임 만들기
-              </SecondaryOutlineBoxButton>
-            </>
+            <KakaoLoginButton onClick={handleKakaoLogin} />
           )}
           {mounted && (
             <ThemeToggle
