@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
+import { MSW_MOCK_CODE } from "@/mocks/handlers/auth"
+
 export default function KakaoLoginPage() {
   const router = useRouter()
 
@@ -12,6 +14,10 @@ export default function KakaoLoginPage() {
   useEffect(() => {
     if (!kakaoClientId || !redirectUri) return
 
+    if (process.env.NODE_ENV === "development") {
+      router.replace(`/login/kakao/?code=${MSW_MOCK_CODE}`)
+      return
+    }
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
 
     router.replace(kakaoAuthUrl)
