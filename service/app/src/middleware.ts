@@ -3,7 +3,7 @@ import { NextRequest, NextResponse, userAgent } from "next/server"
 import { hasValidSession } from "./entities/auth/utils/cookieUtils"
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/create/:path*"],
+  matcher: ["/:path*"],
 }
 
 export function middleware(request: NextRequest) {
@@ -12,8 +12,16 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname = "/mobile"
     return NextResponse.rewrite(request.nextUrl)
   }
-  if (!hasValidSession()) {
-    return NextResponse.redirect(new URL("/?message=unauthorized", request.url))
+
+  if (
+    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname.startsWith("/create")
+  ) {
+    if (!hasValidSession()) {
+      return NextResponse.redirect(
+        new URL("/?message=unauthorized", request.url),
+      )
+    }
   }
   return NextResponse.next()
 }
