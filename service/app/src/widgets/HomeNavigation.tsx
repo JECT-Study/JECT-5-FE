@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
-import { useAuth } from "@/entities/auth"
+import { useAuthStore } from "@/entities/auth"
 
 import AvatarButton from "./components/avatarButton"
 import { KakaoLoginButton } from "./components/kakaoLoginButton"
@@ -20,7 +20,7 @@ interface HomeNavigationProps {
 
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, logout } = useAuthStore()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 

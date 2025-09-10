@@ -3,12 +3,12 @@
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect } from "react"
 
-import { useAuth } from "@/entities/auth"
+import { useAuthStore } from "@/entities/auth"
 
 function KakaoCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login } = useAuth()
+  const { login } = useAuthStore()
 
   useEffect(() => {
     const handleCallback = async () => {

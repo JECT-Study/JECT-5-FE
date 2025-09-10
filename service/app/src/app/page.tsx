@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
-import { useAuth } from "@/entities/auth"
+import { useAuthStore } from "@/entities/auth"
 
 import { GameSection } from "../widgets/GameSection"
 import { HeroSection } from "../widgets/HeroSection"
@@ -89,11 +89,7 @@ function HomeSkeleton() {
 }
 
 function HomeContent() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth()
-
-  if (authLoading) {
-    return <HomeSkeleton />
-  }
+  const { isAuthenticated } = useAuthStore()
 
   return (
     <main
