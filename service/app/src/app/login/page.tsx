@@ -12,12 +12,13 @@ export default function KakaoLoginPage() {
   const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI
 
   useEffect(() => {
-    if (!kakaoClientId || !redirectUri) return
-
     if (process.env.NODE_ENV === "development") {
       router.replace(`/login/kakao/?code=${MSW_MOCK_CODE}`)
       return
     }
+
+    if (!kakaoClientId || !redirectUri) return
+
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
 
     router.replace(kakaoAuthUrl)

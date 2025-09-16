@@ -18,7 +18,7 @@ function KakaoCallbackContent() {
       if (error || !code)
         throw new Error(error || "인증 코드를 받지 못했습니다.")
 
-      login(code)
+      await login(code)
       router.push("/")
     }
 
