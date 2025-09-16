@@ -2,16 +2,16 @@
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { GameCard } from "@shared/design/src/components/gameCard"
-import { useQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
+import { ErrorBoundary } from "react-error-boundary"
 
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
-import { useMsw } from "@/mocks/mswProvider"
 
 interface GameSectionProps {
   className?: string
@@ -34,42 +34,25 @@ const GameSectionHeader = ({ onViewMoreGames }: GameSectionHeaderProps) => {
   )
 }
 
-const GameCardSkeleton = () => {
+const GameSectionCardsError = () => {
   return (
-    <div className="flex w-[178px] flex-col items-start gap-[14px]">
-      <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-      <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
+    <div className="flex w-full items-center justify-center">
+      <p className="text-red-500">게임을 불러오는 중 오류가 발생했습니다.</p>
     </div>
   )
 }
 
 interface GameSectionCardsProps {
   games: GameListItem[]
-  isLoading: boolean
   onGameCardClick: (game: GameListItem) => void
   onGameCardKeyDown: (event: React.KeyboardEvent, game: GameListItem) => void
 }
 
 const GameSectionCards = ({
   games,
-  isLoading,
   onGameCardClick,
   onGameCardKeyDown,
 }: GameSectionCardsProps) => {
-  if (isLoading) {
-    return (
-      <div
-        aria-live="polite"
-        aria-label="게임 목록 로딩 중"
-        className="flex items-center justify-between"
-      >
-        {Array.from({ length: 4 }).map((_, index) => (
-          <GameCardSkeleton key={index} />
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div
       aria-label={`${games.length}개의 추천 게임`}
@@ -110,13 +93,8 @@ const GameSectionCards = ({
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
   const router = useRouter()
-  const { isMswReady } = useMsw()
 
-  const {
-    data: games = [],
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: games = [] } = useSuspenseQuery({
     queryKey: ["defaultGames"],
     queryFn: async (): Promise<GameListItem[]> => {
       const res = await getDefaultGame()
@@ -125,7 +103,6 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       }
       throw new Error("Failed to fetch default games")
     },
-    enabled: isMswReady,
     staleTime: 5 * 60 * 1000,
     retry: 2,
   })
@@ -135,40 +112,39 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
   }
 
   const handleGameCardClick = async (game: GameListItem) => {
-    try {
-      const gameDetailRes = await getGameDetail(game.gameId)
+    const gameDetailRes = await getGameDetail(game.gameId)
 
+    overlay.open(({ close, isOpen }) => {
       if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
         const gameDetail = gameDetailRes.data
 
-        overlay.open(({ close, isOpen }) => {
-          const handleStartGame = () => {
-            close()
-            router.push(`/game/${game.gameId}`)
-          }
+        const handleStartGame = () => {
+          close()
+          router.push(`/game/${game.gameId}`)
+        }
 
-          return (
-            <GamePreview
-              gameTitle={gameDetail.gameTitle}
-              creatorName={gameDetail.nickname}
-              questionCount={gameDetail.questionCount}
-              questions={gameDetail.questions.map((question) => ({
-                id: question.questionId.toString(),
-                title: question.questionText,
-                imageUrl: question.imageUrl,
-              }))}
-              onClose={close}
-              onStartGame={handleStartGame}
-              isOpen={isOpen}
-            />
-          )
-        })
+        return (
+          <GamePreview
+            gameTitle={gameDetail.gameTitle}
+            creatorName={gameDetail.nickname}
+            questionCount={gameDetail.questionCount}
+            questions={gameDetail.questions.map((question) => ({
+              id: question.questionId.toString(),
+              title: question.questionText,
+              imageUrl: question.imageUrl,
+            }))}
+            onClose={close}
+            onStartGame={handleStartGame}
+            isOpen={isOpen}
+          />
+        )
       } else {
-        console.error("Failed to fetch game detail")
+        return (
+          // TODO: 에러 처리
+          <GamePreview onClose={close} isOpen={isOpen} />
+        )
       }
-    } catch (error) {
-      console.error("Error fetching game detail:", error)
-    }
+    })
   }
 
   const handleGameCardKeyDown = (
@@ -181,26 +157,6 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     }
   }
 
-  if (error) {
-    return (
-      <section
-        className={`flex w-full flex-col items-center justify-center gap-7 self-stretch p-0 ${className}`}
-        aria-label="게임 섹션"
-      >
-        <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
-        <div
-          className="flex w-full items-center justify-center"
-          role="alert"
-          aria-live="assertive"
-        >
-          <p className="text-red-500">
-            게임을 불러오는 중 오류가 발생했습니다.
-          </p>
-        </div>
-      </section>
-    )
-  }
-
   return (
     <section
       className={`flex w-full flex-col items-center justify-center self-stretch p-0 ${className}`}
@@ -208,12 +164,13 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     >
       <div className="flex min-w-[952px] flex-col gap-7">
         <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
-        <GameSectionCards
-          games={games}
-          isLoading={isLoading}
-          onGameCardClick={handleGameCardClick}
-          onGameCardKeyDown={handleGameCardKeyDown}
-        />
+        <ErrorBoundary FallbackComponent={GameSectionCardsError}>
+          <GameSectionCards
+            games={games}
+            onGameCardClick={handleGameCardClick}
+            onGameCardKeyDown={handleGameCardKeyDown}
+          />
+        </ErrorBoundary>
       </div>
     </section>
   )
