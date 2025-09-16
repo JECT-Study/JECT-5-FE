@@ -6,6 +6,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
+import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
 import { GameListItem } from "@/entities/game"
@@ -34,6 +35,25 @@ const GameSectionHeader = ({ onViewMoreGames }: GameSectionHeaderProps) => {
   )
 }
 
+const GameCardSkeleton = () => {
+  return (
+    <div className="flex w-[178px] flex-col items-start gap-[14px]">
+      <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
+      <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
+    </div>
+  )
+}
+
+const GameCardSectionSkeleton = () => {
+  return (
+    <div className="flex items-center justify-between">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <GameCardSkeleton key={index} />
+      ))}
+    </div>
+  )
+}
+
 const GameSectionCardsError = () => {
   return (
     <div className="flex w-full items-center justify-center">
@@ -43,16 +63,27 @@ const GameSectionCardsError = () => {
 }
 
 interface GameSectionCardsProps {
-  games: GameListItem[]
   onGameCardClick: (game: GameListItem) => void
   onGameCardKeyDown: (event: React.KeyboardEvent, game: GameListItem) => void
 }
 
 const GameSectionCards = ({
-  games,
   onGameCardClick,
   onGameCardKeyDown,
 }: GameSectionCardsProps) => {
+  const { data: games = [] } = useSuspenseQuery({
+    queryKey: ["defaultGames"],
+    queryFn: async (): Promise<GameListItem[]> => {
+      const res = await getDefaultGame()
+      if (res.result === "SUCCESS" && res.data) {
+        return res.data.games
+      }
+      throw new Error("Failed to fetch default games")
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 2,
+  })
+
   return (
     <div
       aria-label={`${games.length}개의 추천 게임`}
@@ -93,19 +124,6 @@ const GameSectionCards = ({
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
   const router = useRouter()
-
-  const { data: games = [] } = useSuspenseQuery({
-    queryKey: ["defaultGames"],
-    queryFn: async (): Promise<GameListItem[]> => {
-      const res = await getDefaultGame()
-      if (res.result === "SUCCESS" && res.data) {
-        return res.data.games
-      }
-      throw new Error("Failed to fetch default games")
-    },
-    staleTime: 5 * 60 * 1000,
-    retry: 2,
-  })
 
   const handleViewMoreGames = () => {
     router.push("/games")
@@ -165,11 +183,12 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       <div className="flex min-w-[952px] flex-col gap-7">
         <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
         <ErrorBoundary FallbackComponent={GameSectionCardsError}>
-          <GameSectionCards
-            games={games}
-            onGameCardClick={handleGameCardClick}
-            onGameCardKeyDown={handleGameCardKeyDown}
-          />
+          <Suspense fallback={<GameCardSectionSkeleton />}>
+            <GameSectionCards
+              onGameCardClick={handleGameCardClick}
+              onGameCardKeyDown={handleGameCardKeyDown}
+            />
+          </Suspense>
         </ErrorBoundary>
       </div>
     </section>

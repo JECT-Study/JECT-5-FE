@@ -1,6 +1,5 @@
 "use client"
 
-import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
 import { useAuthStore } from "@/entities/auth"
@@ -9,7 +8,6 @@ import { GameSection } from "../widgets/GameSection"
 import { HeroSection } from "../widgets/HeroSection"
 import { HomeNavigation } from "../widgets/HomeNavigation"
 import ErrorPage from "./error"
-import HomeSkeleton from "./loading"
 
 function HomeContent() {
   const { isAuthenticated } = useAuthStore()
@@ -30,9 +28,7 @@ function HomeContent() {
 export default function Home() {
   return (
     <ErrorBoundary FallbackComponent={ErrorPage}>
-      <Suspense fallback={<HomeSkeleton />}>
-        <HomeContent />
-      </Suspense>
+      <HomeContent />
     </ErrorBoundary>
   )
 }
