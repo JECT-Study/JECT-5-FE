@@ -16,7 +16,7 @@ function HomeContent() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-start gap-[10.5vh] bg-background-primary p-0"
+      className="flex min-h-screen w-full flex-col items-start gap-[10.5vh] bg-background-primary p-0"
       role="main"
       aria-label="홈페이지"
     >
