@@ -11,7 +11,7 @@ export const config = {
 
 export function middleware(request: NextRequest) {
   if (!hasValidSessionFromRequest(request)) {
-    return NextResponse.redirect(new URL("/?message=unauthorized", request.url))
+    return NextResponse.redirect(new URL("/protected", request.url))
   }
   return NextResponse.next()
 }
