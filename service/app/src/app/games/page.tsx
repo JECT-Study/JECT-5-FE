@@ -148,10 +148,7 @@ export default function GamesPage() {
               {user?.nickname}
             </span>
           </div>
-          <AvatarButton
-            onClick={handleLogoutClick}
-            src={user?.profileImageUrl}
-          />
+          <AvatarButton onClick={handleLogoutClick} />
         </>
       ) : (
         <KakaoLoginButton onClick={handleKakaoLogin} />
