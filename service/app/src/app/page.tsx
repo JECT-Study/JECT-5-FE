@@ -16,14 +16,12 @@ function HomeContent() {
 
   return (
     <main
-      className="min-h-screen bg-background-primary"
+      className="flex min-h-screen flex-col items-start gap-[10.5vh] bg-background-primary p-0"
       role="main"
       aria-label="홈페이지"
     >
       <HomeNavigation isLoggedIn={isAuthenticated} />
-      <div className="h-[157px]" />
       <HeroSection />
-      <div className="h-[70px]" />
       <GameSection />
     </main>
   )
