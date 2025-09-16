@@ -8,7 +8,7 @@ import { useAuthStore } from "@/entities/auth"
 import { GameSection } from "../widgets/GameSection"
 import { HeroSection } from "../widgets/HeroSection"
 import { HomeNavigation } from "../widgets/HomeNavigation"
-import Error from "./error"
+import ErrorPage from "./error"
 import HomeSkeleton from "./loading"
 
 function HomeContent() {
@@ -31,7 +31,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <ErrorBoundary FallbackComponent={Error}>
+    <ErrorBoundary FallbackComponent={ErrorPage}>
       <Suspense fallback={<HomeSkeleton />}>
         <HomeContent />
       </Suspense>

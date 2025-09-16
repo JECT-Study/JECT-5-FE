@@ -3,7 +3,7 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import Link from "next/link"
 
-export default function Error() {
+export default function ErrorPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background-primary">
       <div className="flex flex-col items-center gap-8 text-center">
