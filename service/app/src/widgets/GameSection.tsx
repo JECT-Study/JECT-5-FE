@@ -61,16 +61,10 @@ const GameSectionCards = ({
       <div
         aria-live="polite"
         aria-label="게임 목록 로딩 중"
-        className="flex items-center gap-[80px]"
+        className="flex items-center justify-between"
       >
         {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="flex w-[178px] flex-col items-start gap-[14px]"
-            aria-hidden="true"
-          >
-            <GameCardSkeleton />
-          </div>
+          <GameCardSkeleton key={index} />
         ))}
       </div>
     )
