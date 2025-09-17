@@ -1,16 +1,10 @@
 "use client"
 
-import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
-import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
-import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { deleteGame, getGameDetail } from "@/entities/game/api"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
@@ -18,15 +12,11 @@ import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
-import AvatarButton from "@/widgets/components/avatarButton"
+import DashboardNavigation from "@/widgets/DashboardNavigation"
 
 export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const [_searchQuery, _setSearchQuery] = useState("")
-  const { logout } = useAuthStore()
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
 
   const {
     games,
@@ -47,10 +37,6 @@ export default function DashboardPage() {
   useEffect(() => {
     refetch()
   }, [refetch])
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -138,79 +124,9 @@ export default function DashboardPage() {
     })
   }
 
-  const handleThemeToggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }
-
-  const handleLogoClick = () => {
-    router.push("/")
-  }
-
-  const handleLogoutClick = () => {
-    logout()
-    router.push("/")
-  }
-
-  const leftContent = (
-    <button
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
-      onClick={handleLogoClick}
-      aria-label="홈으로 이동"
-    >
-      <Image
-        src="/logo.svg"
-        alt="홈 로고"
-        className="size-full"
-        width={268}
-        height={60}
-      />
-    </button>
-  )
-
-  const centerContent = (
-    <h1 className="typography-heading-xl-semibold text-text-primary">
-      내 게임
-    </h1>
-  )
-
-  const rightContent = (
-    <>
-      <PrimaryBoxButton
-        size="sm"
-        _style="solid"
-        onClick={handleCreateGame}
-        aria-label="게임 만들기"
-      >
-        <Add />
-        게임 만들기
-      </PrimaryBoxButton>
-
-      <AvatarButton onClick={handleLogoutClick} />
-
-      {mounted && (
-        <ThemeToggle
-          theme={(resolvedTheme as "dark" | "light") || "light"}
-          onThemeToggle={handleThemeToggle}
-        />
-      )}
-    </>
-  )
-
   return (
     <main className="min-h-screen bg-background-primary">
-      <nav className="flex h-[110px] w-full items-center justify-between bg-background-tertiary">
-        <div className="flex w-[420px] items-center gap-2.5 px-10">
-          {leftContent}
-        </div>
-
-        <div className="flex w-[1080px] justify-center">{centerContent}</div>
-
-        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-          <div className="flex items-center justify-end gap-4 px-10">
-            {rightContent}
-          </div>
-        </div>
-      </nav>
+      <DashboardNavigation />
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
           games={games}
