@@ -20,13 +20,23 @@ const pretendard = localFont({
   variable: "--font-pretendard",
 })
 
+const joyofSinging = localFont({
+  src: "../../public/TJJoyofSingingB.otf",
+  weight: "700",
+  variable: "--font-joyofsinging",
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={pretendard.variable} suppressHydrationWarning>
+    <html
+      lang="ko"
+      className={`${pretendard.variable} ${joyofSinging.variable}`}
+      suppressHydrationWarning
+    >
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
         <Providers>{children}</Providers>

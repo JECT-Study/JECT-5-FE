@@ -9,12 +9,12 @@ export const HeroSection = ({ className = "" }: HeroSectionProps) => {
       aria-label="메인 히어로 섹션"
     >
       <h1
-        className="typography-heading-2xl-bold text-center text-text-interactive-secondary"
+        className="typography-heading-2xl-bold text-center font-joyofsinging text-text-interactive-secondary"
         data-testid="hero-title"
       >
         모두가 가볍게 즐길 수 있는
         <br />
-        라이트 레크레이션
+        <span className="text-text-interactive-primary">라이트</span> 레크레이션
       </h1>
     </section>
   )
