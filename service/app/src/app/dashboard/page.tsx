@@ -125,9 +125,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background-primary">
+    <main className="flex min-h-screen flex-col gap-[11vh] bg-background-primary">
       <DashboardNavigation />
-      <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
+      <div className="flex flex-col items-center">
         <GameLibraryGrid
           games={games}
           isLoading={isLoading}
