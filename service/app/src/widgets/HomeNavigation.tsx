@@ -14,7 +14,6 @@ import { HomeButton } from "./components/homeButton"
 import { KakaoLoginButton } from "./components/kakaoLoginButton"
 
 interface HomeNavigationProps {
-  isLoggedIn?: boolean
   className?: string
 }
 
@@ -48,55 +47,51 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     router.push("/login")
   }
 
+  const leftContent = <HomeButton />
+
+  const rightContent = (
+    <div className="flex items-center justify-end gap-4">
+      {isAuthenticated ? (
+        <>
+          <PrimaryBoxButton
+            size="sm"
+            _style="solid"
+            onClick={handleMyGamesClick}
+            aria-label="내 게임 관리 페이지로 이동"
+          >
+            내 게임
+          </PrimaryBoxButton>
+
+          <PrimaryBoxButton
+            size="sm"
+            _style="solid"
+            onClick={handleCreateGameClick}
+            aria-label="새 게임 만들기 페이지로 이동"
+          >
+            <Add className="size-6" aria-hidden="true" />
+            게임 만들기
+          </PrimaryBoxButton>
+
+          <AvatarButton onClick={handleLogoutClick} />
+        </>
+      ) : (
+        <KakaoLoginButton onClick={handleKakaoLogin} />
+      )}
+      {mounted && (
+        <ThemeToggle
+          theme={(resolvedTheme as "dark" | "light") || "light"}
+          onThemeToggle={handleThemeToggle}
+        />
+      )}
+    </div>
+  )
+
   return (
     <nav
-      className={`flex h-[90px] w-full shrink-0 items-center justify-between p-0 ${className}`}
-      role="navigation"
-      aria-label="메인 네비게이션"
+      className={`flex h-[90px] w-full shrink-0 items-center justify-between px-10 ${className}`}
     >
-      {/* Left container - Logo */}
-      <div className="flex w-[420px] items-center gap-0 self-stretch px-10">
-        <HomeButton />
-      </div>
-
-      {/* Right wrap - Actions */}
-      <div className="flex w-[420px] flex-col items-end justify-center gap-0 px-0">
-        {/* Right container - Actions */}
-        <div className="flex items-center justify-end gap-4 self-stretch px-10">
-          {isAuthenticated ? (
-            <>
-              <PrimaryBoxButton
-                size="sm"
-                _style="solid"
-                onClick={handleMyGamesClick}
-                aria-label="내 게임 관리 페이지로 이동"
-              >
-                내 게임
-              </PrimaryBoxButton>
-
-              <PrimaryBoxButton
-                size="sm"
-                _style="solid"
-                onClick={handleCreateGameClick}
-                aria-label="새 게임 만들기 페이지로 이동"
-              >
-                <Add className="size-6" aria-hidden="true" />
-                게임 만들기
-              </PrimaryBoxButton>
-
-              <AvatarButton onClick={handleLogoutClick} />
-            </>
-          ) : (
-            <KakaoLoginButton onClick={handleKakaoLogin} />
-          )}
-          {mounted && (
-            <ThemeToggle
-              theme={(resolvedTheme as "dark" | "light") || "light"}
-              onThemeToggle={handleThemeToggle}
-            />
-          )}
-        </div>
-      </div>
+      {leftContent}
+      {rightContent}
     </nav>
   )
 }
