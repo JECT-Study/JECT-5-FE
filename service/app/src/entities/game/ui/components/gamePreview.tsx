@@ -68,7 +68,7 @@ export const GamePreview = ({
           {/* 팝업헤더 */}
           <DialogHeader className="flex w-full flex-row items-start justify-between">
             {/* 게임 제목과 제작자 이름 container */}
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col gap-[8px] text-start">
               <h2 className="typography-heading-xl-semibold text-text-primary">
                 {gameTitle}
               </h2>
