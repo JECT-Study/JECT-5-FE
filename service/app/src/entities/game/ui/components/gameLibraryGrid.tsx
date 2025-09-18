@@ -16,9 +16,11 @@ import { useIntersectionObserver } from "@/shared/lib/useIntersectionObserver"
 interface GameLibraryGridProps {
   className?: string
   games?: GameListItem[]
+  isLoading?: boolean
   isFetchingNextPage?: boolean
   hasNextPage?: boolean
   onGameClick?: (game: GameListItem) => void
+  onCreateGame?: () => void
   onLoadMore?: () => void
   isDashboard?: boolean
 }
@@ -26,9 +28,11 @@ interface GameLibraryGridProps {
 export const GameLibraryGrid = ({
   className = "",
   games = [],
+  isLoading: _isLoading = false,
   isFetchingNextPage = false,
   hasNextPage = false,
   onGameClick,
+  onCreateGame,
   onLoadMore,
   isDashboard = false,
 }: GameLibraryGridProps) => {
@@ -49,7 +53,11 @@ export const GameLibraryGrid = ({
   const router = useRouter()
 
   const handleCreateGame = () => {
-    router.push("/create")
+    if (onCreateGame) {
+      onCreateGame()
+    } else {
+      router.push("/create")
+    }
   }
 
   const handleEditGame = (game: GameListItem) => {
