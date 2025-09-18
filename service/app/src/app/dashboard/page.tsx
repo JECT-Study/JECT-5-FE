@@ -1,14 +1,10 @@
 "use client"
 
-import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
-import { useEffect } from "react"
 
 import { GameListItem } from "@/entities/game"
-import { deleteGame, getGameDetail } from "@/entities/game/api"
-import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
-import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
+import { getGameDetail } from "@/entities/game/api"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
@@ -16,31 +12,11 @@ import DashboardNavigation from "@/widgets/DashboardNavigation"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const queryClient = useQueryClient()
 
-  const {
-    games,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-  } = useInfiniteMyGames({
-    limit: 19,
-  })
-
-  const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } =
-    useDashboardPopupActions()
-  const { shareGame: shareGameAction, unshareGame: unshareGameAction } =
-    useGameShareActions()
-
-  useEffect(() => {
-    refetch()
-  }, [refetch])
-
-  const handleCreateGame = () => {
-    router.push("/create")
-  }
+  const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteMyGames({
+      limit: 19,
+    })
 
   const handleGameClick = async (game: GameListItem) => {
     try {
@@ -85,45 +61,6 @@ export default function DashboardPage() {
     }
   }
 
-  const handleEditGame = (game: GameListItem) => {
-    router.push(`/create?gameId=${game.gameId}`)
-  }
-
-  const handleShareGame = (game: GameListItem) => {
-    if (game.isShared) {
-      showUnshareConfirm(game, async () => {
-        try {
-          await unshareGameAction(game)
-        } catch (error) {
-          console.error("Error unsharing game:", error)
-        }
-      })
-    } else {
-      showShareConfirm(game, async () => {
-        try {
-          await shareGameAction(game)
-        } catch (error) {
-          console.error("Error sharing game:", error)
-        }
-      })
-    }
-  }
-
-  const handleDeleteGame = (game: GameListItem) => {
-    showDeleteConfirm(game, async () => {
-      try {
-        const response = await deleteGame(game.gameId)
-        if (response.result === "SUCCESS") {
-          queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
-        } else {
-          console.error("Failed to delete game")
-        }
-      } catch (error) {
-        console.error("Error deleting game:", error)
-      }
-    })
-  }
-
   return (
     <main className="flex min-h-screen flex-col gap-[11vh] bg-background-primary">
       <DashboardNavigation />
@@ -133,13 +70,9 @@ export default function DashboardPage() {
           isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}
           hasNextPage={hasNextPage}
-          onCreateGame={handleCreateGame}
           onGameClick={handleGameClick}
           onLoadMore={handleLoadMore}
           isDashboard={true}
-          onEditGame={handleEditGame}
-          onShareGame={handleShareGame}
-          onDeleteGame={handleDeleteGame}
         />
       </div>
     </main>
