@@ -25,7 +25,7 @@ export default function GamesPage() {
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
-  const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+  const { games, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
     })
@@ -42,10 +42,6 @@ export default function GamesPage() {
 
     return title.includes(query)
   })
-
-  const handleCreateGame = () => {
-    router.push("/create")
-  }
 
   const handleGameClick = async (game: GameListItem) => {
     try {
@@ -175,10 +171,8 @@ export default function GamesPage() {
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
           games={filteredGames}
-          isLoading={isLoading}
           isFetchingNextPage={isFetchingNextPage}
           hasNextPage={hasNextPage}
-          onCreateGame={handleCreateGame}
           onGameClick={handleGameClick}
           onLoadMore={handleLoadMore}
         />
