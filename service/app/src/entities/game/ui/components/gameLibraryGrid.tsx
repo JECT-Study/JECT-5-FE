@@ -129,14 +129,12 @@ export const GameLibraryGrid = ({
                   >
                     {game.gameTitle}
                   </div>
-                  <div className="absolute right-0 top-11">
-                    <GameCardOptions
-                      shared={game.isShared}
-                      onEdit={() => handleEditGame(game)}
-                      onShare={() => handleShareGame(game)}
-                      onDelete={() => handleDeleteGame(game)}
-                    />
-                  </div>
+                  <GameCardOptions
+                    shared={game.isShared}
+                    onEdit={() => handleEditGame(game)}
+                    onShare={() => handleShareGame(game)}
+                    onDelete={() => handleDeleteGame(game)}
+                  />
                 </div>
               ) : (
                 <GameCard.Title>{game.gameTitle}</GameCard.Title>
