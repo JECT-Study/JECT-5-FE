@@ -21,7 +21,7 @@ export const KakaoLoginButton = ({
       <Image
         src="/kakao-logo.svg"
         alt="카카오 로고"
-        className="size-8"
+        className="size-32"
         width={32}
         height={32}
       />

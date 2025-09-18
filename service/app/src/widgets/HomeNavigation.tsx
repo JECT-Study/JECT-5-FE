@@ -50,7 +50,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const leftContent = <HomeButton />
 
   const rightContent = (
-    <div className="flex items-center justify-end gap-4">
+    <div className="flex items-center justify-end gap-16">
       {isAuthenticated ? (
         <>
           <PrimaryBoxButton
@@ -68,7 +68,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
             onClick={handleCreateGameClick}
             aria-label="새 게임 만들기 페이지로 이동"
           >
-            <Add className="size-6" aria-hidden="true" />
+            <Add aria-hidden="true" />
             게임 만들기
           </PrimaryBoxButton>
 
