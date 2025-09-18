@@ -101,11 +101,30 @@ const GameCardSharedBadge = ({ children, className }: GameCardBadgeProps) => {
   )
 }
 
+interface GameCardSkeletonProps {
+  className?: string
+}
+
+const GameCardSkeleton = ({ className }: GameCardSkeletonProps) => {
+  return (
+    <div
+      className={cn(
+        "flex w-[178px] flex-col items-start gap-[14px]",
+        className,
+      )}
+    >
+      <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
+      <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
+    </div>
+  )
+}
+
 export const GameCard = Object.assign(GameCardComponent, {
   Image: GameCardImage,
   Title: GameCardTitle,
   Badge: GameCardBadge,
   SharedBadge: GameCardSharedBadge,
+  Skeleton: GameCardSkeleton,
 })
 
 GameCardComponent.displayName = "GameCard"
