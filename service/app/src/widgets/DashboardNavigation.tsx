@@ -50,7 +50,7 @@ export default function DashboardNavigation({
   )
 
   const rightContent = (
-    <div className="flex items-center justify-end gap-4">
+    <div className="flex items-center justify-end gap-16">
       <PrimaryBoxButton
         size="sm"
         _style="solid"
