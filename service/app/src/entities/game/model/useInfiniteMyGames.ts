@@ -1,7 +1,6 @@
 "use client"
 
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { useCallback, useRef } from "react"
 
 import { getMyGames } from "@/entities/game/api"
 import type { GameListItem } from "@/entities/game/model"
@@ -9,6 +8,10 @@ import type { GameListItem } from "@/entities/game/model"
 interface UseInfiniteMyGamesParams {
   limit?: number
   enabled?: boolean
+  initialData?: {
+    pages: { games: GameListItem[] }[]
+    pageParams: PageParam[]
+  }
 }
 
 interface UseInfiniteMyGamesReturn {
@@ -21,7 +24,6 @@ interface UseInfiniteMyGamesReturn {
   error: Error | null
 }
 
-// 페이지 파라미터 타입 정의
 type PageParam =
   | {
       cursorGameId?: string
@@ -32,6 +34,7 @@ type PageParam =
 export const useInfiniteMyGames = ({
   limit = 10,
   enabled = true,
+  initialData,
 }: UseInfiniteMyGamesParams = {}): UseInfiniteMyGamesReturn => {
   const {
     data,
@@ -56,6 +59,7 @@ export const useInfiniteMyGames = ({
       }
       throw new Error("Failed to fetch my games")
     },
+    initialData: initialData,
     initialPageParam: undefined as PageParam,
     getNextPageParam: (lastPage: { games: GameListItem[] }) => {
       const games = lastPage.games
@@ -86,46 +90,4 @@ export const useInfiniteMyGames = ({
     refetch,
     error,
   }
-}
-
-export const useIntersectionObserver = (
-  callback: () => void,
-  options: IntersectionObserverInit = {},
-) => {
-  const observerRef = useRef<HTMLDivElement | null>(null)
-
-  const observerCallback = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries
-      if (entry.isIntersecting) {
-        callback()
-      }
-    },
-    [callback],
-  )
-
-  const observer = useRef<IntersectionObserver | null>(null)
-
-  const setObserverRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (observerRef.current) {
-        observer.current?.disconnect()
-      }
-
-      observerRef.current = node
-
-      if (node) {
-        observer.current = new IntersectionObserver(observerCallback, {
-          root: null,
-          rootMargin: "100px",
-          threshold: 0.1,
-          ...options,
-        })
-        observer.current.observe(node)
-      }
-    },
-    [observerCallback, options],
-  )
-
-  return setObserverRef
 }
