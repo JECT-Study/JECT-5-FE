@@ -8,7 +8,7 @@ interface GameCreateProps {
 export const GameCreate = ({ onClick, className = "" }: GameCreateProps) => {
   return (
     <div
-      className={`flex w-[178px] cursor-pointer flex-col items-center gap-4 ${className}`}
+      className={`flex w-[178px] cursor-pointer flex-col items-center gap-12 ${className}`}
       onClick={onClick}
       role="button"
       aria-label="게임 만들기"

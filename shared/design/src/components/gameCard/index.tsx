@@ -19,7 +19,7 @@ const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
         aria-label={accessibleName}
         className={cn("relative", className)}
       >
-        <div className="flex flex-col gap-[14px]">{children}</div>
+        <div className="flex flex-col gap-12">{children}</div>
       </div>
     )
   },
@@ -108,10 +108,7 @@ interface GameCardSkeletonProps {
 const GameCardSkeleton = ({ className }: GameCardSkeletonProps) => {
   return (
     <div
-      className={cn(
-        "flex w-[178px] flex-col items-start gap-[14px]",
-        className,
-      )}
+      className={cn("flex w-[178px] flex-col items-start gap-12", className)}
     >
       <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
       <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
