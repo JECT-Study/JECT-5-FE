@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  Control,
-  ErrorText,
-  Field,
-  Label,
-  Root,
-} from "@shared/design/src/components/input"
+import * as TextField from "@ject-5-fe/design/components/textField"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import {
@@ -35,39 +29,41 @@ export function QuestionInputForm() {
 
   return (
     <div className="flex w-[420px] flex-col gap-[54px]">
-      <Root>
-        <Field
-          state={questionError ? "error" : "default"}
-          type="labelOn"
-          name="question"
-          className="w-full"
-        >
-          <Label>질문*</Label>
-          <Control
+      <TextField.Root
+        name="question"
+        state={questionError ? "error" : "default"}
+        className="w-full"
+      >
+        <TextField.Label>질문*</TextField.Label>
+        <TextField.InputWrapper>
+          <TextField.Input
             placeholder="질문 입력"
             value={selectedQuestion?.text || ""}
-            onChange={handleQuestionChange}
+            onChange={(e) => handleQuestionChange(e.target.value)}
           />
-          {questionError && <ErrorText>{questionError}</ErrorText>}
-        </Field>
-      </Root>
+        </TextField.InputWrapper>
+        {questionError && (
+          <TextField.ErrorText>{questionError}</TextField.ErrorText>
+        )}
+      </TextField.Root>
 
-      <Root>
-        <Field
-          state={answerError ? "error" : "default"}
-          type="labelOn"
-          name="answer"
-          className="w-full"
-        >
-          <Label>답안*</Label>
-          <Control
+      <TextField.Root
+        name="answer"
+        state={answerError ? "error" : "default"}
+        className="w-full"
+      >
+        <TextField.Label>답안*</TextField.Label>
+        <TextField.InputWrapper>
+          <TextField.Input
             placeholder="답안 입력"
             value={selectedQuestion?.answer || ""}
-            onChange={handleAnswerChange}
+            onChange={(e) => handleAnswerChange(e.target.value)}
           />
-          {answerError && <ErrorText>{answerError}</ErrorText>}
-        </Field>
-      </Root>
+        </TextField.InputWrapper>
+        {answerError && (
+          <TextField.ErrorText>{answerError}</TextField.ErrorText>
+        )}
+      </TextField.Root>
     </div>
   )
 }
