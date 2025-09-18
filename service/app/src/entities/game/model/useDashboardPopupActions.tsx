@@ -17,7 +17,7 @@ export function useDashboardPopupActions() {
     overlay.open(({ isOpen, close }) => {
       return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-          <DialogContent role="alertdialog">
+          <DialogContent role="alertdialog" className="break-keep">
             <DialogHeader>
               이 게임을 라이브러리에 등록하시겠습니까?
             </DialogHeader>
@@ -48,7 +48,7 @@ export function useDashboardPopupActions() {
     overlay.open(({ isOpen, close }) => {
       return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-          <DialogContent role="alertdialog">
+          <DialogContent role="alertdialog" className="break-keep">
             <DialogHeader>라이브러리 공유를 취소하시겠습니까?</DialogHeader>
             <DialogBody>
               이 게임은 더 이상 다른 사용자에게 표시되지 않습니다.
@@ -76,7 +76,7 @@ export function useDashboardPopupActions() {
     overlay.open(({ isOpen, close }) => {
       return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-          <DialogContent role="alertdialog">
+          <DialogContent role="alertdialog" className="break-keep">
             <DialogHeader>게임을 삭제하시겠습니까?</DialogHeader>
             <DialogBody>삭제된 게임은 복구할 수 없습니다.</DialogBody>
             <DialogFooter>
