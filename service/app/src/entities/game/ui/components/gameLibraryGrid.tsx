@@ -4,9 +4,14 @@ import { GameCard } from "@shared/design/src/components/gameCard"
 import { GameCardOptions } from "@shared/design/src/components/gameCard/gameCardOptions"
 import { GameCreate } from "@shared/design/src/components/gameCreate"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
+import { deleteGame } from "@/entities/game/api"
 import type { GameListItem } from "@/entities/game/model"
-import { useIntersectionObserver } from "@/entities/game/model/useInfiniteGameList"
+import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
+import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
+import { queryClient } from "@/shared/lib/queryClient"
+import { useIntersectionObserver } from "@/shared/lib/useIntersectionObserver"
 
 interface GameLibraryGridProps {
   className?: string
@@ -14,13 +19,9 @@ interface GameLibraryGridProps {
   isLoading?: boolean
   isFetchingNextPage?: boolean
   hasNextPage?: boolean
-  onCreateGame?: () => void
   onGameClick?: (game: GameListItem) => void
   onLoadMore?: () => void
   isDashboard?: boolean
-  onEditGame?: (game: GameListItem) => void
-  onShareGame?: (game: GameListItem) => void
-  onDeleteGame?: (game: GameListItem) => void
 }
 
 export const GameLibraryGrid = ({
@@ -29,25 +30,74 @@ export const GameLibraryGrid = ({
   isLoading = false,
   isFetchingNextPage = false,
   hasNextPage = false,
-  onCreateGame,
   onGameClick,
   onLoadMore,
   isDashboard = false,
-  onEditGame,
-  onShareGame,
-  onDeleteGame,
 }: GameLibraryGridProps) => {
-  const setObserverRef = useIntersectionObserver(() => {
-    if (hasNextPage && !isFetchingNextPage && onLoadMore) {
-      onLoadMore()
-    }
+  const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } =
+    useDashboardPopupActions()
+  const { shareGame: shareGameAction, unshareGame: unshareGameAction } =
+    useGameShareActions()
+
+  const setObserverRef = useIntersectionObserver({
+    disabled: !hasNextPage || isFetchingNextPage || !onLoadMore,
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage && onLoadMore) {
+        onLoadMore()
+      }
+    },
   })
+
+  const router = useRouter()
+
+  const handleCreateGame = () => {
+    router.push("/create")
+  }
+
+  const handleEditGame = (game: GameListItem) => {
+    router.push(`/create?gameId=${game.gameId}`)
+  }
+
+  const handleShareGame = (game: GameListItem) => {
+    if (game.isShared) {
+      showUnshareConfirm(game, async () => {
+        try {
+          await unshareGameAction(game)
+        } catch (error) {
+          console.error("Error unsharing game:", error)
+        }
+      })
+    } else {
+      showShareConfirm(game, async () => {
+        try {
+          await shareGameAction(game)
+        } catch (error) {
+          console.error("Error sharing game:", error)
+        }
+      })
+    }
+  }
+
+  const handleDeleteGame = (game: GameListItem) => {
+    showDeleteConfirm(game, async () => {
+      try {
+        const response = await deleteGame(game.gameId)
+        if (response.result === "SUCCESS") {
+          queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
+        } else {
+          console.error("Failed to delete game")
+        }
+      } catch (error) {
+        console.error("Error deleting game:", error)
+      }
+    })
+  }
 
   return (
     <div className={`w-[1130px] ${className}`}>
       <div className="grid grid-cols-5 gap-[60px]">
         <div className="flex justify-center">
-          <GameCreate onClick={onCreateGame} />
+          <GameCreate onClick={handleCreateGame} />
         </div>
 
         {isLoading
@@ -103,9 +153,9 @@ export const GameLibraryGrid = ({
                       <div className="absolute right-0 top-[11px]">
                         <GameCardOptions
                           shared={game.isShared}
-                          onEdit={() => onEditGame?.(game)}
-                          onShare={() => onShareGame?.(game)}
-                          onDelete={() => onDeleteGame?.(game)}
+                          onEdit={() => handleEditGame(game)}
+                          onShare={() => handleShareGame(game)}
+                          onDelete={() => handleDeleteGame(game)}
                         />
                       </div>
                     </div>
