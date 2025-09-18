@@ -93,7 +93,7 @@ export const GameLibraryGrid = ({
 
   return (
     <div className={`w-[1130px] ${className}`}>
-      <div className="grid grid-cols-5 gap-[60px]">
+      <div className="grid grid-cols-5 gap-60">
         <div className="flex justify-center">
           <GameCreate onClick={handleCreateGame} />
         </div>
@@ -114,7 +114,7 @@ export const GameLibraryGrid = ({
                   placeholder="blur"
                   blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
                 />
-                <GameCard.Badge className="left-[8px] top-[8px]">
+                <GameCard.Badge className="left-8 top-8">
                   {game.questionCount}문제
                 </GameCard.Badge>
                 {game.isShared && (
@@ -129,7 +129,7 @@ export const GameLibraryGrid = ({
                   >
                     {game.gameTitle}
                   </div>
-                  <div className="absolute right-0 top-[11px]">
+                  <div className="absolute right-0 top-11">
                     <GameCardOptions
                       shared={game.isShared}
                       onEdit={() => handleEditGame(game)}
@@ -147,8 +147,8 @@ export const GameLibraryGrid = ({
       </div>
 
       {isFetchingNextPage && (
-        <div className="mt-[60px] flex w-full justify-center">
-          <div className="grid grid-cols-5 gap-[60px]">
+        <div className="mt-60 flex w-full justify-center">
+          <div className="grid grid-cols-5 gap-60">
             {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={`next-loading-${index}`}
@@ -165,7 +165,7 @@ export const GameLibraryGrid = ({
       {hasNextPage && (
         <div
           ref={setObserverRef}
-          className="mt-[60px] h-[20px] w-full"
+          className="mt-60 h-20 w-full"
           aria-hidden="true"
         />
       )}
