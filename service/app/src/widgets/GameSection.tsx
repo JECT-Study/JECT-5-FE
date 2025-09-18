@@ -35,20 +35,11 @@ const GameSectionHeader = ({ onViewMoreGames }: GameSectionHeaderProps) => {
   )
 }
 
-const GameCardSkeleton = () => {
-  return (
-    <div className="flex w-[178px] flex-col items-start gap-[14px]">
-      <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-      <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
-    </div>
-  )
-}
-
 const GameCardSectionSkeleton = () => {
   return (
     <div className="flex items-center justify-between">
       {Array.from({ length: 4 }).map((_, index) => (
-        <GameCardSkeleton key={index} />
+        <GameCard.Skeleton key={index} />
       ))}
     </div>
   )
