@@ -97,16 +97,6 @@ export const GameLibraryGrid = ({
         <div className="flex justify-center">
           <GameCreate onClick={handleCreateGame} />
         </div>
-
-        {Array.from({ length: 19 }).map((_, index) => (
-          <div
-            key={`loading-${index}`}
-            className="flex w-[178px] flex-col items-start gap-[14px]"
-          >
-            <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-            <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
-          </div>
-        ))}
         {games.map((game) => (
           <div
             key={game.gameId}
@@ -115,23 +105,15 @@ export const GameLibraryGrid = ({
           >
             <GameCard title={game.gameTitle}>
               <GameCard.Image>
-                {game.gameThumbnailUrl ? (
-                  <Image
-                    src={game.gameThumbnailUrl}
-                    alt={game.gameTitle}
-                    fill
-                    className="rounded-[10px] object-cover"
-                    sizes="178px"
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-                  />
-                ) : (
-                  <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
-                    <span className="text-[14px] font-medium text-gray-500">
-                      이미지 없음
-                    </span>
-                  </div>
-                )}
+                <Image
+                  src={game.gameThumbnailUrl ?? "/checker.svg"}
+                  alt={game.gameTitle}
+                  fill
+                  className="rounded-[10px] object-cover"
+                  sizes="178px"
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                />
                 <GameCard.Badge className="left-[8px] top-[8px]">
                   {game.questionCount}문제
                 </GameCard.Badge>
