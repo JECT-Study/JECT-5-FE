@@ -5,27 +5,21 @@ import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 
 import { useAuthStore } from "@/entities/auth"
+import AvatarButton from "@/widgets/components/avatarButton"
+import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
 
-import AvatarButton from "./components/avatarButton"
-import { HomeButton } from "./components/homeButton"
-import { KakaoLoginButton } from "./components/kakaoLoginButton"
-
-interface HomeNavigationProps {
+interface HomeNavigationClientProps {
   className?: string
 }
 
-export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
+export const HomeNavigationClient = ({
+  className = "",
+}: HomeNavigationClientProps) => {
   const router = useRouter()
   const { isAuthenticated, logout } = useAuthStore()
   const { theme, setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleMyGamesClick = () => {
     router.push("/dashboard")
@@ -47,10 +41,8 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
     router.push("/login")
   }
 
-  const leftContent = <HomeButton />
-
   const rightContent = (
-    <div className="flex items-center justify-end gap-16">
+    <div className={`flex items-center justify-end gap-16 ${className}`}>
       {isAuthenticated ? (
         <>
           <PrimaryBoxButton
@@ -77,21 +69,12 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       ) : (
         <KakaoLoginButton onClick={handleKakaoLogin} />
       )}
-      {mounted && (
-        <ThemeToggle
-          theme={(resolvedTheme as "dark" | "light") || "light"}
-          onThemeToggle={handleThemeToggle}
-        />
-      )}
+      <ThemeToggle
+        theme={(resolvedTheme as "dark" | "light") || "light"}
+        onThemeToggle={handleThemeToggle}
+      />
     </div>
   )
 
-  return (
-    <nav
-      className={`flex h-[90px] w-full shrink-0 items-center justify-between px-10 ${className}`}
-    >
-      {leftContent}
-      {rightContent}
-    </nav>
-  )
+  return rightContent
 }
