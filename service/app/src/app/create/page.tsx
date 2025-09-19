@@ -10,20 +10,16 @@ import { QuestionList } from "../../entities/game/ui/components/questionList"
 
 function CreateGameContent() {
   return (
-    <main className="min-h-screen bg-background-primary">
-      <CreateGameNavigation />
-      <div className="flex">
-        <QuestionList />
-
-        <div className="flex flex-1 items-start justify-center pt-[40px]">
+    <div className="flex">
+      <QuestionList />
+      <div className="flex w-full flex-col">
+        <CreateGameNavigation />
+        <div className="flex justify-center gap-40">
           <FileUploadArea />
-        </div>
-
-        <div className="w-[420px] pr-[284px] pt-[40px]">
           <QuestionInputForm />
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 
