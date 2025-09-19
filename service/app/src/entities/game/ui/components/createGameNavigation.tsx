@@ -19,8 +19,6 @@ export function CreateGameNavigation() {
     setMounted(true)
   }, [])
 
-  console.log(state)
-
   const handleGameNameChange = (value: string) => {
     actions.setGameName(value)
   }
@@ -39,14 +37,14 @@ export function CreateGameNavigation() {
 
   return (
     <nav
-      className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary px-10`}
+      className={`flex h-[90px] w-full items-center justify-between bg-background-tertiary`}
     >
-      <div className="flex w-[420px] items-center gap-2.5 bg-background-tertiary px-10">
+      <div className="flex items-center bg-background-tertiary px-10">
         <TextField.Root
           name="gameTitle"
           state={selectors.gameNameError ? "error" : "default"}
         >
-          <TextField.InputWrapper className="bg-background-interactive-input-primary">
+          <TextField.InputWrapper className="flex min-h-[23px] w-80 min-w-[288px] shrink-0 items-center gap-2 bg-background-interactive-input-primary p-12 px-16">
             <TextField.Input
               placeholder="게임 이름 입력"
               value={state.gameName}
@@ -55,13 +53,10 @@ export function CreateGameNavigation() {
               onBlur={handleGameNameBlur}
             />
           </TextField.InputWrapper>
-          {selectors.gameNameError && (
-            <TextField.ErrorText>{selectors.gameNameError}</TextField.ErrorText>
-          )}
         </TextField.Root>
       </div>
 
-      <div className="flex w-[420px] items-center justify-end gap-4 px-10">
+      <div className="flex items-center justify-center gap-16 px-10">
         {mounted && (
           <ThemeToggle
             theme={(resolvedTheme as "dark" | "light") || "light"}
