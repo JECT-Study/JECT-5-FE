@@ -11,11 +11,11 @@ export function QuestionList() {
 
   return (
     <div
-      className="flex w-[400px] flex-col items-center bg-background-tertiary p-[25px_25px_0_25px]"
+      className="flex h-[calc(100vh-90px)] min-w-[420px] flex-col items-center bg-background-tertiary px-32 py-16"
       role="list"
       aria-label="게임 문제 목록"
     >
-      <div className="flex w-[350px] flex-col items-start gap-6">
+      <div className="flex flex-col items-start gap-24 overflow-y-scroll">
         {state.questions.map((question, index) => {
           const questionSelectors = getQuestionSelectors(question.id)
           const isSelected = questionSelectors.isSelected
