@@ -1,10 +1,8 @@
-"use client"
-
 import { ErrorBoundary } from "react-error-boundary"
 
 import { GameSection } from "../widgets/GameSection"
 import { HeroSection } from "../widgets/HeroSection"
-import { HomeNavigation } from "../widgets/HomeNavigation"
+import { HomeNavigation } from "../widgets/navigation/ui/homeNavigation"
 import ErrorPage from "./error"
 
 function HomeContent() {
