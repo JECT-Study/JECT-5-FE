@@ -59,7 +59,7 @@ const QuestionRoot = ({
         role="group"
         aria-label={accessibleName}
         data-state={state}
-        className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-[10px] border-2 bg-background-primary p-5 ${getStateClasses()} ${className}`}
+        className={`relative h-[118px] w-[350px] shrink-0 cursor-pointer rounded-12 border-2 bg-background-primary ${getStateClasses()} ${className}`}
         onClick={onClick}
       >
         {children}
@@ -71,14 +71,21 @@ const QuestionRoot = ({
 interface QuestionTitleProps {
   children: React.ReactNode
   className?: string
+  hasImage?: boolean
 }
 
-const QuestionTitle = ({ children, className = "" }: QuestionTitleProps) => {
+const QuestionTitle = ({
+  children,
+  className = "",
+  hasImage = true,
+}: QuestionTitleProps) => {
   const { state } = useQuestionContext()
+
+  const titleWidth = hasImage ? "w-[173px]" : "w-[266px]"
 
   return (
     <h3
-      className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-[157px] pt-1 text-text-primary ${className}`}
+      className={`typography-heading-sm-medium absolute left-5 top-[26px] line-clamp-1 overflow-hidden text-ellipsis text-text-primary ${titleWidth} ${className}`}
     >
       {state === "error" ? <>❗ {children}</> : children}
     </h3>
@@ -97,17 +104,17 @@ const QuestionImage = ({
   className = "",
 }: QuestionImageProps) => {
   const defaultFallback = (
-    <div className="flex size-[78px] items-center justify-center rounded-[7px] bg-background-tertiary">
+    <div className="flex size-[78px] items-center justify-center rounded-8 bg-background-tertiary">
       <img
         src="/checker.svg"
         alt="기본 이미지"
-        className="size-[78px] rounded-[7px]"
+        className="size-[78px] rounded-8"
       />
     </div>
   )
 
   return (
-    <div className={`absolute right-14 top-5 ${className}`}>
+    <div className={`absolute left-[214px] top-5 ${className}`}>
       {children || fallback || defaultFallback}
     </div>
   )
@@ -130,7 +137,7 @@ const QuestionDeleteButton = ({
   const deleteLabel = index ? `${index}번째 문제 삭제` : "문제 삭제"
 
   return (
-    <div className={`absolute bottom-4 left-4 ${className}`}>
+    <div className={`absolute left-[14px] top-[68px] ${className}`}>
       <DestructiveSolidIconButton
         onClick={(e: MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation()
@@ -165,7 +172,7 @@ const QuestionMoveButtons = ({
 
   return (
     <div
-      className={`absolute right-4 top-5 flex flex-col items-center gap-5 ${className}`}
+      className={`absolute left-[304px] top-5 flex w-7 flex-col items-center justify-center gap-6 ${className}`}
     >
       <SecondaryPlainIconButton
         onClick={(e: MouseEvent<HTMLButtonElement>) => {
