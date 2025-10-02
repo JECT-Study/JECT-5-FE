@@ -9,7 +9,7 @@ import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
-import { useAuth } from "@/entities/auth"
+import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
@@ -21,7 +21,7 @@ import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const { user, logout, isAuthenticated } = useAuth()
+  const { logout, isAuthenticated, user } = useAuthStore()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -148,10 +148,7 @@ export default function GamesPage() {
               {user?.nickname}
             </span>
           </div>
-          <AvatarButton
-            onClick={handleLogoutClick}
-            src={user?.profileImageUrl}
-          />
+          <AvatarButton onClick={handleLogoutClick} />
         </>
       ) : (
         <KakaoLoginButton onClick={handleKakaoLogin} />

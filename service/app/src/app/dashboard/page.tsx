@@ -10,7 +10,7 @@ import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
-import { useAuth } from "@/entities/auth"
+import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { deleteGame, getGameDetail } from "@/entities/game/api"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
@@ -24,7 +24,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { logout, user } = useAuth()
+  const { logout } = useAuthStore()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -185,7 +185,7 @@ export default function DashboardPage() {
         게임 만들기
       </PrimaryBoxButton>
 
-      <AvatarButton onClick={handleLogoutClick} src={user?.profileImageUrl} />
+      <AvatarButton onClick={handleLogoutClick} />
 
       {mounted && (
         <ThemeToggle
