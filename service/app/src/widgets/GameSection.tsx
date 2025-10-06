@@ -85,10 +85,7 @@ const GameSectionCards = ({
   })
 
   return (
-    <div
-      aria-label={`${games.length}개의 추천 게임`}
-      className="flex items-center justify-between"
-    >
+    <div className="flex items-center justify-between">
       {games.map((game, _index) => (
         <div key={game.gameId}>
           <button
