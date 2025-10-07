@@ -21,7 +21,7 @@ const pretendard = localFont({
 })
 
 const joyofSinging = localFont({
-  src: "../../public/TJJoyofSingingB.otf",
+  src: "../../public/TJJoyofsingingB.otf",
   weight: "700",
   variable: "--font-joyofsinging",
 })
