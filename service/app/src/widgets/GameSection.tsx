@@ -6,13 +6,13 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
-import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 
 interface GameSectionProps {
   className?: string
@@ -76,10 +76,7 @@ const GameSectionCards = ({
   })
 
   return (
-    <div
-      aria-label={`${games.length}개의 추천 게임`}
-      className="flex items-center justify-between"
-    >
+    <div className="flex items-center justify-between">
       {games.map((game, _index) => (
         <div key={game.gameId}>
           <button
@@ -174,12 +171,12 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       <div className="flex min-w-[952px] flex-col gap-7">
         <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
         <ErrorBoundary FallbackComponent={GameSectionCardsError}>
-          <Suspense fallback={<GameCardSectionSkeleton />}>
+          <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
             <GameSectionCards
               onGameCardClick={handleGameCardClick}
               onGameCardKeyDown={handleGameCardKeyDown}
             />
-          </Suspense>
+          </SSRSafeSuspense>
         </ErrorBoundary>
       </div>
     </section>
