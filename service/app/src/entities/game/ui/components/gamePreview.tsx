@@ -57,7 +57,7 @@ export const GamePreview = ({
           <SecondaryPlainIconButton
             size="lg"
             onClick={handleClose}
-            aria-label="팝업 닫기"
+            aria-label="게임 미리보기 닫기"
           >
             <Cross />
           </SecondaryPlainIconButton>
@@ -69,10 +69,16 @@ export const GamePreview = ({
           <DialogHeader className="flex w-full flex-row items-start justify-between">
             {/* 게임 제목과 제작자 이름 container */}
             <div className="flex flex-col gap-[8px] text-start">
-              <h2 className="typography-heading-xl-semibold text-text-primary">
+              <h2
+                className="typography-heading-xl-semibold text-text-primary"
+                data-testid="game-preview-game-title"
+              >
                 {gameTitle}
               </h2>
-              <p className="typography-body-md-medium text-text-secondary">
+              <p
+                className="typography-body-md-medium text-text-secondary"
+                data-testid="game-preview-creator-name"
+              >
                 {creatorName}
               </p>
             </div>
@@ -90,10 +96,16 @@ export const GamePreview = ({
 
           {/* 팝업본문 */}
           <DialogBody className="flex w-full flex-col items-start gap-[20px]">
-            <p className="typography-heading-lg-medium text-text-primary">
+            <p
+              className="typography-heading-lg-medium text-text-primary"
+              data-testid="game-preview-question-count"
+            >
               총 {questionCount} 문제
             </p>
-            <div className="flex w-full items-center gap-[32px] overflow-x-auto p-0">
+            <div
+              className="flex w-full items-center gap-[32px] overflow-x-auto p-0"
+              data-testid="game-preview-questions"
+            >
               {questions.map((question, _index) => (
                 <GameCard key={question.id}>
                   {question.imageUrl ? (

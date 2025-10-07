@@ -78,7 +78,6 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 size="sm"
                 _style="solid"
                 onClick={handleCreateGameClick}
-                aria-label="새 게임 만들기 페이지로 이동"
               >
                 <Add className="size-6" aria-hidden="true" />
                 게임 만들기

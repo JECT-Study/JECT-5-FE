@@ -8,10 +8,10 @@ interface ThemeToggleProps {
   ariaLabel?: string
 }
 
-export const ThemeToggle = ({ 
-  className = "", 
+export const ThemeToggle = ({
+  className = "",
   theme = "light",
-  onThemeToggle ,
+  onThemeToggle,
   ariaLabel,
 }: ThemeToggleProps) => {
   const handleThemeToggle = () => {
@@ -22,8 +22,20 @@ export const ThemeToggle = ({
   const label = ariaLabel || (isDark ? "라이트 모드 전환" : "다크 모드 전환")
 
   return (
-    <SecondaryGhostIconButton onClick={handleThemeToggle} className={className} type="button" aria-label={label} aria-pressed={isDark} title={label}>
-      {theme === "dark" ? <SunFilled aria-hidden="true" /> : <Sun aria-hidden="true" />}
+    <SecondaryGhostIconButton
+      onClick={handleThemeToggle}
+      className={className}
+      type="button"
+      aria-label={label}
+      aria-pressed={isDark}
+      title={label}
+      data-testid="theme-toggle-button"
+    >
+      {theme === "dark" ? (
+        <SunFilled aria-hidden="true" />
+      ) : (
+        <Sun aria-hidden="true" />
+      )}
     </SecondaryGhostIconButton>
   )
 }

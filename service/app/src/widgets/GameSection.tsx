@@ -85,7 +85,10 @@ const GameSectionCards = ({
   })
 
   return (
-    <div className="flex items-center justify-between">
+    <div
+      className="flex items-center justify-between"
+      data-testid="game-section-cards"
+    >
       {games.map((game, _index) => (
         <div key={game.gameId}>
           <button
