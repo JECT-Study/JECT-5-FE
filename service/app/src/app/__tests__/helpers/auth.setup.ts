@@ -8,6 +8,7 @@ setup("authenticate", async ({ page }) => {
   await page.getByRole("button", { name: "간편로그인해서 게임 만들기" }).click()
   await page.waitForLoadState("networkidle")
 
+  await page.waitForURL("/")
   await expect(page.getByRole("button", { name: "내 게임" })).toBeVisible()
 
   await page.context().storageState({ path: authFile })
