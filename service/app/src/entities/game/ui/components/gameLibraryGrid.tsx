@@ -1,6 +1,6 @@
 "use client"
 
-import { GameCard } from "@shared/design/src/components/gameCard"
+import * as GameCard from "@shared/design/src/components/gameCard"
 import { GameCardOptions } from "@shared/design/src/components/gameCard/gameCardOptions"
 import { GameCreate } from "@shared/design/src/components/gameCreate"
 import Image from "next/image"
@@ -103,7 +103,7 @@ export const GameLibraryGrid = ({
             onClick={() => onGameClick?.(game)}
             className="cursor-pointer"
           >
-            <GameCard title={game.gameTitle}>
+            <GameCard.GameCard title={game.gameTitle}>
               <GameCard.Image>
                 <Image
                   src={game.gameThumbnailUrl ?? "/checker.svg"}
@@ -139,7 +139,7 @@ export const GameLibraryGrid = ({
               ) : (
                 <GameCard.Title>{game.gameTitle}</GameCard.Title>
               )}
-            </GameCard>
+            </GameCard.GameCard>
           </div>
         ))}
       </div>

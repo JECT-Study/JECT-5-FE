@@ -116,12 +116,11 @@ const GameCardSkeleton = ({ className }: GameCardSkeletonProps) => {
   )
 }
 
-export const GameCard = Object.assign(GameCardComponent, {
-  Image: GameCardImage,
-  Title: GameCardTitle,
-  Badge: GameCardBadge,
-  SharedBadge: GameCardSharedBadge,
-  Skeleton: GameCardSkeleton,
-})
+export const GameCard = GameCardComponent
+export const Image = GameCardImage
+export const Title = GameCardTitle
+export const Badge = GameCardBadge
+export const SharedBadge = GameCardSharedBadge
+export const Skeleton = GameCardSkeleton
 
-GameCardComponent.displayName = "GameCard"
+GameCard.displayName = "GameCard"

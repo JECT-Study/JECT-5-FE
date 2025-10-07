@@ -1,7 +1,7 @@
 "use client"
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { GameCard } from "@shared/design/src/components/gameCard"
+import * as GameCard from "@shared/design/src/components/gameCard"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -85,7 +85,7 @@ const GameSectionCards = ({
             aria-label={`${game.gameTitle} 게임 미리보기 보기. ${game.questionCount}개의 질문이 있습니다.`}
             tabIndex={0}
           >
-            <GameCard>
+            <GameCard.GameCard>
               <GameCard.Image>
                 <Image
                   src={game.gameThumbnailUrl ?? "/checker.svg"}
@@ -102,7 +102,7 @@ const GameSectionCards = ({
                 )}
               </GameCard.Image>
               <GameCard.Title>{game.gameTitle}</GameCard.Title>
-            </GameCard>
+            </GameCard.GameCard>
           </button>
         </div>
       ))}

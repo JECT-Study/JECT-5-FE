@@ -1,4 +1,4 @@
-import { GameCard } from "@shared/design/src/components/gameCard"
+import * as GameCard from "@shared/design/src/components/gameCard"
 import { GameCreate } from "@shared/design/src/components/gameCreate"
 
 export default function GameCardGridSkeleton() {

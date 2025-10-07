@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 
-import { GameCard } from "../components/gameCard"
+import * as GameCard from "../components/gameCard"
 import { GameCardOptions } from "../components/gameCard/gameCardOptions"
 
 interface StoryArgs {
@@ -9,7 +9,7 @@ interface StoryArgs {
 
 const meta = {
   title: "Components/GameCard",
-  component: GameCard,
+  component: GameCard.GameCard,
   parameters: {
     layout: "centered",
     docs: {
@@ -83,13 +83,13 @@ const meta = {
         "**게임 카드 접근성 라벨**\n- 선택적 prop으로 제공 시 `{title} 게임 카드`로 aria-label 생성\n- E2E 테스트에서 특정 게임 카드 식별에 활용",
     },
   },
-} satisfies Meta<typeof GameCard>
+} satisfies Meta<typeof GameCard.GameCard>
 
 export default meta
 type Story = StoryObj<StoryArgs>
 
 const SharedGameTemplate = (args: StoryArgs) => (
-  <GameCard title={args.title}>
+  <GameCard.GameCard title={args.title}>
     <GameCard.Image>
       <div className="flex size-full items-center justify-center rounded-[10px] bg-black">
         <span className="font-bold text-white">게임 이미지</span>
@@ -98,11 +98,11 @@ const SharedGameTemplate = (args: StoryArgs) => (
       <GameCard.SharedBadge>공유</GameCard.SharedBadge>
     </GameCard.Image>
     <GameCard.Title>{args.title}</GameCard.Title>
-  </GameCard>
+  </GameCard.GameCard>
 )
 
 const UnSharedGameTemplate = (args: StoryArgs) => (
-  <GameCard title={args.title}>
+  <GameCard.GameCard title={args.title}>
     <GameCard.Image>
       <div className="flex size-full items-center justify-center rounded-[10px] bg-black">
         <span className="font-bold text-white">게임 이미지</span>
@@ -110,11 +110,11 @@ const UnSharedGameTemplate = (args: StoryArgs) => (
       <GameCard.Badge className="left-[8px] top-[8px]">8문제</GameCard.Badge>
     </GameCard.Image>
     <GameCard.Title>{args.title}</GameCard.Title>
-  </GameCard>
+  </GameCard.GameCard>
 )
 
 const MyGameTemplate = (args: StoryArgs) => (
-  <GameCard title={args.title}>
+  <GameCard.GameCard title={args.title}>
     <GameCard.Image>
       <div className="flex size-full items-center justify-center rounded-[10px] bg-black">
         <span className="font-bold text-white">내 게임</span>
@@ -135,7 +135,7 @@ const MyGameTemplate = (args: StoryArgs) => (
         />
       </div>
     </div>
-  </GameCard>
+  </GameCard.GameCard>
 )
 
 export const SharedGame: Story = {
@@ -187,7 +187,7 @@ export const NoImageGame: Story = {
     title: "이미지 없는 게임",
   },
   render: (args: StoryArgs) => (
-    <GameCard title={args.title}>
+    <GameCard.GameCard title={args.title}>
       <GameCard.Image>
         <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
           <img src="/checker.svg" alt="게임 이미지" className="size-[178px]" />
@@ -195,7 +195,7 @@ export const NoImageGame: Story = {
         <GameCard.Badge className="left-[8px] top-[8px]">5문제</GameCard.Badge>
       </GameCard.Image>
       <GameCard.Title>{args.title}</GameCard.Title>
-    </GameCard>
+    </GameCard.GameCard>
   ),
   parameters: {
     docs: {

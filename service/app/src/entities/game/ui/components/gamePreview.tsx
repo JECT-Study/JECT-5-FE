@@ -10,7 +10,7 @@ import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
 } from "@shared/design/src/components/button"
-import { GameCard } from "@shared/design/src/components/gameCard"
+import * as GameCard from "@shared/design/src/components/gameCard"
 import { Cross, Play } from "@shared/design/src/icons"
 import Image from "next/image"
 
@@ -95,7 +95,7 @@ export const GamePreview = ({
             </p>
             <div className="flex w-full items-center gap-[32px] overflow-x-auto p-0">
               {questions.map((question, _index) => (
-                <GameCard key={question.id}>
+                <GameCard.GameCard key={question.id}>
                   {question.imageUrl ? (
                     <GameCard.Image className="h-[260px]">
                       <Image
@@ -110,7 +110,7 @@ export const GamePreview = ({
                     </GameCard.Image>
                   ) : null}
                   <GameCard.Title>{question.title}</GameCard.Title>
-                </GameCard>
+                </GameCard.GameCard>
               ))}
             </div>
           </DialogBody>
