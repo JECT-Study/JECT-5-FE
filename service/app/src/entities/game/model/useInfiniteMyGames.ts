@@ -14,6 +14,7 @@ export const useInfiniteMyGames = (params?: {
   >({
     queryKey: ["infiniteMyGames", { limit: params?.limit }],
     queryFn: async (pageParam) => {
+      if (!params) return { games: [] }
       const response = await getMyGames({
         limit: params?.limit ?? 10,
         ...pageParam,
