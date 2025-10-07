@@ -6,6 +6,7 @@ setup("authenticate", async ({ page }) => {
   await page.goto("/")
 
   await page.getByRole("button", { name: "간편로그인해서 게임 만들기" }).click()
+  await page.waitForLoadState("networkidle")
 
   await expect(page.getByRole("button", { name: "내 게임" })).toBeVisible()
 
