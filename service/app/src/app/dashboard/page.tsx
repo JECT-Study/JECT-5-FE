@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
-import { Suspense } from "react"
 
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 import DashboardNavigation from "@/widgets/DashboardNavigation"
 
 import GameCardGridSkeleton from "./loading"
@@ -68,7 +68,7 @@ export default function DashboardPage() {
     <main className="flex min-h-screen flex-col gap-[11vh] bg-background-primary">
       <DashboardNavigation />
       <div className="flex flex-col items-center">
-        <Suspense fallback={<GameCardGridSkeleton />}>
+        <SSRSafeSuspense fallback={<GameCardGridSkeleton />}>
           <GameLibraryGrid
             games={games}
             isFetchingNextPage={isFetchingNextPage}
@@ -77,7 +77,7 @@ export default function DashboardPage() {
             onLoadMore={handleLoadMore}
             isDashboard={true}
           />
-        </Suspense>
+        </SSRSafeSuspense>
       </div>
     </main>
   )
