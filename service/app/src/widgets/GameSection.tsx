@@ -114,7 +114,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
   const router = useRouter()
 
   const handleViewMoreGames = () => {
-    router.push("/games")
+    router.push("/library")
   }
 
   const handleGameCardClick = async (game: GameListItem) => {

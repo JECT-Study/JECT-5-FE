@@ -13,17 +13,17 @@ import AvatarButton from "@/widgets/components/avatarButton"
 import { HomeButton } from "@/widgets/components/homeButton"
 import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
 
-interface GamesNavigationProps {
+interface LibraryNavigationProps {
   className?: string
   searchQuery: string
   onSearchChange: (value: string) => void
 }
 
-export default function GamesNavigation({
+export default function LibraryNavigation({
   className = "",
   searchQuery,
   onSearchChange,
-}: GamesNavigationProps) {
+}: LibraryNavigationProps) {
   const router = useRouter()
   const { logout, isAuthenticated } = useAuthStore()
   const { setTheme, resolvedTheme } = useTheme()
