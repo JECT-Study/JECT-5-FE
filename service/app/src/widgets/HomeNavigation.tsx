@@ -3,7 +3,6 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
@@ -11,6 +10,7 @@ import { useEffect, useState } from "react"
 import { useAuthStore } from "@/entities/auth"
 
 import AvatarButton from "./components/avatarButton"
+import { HomeButton } from "./components/homeButton"
 import { KakaoLoginButton } from "./components/kakaoLoginButton"
 
 interface HomeNavigationProps {
@@ -50,31 +50,19 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
 
   return (
     <nav
-      className={`flex h-[110px] w-full items-center justify-between bg-background-tertiary ${className}`}
+      className={`flex h-[90px] w-full shrink-0 items-center justify-between p-0 ${className}`}
       role="navigation"
       aria-label="메인 네비게이션"
     >
-      <div className="flex w-[420px] items-center gap-2.5 px-10">
-        <button
-          className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none"
-          onClick={() => router.push("/")}
-          aria-label="홈으로 이동"
-          tabIndex={0}
-        >
-          <Image
-            src="/logo.svg"
-            alt="홈 로고"
-            className="size-full"
-            width={268}
-            height={60}
-          />
-        </button>
+      {/* Left container - Logo */}
+      <div className="flex w-[420px] items-center gap-0 self-stretch px-10">
+        <HomeButton />
       </div>
 
-      <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-        <div
-          className={`flex items-center gap-4 px-10 ${isAuthenticated ? "justify-end" : "justify-center"}`}
-        >
+      {/* Right wrap - Actions */}
+      <div className="flex w-[420px] flex-col items-end justify-center gap-0 px-0">
+        {/* Right container - Actions */}
+        <div className="flex items-center justify-end gap-4 self-stretch px-10">
           {isAuthenticated ? (
             <>
               <PrimaryBoxButton

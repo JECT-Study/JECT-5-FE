@@ -1,6 +1,11 @@
 "use client"
 
-import { Dialog, DialogContent } from "@ject-5-fe/design/components/dialog"
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogHeader,
+} from "@ject-5-fe/design/components/dialog"
 import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
@@ -26,8 +31,8 @@ interface GamePreviewProps {
 
 export const GamePreview = ({
   className = "",
-  gameTitle = "연예인 맞히기",
-  creatorName = "제작자 이름",
+  gameTitle,
+  creatorName,
   questionCount = 10,
   questions = [],
   onClose,
@@ -44,52 +49,51 @@ export const GamePreview = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose?.()}>
-      <DialogContent className="max-w-[987px] border-none bg-transparent p-0 shadow-none">
-        <div
-          className={`flex w-[987px] flex-col rounded-[10px] bg-background-interactive-primary-sub ${className}`}
-        >
-          <div
-            className="flex h-[62px] w-full items-center justify-end gap-[10px] px-[22px] py-[15px]"
-            data-testid="close-area"
+      <DialogContent
+        className={`min-h-[574px] min-w-[987px] shrink-0 ${className}`}
+      >
+        {/* 팝업 닫기 버튼 */}
+        <div className="flex h-[62px] w-full items-center justify-end px-[24px] py-[16px]">
+          <SecondaryPlainIconButton
+            size="lg"
+            onClick={handleClose}
+            aria-label="팝업 닫기"
           >
-            <SecondaryPlainIconButton
-              size="lg"
-              onClick={handleClose}
-              aria-label="팝업 닫기"
-            >
-              <Cross />
-            </SecondaryPlainIconButton>
-          </div>
+            <Cross />
+          </SecondaryPlainIconButton>
+        </div>
 
-          <div className="flex w-full flex-col gap-[25px] px-[60px] pb-[60px]">
-            <div className="flex w-[860px] items-start justify-between">
-              <div className="flex flex-col gap-[18px]">
-                <h2 className="typography-heading-xl-semibold text-text-primary">
-                  {gameTitle}
-                </h2>
-                <p className="typography-body-md-medium text-text-secondary">
-                  {creatorName}
-                </p>
-              </div>
-              <PrimaryBoxButton
-                size="lg"
-                _style="solid"
-                onClick={handleStartGame}
-                aria-label="게임 시작"
-              >
-                <Play />
-                게임 시작
-              </PrimaryBoxButton>
+        {/* 팝업 내용 - 팝업헤더, 본문 감싸는 wrap */}
+        <div className="flex w-full flex-col gap-[38px] px-[60px] pb-[36px]">
+          {/* 팝업헤더 */}
+          <DialogHeader className="flex w-full flex-row items-start justify-between">
+            {/* 게임 제목과 제작자 이름 container */}
+            <div className="flex flex-col gap-[8px] text-start">
+              <h2 className="typography-heading-xl-semibold text-text-primary">
+                {gameTitle}
+              </h2>
+              <p className="typography-body-md-medium text-text-secondary">
+                {creatorName}
+              </p>
             </div>
 
+            <PrimaryBoxButton
+              size="lg"
+              _style="solid"
+              onClick={handleStartGame}
+              aria-label="게임 시작"
+            >
+              <Play />
+              게임 시작
+            </PrimaryBoxButton>
+          </DialogHeader>
+
+          {/* 팝업본문 */}
+          <DialogBody className="flex w-full flex-col items-start gap-[20px]">
             <p className="typography-heading-lg-medium text-text-primary">
               총 {questionCount} 문제
             </p>
-
-            <div
-              className="flex items-center gap-[34px] overflow-x-auto"
-              data-testid="image-carousel"
-            >
+            <div className="flex w-full items-center gap-[32px] overflow-x-auto p-0">
               {questions.map((question, _index) => (
                 <GameCard key={question.id}>
                   {question.imageUrl ? (
@@ -109,7 +113,7 @@ export const GamePreview = ({
                 </GameCard>
               ))}
             </div>
-          </div>
+          </DialogBody>
         </div>
       </DialogContent>
     </Dialog>

@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         pretendard: ["var(--font-pretendard)"],
+        joyofsinging: ["var(--font-joyofsinging)"],
       },
     },
   },
