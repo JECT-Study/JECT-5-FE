@@ -1,6 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 import { GameCreationProvider } from "../../entities/game/model/state/create/gameCreationContext"
 import { CreateGameNavigation } from "../../entities/game/ui/components/createGameNavigation"
@@ -38,6 +39,21 @@ function CreateGamePageContent() {
   )
 }
 
+const CreateGamePageSkeleton = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background-primary">
+      <div className="text-center">
+        <div className="mb-4">페이지를 준비하고 있습니다</div>
+        <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+      </div>
+    </div>
+  )
+}
+
 export default function CreateGamePage() {
-  return <CreateGamePageContent />
+  return (
+    <Suspense fallback={<CreateGamePageSkeleton />}>
+      <CreateGamePageContent />
+    </Suspense>
+  )
 }
