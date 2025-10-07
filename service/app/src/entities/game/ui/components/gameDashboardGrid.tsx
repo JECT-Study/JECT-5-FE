@@ -10,38 +10,35 @@ import { deleteGame } from "@/entities/game/api"
 import type { GameListItem } from "@/entities/game/model"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
 import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
+import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { queryClient } from "@/shared/lib/queryClient"
 import { useIntersectionObserver } from "@/shared/lib/useIntersectionObserver"
 
-interface GameLibraryGridProps {
+interface GameDashboardGridProps {
   className?: string
-  games?: GameListItem[]
-  isFetchingNextPage?: boolean
-  hasNextPage?: boolean
   onGameClick?: (game: GameListItem) => void
-  onLoadMore?: () => void
-  isDashboard?: boolean
+  limit?: number
 }
 
-export const GameLibraryGrid = ({
+export const GameDashboardGrid = ({
   className = "",
-  games = [],
-  isFetchingNextPage = false,
-  hasNextPage = false,
   onGameClick,
-  onLoadMore,
-  isDashboard = false,
-}: GameLibraryGridProps) => {
+  limit = 19,
+}: GameDashboardGridProps) => {
+  const { games, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteMyGames({
+      limit,
+    })
   const { showShareConfirm, showUnshareConfirm, showDeleteConfirm } =
     useDashboardPopupActions()
   const { shareGame: shareGameAction, unshareGame: unshareGameAction } =
     useGameShareActions()
 
   const setObserverRef = useIntersectionObserver({
-    disabled: !hasNextPage || isFetchingNextPage || !onLoadMore,
+    disabled: !hasNextPage || isFetchingNextPage,
     onIntersect: () => {
-      if (hasNextPage && !isFetchingNextPage && onLoadMore) {
-        onLoadMore()
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage()
       }
     },
   })
@@ -121,24 +118,20 @@ export const GameLibraryGrid = ({
                   <GameCard.SharedBadge>공유</GameCard.SharedBadge>
                 )}
               </GameCard.Image>
-              {isDashboard ? (
-                <div className="relative flex h-[46px] w-[178px] items-center justify-end">
-                  <div
-                    className="absolute left-6 line-clamp-2 h-[46px] w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
-                    data-testid="game-title"
-                  >
-                    {game.gameTitle}
-                  </div>
-                  <GameCardOptions
-                    shared={game.isShared}
-                    onEdit={() => handleEditGame(game)}
-                    onShare={() => handleShareGame(game)}
-                    onDelete={() => handleDeleteGame(game)}
-                  />
+              <div className="relative flex h-[46px] w-[178px] items-center justify-end">
+                <div
+                  className="absolute left-6 line-clamp-2 h-[46px] w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
+                  data-testid="game-title"
+                >
+                  {game.gameTitle}
                 </div>
-              ) : (
-                <GameCard.Title>{game.gameTitle}</GameCard.Title>
-              )}
+                <GameCardOptions
+                  shared={game.isShared}
+                  onEdit={() => handleEditGame(game)}
+                  onShare={() => handleShareGame(game)}
+                  onDelete={() => handleDeleteGame(game)}
+                />
+              </div>
             </GameCard.GameCard>
           </div>
         ))}

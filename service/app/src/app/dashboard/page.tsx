@@ -5,8 +5,7 @@ import { overlay } from "overlay-kit"
 
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api"
-import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
-import { GameLibraryGrid } from "@/entities/game/ui/components"
+import { GameDashboardGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 import DashboardNavigation from "@/widgets/DashboardNavigation"
@@ -15,11 +14,6 @@ import GameCardGridSkeleton from "./loading"
 
 export default function DashboardPage() {
   const router = useRouter()
-
-  const { games, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteMyGames({
-      limit: 19,
-    })
 
   const handleGameClick = async (game: GameListItem) => {
     try {
@@ -58,25 +52,12 @@ export default function DashboardPage() {
     }
   }
 
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
   return (
     <main className="flex min-h-screen flex-col gap-[11vh] bg-background-primary">
       <DashboardNavigation />
       <div className="flex flex-col items-center">
         <SSRSafeSuspense fallback={<GameCardGridSkeleton />}>
-          <GameLibraryGrid
-            games={games}
-            isFetchingNextPage={isFetchingNextPage}
-            hasNextPage={hasNextPage}
-            onGameClick={handleGameClick}
-            onLoadMore={handleLoadMore}
-            isDashboard={true}
-          />
+          <GameDashboardGrid onGameClick={handleGameClick} limit={19} />
         </SSRSafeSuspense>
       </div>
     </main>

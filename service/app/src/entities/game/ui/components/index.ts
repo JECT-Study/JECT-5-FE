@@ -1,5 +1,5 @@
 export { CreateGameNavigation } from "./createGameNavigation"
 export { FileUploadArea } from "./fileUploadArea"
-export { GameLibraryGrid } from "./gameLibraryGrid"
+export { GameDashboardGrid } from "./gameDashboardGrid"
 export { QuestionInputForm } from "./questionInputForm"
 export { QuestionList } from "./questionList"
