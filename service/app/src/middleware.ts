@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   if (
     isPageNavigation &&
     !isPublicAsset &&
-    (device.type === "mobile" || device.type === "tablet")
+    (device?.type === "mobile" || device?.type === "tablet")
   ) {
     return NextResponse.rewrite(new URL("/mobile", request.url))
   }
