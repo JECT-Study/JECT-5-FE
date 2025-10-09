@@ -173,7 +173,7 @@ export const DialogFooter = ({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex w-full items-center justify-center gap-2 *:flex-1",
+        "flex w-full items-center justify-center gap-8 *:flex-1",
         className,
       )}
       {...props}
