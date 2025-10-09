@@ -53,7 +53,7 @@ const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
     <div className="h-[46px] w-[178px]">
       <h3
         className={cn(
-          "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
+          "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-[19px] font-bold leading-[120%] text-text-primary",
           className,
         )}
       >

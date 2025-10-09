@@ -78,7 +78,7 @@ const QuestionTitle = ({ children, className = "" }: QuestionTitleProps) => {
 
   return (
     <h3
-      className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-[157px] pt-1 text-text-primary ${className}`}
+      className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis break-keep pr-[157px] pt-1 text-text-primary ${className}`}
     >
       {state === "error" ? <>❗ {children}</> : children}
     </h3>
