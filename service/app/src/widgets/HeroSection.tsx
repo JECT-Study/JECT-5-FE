@@ -5,7 +5,7 @@ interface HeroSectionProps {
 export const HeroSection = ({ className = "" }: HeroSectionProps) => {
   return (
     <section
-      className={`flex w-full flex-col items-center justify-center gap-0 self-stretch px-0 py-2 ${className}`}
+      className={`flex w-full flex-col items-center justify-center gap-0 self-stretch px-0 py-8 ${className}`}
       aria-label="메인 히어로 섹션"
     >
       <h1

@@ -55,14 +55,14 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
       aria-label="메인 네비게이션"
     >
       {/* Left container - Logo */}
-      <div className="flex w-[420px] items-center gap-0 self-stretch px-10">
+      <div className="flex w-[420px] items-center gap-0 self-stretch px-40">
         <HomeButton />
       </div>
 
       {/* Right wrap - Actions */}
       <div className="flex w-[420px] flex-col items-end justify-center gap-0 px-0">
         {/* Right container - Actions */}
-        <div className="flex items-center justify-end gap-4 self-stretch px-10">
+        <div className="flex items-center justify-end gap-16 self-stretch px-40">
           {isAuthenticated ? (
             <>
               <PrimaryBoxButton
@@ -79,7 +79,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 _style="solid"
                 onClick={handleCreateGameClick}
               >
-                <Add className="size-6" aria-hidden="true" />
+                <Add className="size-24" aria-hidden="true" />
                 게임 만들기
               </PrimaryBoxButton>
 
