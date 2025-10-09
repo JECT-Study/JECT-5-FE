@@ -165,7 +165,7 @@ const QuestionMoveButtons = ({
 
   return (
     <div
-      className={`absolute right-4 top-5 flex flex-col items-center gap-5 ${className}`}
+      className={`absolute right-4 top-5 flex flex-col items-center gap-20 ${className}`}
     >
       <SecondaryPlainIconButton
         onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -203,7 +203,7 @@ const QuestionActions = ({
   className = "",
 }: QuestionActionsProps) => {
   return (
-    <div className={`flex items-center gap-2 ${className}`}>{children}</div>
+    <div className={`flex items-center gap-8 ${className}`}>{children}</div>
   )
 }
 
