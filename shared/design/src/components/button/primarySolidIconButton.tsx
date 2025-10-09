@@ -5,7 +5,7 @@ import { cn } from "../../utils/cn"
 import { BaseButton, type BaseButtonProps } from "./baseButton"
 
 const primarySolidIconButtonVariants = cva(
-  "inline-flex size-9 shrink-0 flex-row items-center justify-center gap-2.5 rounded-lg bg-background-interactive-primary p-1.5 text-icon-interactive-inverse hover:bg-background-interactive-primary-hovered active:bg-background-interactive-primary-pressed disabled:cursor-not-allowed disabled:bg-background-interactive-primary-disabled",
+  "inline-flex size-36 shrink-0 flex-row items-center justify-center gap-2.5 rounded-lg bg-background-interactive-primary p-1.5 text-icon-interactive-inverse hover:bg-background-interactive-primary-hovered active:bg-background-interactive-primary-pressed disabled:cursor-not-allowed disabled:bg-background-interactive-primary-disabled",
   {
     variants: {},
     defaultVariants: {},
