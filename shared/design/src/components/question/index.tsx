@@ -78,7 +78,7 @@ const QuestionTitle = ({ children, className = "" }: QuestionTitleProps) => {
 
   return (
     <h3
-      className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis pr-[157px] pt-1 text-text-primary ${className}`}
+      className={`typography-heading-sm-medium line-clamp-1 overflow-hidden text-ellipsis break-keep pr-[157px] pt-1 text-text-primary ${className}`}
     >
       {state === "error" ? <>❗ {children}</> : children}
     </h3>
@@ -130,7 +130,7 @@ const QuestionDeleteButton = ({
   const deleteLabel = index ? `${index}번째 문제 삭제` : "문제 삭제"
 
   return (
-    <div className={`absolute bottom-4 left-4 ${className}`}>
+    <div className={`absolute bottom-[10px] left-[14px] ${className}`}>
       <DestructiveSolidIconButton
         onClick={(e: MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation()
@@ -165,7 +165,7 @@ const QuestionMoveButtons = ({
 
   return (
     <div
-      className={`absolute right-4 top-5 flex flex-col items-center gap-5 ${className}`}
+      className={`absolute right-16 top-20 flex flex-col items-center gap-20 ${className}`}
     >
       <SecondaryPlainIconButton
         onClick={(e: MouseEvent<HTMLButtonElement>) => {
@@ -203,7 +203,7 @@ const QuestionActions = ({
   className = "",
 }: QuestionActionsProps) => {
   return (
-    <div className={`flex items-center gap-2 ${className}`}>{children}</div>
+    <div className={`flex items-center gap-8 ${className}`}>{children}</div>
   )
 }
 

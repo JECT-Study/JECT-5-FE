@@ -23,7 +23,7 @@ const baseVariants = "flex w-full flex-col items-start space-y-5"
 const labelVariants = "typography-heading-sm-semibold text-text-primary"
 
 const inputWrapperVariants = cva(
-  "flex w-full shrink-0 items-center gap-2 rounded-[8px] border-2 bg-background-interactive-input-primary p-[20px]",
+  "flex w-full shrink-0 items-center gap-8 rounded-[8px] border-2 bg-background-interactive-input-primary p-[20px]",
   {
     variants: {
       state: {
@@ -40,7 +40,7 @@ const inputWrapperVariants = cva(
 )
 
 const inputVariants =
-  "typography-heading-sm-medium flex-1 gap-2 bg-transparent text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none"
+  "typography-heading-sm-medium flex-1 gap-8 bg-transparent text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none"
 
 const errorTextVariants =
   "typography-body-sm-medium -mt-2 text-text-interactive-input-error"
@@ -202,7 +202,7 @@ export const LeftAddon = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex size-4 shrink-0 items-center justify-center",
+        "flex size-16 shrink-0 items-center justify-center",
         className,
       )}
       {...props}

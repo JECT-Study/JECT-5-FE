@@ -30,45 +30,39 @@ const navigationVariants = cva(
   },
 )
 
-const leftSectionVariants = cva(
-  "flex w-[420px] items-center gap-2.5 px-10",
-  {
-    variants: {
-      type: {
-        untitle: "",
-        title: "",
-        searchbar: "",
-        createGame: "",
-        startGame: "",
-        progressbar: "",
-        onGame: "",
-      },
-    },
-    defaultVariants: {
-      type: "untitle",
+const leftSectionVariants = cva("flex w-[420px] items-center gap-2.5 px-10", {
+  variants: {
+    type: {
+      untitle: "",
+      title: "",
+      searchbar: "",
+      createGame: "",
+      startGame: "",
+      progressbar: "",
+      onGame: "",
     },
   },
-)
+  defaultVariants: {
+    type: "untitle",
+  },
+})
 
-const centerSectionVariants = cva(
-  "flex items-center",
-  {
-    variants: {
-      type: {
-        untitle: "hidden",
-        title: "flex w-[1080px] justify-center",
-        searchbar: "flex h-[64px] w-[871px]",
-        createGame: "hidden",
-        startGame: "flex w-[1080px] justify-center",
-        progressbar: "flex w-[1080px] justify-center",
-        onGame: "flex w-[1080px] justify-center",
-      },
-    },
-    defaultVariants: {
-      type: "untitle",
+const centerSectionVariants = cva("flex items-center", {
+  variants: {
+    type: {
+      untitle: "hidden",
+      title: "flex w-[1080px] justify-center",
+      searchbar: "flex h-[64px] w-[871px]",
+      createGame: "hidden",
+      startGame: "flex w-[1080px] justify-center",
+      progressbar: "flex w-[1080px] justify-center",
+      onGame: "flex w-[1080px] justify-center",
     },
   },
-)
+  defaultVariants: {
+    type: "untitle",
+  },
+})
 
 const rightSectionVariants = cva(
   "flex w-[420px] flex-col items-end justify-center gap-2.5",
@@ -90,25 +84,22 @@ const rightSectionVariants = cva(
   },
 )
 
-const rightContainerVariants = cva(
-  "flex items-center gap-4 px-10",
-  {
-    variants: {
-      type: {
-        untitle: "h-[48px]",
-        title: "h-[44px]",
-        searchbar: "h-[48px]",
-        createGame: "h-[44px]",
-        startGame: "h-[44px]",
-        progressbar: "h-[44px]",
-        onGame: "h-[44px]",
-      },
-    },
-    defaultVariants: {
-      type: "untitle",
+const rightContainerVariants = cva("flex items-center gap-16 px-10", {
+  variants: {
+    type: {
+      untitle: "h-[48px]",
+      title: "h-[44px]",
+      searchbar: "h-[48px]",
+      createGame: "h-[44px]",
+      startGame: "h-[44px]",
+      progressbar: "h-[44px]",
+      onGame: "h-[44px]",
     },
   },
-)
+  defaultVariants: {
+    type: "untitle",
+  },
+})
 
 export type NavigationVariantProps = VariantProps<typeof navigationVariants>
 
@@ -120,16 +111,17 @@ interface NavigationProps extends NavigationVariantProps {
 }
 
 export const Navigation = forwardRef<HTMLElement, NavigationProps>(
-  ({ className, type, playGame, leftContent, centerContent, rightContent }, ref) => {
+  (
+    { className, type, playGame, leftContent, centerContent, rightContent },
+    ref,
+  ) => {
     return (
       <nav
         ref={ref}
         className={cn(navigationVariants({ type, playGame }), className)}
       >
         {/* Left Section */}
-        <div className={cn(leftSectionVariants({ type }))}>
-          {leftContent}
-        </div>
+        <div className={cn(leftSectionVariants({ type }))}>{leftContent}</div>
 
         {/* Center Section */}
         <div className={cn(centerSectionVariants({ type }))}>

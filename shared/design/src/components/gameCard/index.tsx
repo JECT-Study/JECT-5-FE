@@ -53,7 +53,7 @@ const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
     <div className="h-[46px] w-[178px]">
       <h3
         className={cn(
-          "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis text-[19px] font-bold leading-[120%] text-text-primary",
+          "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-[19px] font-bold leading-[120%] text-text-primary",
           className,
         )}
       >
@@ -73,7 +73,7 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
     <div
       aria-label="문제 수 배지"
       className={cn(
-        "absolute left-2 top-2 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
+        "absolute left-8 top-8 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
         className,
       )}
     >
@@ -90,7 +90,7 @@ const GameCardSharedBadge = ({ children, className }: GameCardBadgeProps) => {
       role="status"
       aria-label="공유 배지"
       className={cn(
-        "absolute bottom-2 left-2 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
+        "absolute bottom-8 left-8 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
         className,
       )}
     >

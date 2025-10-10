@@ -9,9 +9,9 @@ const secondaryPlainIconButtonVariants = cva(
   {
     variants: {
       size: {
-        sm: "size-6 [&>svg]:size-6",
-        md: "size-7 [&>svg]:size-7",
-        lg: "size-8 [&>svg]:size-8",
+        sm: "size-24 [&>svg]:size-24",
+        md: "size-28 [&>svg]:size-28",
+        lg: "size-32 [&>svg]:size-32",
       },
     },
     defaultVariants: {

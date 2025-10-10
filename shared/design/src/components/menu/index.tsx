@@ -42,7 +42,7 @@ const menuItemVariants = cva(
   {
     variants: {
       type: {
-        icon: "w-[49px] flex-col items-center gap-[9px] p-0 [&>svg]:size-4",
+        icon: "w-[49px] flex-col items-center gap-[9px] p-0 [&>svg]:size-16",
         text: "w-[134px] flex-row gap-[10px] px-1",
       },
     },

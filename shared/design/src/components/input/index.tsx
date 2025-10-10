@@ -33,7 +33,7 @@ const baseVariants = cva("flex flex-col items-start", {
 const labelVariants = cva("typography-heading-sm-semibold text-text-primary")
 
 const inputWrapperVariants = cva(
-  "flex w-full shrink-0 items-center gap-2 rounded-[5px] border-2 bg-background-interactive-input-primary",
+  "flex w-full shrink-0 items-center gap-8 rounded-[5px] border-2 bg-background-interactive-input-primary",
   {
     variants: {
       type: {
@@ -56,7 +56,7 @@ const inputWrapperVariants = cva(
 )
 
 const inputVariants = cva(
-  "flex-1 gap-2 bg-transparent text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none",
+  "flex-1 gap-8 bg-transparent text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none",
   {
     variants: {
       type: {
@@ -72,8 +72,8 @@ const inputVariants = cva(
 const iconVariants = cva("", {
   variants: {
     type: {
-      leftIcon: "size-4",
-      reset: "size-7",
+      leftIcon: "size-16",
+      reset: "size-28",
     },
   },
 })

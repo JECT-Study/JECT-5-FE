@@ -28,7 +28,7 @@ export const PlayerStatus = ({
       role="group"
       aria-label={`${name} 점수 카드`}
     >
-      <div className="flex h-10 min-h-10 max-w-[310px] flex-1 items-center justify-center gap-5">
+      <div className="flex h-10 min-h-10 max-w-[310px] flex-1 items-center justify-center gap-20">
         <h3
           className={`typography-heading-xl-medium flex h-10 min-w-0 items-center text-center ${scoreView ? "flex-1" : "w-full"}`}
         >

@@ -27,7 +27,7 @@ const primaryBoxButtonVariants = cva(
     compoundVariants: [
       {
         size: "sm",
-        className: "[&>svg]:mr-[2px] [&>svg]:size-8",
+        className: "[&>svg]:mr-[2px] [&>svg]:size-32",
       },
     ],
     defaultVariants: {
