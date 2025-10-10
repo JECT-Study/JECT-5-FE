@@ -56,7 +56,7 @@ const GameCardSectionSkeleton = () => {
 
 const GameSectionCardsError = () => {
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex size-full items-center justify-center">
       <p className="text-red-500">게임을 불러오는 중 오류가 발생했습니다.</p>
     </div>
   )
@@ -85,7 +85,10 @@ const GameSectionCards = ({
   })
 
   return (
-    <div className="flex items-center justify-between">
+    <div
+      className="flex items-center justify-between"
+      data-testid="game-section-cards"
+    >
       {games.map((game, _index) => (
         <div key={game.gameId}>
           <button
@@ -177,7 +180,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       className={`flex w-full flex-col items-center justify-center self-stretch p-0 ${className}`}
       aria-label="게임 섹션"
     >
-      <div className="flex min-w-[952px] flex-col gap-7">
+      <div className="flex min-w-[952px] flex-col gap-28">
         <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
         <ErrorBoundary FallbackComponent={GameSectionCardsError}>
           <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
