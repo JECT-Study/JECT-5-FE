@@ -19,7 +19,7 @@ const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
         aria-label={accessibleName}
         className={cn("relative", className)}
       >
-        <div className="flex flex-col gap-[14px]">{children}</div>
+        <div className="flex flex-col gap-12">{children}</div>
       </div>
     )
   },
@@ -34,7 +34,7 @@ const GameCardImage = ({ children, className }: GameCardImageProps) => {
   return (
     <div
       className={cn(
-        "relative size-[178px] rounded-[10px] bg-cover bg-center bg-no-repeat",
+        "relative size-[178px] rounded-12 bg-cover bg-center bg-no-repeat",
         className,
       )}
     >
@@ -50,10 +50,10 @@ interface GameCardTitleProps {
 
 const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
   return (
-    <div className="h-[46px] w-[178px]">
+    <div className="flex h-[46px] w-[178px]">
       <h3
         className={cn(
-          "line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-[19px] font-bold leading-[120%] text-text-primary",
+          "typography-body-lg-bold line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-text-primary",
           className,
         )}
       >
@@ -73,7 +73,7 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
     <div
       aria-label="문제 수 배지"
       className={cn(
-        "absolute left-8 top-8 inline-flex items-center justify-center gap-[10px] rounded-[4px] bg-background-badge-primary px-[5px] py-[2px]",
+        "absolute left-8 top-8 inline-flex items-center justify-center rounded-4 bg-background-badge-primary px-4 py-2",
         className,
       )}
     >
@@ -90,7 +90,7 @@ const GameCardSharedBadge = ({ children, className }: GameCardBadgeProps) => {
       role="status"
       aria-label="공유 배지"
       className={cn(
-        "absolute bottom-8 left-8 inline-flex items-center justify-center gap-[10px] rounded-[2px] bg-background-badge-secondary px-[5px] py-[2px]",
+        "absolute bottom-8 left-8 inline-flex items-center justify-center rounded-2 bg-background-badge-secondary px-4 py-2",
         className,
       )}
     >

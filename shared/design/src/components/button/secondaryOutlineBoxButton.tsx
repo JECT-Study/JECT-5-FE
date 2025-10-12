@@ -5,12 +5,12 @@ import { cn } from "../../utils/cn"
 import { BaseButton, type BaseButtonProps } from "./baseButton"
 
 const secondaryOutlineBoxButtonVariants = cva(
-  "inline-flex flex-row items-center justify-center gap-2.5 rounded-xl border border-border-interactive-secondary bg-background-interactive-inverse text-text-interactive-secondary hover:bg-background-interactive-secondary-hovered active:border-none active:bg-background-interactive-secondary-pressed disabled:cursor-not-allowed disabled:border-none disabled:bg-background-interactive-secondary-pressed [&>svg]:shrink-0",
+  "inline-flex flex-row items-center justify-center gap-12 rounded-12 border border-border-interactive-secondary bg-background-interactive-inverse text-text-interactive-secondary hover:bg-background-interactive-secondary-hovered active:border-none active:bg-background-interactive-secondary-pressed disabled:cursor-not-allowed disabled:border-none disabled:bg-background-interactive-secondary-pressed [&>svg]:shrink-0",
   {
     variants: {
       size: {
-        md: "typography-body-lg-semibold size-fit border p-[8px_15px]",
-        lg: "typography-heading-3xl-semibold h-[95px] w-[572px] border-[3px] p-[10px_30px]",
+        md: "typography-body-lg-semibold h-[48px] w-fit border px-16 py-8",
+        lg: "typography-heading-3xl-semibold h-[98px] w-[572px] border-[3px] px-32 py-20",
       },
     },
     defaultVariants: {

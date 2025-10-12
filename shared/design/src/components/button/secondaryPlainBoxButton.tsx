@@ -11,7 +11,7 @@ export const SecondaryPlainBoxButton = forwardRef<
     <BaseButton
       ref={ref}
       className={cn(
-        "typography-body-lg-semibold inline-flex w-[120px] flex-col items-center justify-center gap-2.5 p-[10px] text-text-interactive-secondary disabled:cursor-not-allowed disabled:text-text-interactive-tertiary",
+        "typography-body-lg-semibold inline-flex h-[39px] w-fit flex-col items-center justify-center p-8 text-text-interactive-secondary disabled:cursor-not-allowed disabled:text-text-interactive-tertiary",
         className,
       )}
       {...props}

@@ -4,9 +4,8 @@ import { type ElementRef, forwardRef } from "react"
 import { cn } from "../../utils/cn"
 import { BaseButton, type BaseButtonProps } from "./baseButton"
 
-//44px - 아이콘은 24px
 const secondaryGhostIconButtonVariants = cva(
-  "inline-flex size-44 shrink-0 flex-row items-center justify-center gap-2.5 rounded-lg p-2.5 hover:bg-background-interactive-secondary-hovered active:bg-background-interactive-secondary-pressed disabled:bg-background-interactive-secondary-pressed [&>svg]:size-24",
+  "inline-flex size-48 shrink-0 flex-row items-center justify-center rounded-8 p-12 hover:bg-background-interactive-secondary-hovered active:bg-background-interactive-secondary-pressed disabled:bg-background-interactive-secondary-pressed [&>svg]:size-24",
   {
     variants: {},
     defaultVariants: {},

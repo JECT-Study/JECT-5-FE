@@ -5,12 +5,12 @@ import { cn } from "../../utils/cn"
 import { BaseButton, type BaseButtonProps } from "./baseButton"
 
 const destructiveSolidIconButtonVariants = cva(
-  "inline-flex shrink-0 flex-row items-center justify-center rounded-lg bg-background-interactive-destructive text-icon-interactive-inverse hover:bg-background-interactive-destructive-hovered active:bg-background-interactive-destructive-pressed disabled:cursor-not-allowed disabled:bg-background-interactive-destructive-disabled",
+  "inline-flex shrink-0 flex-row items-center justify-center rounded-8 bg-background-interactive-destructive text-icon-interactive-inverse hover:bg-background-interactive-destructive-hovered active:bg-background-interactive-destructive-pressed disabled:cursor-not-allowed disabled:bg-background-interactive-destructive-disabled",
   {
     variants: {
       size: {
-        md: "size-36 p-1.5",
-        lg: "size-44 p-2.5",
+        md: "size-[36px] p-8",
+        lg: "size-[48px] p-12",
       },
     },
     defaultVariants: {

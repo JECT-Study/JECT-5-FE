@@ -22,7 +22,7 @@ export const PlayerStatus = ({
   return (
     <div
       className={cn(
-        "flex max-h-[118px] w-[350px] items-center justify-center rounded-[10px] bg-background-primary p-[39px_20px]",
+        "flex min-h-[40px] w-[310px] items-center justify-center rounded-12 bg-background-primary",
         className,
       )}
       role="group"
@@ -30,13 +30,13 @@ export const PlayerStatus = ({
     >
       <div className="flex h-10 min-h-10 max-w-[310px] flex-1 items-center justify-center gap-20">
         <h3
-          className={`typography-heading-xl-medium flex h-10 min-w-0 items-center text-center ${scoreView ? "flex-1" : "w-full"}`}
+          className={`typography-heading-xl-medium flex h-[40px] min-w-0 items-center text-center ${scoreView ? "flex-1" : "w-full"}`}
         >
           <span className="block w-full truncate">{name}</span>
         </h3>
 
         {scoreView && (
-          <div className="flex h-10 w-[138px] items-center justify-between gap-1.5">
+          <div className="flex h-[40px] w-[138px] items-center justify-between gap-8">
             <SecondaryPlainIconButton
               size="lg"
               onClick={onScoreDecrease}
@@ -45,7 +45,7 @@ export const PlayerStatus = ({
               <Minus />
             </SecondaryPlainIconButton>
 
-            <div className="flex h-10 items-center justify-center">
+            <div className="flex h-[40px] items-center justify-center">
               <span
                 className="typography-heading-lg-semibold"
                 aria-label={`${name} 현재 점수`}

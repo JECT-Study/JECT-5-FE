@@ -83,7 +83,7 @@ export const DialogContent = forwardRef<
           {...(!hasBody && { "aria-describedby": undefined })}
           {...props}
           className={cn(
-            "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto rounded-[10px] bg-background-interactive-primary-sub p-5",
+            "fixed left-1/2 top-1/2 z-50 flex max-h-[calc(100vh-40px)] w-[calc(100%-40px)] max-w-[322px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center overflow-auto rounded-12 bg-background-interactive-primary-sub p-20",
             className,
           )}
         >
@@ -173,7 +173,7 @@ export const DialogFooter = ({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex w-full items-center justify-center gap-8 *:flex-1",
+        "flex w-full items-center justify-center gap-16 *:flex-1",
         className,
       )}
       {...props}

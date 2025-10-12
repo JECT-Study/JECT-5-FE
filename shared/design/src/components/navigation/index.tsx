@@ -1,142 +1,39 @@
 "use client"
 
-import { cva, type VariantProps } from "class-variance-authority"
-import { forwardRef } from "react"
+import { type ComponentPropsWithoutRef } from "react"
 
 import { cn } from "../../utils/cn"
 
-const navigationVariants = cva(
-  "flex h-[110px] w-full items-center justify-between bg-background-tertiary",
-  {
-    variants: {
-      type: {
-        untitle: "",
-        title: "",
-        searchbar: "",
-        createGame: "bg-background-tertiary",
-        startGame: "bg-background-tertiary",
-        progressbar: "",
-        onGame: "",
-      },
-      playGame: {
-        false: "",
-        true: "",
-      },
-    },
-    defaultVariants: {
-      type: "untitle",
-      playGame: false,
-    },
-  },
-)
-
-const leftSectionVariants = cva("flex w-[420px] items-center gap-2.5 px-10", {
-  variants: {
-    type: {
-      untitle: "",
-      title: "",
-      searchbar: "",
-      createGame: "",
-      startGame: "",
-      progressbar: "",
-      onGame: "",
-    },
-  },
-  defaultVariants: {
-    type: "untitle",
-  },
-})
-
-const centerSectionVariants = cva("flex items-center", {
-  variants: {
-    type: {
-      untitle: "hidden",
-      title: "flex w-[1080px] justify-center",
-      searchbar: "flex h-[64px] w-[871px]",
-      createGame: "hidden",
-      startGame: "flex w-[1080px] justify-center",
-      progressbar: "flex w-[1080px] justify-center",
-      onGame: "flex w-[1080px] justify-center",
-    },
-  },
-  defaultVariants: {
-    type: "untitle",
-  },
-})
-
-const rightSectionVariants = cva(
-  "flex w-[420px] flex-col items-end justify-center gap-2.5",
-  {
-    variants: {
-      type: {
-        untitle: "",
-        title: "",
-        searchbar: "",
-        createGame: "",
-        startGame: "",
-        progressbar: "",
-        onGame: "",
-      },
-    },
-    defaultVariants: {
-      type: "untitle",
-    },
-  },
-)
-
-const rightContainerVariants = cva("flex items-center gap-16 px-10", {
-  variants: {
-    type: {
-      untitle: "h-[48px]",
-      title: "h-[44px]",
-      searchbar: "h-[48px]",
-      createGame: "h-[44px]",
-      startGame: "h-[44px]",
-      progressbar: "h-[44px]",
-      onGame: "h-[44px]",
-    },
-  },
-  defaultVariants: {
-    type: "untitle",
-  },
-})
-
-export type NavigationVariantProps = VariantProps<typeof navigationVariants>
-
-interface NavigationProps extends NavigationVariantProps {
-  className?: string
+interface NavigationProps extends ComponentPropsWithoutRef<"nav"> {
   leftContent?: React.ReactNode
   centerContent?: React.ReactNode
   rightContent?: React.ReactNode
 }
 
-export const Navigation = forwardRef<HTMLElement, NavigationProps>(
-  (
-    { className, type, playGame, leftContent, centerContent, rightContent },
-    ref,
-  ) => {
-    return (
-      <nav
-        ref={ref}
-        className={cn(navigationVariants({ type, playGame }), className)}
-      >
-        {/* Left Section */}
-        <div className={cn(leftSectionVariants({ type }))}>{leftContent}</div>
-
-        {/* Center Section */}
-        <div className={cn(centerSectionVariants({ type }))}>
-          {centerContent}
-        </div>
-
-        {/* Right Section */}
-        <div className={cn(rightSectionVariants({ type }))}>
-          <div className={cn(rightContainerVariants({ type }))}>
-            {rightContent}
-          </div>
-        </div>
-      </nav>
-    )
-  },
-)
-
-Navigation.displayName = "Navigation"
+export const Navigation = ({
+  className,
+  leftContent,
+  centerContent,
+  rightContent,
+  ...rest
+}: NavigationProps) => {
+  return (
+    <nav
+      className={cn(
+        "flex h-[90px] min-h-[90px] w-full items-center justify-between gap-36 px-40",
+        className,
+      )}
+      {...rest}
+    >
+      <div className="flex shrink-0 items-center justify-start">
+        {leftContent}
+      </div>
+      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center">
+        {centerContent}
+      </div>
+      <div className="flex shrink-0 items-center justify-end gap-16">
+        {rightContent}
+      </div>
+    </nav>
+  )
+}

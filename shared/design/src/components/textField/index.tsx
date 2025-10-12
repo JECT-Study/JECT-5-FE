@@ -23,7 +23,7 @@ const baseVariants = "flex w-full flex-col items-start space-y-5"
 const labelVariants = "typography-heading-sm-semibold text-text-primary"
 
 const inputWrapperVariants = cva(
-  "flex w-full shrink-0 items-center gap-8 rounded-[8px] border-2 bg-background-interactive-input-primary p-[20px]",
+  "flex h-[64px] w-full shrink-0 items-center gap-8 rounded-8 border-2 bg-background-interactive-input-primary p-20",
   {
     variants: {
       state: {

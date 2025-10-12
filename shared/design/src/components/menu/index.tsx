@@ -6,28 +6,28 @@ import { forwardRef } from "react"
 import { cn } from "../../utils/cn"
 
 const menuVariants = cva(
-  "typography-body-md-regular inline-flex rounded-[4px] bg-background-interactive-primary-sub shadow-[0px_4px_28px_0px_rgba(0,0,0,0.30)]",
+  "typography-body-md-regular inline-flex rounded-4 bg-background-interactive-primary-sub shadow-[0px_4px_28px_0px_rgba(0,0,0,0.30)]",
   {
     variants: {
       type: {
         vertical: "w-[158px] flex-col items-start",
-        horizontal: "flex-row items-center",
+        horizontal: "min-h-[64px] flex-row items-center",
       },
       contentType: {
-        text: "p-[12px_8px]",
-        icon: "p-[14px_25px]",
+        text: "px-12 py-8",
+        icon: "px-24 py-12",
       },
     },
     compoundVariants: [
       {
         type: "vertical",
         contentType: "text",
-        className: "gap-2.5",
+        className: "gap-8",
       },
       {
         type: "horizontal",
         contentType: "icon",
-        className: "gap-[35px]",
+        className: "gap-36",
       },
     ],
     defaultVariants: {
@@ -38,12 +38,12 @@ const menuVariants = cva(
 )
 
 const menuItemVariants = cva(
-  "typography-body-md-regular flex h-fit shrink-0 items-center justify-start rounded-none text-left text-text-interactive-secondary hover:text-text-interactive-secondary-hovered active:text-text-interactive-secondary-pressed",
+  "typography-body-md-regular flex h-fit shrink-0 items-center justify-start rounded-none text-left text-text-interactive-secondary outline-none hover:text-text-interactive-secondary-hovered hover:outline-none focus:outline-none focus-visible:outline-none active:text-text-interactive-secondary-pressed data-[highlighted]:outline-none",
   {
     variants: {
       type: {
-        icon: "w-[49px] flex-col items-center gap-[9px] p-0 [&>svg]:size-16",
-        text: "w-[134px] flex-row gap-[10px] px-1",
+        icon: "h-full w-[49px] flex-col items-center gap-8 p-0 [&>svg]:size-16",
+        text: "min-h-[24px] w-full flex-row",
       },
     },
     defaultVariants: {
