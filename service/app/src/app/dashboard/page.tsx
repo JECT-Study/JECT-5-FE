@@ -1,12 +1,12 @@
 "use client"
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
@@ -25,8 +25,6 @@ export default function DashboardPage() {
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
   const { logout } = useAuthStore()
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
 
   const {
     games,
@@ -47,10 +45,6 @@ export default function DashboardPage() {
   useEffect(() => {
     refetch()
   }, [refetch])
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleCreateGame = () => {
     router.push("/create")
@@ -138,10 +132,6 @@ export default function DashboardPage() {
     })
   }
 
-  const handleThemeToggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }
-
   const handleLogoClick = () => {
     router.push("/")
   }
@@ -187,30 +177,17 @@ export default function DashboardPage() {
 
       <AvatarButton onClick={handleLogoutClick} />
 
-      {mounted && (
-        <ThemeToggle
-          theme={(resolvedTheme as "dark" | "light") || "light"}
-          onThemeToggle={handleThemeToggle}
-        />
-      )}
+      <ThemeToggle />
     </>
   )
 
   return (
     <main className="min-h-screen bg-background-primary">
-      <nav className="flex h-[110px] w-full items-center justify-between bg-background-tertiary">
-        <div className="flex w-[420px] items-center gap-2.5 px-10">
-          {leftContent}
-        </div>
-
-        <div className="flex w-[1080px] justify-center">{centerContent}</div>
-
-        <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-          <div className="flex items-center justify-end gap-4 px-10">
-            {rightContent}
-          </div>
-        </div>
-      </nav>
+      <Navigation
+        leftContent={leftContent}
+        centerContent={centerContent}
+        rightContent={rightContent}
+      />
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
           games={games}

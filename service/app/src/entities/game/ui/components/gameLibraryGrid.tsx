@@ -93,14 +93,11 @@ export const GameLibraryGrid = ({
                     )}
                   </GameCard.Image>
                   {isDashboard ? (
-                    <div className="relative flex h-[46px] w-[178px] items-center justify-end">
-                      <div
-                        className="absolute left-6 line-clamp-2 h-[46px] w-[130px] shrink-0 overflow-hidden text-[19px] font-bold leading-[120%] text-text-primary"
-                        data-testid="game-title"
-                      >
+                    <>
+                      <GameCard.Title data-testid="game-title">
                         {game.gameTitle}
-                      </div>
-                      <div className="absolute right-0 top-[11px]">
+                      </GameCard.Title>
+                      <div className="absolute bottom-[16px] right-0">
                         <GameCardOptions
                           shared={game.isShared}
                           onEdit={() => onEditGame?.(game)}
@@ -108,7 +105,7 @@ export const GameLibraryGrid = ({
                           onDelete={() => onDeleteGame?.(game)}
                         />
                       </div>
-                    </div>
+                    </>
                   ) : (
                     <GameCard.Title>{game.gameTitle}</GameCard.Title>
                   )}

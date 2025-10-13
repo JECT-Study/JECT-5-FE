@@ -13,7 +13,7 @@ function HomeContent() {
   const { isAuthenticated } = useAuthStore()
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-start gap-[10.5vh] bg-background-primary p-0">
+    <main className="flex min-h-screen w-full flex-col items-start gap-112 bg-background-primary p-0">
       <HomeNavigation isLoggedIn={isAuthenticated} />
       <HeroSection />
       <GameSection />

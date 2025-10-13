@@ -1,13 +1,12 @@
 "use client"
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
+import { Navigation } from "@shared/design/src/components/navigation"
 import { Add } from "@shared/design/src/icons"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 
 import { useAuthStore } from "@/entities/auth"
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import AvatarButton from "./components/avatarButton"
 import { HomeButton } from "./components/homeButton"
@@ -21,23 +20,12 @@ interface HomeNavigationProps {
 export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   const router = useRouter()
   const { isAuthenticated, logout } = useAuthStore()
-  const { theme, setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   const handleMyGamesClick = () => {
     router.push("/dashboard")
   }
 
   const handleCreateGameClick = () => {
     router.push("/create")
-  }
-
-  const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
   }
 
   const handleLogoutClick = () => {
@@ -49,20 +37,11 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
   }
 
   return (
-    <nav
-      className={`flex h-[90px] w-full shrink-0 items-center justify-between p-0 ${className}`}
-      role="navigation"
-      aria-label="메인 네비게이션"
-    >
-      {/* Left container - Logo */}
-      <div className="flex w-[420px] items-center gap-0 self-stretch px-40">
-        <HomeButton />
-      </div>
-
-      {/* Right wrap - Actions */}
-      <div className="flex w-[420px] flex-col items-end justify-center gap-0 px-0">
-        {/* Right container - Actions */}
-        <div className="flex items-center justify-end gap-16 self-stretch px-40">
+    <Navigation
+      className={className}
+      leftContent={<HomeButton />}
+      rightContent={
+        <>
           {isAuthenticated ? (
             <>
               <PrimaryBoxButton
@@ -79,7 +58,7 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
                 _style="solid"
                 onClick={handleCreateGameClick}
               >
-                <Add className="size-24" aria-hidden="true" />
+                <Add aria-hidden="true" />
                 게임 만들기
               </PrimaryBoxButton>
 
@@ -88,14 +67,9 @@ export const HomeNavigation = ({ className = "" }: HomeNavigationProps) => {
           ) : (
             <KakaoLoginButton onClick={handleKakaoLogin} />
           )}
-          {mounted && (
-            <ThemeToggle
-              theme={(resolvedTheme as "dark" | "light") || "light"}
-              onThemeToggle={handleThemeToggle}
-            />
-          )}
-        </div>
-      </div>
-    </nav>
+          <ThemeToggle />
+        </>
+      }
+    />
   )
 }

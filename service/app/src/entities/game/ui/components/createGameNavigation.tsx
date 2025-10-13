@@ -3,8 +3,6 @@
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import * as TextField from "@shared/design/src/components/textField"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
 
 import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
 import { RegisterButton } from "../interactions/registerButton"
@@ -12,13 +10,6 @@ import { SaveButton } from "../interactions/saveButton"
 
 export function CreateGameNavigation() {
   const { state, actions, selectors } = useGameCreationContext()
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   console.log(state)
 
   const handleGameNameChange = (value: string) => {
@@ -31,10 +22,6 @@ export function CreateGameNavigation() {
 
   const handleGameNameBlur = () => {
     actions.setGameNameFocus(false)
-  }
-
-  const handleThemeToggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   return (
@@ -62,12 +49,7 @@ export function CreateGameNavigation() {
       </div>
 
       <div className="flex w-[420px] items-center justify-end gap-4 px-10">
-        {mounted && (
-          <ThemeToggle
-            theme={(resolvedTheme as "dark" | "light") || "light"}
-            onThemeToggle={handleThemeToggle}
-          />
-        )}
+        <ThemeToggle />
 
         <PrimaryBoxButton
           size="sm"

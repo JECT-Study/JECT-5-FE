@@ -1,13 +1,14 @@
 "use client"
 
+import * as TextField from "@ject-5-fe/design/components/textField"
 import { Navigation } from "@shared/design/src/components/navigation"
 import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Magnifier } from "@shared/design/src/icons"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import { overlay } from "overlay-kit"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
@@ -22,17 +23,11 @@ export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const { logout, isAuthenticated, user } = useAuthStore()
-  const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
     })
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const filteredGames = games.filter((game) => {
     if (!searchQuery.trim()) return true
@@ -98,44 +93,27 @@ export default function GamesPage() {
     setSearchQuery(e.target.value)
   }
 
-  const handleThemeToggle = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }
-
-  const handleLogoClick = () => {
-    router.push("/")
-  }
-
   const handleLogoutClick = () => {
     logout()
   }
 
   const leftContent = (
-    <button
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5 focus:outline-none"
-      onClick={handleLogoClick}
-      aria-label="홈으로 이동"
-      tabIndex={0}
-    >
-      <Image
-        src="/logo.svg"
-        alt="홈 로고"
-        className="size-full"
-        width={268}
-        height={60}
-      />
-    </button>
+    <Link href="/" aria-label="홈으로 이동">
+      <Image src="/logo.svg" alt="홈 로고" width={268} height={60} />
+    </Link>
   )
 
   const centerContent = (
-    <div className="flex size-full items-center gap-2 rounded-[5px] border border-border-interactive-input-default bg-background-interactive-input-primary px-5 focus-within:border-2 focus-within:border-border-interactive-input-focused">
-      <Magnifier className="size-4 text-icon-interactive-input-default" />
-      <input
-        type="text"
-        placeholder="오늘의 추천 게임은?"
-        onChange={handleSearchChange}
-        className="flex-1 bg-transparent text-[19px] font-medium leading-[120%] text-text-interactive-input-filled placeholder:text-text-interactive-input-placeholder focus:outline-none"
-      />
+    <div className="hidden w-full max-w-[871px] md:flex">
+      <TextField.Root name="game" className="w-full">
+        <TextField.InputWrapper>
+          <Magnifier className="size-32 text-icon-interactive-input-default" />
+          <TextField.Input
+            onChange={handleSearchChange}
+            placeholder="오늘의 추천 게임은?"
+          ></TextField.Input>
+        </TextField.InputWrapper>
+      </TextField.Root>
     </div>
   )
 
@@ -153,21 +131,13 @@ export default function GamesPage() {
       ) : (
         <KakaoLoginButton onClick={handleKakaoLogin} />
       )}
-
-      {mounted && (
-        <ThemeToggle
-          theme={(resolvedTheme as "dark" | "light") || "light"}
-          onThemeToggle={handleThemeToggle}
-        />
-      )}
+      <ThemeToggle />
     </>
   )
 
   return (
     <main className="min-h-screen bg-background-primary">
       <Navigation
-        type="searchbar"
-        playGame={false}
         leftContent={leftContent}
         centerContent={centerContent}
         rightContent={rightContent}
