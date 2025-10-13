@@ -17,8 +17,8 @@ export function Providers({ children }: ProvidersProps) {
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
-        enableSystem={false}
-        enableColorScheme={false}
+        enableSystem={true}
+        enableColorScheme={true}
       >
         <OverlayProvider>
           <MSWProvider>{children}</MSWProvider>
