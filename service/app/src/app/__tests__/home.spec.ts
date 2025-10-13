@@ -132,11 +132,11 @@ test.describe("홈 화면: 공통", () => {
     await page.waitForURL(/\/game\/\d+/)
   })
 
-  test("테마 토글을 클릭하면 테마가 변경되어야 한다", async () => {
+  test("테마 토글을 클릭하면 테마가 변경되어야 한다", async ({ page }) => {
+    // playwright 테스트 환경에서는 첫 렌더링 시 기본 라이트 모드
+    // 클릭 시 html 태그의 style속성의 color-scheme이 dark로 변경
     await pageObj.clickThemeToggleButton()
-    await expect(pageObj.themeToggleButton).toHaveAttribute(
-      "aria-pressed",
-      "true",
-    )
+    const colorScheme = await page.locator("html").getAttribute("style")
+    expect(colorScheme?.includes("dark")).toBe(true)
   })
 })
