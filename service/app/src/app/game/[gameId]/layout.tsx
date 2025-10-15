@@ -12,9 +12,6 @@ export default async function GameLayout({
   children: ReactNode
 }) {
   const gameDetail = await getGameDetail(params.gameId)
-  if (gameDetail.result === "ERROR" || !gameDetail.data) {
-    return <div>게임을 찾을 수 없습니다: {gameDetail.error?.message}</div>
-  }
 
   return (
     <GameProvider initialGameDetail={gameDetail.data} gameId={params.gameId}>

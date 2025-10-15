@@ -27,13 +27,13 @@ interface UseInfiniteGameListReturn {
 }
 
 // 페이지 파라미터 타입 정의
-type PageParam =
-  | {
-      cursorGameId?: string
-      cursorPlayCount?: number
-      cursorUpdatedAt?: string
-    }
-  | undefined
+// type PageParam =
+//   | {
+//       cursorGameId?: string
+//       cursorPlayCount?: number
+//       cursorUpdatedAt?: string
+//     }
+//   | undefined
 
 export const useInfiniteGameList = ({
   limit = 10,
@@ -50,21 +50,16 @@ export const useInfiniteGameList = ({
     error,
   } = useInfiniteQuery({
     queryKey: ["infiniteGameList", { limit, query }] as const,
-    queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
+    queryFn: async ({ pageParam }) => {
       const params: GameQueryParams = {
         limit,
         query,
         ...pageParam,
       }
-
       const response = await getGameList(params)
-
-      if (response.result === "SUCCESS" && response.data) {
-        return response.data
-      }
-      throw new Error("Failed to fetch game list")
+      return response.data
     },
-    initialPageParam: undefined as PageParam,
+    initialPageParam: undefined,
     getNextPageParam: (lastPage: GameListData) => {
       const games = lastPage.games
       if (games.length < limit) {

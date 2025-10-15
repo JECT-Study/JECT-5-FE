@@ -1,13 +1,9 @@
-import { fetchClient } from "@shared/lib/fetchClient"
-import { UUID } from "@shared/types/common"
-import { ApiResponse } from "@shared/types/response"
+import { fetchClient } from "@/shared/api/fetchClient"
+import { UUID } from "@/shared/api/types/common"
 
 import { GameUpdateRequest } from "../model"
 import { generateUniqueFileName, validateMultipleFiles } from "../utils"
-import {
-  createErrorResponse,
-  mapStatusToErrorResponse,
-} from "../utils/errorHandlers"
+import { createErrorResponse } from "../utils/errorHandlers"
 import { uploadMultipleFilesToS3 } from "../utils/s3Upload"
 import { getPresignedUrlsForExistingGame } from "./getPresignedUrl"
 
@@ -15,7 +11,7 @@ export const updateGame = async (
   gameData: GameUpdateRequest,
   imageFiles: File[],
   gameId: UUID,
-): Promise<ApiResponse<null>> => {
+) => {
   const validation = validateMultipleFiles(imageFiles)
   if (!validation.isValid) {
     return createErrorResponse(
@@ -33,9 +29,6 @@ export const updateGame = async (
     gameId,
     fileData,
   )
-  if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
-    return createErrorResponse(500, "Failed to get presigned URLs")
-  }
 
   const uploadResult = await uploadMultipleFilesToS3(
     imageFiles,
@@ -58,14 +51,9 @@ export const updateGame = async (
     })),
   }
 
-  const response = await fetchClient.fetch(`/games/${gameId}`, {
-    method: "PUT",
-    body: JSON.stringify(gameUpdateRequest),
+  const response = await fetchClient.put<null>(`games/${gameId}`, {
+    json: gameUpdateRequest,
   })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status)
-  }
 
   return response.json()
 }
@@ -73,15 +61,10 @@ export const updateGame = async (
 export const updateGameWithoutNewImages = async (
   gameData: GameUpdateRequest,
   gameId: UUID,
-): Promise<ApiResponse<null>> => {
-  const response = await fetchClient.fetch(`/games/${gameId}`, {
-    method: "PUT",
-    body: JSON.stringify(gameData),
+) => {
+  const response = await fetchClient.put<null>(`games/${gameId}`, {
+    json: gameData,
   })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status)
-  }
 
   return response.json()
 }

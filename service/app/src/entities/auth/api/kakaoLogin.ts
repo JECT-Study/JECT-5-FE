@@ -1,9 +1,10 @@
-import { fetchClient } from "@shared/lib/fetchClient"
+import { fetchClient } from "@/shared/api/fetchClient"
+
+import { KakaoLoginData } from "../model/auth"
 
 export const kakaoLogin = async (code: string) => {
-  const response = await fetchClient.fetch("/login/kakao", {
-    method: "POST",
-    body: JSON.stringify({ code, type: "kakao" }),
+  const response = await fetchClient.post<KakaoLoginData>("login/kakao", {
+    json: { code, type: "kakao" },
   })
 
   return response.json()

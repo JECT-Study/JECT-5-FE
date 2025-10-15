@@ -2,32 +2,38 @@
 
 import * as TextField from "@ject-5-fe/design/components/textField"
 import { Navigation } from "@shared/design/src/components/navigation"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Magnifier } from "@shared/design/src/icons"
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
 import { useState } from "react"
 
-import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
-import AvatarButton from "@/widgets/components/avatarButton"
-import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
+
+const GamesAuthButton = dynamic(() => import("@/shared/authButton.tsx"), {
+  ssr: false,
+})
 
 export default function GamesPage() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
-  const { logout, isAuthenticated, user } = useAuthStore()
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
     })
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }
 
   const filteredGames = games.filter((game) => {
     if (!searchQuery.trim()) return true
@@ -79,22 +85,8 @@ export default function GamesPage() {
     }
   }
 
-  const handleKakaoLogin = () => {
-    router.push("/login")
-  }
-
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-  }
-
-  const handleLogoutClick = () => {
-    logout()
   }
 
   const leftContent = (
@@ -117,30 +109,12 @@ export default function GamesPage() {
     </div>
   )
 
-  const rightContent = (
-    <>
-      {isAuthenticated ? (
-        <>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-text-primary">
-              {user?.nickname}
-            </span>
-          </div>
-          <AvatarButton onClick={handleLogoutClick} />
-        </>
-      ) : (
-        <KakaoLoginButton onClick={handleKakaoLogin} />
-      )}
-      <ThemeToggle />
-    </>
-  )
-
   return (
-    <main className="min-h-screen bg-background-primary">
+    <>
       <Navigation
         leftContent={leftContent}
         centerContent={centerContent}
-        rightContent={rightContent}
+        rightContent={<GamesAuthButton />}
       />
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
@@ -153,6 +127,6 @@ export default function GamesPage() {
           onLoadMore={handleLoadMore}
         />
       </div>
-    </main>
+    </>
   )
 }

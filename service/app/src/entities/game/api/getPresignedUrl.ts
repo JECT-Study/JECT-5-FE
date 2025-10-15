@@ -1,21 +1,17 @@
-import { fetchClient } from "@shared/lib/fetchClient"
-import { UUID } from "@shared/types/common"
-import { ApiResponse } from "@shared/types/response"
+import { fetchClient } from "@/shared/api/fetchClient"
+import { UUID } from "@/shared/api/types/common"
 
-import { PresignedUrlRequest, PresignedUrlResponse } from "../model"
-import { mapStatusToErrorResponse } from "../utils"
+import { type PresignedUrlData, PresignedUrlRequest } from "../model"
 
 export const getPresignedUrlsForNewGame = async (
   images: PresignedUrlRequest["images"],
-): Promise<PresignedUrlResponse | ApiResponse<null>> => {
-  const response = await fetchClient.fetch("/games/uploads/urls", {
-    method: "POST",
-    body: JSON.stringify({ images }),
-  })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status)
-  }
+) => {
+  const response = await fetchClient.post<PresignedUrlData>(
+    "games/uploads/urls",
+    {
+      json: images,
+    },
+  )
 
   return response.json()
 }
@@ -23,15 +19,12 @@ export const getPresignedUrlsForNewGame = async (
 export const getPresignedUrlsForExistingGame = async (
   gameId: UUID,
   images: PresignedUrlRequest["images"],
-): Promise<PresignedUrlResponse | ApiResponse<null>> => {
-  const response = await fetchClient.fetch(`/games/${gameId}/uploads/urls`, {
-    method: "POST",
-    body: JSON.stringify({ images }),
-  })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status, gameId)
-  }
-
+) => {
+  const response = await fetchClient.post<PresignedUrlData>(
+    `games/${gameId}/uploads/urls`,
+    {
+      json: images,
+    },
+  )
   return response.json()
 }

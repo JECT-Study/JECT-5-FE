@@ -21,4 +21,9 @@ export const authHandlers = [
     }
     return new HttpResponse("Unauthorized", { status: 401 })
   }),
+  http.post(`${MSW_BASE_URL}/logout`, async () => {
+    return new HttpResponse(JSON.stringify({}), {
+      status: 200,
+    })
+  }),
 ]

@@ -1,5 +1,5 @@
-import type { UUID } from "@shared/types/common"
-import type { ApiResponse } from "@shared/types/response"
+import type { UUID } from "@/shared/api/types/common"
+import type { ApiResponse } from "@/shared/api/types/response"
 
 export interface GameListItem {
   gameId: UUID

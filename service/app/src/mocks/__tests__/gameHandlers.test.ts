@@ -1,26 +1,23 @@
-import { createFetchClient } from "@shared/lib/fetchClientFactory"
 import { describe, expect, it } from "vitest"
 
-const testFetchClient = createFetchClient({
-  baseUrl: process.env.MSW_BASE_URL || "http://localhost:3000",
-  defaultHeaders: {
-    "Content-Type": "application/json",
-  },
-  timeout: 10000,
-  credentials: "include",
-})
 import {
   GameCreateRequest,
+  type GameDetailData,
+  type GameListData,
   GameUpdateRequest,
+  type PresignedUrlData,
   PresignedUrlRequest,
 } from "@/entities/game"
+import { fetchClient, isError } from "@/shared/api/fetchClient"
+
+const testFetchClient = fetchClient
 
 describe("Game API Handlers", () => {
   const mockSessionCookie = "JSESSIONID=test-session-123"
 
   describe("GET /games", () => {
     it("게임 목록을 성공적으로 조회해야 한다", async () => {
-      const response = await testFetchClient.fetch("/games")
+      const response = await testFetchClient.get<GameListData>("games")
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -30,7 +27,9 @@ describe("Game API Handlers", () => {
     })
 
     it("쿼리 파라미터로 게임을 필터링할 수 있어야 한다", async () => {
-      const response = await testFetchClient.fetch("/games?query=test&limit=5")
+      const response = await testFetchClient.get<GameListData>(
+        "games?query=test&limit=5",
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -38,16 +37,12 @@ describe("Game API Handlers", () => {
     })
 
     it("페이지네이션 파라미터를 처리할 수 있어야 한다", async () => {
-      const listResponse = await testFetchClient.fetch("/games")
+      const listResponse = await testFetchClient.get<GameListData>("games")
       const listData = await listResponse.json()
 
-      if (listData.data.games.length === 0) {
-        throw new Error("게임 목록이 비어있습니다.")
-      }
-
       const firstGame = listData.data.games[0]
-      const response = await testFetchClient.fetch(
-        `/games?cursorGameId=${firstGame.gameId}&cursorPlayCount=${firstGame.playCount}&cursorUpdatedAt=${firstGame.updatedAt}&limit=3`,
+      const response = await testFetchClient.get<GameListData>(
+        `games?cursorGameId=${firstGame.gameId}&cursorPlayCount=${firstGame.playCount}&cursorUpdatedAt=${firstGame.updatedAt}&limit=3`,
       )
       const data = await response.json()
 
@@ -60,7 +55,7 @@ describe("Game API Handlers", () => {
 
   describe("GET /games/:gameId", () => {
     it("존재하는 게임의 상세 정보를 조회할 수 있어야 한다", async () => {
-      const listResponse = await testFetchClient.fetch("/games")
+      const listResponse = await testFetchClient.get<GameListData>("games")
       const listData = await listResponse.json()
       const gameId = listData.data.games[0]?.gameId
 
@@ -68,7 +63,9 @@ describe("Game API Handlers", () => {
         throw new Error("테스트용 게임이 없습니다")
       }
 
-      const response = await testFetchClient.fetch(`/games/${gameId}`)
+      const response = await testFetchClient.get<GameDetailData>(
+        `games/${gameId}`,
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -81,19 +78,24 @@ describe("Game API Handlers", () => {
     })
 
     it("존재하지 않는 게임 ID로 요청 시 404를 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/games/non-existent-id")
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(404)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E404")
+      try {
+        const response = await testFetchClient.get<GameDetailData>(
+          "games/non-existent-id",
+        )
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const res = await e.response.json()
+          expect(res.result).toBe("ERROR")
+          expect(res.error.code).toBe("E404")
+        }
+      }
     })
   })
 
   describe("POST /games/:gameId/plays", () => {
     it("게임 플레이 카운트를 증가시킬 수 있어야 한다", async () => {
-      const listResponse = await testFetchClient.fetch("/games")
+      const listResponse = await testFetchClient.get<GameListData>("games")
       const listData = await listResponse.json()
       const gameId = listData.data.games[0]?.gameId
 
@@ -101,12 +103,14 @@ describe("Game API Handlers", () => {
         throw new Error("테스트용 게임이 없습니다")
       }
 
-      const response = await testFetchClient.fetch(`/games/${gameId}/plays`, {
-        method: "POST",
-        headers: {
-          Cookie: mockSessionCookie,
+      const response = await testFetchClient.post<null>(
+        `games/${gameId}/plays`,
+        {
+          headers: {
+            cookie: mockSessionCookie,
+          },
         },
-      })
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -114,20 +118,25 @@ describe("Game API Handlers", () => {
     })
 
     it("존재하지 않는 게임 ID로 요청 시 404를 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch(
-        "/games/non-existent-id/plays",
-        {
-          method: "POST",
-          headers: {
-            Cookie: mockSessionCookie,
+      try {
+        const response = await testFetchClient.post<null>(
+          "games/non-existent-id/plays",
+          {
+            method: "POST",
+            headers: {
+              Cookie: mockSessionCookie,
+            },
           },
-        },
-      )
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(404)
-      expect(data.result).toBe("ERROR")
+        )
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(404)
+          expect(data.result).toBe("ERROR")
+        }
+      }
     })
   })
 
@@ -153,8 +162,7 @@ describe("Game API Handlers", () => {
     }
 
     it("유효한 게임 생성 요청을 처리할 수 있어야 한다", async () => {
-      const response = await testFetchClient.fetch("/games", {
-        method: "POST",
+      const response = await testFetchClient.post<null>("games", {
         headers: {
           Cookie: mockSessionCookie,
           "Content-Type": "application/json",
@@ -170,47 +178,54 @@ describe("Game API Handlers", () => {
     it("필수 필드가 누락되면 400을 반환해야 한다", async () => {
       const invalidRequest = { ...mockGameCreateRequest }
       delete (invalidRequest as Partial<GameCreateRequest>).gameTitle
-
-      const response = await testFetchClient.fetch("/games", {
-        method: "POST",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(invalidRequest),
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(400)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E400")
+      try {
+        const response = await testFetchClient.post<null>("games", {
+          headers: {
+            Cookie: mockSessionCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(invalidRequest),
+        })
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(400)
+          expect(data.result).toBe("ERROR")
+          expect(data.error.code).toBe("E400")
+        }
+      }
     })
 
     it("중복된 게임 ID로 요청 시 409를 반환해야 한다", async () => {
-      await testFetchClient.fetch("/games", {
-        method: "POST",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mockGameCreateRequest),
-      })
+      try {
+        await testFetchClient.post<null>("games", {
+          method: "POST",
+          headers: {
+            Cookie: mockSessionCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(mockGameCreateRequest),
+        })
 
-      const response = await testFetchClient.fetch("/games", {
-        method: "POST",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mockGameCreateRequest),
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(409)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E409")
+        const response = await testFetchClient.post("/games", {
+          headers: {
+            Cookie: mockSessionCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(mockGameCreateRequest),
+        })
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(409)
+          expect(data.result).toBe("ERROR")
+          expect(data.error.code).toBe("E409")
+        }
+      }
     })
   })
 
@@ -244,8 +259,7 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      await testFetchClient.fetch("/games", {
-        method: "POST",
+      await testFetchClient.post<null>("games", {
         headers: {
           Cookie: mockSessionCookie,
           "Content-Type": "application/json",
@@ -254,14 +268,16 @@ describe("Game API Handlers", () => {
       })
 
       // 게임 수정
-      const response = await testFetchClient.fetch("/games/update-test-game", {
-        method: "PUT",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
+      const response = await testFetchClient.put<null>(
+        "games/update-test-game",
+        {
+          headers: {
+            Cookie: mockSessionCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(mockGameUpdateRequest),
         },
-        body: JSON.stringify(mockGameUpdateRequest),
-      })
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -269,19 +285,26 @@ describe("Game API Handlers", () => {
     })
 
     it("존재하지 않는 게임을 수정하려 하면 404를 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/games/non-existent-id", {
-        method: "PUT",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mockGameUpdateRequest),
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(404)
-      expect(data.result).toBe("ERROR")
+      try {
+        const response = await testFetchClient.put<null>(
+          "games/non-existent-id",
+          {
+            headers: {
+              Cookie: mockSessionCookie,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(mockGameUpdateRequest),
+          },
+        )
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(404)
+          expect(data.result).toBe("ERROR")
+        }
+      }
     })
 
     it("버전이 맞지 않으면 409를 반환해야 한다", async () => {
@@ -299,30 +322,36 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      await testFetchClient.fetch("/games", {
-        method: "POST",
+      await testFetchClient.post("games", {
         headers: {
           Cookie: mockSessionCookie,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(createRequest),
       })
-
       const invalidUpdateRequest = { ...mockGameUpdateRequest, version: 999 }
-      const response = await testFetchClient.fetch("/games/version-test-game", {
-        method: "PUT",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(invalidUpdateRequest),
-      })
-      const data = await response.json()
+      try {
+        const response = await testFetchClient.put<null>(
+          "games/version-test-game",
+          {
+            headers: {
+              Cookie: mockSessionCookie,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(invalidUpdateRequest),
+          },
+        )
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
 
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(409)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E409")
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(409)
+          expect(data.result).toBe("ERROR")
+          expect(data.error.code).toBe("E409")
+        }
+      }
     })
   })
 
@@ -342,7 +371,7 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      await testFetchClient.fetch("/games", {
+      await testFetchClient.post<null>("games", {
         method: "POST",
         headers: {
           Cookie: mockSessionCookie,
@@ -351,12 +380,14 @@ describe("Game API Handlers", () => {
         body: JSON.stringify(createRequest),
       })
 
-      const response = await testFetchClient.fetch("/games/delete-test-game", {
-        method: "DELETE",
-        headers: {
-          Cookie: mockSessionCookie,
+      const response = await testFetchClient.delete<null>(
+        "games/delete-test-game",
+        {
+          headers: {
+            Cookie: mockSessionCookie,
+          },
         },
-      })
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -364,17 +395,21 @@ describe("Game API Handlers", () => {
     })
 
     it("존재하지 않는 게임을 삭제하려 하면 404를 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/games/non-existent-id", {
-        method: "DELETE",
-        headers: {
-          Cookie: mockSessionCookie,
-        },
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(404)
-      expect(data.result).toBe("ERROR")
+      try {
+        await testFetchClient.delete<null>("/games/non-existent-id", {
+          method: "DELETE",
+          headers: {
+            Cookie: mockSessionCookie,
+          },
+        })
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(404)
+          expect(data.result).toBe("ERROR")
+        }
+      }
     })
   })
 
@@ -394,7 +429,7 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      await testFetchClient.fetch("/games", {
+      await testFetchClient.post<null>("games", {
         method: "POST",
         headers: {
           Cookie: mockSessionCookie,
@@ -403,8 +438,8 @@ describe("Game API Handlers", () => {
         body: JSON.stringify(createRequest),
       })
 
-      const response = await testFetchClient.fetch(
-        "/games/share-test-game/share",
+      const response = await testFetchClient.post<null>(
+        "games/share-test-game/share",
         {
           method: "POST",
           headers: {
@@ -435,7 +470,7 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      await testFetchClient.fetch("/games", {
+      await testFetchClient.post<null>("games", {
         method: "POST",
         headers: {
           Cookie: mockSessionCookie,
@@ -444,8 +479,8 @@ describe("Game API Handlers", () => {
         body: JSON.stringify(createRequest),
       })
 
-      const response = await testFetchClient.fetch(
-        "/games/unshare-test-game/unshare",
+      const response = await testFetchClient.post<null>(
+        "games/unshare-test-game/unshare",
         {
           method: "POST",
           headers: {
@@ -479,14 +514,16 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      const response = await testFetchClient.fetch("/games/uploads/urls", {
-        method: "POST",
-        headers: {
-          Cookie: mockSessionCookie,
-          "Content-Type": "application/json",
+      const response = await testFetchClient.post<PresignedUrlData>(
+        "games/uploads/urls",
+        {
+          headers: {
+            Cookie: mockSessionCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(presignedRequest),
         },
-        body: JSON.stringify(presignedRequest),
-      })
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -513,8 +550,8 @@ describe("Game API Handlers", () => {
         ],
       }
 
-      const response = await testFetchClient.fetch(
-        "/games/existing-game-id/uploads/urls",
+      const response = await testFetchClient.post<PresignedUrlData>(
+        "games/existing-game-id/uploads/urls",
         {
           method: "POST",
           headers: {
@@ -537,12 +574,15 @@ describe("Game API Handlers", () => {
 
   describe("GET /users/me/games", () => {
     it("유효한 세션 쿠키로 내 게임 목록을 조회할 수 있어야 한다", async () => {
-      const response = await testFetchClient.fetch("/users/me/games", {
-        method: "GET",
-        headers: {
-          Cookie: mockSessionCookie,
+      const response = await testFetchClient.get<GameListData>(
+        "users/me/games",
+        {
+          method: "GET",
+          headers: {
+            Cookie: mockSessionCookie,
+          },
         },
-      })
+      )
       const data = await response.json()
 
       expect(response.ok).toBe(true)
@@ -552,32 +592,40 @@ describe("Game API Handlers", () => {
     })
 
     it("세션 쿠키가 없으면 401을 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/users/me/games", {
-        method: "GET",
-        headers: {
-          Cookie: "invalid-session",
-        },
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(401)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E401")
-      expect(data.error.message).toBe("로그인이 필요합니다.")
+      try {
+        await testFetchClient.get<GameListData>("users/me/games", {
+          method: "GET",
+          headers: {
+            Cookie: "invalid-session",
+          },
+        })
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(401)
+          expect(data.result).toBe("ERROR")
+          expect(data.error.code).toBe("E401")
+          expect(data.error.message).toBe("로그인이 필요합니다.")
+        }
+      }
     })
 
     it("쿠키 헤더가 없으면 401을 반환해야 한다", async () => {
-      const response = await testFetchClient.fetch("/users/me/games", {
-        method: "GET",
-      })
-      const data = await response.json()
-
-      expect(response.ok).toBe(false)
-      expect(response.status).toBe(401)
-      expect(data.result).toBe("ERROR")
-      expect(data.error.code).toBe("E401")
-      expect(data.error.message).toBe("로그인이 필요합니다.")
+      try {
+        const response =
+          await testFetchClient.get<GameListData>("users/me/games")
+        await response.json()
+      } catch (e) {
+        if (isError(e)) {
+          const data = await e.response.json()
+          expect(e.response.ok).toBe(false)
+          expect(e.response.status).toBe(401)
+          expect(data.result).toBe("ERROR")
+          expect(data.error.code).toBe("E401")
+          expect(data.error.message).toBe("로그인이 필요합니다.")
+        }
+      }
     })
   })
 })

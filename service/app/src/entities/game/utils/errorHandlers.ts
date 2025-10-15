@@ -1,11 +1,10 @@
-import { UUID } from "@shared/types/common"
-import { ApiResponse } from "@shared/types/response"
+import { UUID } from "@/shared/api/types/common"
 
 export const createErrorResponse = (
   code: number | string,
   message: string,
   data: unknown = null,
-): ApiResponse<null> => {
+) => {
   return {
     result: "ERROR",
     data: null,
@@ -33,10 +32,7 @@ const createGameConflictErrorResponse = (data?: unknown) =>
     data,
   )
 
-export const mapStatusToErrorResponse = (
-  status: number,
-  gameId?: UUID,
-): ApiResponse<null> => {
+export const mapStatusToErrorResponse = (status: number, gameId?: UUID) => {
   switch (status) {
     case 401:
       return createUnauthorizedErrorResponse()
