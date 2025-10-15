@@ -3,11 +3,11 @@
 import { ErrorBoundary } from "react-error-boundary"
 
 import { useAuthStore } from "@/entities/auth"
+import { GameSection } from "@/widgets/GameSection"
+import { HeroSection } from "@/widgets/HeroSection"
+import { HomeNavigation } from "@/widgets/HomeNavigation"
 
-import { GameSection } from "../../widgets/GameSection"
-import { HeroSection } from "../../widgets/HeroSection"
-import { HomeNavigation } from "../../widgets/HomeNavigation"
-import ErrorPage from "../error"
+import ErrorPage from "./error"
 
 function HomeContent() {
   const { isAuthenticated } = useAuthStore()
