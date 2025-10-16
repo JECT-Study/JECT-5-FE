@@ -26,8 +26,8 @@ export default function KakaoLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background-primary">
-      <div className="flex flex-col items-center gap-4">
-        <div className="size-8 animate-spin rounded-full border-4 border-blue-400 border-t-transparent"></div>
+      <div className="flex flex-col items-center gap-16">
+        <div className="size-32 animate-spin rounded-full border-4 border-blue-400 border-t-transparent"></div>
         <p className="text-sm text-text-primary">
           카카오 로그인으로 이동 중...
         </p>
