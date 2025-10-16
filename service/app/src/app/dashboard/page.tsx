@@ -1,16 +1,10 @@
 "use client"
 
-import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { Navigation } from "@shared/design/src/components/navigation"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
-import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
-import { useAuthStore } from "@/entities/auth"
 import { useAuthGuard } from "@/entities/auth/model/hooks/useAuthGuard"
 import { GameListItem } from "@/entities/game"
 import { deleteGame, getGameDetail } from "@/entities/game/api"
@@ -20,7 +14,7 @@ import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
-import AvatarButton from "@/widgets/components/avatarButton"
+import { DashboardNavigation } from "@/widgets/DashboardNavigation"
 
 export default function DashboardPage() {
   useAuthGuard()
@@ -28,7 +22,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")
-  const { logout } = useAuthStore()
 
   const {
     games,
@@ -130,62 +123,9 @@ export default function DashboardPage() {
     })
   }
 
-  const handleLogoClick = () => {
-    router.push("/")
-  }
-
-  const handleLogoutClick = () => {
-    logout()
-    router.push("/")
-  }
-
-  const leftContent = (
-    <button
-      className="flex h-[60px] w-[268px] cursor-pointer items-center justify-center p-3.5"
-      onClick={handleLogoClick}
-      aria-label="홈으로 이동"
-    >
-      <Image
-        src="/logo.svg"
-        alt="홈 로고"
-        className="size-full"
-        width={268}
-        height={60}
-      />
-    </button>
-  )
-
-  const centerContent = (
-    <h1 className="typography-heading-xl-semibold text-text-primary">
-      내 게임
-    </h1>
-  )
-
-  const rightContent = (
-    <>
-      <PrimaryBoxButton
-        size="sm"
-        _style="solid"
-        onClick={handleCreateGame}
-        aria-label="게임 만들기"
-      >
-        <Add />
-        게임 만들기
-      </PrimaryBoxButton>
-
-      <AvatarButton onClick={handleLogoutClick} />
-
-      <ThemeToggle />
-    </>
-  )
-
   return (
     <main className="min-h-screen bg-background-primary">
-      <Navigation
-        leftContent={leftContent}
-        centerContent={centerContent}
-        rightContent={rightContent}
-      />
+      <DashboardNavigation />
       <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
         <GameLibraryGrid
           games={games}

@@ -1,11 +1,12 @@
 import {
   PrimaryBoxButton,
-  SecondaryGhostIconButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
 import { Progress } from "@ject-5-fe/design/components/progress"
-import { Cross, Sun } from "@ject-5-fe/design/icons"
+import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
+
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 interface GamePlayHeaderProps {
   currentRound: number
@@ -49,9 +50,7 @@ export const GamePlayHeader = ({
 
       <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
         <div className="flex items-center justify-end gap-4 px-10">
-          <SecondaryGhostIconButton>
-            <Sun />
-          </SecondaryGhostIconButton>
+          <ThemeToggle />
 
           {currentRound > 1 && (
             <PrimaryBoxButton size="sm" _style="solid" onClick={onPrevQuestion}>
