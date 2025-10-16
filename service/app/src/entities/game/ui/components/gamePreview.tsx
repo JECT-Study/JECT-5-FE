@@ -112,11 +112,9 @@ export const GamePreview = ({
                   <GameCard.Root key={question.id}>
                     {question.imageUrl ? (
                       <GameCard.Image
-                        className="h-[260px]"
+                        className="h-[260px] w-[178px]"
                         src={question.imageUrl}
                         alt={question.title}
-                        fill
-                        sizes="178px"
                         placeholder="blur"
                         blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
                       />
