@@ -137,7 +137,7 @@ export const updateExistingGame = async (
   }
 
   const response = await fetchClient
-    .put<{ gameId: UUID }>(`/games/${gameId}`, {
+    .put<{ gameId: UUID }>(`games/${gameId}`, {
       json: gameUpdateRequest,
     })
     .json()

@@ -25,8 +25,6 @@ export const CreateGameProvider = ({ children }: CreateGameProviderProps) => {
         await gameStoreInstance.getState().loadGameData(gameId)
       }
       loadData()
-    } else {
-      gameStoreInstance.getState().reset()
     }
   }, [gameId])
 

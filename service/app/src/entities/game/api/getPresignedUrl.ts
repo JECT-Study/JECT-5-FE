@@ -9,7 +9,7 @@ export const getPresignedUrlsForNewGame = async (
   const response = await fetchClient.post<PresignedUrlData>(
     "games/uploads/urls",
     {
-      json: images,
+      json: { images },
     },
   )
 
@@ -23,7 +23,7 @@ export const getPresignedUrlsForExistingGame = async (
   const response = await fetchClient.post<PresignedUrlData>(
     `games/${gameId}/uploads/urls`,
     {
-      json: images,
+      json: { images },
     },
   )
   return response.json()
