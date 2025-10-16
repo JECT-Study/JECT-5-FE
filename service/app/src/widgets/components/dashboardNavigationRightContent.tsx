@@ -2,24 +2,20 @@
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { Add } from "@shared/design/src/icons"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 
-import { useAuthStore } from "@/entities/auth"
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
-import AvatarButton from "./avatarButton"
+const AuthButton = dynamic(() => import("@/shared/authButton"), {
+  ssr: false,
+})
 
 export default function DashboardNavigationRightContent() {
   const router = useRouter()
-  const { logout } = useAuthStore()
 
   const handleCreateGame = () => {
     router.push("/create")
-  }
-
-  const handleLogoutClick = () => {
-    logout()
-    router.push("/")
   }
 
   return (
@@ -34,7 +30,7 @@ export default function DashboardNavigationRightContent() {
         게임 만들기
       </PrimaryBoxButton>
 
-      <AvatarButton onClick={handleLogoutClick} />
+      <AuthButton />
 
       <ThemeToggle />
     </>
