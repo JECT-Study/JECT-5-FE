@@ -2,7 +2,6 @@
 
 import { PrimaryBoxButton } from "@shared/design/src/components/button"
 import { Navigation } from "@shared/design/src/components/navigation"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Add } from "@shared/design/src/icons"
 import { useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
@@ -20,6 +19,7 @@ import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import { ThemeToggle } from "@/shared/themeToggleButton"
 import AvatarButton from "@/widgets/components/avatarButton"
 
 export default function DashboardPage() {

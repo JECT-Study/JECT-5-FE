@@ -5,12 +5,12 @@ import {
   SecondaryGhostIconButton,
 } from "@shared/design/src/components/button"
 import * as TextField from "@shared/design/src/components/textField"
-import { ThemeToggle } from "@shared/design/src/components/themeToggle"
 import { Cross } from "@shared/design/src/icons"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
 import { saveNewGame, updateExistingGame } from "@/entities/game/utils/gameSave"
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { openErrorDialog } from "./dialog/errorDialog"
