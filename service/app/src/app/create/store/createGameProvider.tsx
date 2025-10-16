@@ -1,6 +1,8 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
 import type { ReactNode } from "react"
+import { useEffect } from "react"
 import { buildContext } from "react-simplikit"
 
 import type { CreateGameStoreApi } from "./useCreateGameStore"
@@ -14,6 +16,20 @@ export interface CreateGameProviderProps {
 }
 
 export const CreateGameProvider = ({ children }: CreateGameProviderProps) => {
+  const searchParams = useSearchParams()
+  const gameId = searchParams.get("gameId")
+
+  useEffect(() => {
+    if (gameId) {
+      const loadData = async () => {
+        await gameStoreInstance.getState().loadGameData(gameId)
+      }
+      loadData()
+    } else {
+      gameStoreInstance.getState().reset()
+    }
+  }, [gameId])
+
   return (
     <CreateGameStoreProvider {...gameStoreInstance}>
       {children}

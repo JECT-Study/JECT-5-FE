@@ -1,14 +1,11 @@
 "use client"
 
-import { Suspense } from "react"
-
 import { CreateGameNavigation } from "./components/createGameNavigation"
 import { FileUploadArea } from "./components/fileUploadArea"
 import { QuestionInputForm } from "./components/questionInputForm"
 import { QuestionList } from "./components/questionList"
-import CreateGamePageSkeleton from "./loading"
 
-function CreateGameContent() {
+export default function CreateGamePage() {
   return (
     <main className="flex h-screen flex-col overflow-hidden bg-background-primary">
       <CreateGameNavigation />
@@ -22,13 +19,5 @@ function CreateGameContent() {
         </div>
       </div>
     </main>
-  )
-}
-
-export default function CreateGamePage() {
-  return (
-    <Suspense fallback={<CreateGamePageSkeleton />}>
-      <CreateGameContent />
-    </Suspense>
   )
 }
