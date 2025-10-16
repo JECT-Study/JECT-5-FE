@@ -106,14 +106,15 @@ export const generateGameDetailData = (game: GameListItem): GameDetailData => {
 export const generatePresignedUrlData = (
   gameId?: string,
   imageCount: number = 1,
+  mockGameListLength?: number,
 ) => {
-  const targetGameId = gameId || generateFakeUUID()
+  const targetGameId = gameId || `${mockGameListLength || 0}`
 
   const presignedUrls = Array.from({ length: imageCount }, (_, index) => ({
     imageName: `x${index + 1}.png`,
     questionOrder: index,
     url: generateRandomImageUrl(),
-    key: `games/${targetGameId}/x${index + 1}.png`,
+    key: generateRandomImageUrl(),
   }))
 
   return {
