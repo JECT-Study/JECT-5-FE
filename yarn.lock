@@ -1439,6 +1439,7 @@ __metadata:
     es-toolkit: "npm:^1.39.8"
     glob: "npm:^11.0.3"
     immer: "npm:^10.1.1"
+    ky: "npm:^1.12.0"
     msw: "npm:^2.10.3"
     next: "npm:^14.2"
     next-themes: "npm:^0.4.6"
@@ -8598,6 +8599,13 @@ __metadata:
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
   checksum: 10c0/cd3a0b8878e7d6d3799e54340efe3591ca787d9f95f109f28129bdd2915e37807bf8918bb295ab86afb8c82196beec5a1adcaf29042ce3f2bd932b038fe3aa4b
+  languageName: node
+  linkType: hard
+
+"ky@npm:^1.12.0":
+  version: 1.12.0
+  resolution: "ky@npm:1.12.0"
+  checksum: 10c0/1b6c5de27f3a93e1ea63d98f3d0aa94961846441873c850f21d553df3749487a634e58497357676d1e9e871262aa6dbb61172d8c5cb1d44fab35d899a5988f79
   languageName: node
   linkType: hard
 

@@ -9,4 +9,5 @@ const mockKakaoLoginData: KakaoLoginData = {
 export const kakaoLoginSuccess: KakaoLoginResponse = {
   result: "SUCCESS",
   data: mockKakaoLoginData,
+  error: null,
 }

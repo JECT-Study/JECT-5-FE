@@ -17,9 +17,9 @@ const GameCardComponent = forwardRef<HTMLDivElement, GameCardProps>(
         ref={ref}
         role="group"
         aria-label={accessibleName}
-        className={cn("relative", className)}
+        className={cn("relative flex flex-col gap-12", className)}
       >
-        <div className="flex flex-col gap-12">{children}</div>
+        {children}
       </div>
     )
   },
@@ -77,7 +77,7 @@ const GameCardBadge = ({ children, className }: GameCardBadgeProps) => {
         className,
       )}
     >
-      <span className="text-[13px] font-normal leading-[120%] text-text-inverse">
+      <span className="typography-body-md-medium text-text-inverse">
         {children}
       </span>
     </div>

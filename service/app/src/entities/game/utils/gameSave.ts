@@ -1,5 +1,5 @@
-import { fetchClient } from "@shared/lib/fetchClient"
-import { UUID } from "@shared/types/common"
+import { fetchClient } from "@/shared/api/fetchClient"
+import { UUID } from "@/shared/api/types/common"
 
 import { CreateGameState } from "../../../app/create/store/types"
 import {
@@ -41,9 +41,11 @@ export const saveNewGame = async (state: CreateGameState): Promise<UUID> => {
       )
     }
 
-    presignedResponse.data.presignedUrls.forEach((item) => {
-      imageUrlMap.set(item.questionOrder, item.key)
-    })
+    presignedResponse.data.presignedUrls.forEach(
+      (item: { questionOrder: number; key: string }) => {
+        imageUrlMap.set(item.questionOrder, item.key)
+      },
+    )
   }
 
   const firstImageKey: string | null =
@@ -107,9 +109,11 @@ export const updateExistingGame = async (
       )
     }
 
-    presignedResponse.data.presignedUrls.forEach((item) => {
-      imageUrlMap.set(item.questionOrder, item.key)
-    })
+    presignedResponse.data.presignedUrls.forEach(
+      (item: { questionOrder: number; key: string }) => {
+        imageUrlMap.set(item.questionOrder, item.key)
+      },
+    )
   }
 
   const firstQuestionWithImage = state.questions.find(
@@ -132,17 +136,15 @@ export const updateExistingGame = async (
     })),
   }
 
-  // TODO: updateGame 사용
-  const response = await fetchClient.fetch(`/games/${gameId}`, {
-    method: "PUT",
-    body: JSON.stringify(gameUpdateRequest),
-  })
+  const response = await fetchClient
+    .put<{ gameId: UUID }>(`/games/${gameId}`, {
+      json: gameUpdateRequest,
+    })
+    .json()
 
-  if (!response.ok) {
-    throw new Error(
-      "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
-    )
+  if (response.result !== "SUCCESS") {
+    throw new Error(response.error ?? "저장 중 오류가 발생했습니다.")
   }
 
-  return gameId
+  return response.data.gameId
 }

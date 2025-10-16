@@ -1,4 +1,4 @@
-import { UUID } from "@shared/types/common"
+import { UUID } from "@/shared/api/types/common"
 
 export interface MyGameQueryParams {
   cursorGameId?: UUID

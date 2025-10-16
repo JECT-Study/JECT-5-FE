@@ -40,7 +40,7 @@ export const MSWProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <MSWContext.Provider value={{ isMswReady, isMswError }}>
-      {children}
+      {isMswReady && children}
     </MSWContext.Provider>
   )
 }

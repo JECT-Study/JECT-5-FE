@@ -1,10 +1,9 @@
-import { UUID } from "@shared/types/common"
-
 import {
   GameDetailData,
   GameListData,
   GameListItem,
 } from "@/entities/game/model/game"
+import { UUID } from "@/shared/api/types/common"
 
 import { generatePresignedUrlData } from "../utils/mockGenerators"
 import {

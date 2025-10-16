@@ -1,20 +1,10 @@
-import { fetchClient } from "@shared/lib/fetchClient"
-import { ApiResponse } from "@shared/types/response"
+import { fetchClient } from "@/shared/api/fetchClient"
 
 import { GameCreateRequest } from "../model"
-import { mapStatusToErrorResponse } from "../utils"
 
-export const createGame = async (
-  gameData: GameCreateRequest,
-): Promise<ApiResponse<null>> => {
-  const response = await fetchClient.fetch("/games", {
-    method: "POST",
-    body: JSON.stringify(gameData),
+export const createGame = async (gameData: GameCreateRequest) => {
+  const response = await fetchClient.post<null>("games", {
+    json: gameData,
   })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status)
-  }
-
   return response.json()
 }

@@ -1,24 +1,30 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+type ViMock = ReturnType<typeof vi.fn>
+
 import {
   startPeriodicSessionValidation,
   validateSessionWithRequest,
 } from "../sessionValidator"
 
-vi.mock("@shared/lib/fetchClient", () => ({
+vi.mock("@/shared/api/fetchClient", () => ({
   fetchClient: {
-    fetch: vi.fn(),
+    get: vi.fn(),
   },
+  isError: vi.fn(),
 }))
 
 describe("Session Validator", () => {
-  let mockFetch: ReturnType<typeof vi.fn>
+  let mockFetch: ViMock
+  let mockIsError: ViMock
 
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    const { fetchClient } = await import("@shared/lib/fetchClient")
-    mockFetch = vi.mocked(fetchClient.fetch)
+    const { fetchClient, isError } = await import("@/shared/api/fetchClient")
+    mockFetch = fetchClient.get as unknown as ViMock
+    mockIsError = isError as unknown as ViMock
+    mockIsError.mockReturnValue(false)
 
     Object.defineProperty(window, "localStorage", {
       value: {
@@ -46,15 +52,17 @@ describe("Session Validator", () => {
     })
 
     it("401 응답 시 세션이 만료된 것으로 간주해야 한다", async () => {
-      mockFetch.mockResolvedValue({
-        status: 401,
-        ok: false,
-      } as Response)
+      mockIsError.mockReturnValue(true)
+      mockFetch.mockRejectedValue({
+        response: {
+          status: 401,
+        },
+      })
 
       const result = await validateSessionWithRequest()
 
       expect(result.isValid).toBe(false)
-      expect(result.error).toBe("Session expired")
+      expect(result.error).toBe("session expired")
     })
 
     it("네트워크 에러 시 false를 반환해야 한다", async () => {
@@ -63,7 +71,7 @@ describe("Session Validator", () => {
       const result = await validateSessionWithRequest()
 
       expect(result.isValid).toBe(false)
-      expect(result.error).toBe("Network error")
+      expect(result.error).toBe("unknown error")
     })
   })
 
@@ -83,10 +91,12 @@ describe("Session Validator", () => {
     })
 
     it("세션 만료 시 콜백을 실행해야 한다", async () => {
-      mockFetch.mockResolvedValue({
-        status: 401,
-        ok: false,
-      } as Response)
+      mockIsError.mockReturnValue(true)
+      mockFetch.mockRejectedValue({
+        response: {
+          status: 401,
+        },
+      })
 
       const onSessionExpired = vi.fn()
       const cleanup = startPeriodicSessionValidation(100, onSessionExpired)

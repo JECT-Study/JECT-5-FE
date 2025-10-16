@@ -1,8 +1,6 @@
-import { fetchClient } from "@shared/lib/fetchClient"
-import { ApiResponse } from "@shared/types/response"
+import { fetchClient } from "@/shared/api/fetchClient"
 
-import type { GameListItem } from "../model"
-import { mapStatusToErrorResponse } from "../utils"
+import type { GameListData } from "../model"
 import { toQueryString } from "../utils/toQueryString"
 
 export interface GetMyGamesRequest {
@@ -11,28 +9,10 @@ export interface GetMyGamesRequest {
   limit: number
 }
 
-export interface GetMyGamesResponse {
-  result: "SUCCESS" | "ERROR"
-  data: {
-    games: GameListItem[]
-  } | null
-  error: {
-    code: string
-    message: string
-  } | null
-}
-
-export async function getMyGames(
-  params: GetMyGamesRequest,
-): Promise<GetMyGamesResponse | ApiResponse<null>> {
+export async function getMyGames(params: GetMyGamesRequest) {
   const queryString = toQueryString(params)
-  const response = await fetchClient.fetch(`/users/me/games?${queryString}`, {
-    method: "GET",
-  })
-
-  if (!response.ok) {
-    return mapStatusToErrorResponse(response.status)
-  }
-
+  const response = await fetchClient.get<GameListData>(
+    `users/me/games?${queryString}`,
+  )
   return response.json()
 }

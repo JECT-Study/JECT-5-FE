@@ -6,7 +6,8 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./postcss.config": "./postcss.config.mjs",
     "./components/*": "./src/components/*/index.tsx",
-    "./icons": "./src/icons/index.ts"
+    "./icons": "./src/icons/index.ts",
+    "./utils/*": "./src/utils/*.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
