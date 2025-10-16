@@ -9,6 +9,7 @@ import { deleteCookie, getSessionId } from "../utils/cookieUtils"
 type AuthState = {
   user: KakaoLoginData | null
   isAuthenticated: boolean
+  _hasHydrated: boolean
   login: (code: string) => Promise<void>
   logout: () => void
 }
@@ -18,6 +19,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: !!getSessionId(),
+      _hasHydrated: false,
 
       login: async (code: string) => {
         try {
@@ -37,6 +39,11 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-store",
       storage: createJSONStorage(() => sessionStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._hasHydrated = true
+        }
+      },
     },
   ),
 )
