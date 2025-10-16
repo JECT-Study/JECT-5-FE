@@ -11,6 +11,7 @@ import { overlay } from "overlay-kit"
 import { useEffect, useState } from "react"
 
 import { useAuthStore } from "@/entities/auth"
+import { useAuthGuard } from "@/entities/auth/model/hooks/useAuthGuard"
 import { GameListItem } from "@/entities/game"
 import { deleteGame, getGameDetail } from "@/entities/game/api"
 import { GameQuestion } from "@/entities/game/model/game"
@@ -22,6 +23,8 @@ import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 import AvatarButton from "@/widgets/components/avatarButton"
 
 export default function DashboardPage() {
+  useAuthGuard()
+
   const router = useRouter()
   const queryClient = useQueryClient()
   const [_searchQuery, _setSearchQuery] = useState("")

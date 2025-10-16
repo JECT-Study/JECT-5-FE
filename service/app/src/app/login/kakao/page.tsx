@@ -26,10 +26,10 @@ function KakaoCallbackContent() {
   }, [searchParams, login, router])
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4">카카오 로그인 처리 중...</div>
-        <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+    <div className="flex min-h-screen items-center justify-center bg-background-primary">
+      <div className="flex flex-col items-center gap-16">
+        <div className="size-32 animate-spin rounded-full border-4 border-blue-400 border-t-transparent"></div>
+        <p className="text-sm text-text-primary">카카오 로그인 처리 중...</p>
       </div>
     </div>
   )
