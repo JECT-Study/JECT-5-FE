@@ -1,5 +1,3 @@
-import { UUID } from "@shared/types/common"
-
 import {
   GameCreateQuestion,
   GameCreateRequest,
@@ -8,6 +6,7 @@ import {
   GameUpdateQuestion,
   GameUpdateRequest,
 } from "@/entities/game"
+import { UUID } from "@/shared/api/types/common"
 
 import { mockGameList } from "../data/common"
 

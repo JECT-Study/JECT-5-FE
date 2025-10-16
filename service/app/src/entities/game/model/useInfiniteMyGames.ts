@@ -48,13 +48,8 @@ export const useInfiniteMyGames = ({
         limit,
         ...pageParam,
       }
-
       const response = await getMyGames(params)
-
-      if (response.result === "SUCCESS" && response.data) {
-        return response.data
-      }
-      throw new Error("Failed to fetch my games")
+      return response.data
     },
     initialPageParam: undefined as PageParam,
     getNextPageParam: (lastPage: { games: GameListItem[] }) => {

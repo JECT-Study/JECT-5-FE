@@ -1,4 +1,4 @@
-import type { ApiResponse } from "@shared/types/response"
+import type { ApiResponse } from "@/shared/api/types/response"
 
 export interface KakaoLoginData {
   profileImageUrl: string

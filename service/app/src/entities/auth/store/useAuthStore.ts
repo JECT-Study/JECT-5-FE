@@ -2,6 +2,7 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 
 import { kakaoLogin } from "../api/kakaoLogin"
+import { logout } from "../api/logout"
 import { KakaoLoginData } from "../model/auth"
 import { deleteCookie, getSessionId } from "../utils/cookieUtils"
 
@@ -27,7 +28,8 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
+      logout: async () => {
+        await logout()
         deleteCookie("JSESSIONID")
         set({ user: null, isAuthenticated: false })
       },

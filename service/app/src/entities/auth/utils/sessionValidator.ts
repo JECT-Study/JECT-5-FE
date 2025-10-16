@@ -1,4 +1,5 @@
-import { fetchClient } from "@shared/lib/fetchClient"
+import type { GameListData } from "@/entities/game"
+import { fetchClient, isError } from "@/shared/api/fetchClient"
 
 /**
  * 세션 검증을 위한 유틸리티
@@ -14,25 +15,24 @@ export const validateSessionWithRequest =
   async (): Promise<SessionValidationResult> => {
     try {
       // 간단한 API 요청으로 세션 상태 확인 (예: 내 게임 목록 조회)
-      const response = await fetchClient.fetch("/users/me/games?limit=1", {
+      await fetchClient.get<GameListData>("/users/me/games?limit=1", {
         method: "GET",
       })
-
-      if (response.status === 401) {
-        return {
-          isValid: false,
-          error: "Session expired",
-        }
-      }
 
       return {
         isValid: true,
       }
     } catch (error) {
       console.error("Session validation error:", error)
+      if (isError(error) && error.response.status === 401) {
+        return {
+          isValid: false,
+          error: "session expired",
+        }
+      }
       return {
         isValid: false,
-        error: "Network error",
+        error: "unknown error",
       }
     }
   }

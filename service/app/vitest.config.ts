@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
     passWithNoTests: true,
-    include: ["**/*.{test}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    include: ["**/*.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     exclude: [
       "**/node_modules/**",
       "**/dist/**",

@@ -52,36 +52,30 @@ export default function DashboardPage() {
 
   const handleGameClick = async (game: GameListItem) => {
     try {
-      const gameDetailRes = await getGameDetail(game.gameId)
+      const { data: gameDetail } = await getGameDetail(game.gameId)
 
-      if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
-        const gameDetail = gameDetailRes.data
+      overlay.open(({ close, isOpen }) => {
+        const handleStartGame = () => {
+          close()
+          router.push(`/game/${game.gameId}`)
+        }
 
-        overlay.open(({ close, isOpen }) => {
-          const handleStartGame = () => {
-            close()
-            router.push(`/game/${game.gameId}`)
-          }
-
-          return (
-            <GamePreview
-              gameTitle={gameDetail.gameTitle}
-              creatorName={gameDetail.nickname}
-              questionCount={gameDetail.questionCount}
-              questions={gameDetail.questions.map((question) => ({
-                id: question.questionId.toString(),
-                title: question.questionText,
-                imageUrl: question.imageUrl,
-              }))}
-              onClose={close}
-              onStartGame={handleStartGame}
-              isOpen={isOpen}
-            />
-          )
-        })
-      } else {
-        console.error("Failed to fetch game detail")
-      }
+        return (
+          <GamePreview
+            gameTitle={gameDetail.gameTitle}
+            creatorName={gameDetail.nickname}
+            questionCount={gameDetail.questionCount}
+            questions={gameDetail.questions.map((question) => ({
+              id: question.questionId.toString(),
+              title: question.questionText,
+              imageUrl: question.imageUrl,
+            }))}
+            onClose={close}
+            onStartGame={handleStartGame}
+            isOpen={isOpen}
+          />
+        )
+      })
     } catch (error) {
       console.error("Error fetching game detail:", error)
     }
