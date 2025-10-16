@@ -2,8 +2,9 @@
 
 import { useSearchParams } from "next/navigation"
 import type { ReactNode } from "react"
+import { useEffect } from "react"
 
-import { CreateGameProvider } from "./store/createGameProvider"
+import { CreateGameProvider, gameStoreInstance } from "./store"
 
 export default function CreateGameLayout({
   children,
@@ -13,5 +14,16 @@ export default function CreateGameLayout({
   const searchParams = useSearchParams()
   const gameId = searchParams.get("gameId")
 
-  return <CreateGameProvider gameId={gameId}>{children}</CreateGameProvider>
+  useEffect(() => {
+    if (gameId) {
+      const loadData = async () => {
+        await gameStoreInstance.getState().loadGameData(gameId)
+      }
+      loadData()
+    } else {
+      gameStoreInstance.getState().reset()
+    }
+  }, [gameId])
+
+  return <CreateGameProvider>{children}</CreateGameProvider>
 }

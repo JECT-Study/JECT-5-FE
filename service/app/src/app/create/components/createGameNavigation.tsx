@@ -10,7 +10,7 @@ import { Cross } from "@shared/design/src/icons"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
-import { saveNewGame } from "@/entities/game/utils/gameSave"
+import { saveNewGame, updateExistingGame } from "@/entities/game/utils/gameSave"
 
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { openErrorDialog } from "./dialog/errorDialog"
@@ -20,14 +20,17 @@ import { openSaveConfirmDialog } from "./dialog/saveConfirmDialog"
 export function CreateGameNavigation() {
   const router = useRouter()
 
-  const { gameName, questions, setGameName, reset } = useCreateGameStore(
-    useShallow((state) => ({
-      gameName: state.gameName,
-      questions: state.questions,
-      setGameName: state.setGameName,
-      reset: state.reset,
-    })),
-  )
+  const { gameName, questions, gameId, version, setGameName, reset } =
+    useCreateGameStore(
+      useShallow((state) => ({
+        gameName: state.gameName,
+        questions: state.questions,
+        gameId: state.gameId,
+        version: state.version,
+        setGameName: state.setGameName,
+        reset: state.reset,
+      })),
+    )
 
   const gameNameError = gameName.length > 30 || gameName.length < 1
 
@@ -51,11 +54,29 @@ export function CreateGameNavigation() {
     }
 
     try {
-      await saveNewGame({
-        gameName,
-        questions,
-        selectedQuestionId: questions[0]?.id || "",
-      })
+      if (gameId && version !== null) {
+        await updateExistingGame(
+          {
+            gameName,
+            questions,
+            selectedQuestionId: questions[0]?.id || "",
+            isLoading: false,
+            gameId,
+            version,
+          },
+          gameId,
+          version,
+        )
+      } else {
+        await saveNewGame({
+          gameName,
+          questions,
+          selectedQuestionId: questions[0]?.id || "",
+          isLoading: false,
+          gameId: null,
+          version: null,
+        })
+      }
 
       reset()
       router.push("/dashboard")

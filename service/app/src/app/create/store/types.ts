@@ -12,6 +12,9 @@ export interface CreateGameState {
   gameName: string
   questions: Question[]
   selectedQuestionId: string
+  isLoading: boolean
+  gameId: string | null
+  version: number | null
 }
 
 export interface CreateGameActions {
@@ -23,5 +26,6 @@ export interface CreateGameActions {
   uploadImage: (id: string, file: File, previewUrl: string) => void
   deleteImage: (id: string) => void
   updateQuestion: (id: string, updates: Partial<Question>) => void
+  loadGameData: (gameId: string) => Promise<void>
   reset: () => void
 }

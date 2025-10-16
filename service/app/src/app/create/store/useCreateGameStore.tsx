@@ -4,22 +4,24 @@ import { create, useStore } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
+import { getGameDetail } from "@/entities/game/api"
+
 import { useCreateGameStoreContext } from "./createGameProvider"
 import type { CreateGameActions, CreateGameState, Question } from "./types"
-import { createInitialQuestion } from "./utils"
+import { createInitialQuestion, mapGameQuestionToQuestion } from "./utils"
 
 const DEFAULT_QUESTIONS: Question[] = [createInitialQuestion(0)]
 
-export const createGameStore = (
-  gameId: string,
-  initialGameName: string = "새 게임",
-) =>
+const createGameStore = (initialGameName: string = "새 게임") =>
   create<CreateGameState & CreateGameActions>()(
     persist(
       immer((set) => ({
         gameName: initialGameName,
         questions: DEFAULT_QUESTIONS,
         selectedQuestionId: DEFAULT_QUESTIONS[0].id,
+        isLoading: false,
+        gameId: null,
+        version: null,
 
         setGameName: (name) =>
           set((state) => {
@@ -121,15 +123,50 @@ export const createGameStore = (
               }
             }
           }),
+        loadGameData: async (gameId) => {
+          set((state) => {
+            state.isLoading = true
+          })
+
+          try {
+            const response = await getGameDetail(gameId)
+
+            if (response.result === "SUCCESS" && response.data) {
+              const { gameTitle, questions, version } = response.data
+              const mappedQuestions = questions.map(mapGameQuestionToQuestion)
+
+              set((state) => {
+                state.gameId = gameId
+                state.gameName = gameTitle
+                state.questions = mappedQuestions
+                state.selectedQuestionId = mappedQuestions[0]?.id || ""
+                state.version = version
+                state.isLoading = false
+              })
+            } else {
+              set((state) => {
+                state.isLoading = false
+              })
+            }
+          } catch (error) {
+            set((state) => {
+              state.isLoading = false
+            })
+            throw new Error("Failed to load game data")
+          }
+        },
         reset: () =>
           set((state) => {
             state.gameName = initialGameName
             state.questions = DEFAULT_QUESTIONS
             state.selectedQuestionId = DEFAULT_QUESTIONS[0].id
+            state.isLoading = false
+            state.gameId = null
+            state.version = null
           }),
       })),
       {
-        name: `create-game-store-${gameId}`,
+        name: "create-game-store",
         storage: createJSONStorage(() => sessionStorage),
         partialize: (state) => ({
           gameName: state.gameName,
@@ -139,12 +176,17 @@ export const createGameStore = (
             previewImageUrl: null,
           })),
           selectedQuestionId: state.selectedQuestionId,
+          isLoading: state.isLoading,
+          gameId: state.gameId,
+          version: state.version,
         }),
       },
     ),
   )
 
 export type CreateGameStoreApi = ReturnType<typeof createGameStore>
+
+export const gameStoreInstance = createGameStore()
 
 export const useCreateGameStore = <T,>(
   selector: (store: CreateGameState & CreateGameActions) => T,
