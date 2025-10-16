@@ -38,10 +38,7 @@ import {
   validateQuestionsArray,
   validateSessionCookie,
 } from "../utils/gameHandlers"
-import {
-  generateFakeUUID,
-  generateGameDetailData,
-} from "../utils/mockGenerators"
+import { generateGameDetailData } from "../utils/mockGenerators"
 
 export const gameHandlers = [
   http.get(`${MSW_BASE_URL}/games/default`, () => {
@@ -344,9 +341,9 @@ export const gameHandlers = [
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
 
-      const newGameId = generateFakeUUID()
+      const newGameId = `${mockGameList.length}`
       return HttpResponse.json(
-        presignedUrlDataSuccess(newGameId, images.length),
+        presignedUrlDataSuccess(newGameId, images.length, mockGameList.length),
       )
     } catch {
       return HttpResponse.json(internalServerError)
@@ -373,4 +370,7 @@ export const gameHandlers = [
       }
     },
   ),
+  http.put(/\/exampleThumbnail\.jpg/, async () => {
+    return new HttpResponse(null, { status: 200 })
+  }),
 ]

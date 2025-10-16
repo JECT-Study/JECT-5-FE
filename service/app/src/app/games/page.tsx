@@ -12,6 +12,7 @@ import { useState } from "react"
 
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { GameQuestion } from "@/entities/game/model/game"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import { GameLibraryGrid } from "@/entities/game/ui/components"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
@@ -66,7 +67,7 @@ export default function GamesPage() {
               gameTitle={gameDetail.gameTitle}
               creatorName={gameDetail.nickname}
               questionCount={gameDetail.questionCount}
-              questions={gameDetail.questions.map((question) => ({
+              questions={gameDetail.questions.map((question: GameQuestion) => ({
                 id: question.questionId.toString(),
                 title: question.questionText,
                 imageUrl: question.imageUrl,

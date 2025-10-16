@@ -13,6 +13,7 @@ import { useEffect, useState } from "react"
 import { useAuthStore } from "@/entities/auth"
 import { GameListItem } from "@/entities/game"
 import { deleteGame, getGameDetail } from "@/entities/game/api"
+import { GameQuestion } from "@/entities/game/model/game"
 import { useDashboardPopupActions } from "@/entities/game/model/useDashboardPopupActions"
 import { useGameShareActions } from "@/entities/game/model/useGameShareActions"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
@@ -65,7 +66,7 @@ export default function DashboardPage() {
             gameTitle={gameDetail.gameTitle}
             creatorName={gameDetail.nickname}
             questionCount={gameDetail.questionCount}
-            questions={gameDetail.questions.map((question) => ({
+            questions={gameDetail.questions.map((question: GameQuestion) => ({
               id: question.questionId.toString(),
               title: question.questionText,
               imageUrl: question.imageUrl,

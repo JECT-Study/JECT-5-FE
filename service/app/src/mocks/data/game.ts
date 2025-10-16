@@ -16,12 +16,22 @@ export const mockGameListData: GameListData = {
   games: mockGameList,
 }
 
-export const presignedUrlData = (gameId: UUID, imageCount: number = 0) => {
-  return generatePresignedUrlData(gameId, imageCount)
+export const presignedUrlData = (
+  gameId: UUID,
+  imageCount: number = 0,
+  mockGameListLength?: number,
+) => {
+  return generatePresignedUrlData(gameId, imageCount, mockGameListLength)
 }
 
-export const presignedUrlDataSuccess = (gameId: UUID, imageCount: number) => {
-  return generateSuccessResponse(presignedUrlData(gameId, imageCount))
+export const presignedUrlDataSuccess = (
+  gameId: UUID,
+  imageCount: number,
+  mockGameListLength?: number,
+) => {
+  return generateSuccessResponse(
+    presignedUrlData(gameId, imageCount, mockGameListLength),
+  )
 }
 
 export const GameListSuccess = (gameList: GameListItem[]) => {

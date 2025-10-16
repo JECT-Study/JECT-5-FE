@@ -7,5 +7,6 @@ export {
   validateImageFile,
   validateMultipleFiles,
 } from "./fileValidation"
+export { saveNewGame, updateExistingGame } from "./gameSave"
 export type { S3UploadResult } from "./s3Upload"
 export { uploadFileToS3, uploadMultipleFilesToS3 } from "./s3Upload"

@@ -1,34 +1,39 @@
 "use client"
 
 import * as TextField from "@ject-5-fe/design/components/textField"
+import { useShallow } from "zustand/react/shallow"
 
-import { useGameCreationContext } from "../../model/state/create/gameCreationContext"
-import {
-  validateAnswerText,
-  validateQuestionText,
-} from "../../model/state/create/selectors"
+import { useCreateGameStore } from "../store/useCreateGameStore"
 
 export function QuestionInputForm() {
-  const { actions, selectors } = useGameCreationContext()
-  const selectedQuestion = selectors.selectedQuestion
+  const { selectedQuestionId, updateQuestion } = useCreateGameStore(
+    useShallow((state) => ({
+      selectedQuestionId: state.selectedQuestionId,
+      updateQuestion: state.updateQuestion,
+    })),
+  )
+
+  const selectedQuestion = useCreateGameStore(
+    useShallow((state) =>
+      state.questions.find((q) => q.id === selectedQuestionId),
+    ),
+  )
+
+  const questionText = selectedQuestion?.text ?? ""
+  const answerText = selectedQuestion?.answer ?? ""
+  const questionError = questionText.length > 50 || questionText.length < 1
+  const answerError = answerText.length > 50 || answerText.length < 1
 
   const handleQuestionChange = (value: string) => {
-    if (selectedQuestion) {
-      actions.updateQuestion(selectedQuestion.id, { text: value })
-    }
+    updateQuestion(selectedQuestionId, { text: value })
   }
 
   const handleAnswerChange = (value: string) => {
-    if (selectedQuestion) {
-      actions.updateQuestion(selectedQuestion.id, { answer: value })
-    }
+    updateQuestion(selectedQuestionId, { answer: value })
   }
 
-  const questionError = validateQuestionText(selectedQuestion?.text || "")
-  const answerError = validateAnswerText(selectedQuestion?.answer || "")
-
   return (
-    <div className="flex w-[420px] flex-col gap-[54px]">
+    <div className="flex w-[420px] flex-col gap-56">
       <TextField.Root
         name="question"
         state={questionError ? "error" : "default"}
@@ -38,13 +43,10 @@ export function QuestionInputForm() {
         <TextField.InputWrapper>
           <TextField.Input
             placeholder="질문 입력"
-            value={selectedQuestion?.text || ""}
+            value={questionText}
             onChange={(e) => handleQuestionChange(e.target.value)}
           />
         </TextField.InputWrapper>
-        {questionError && (
-          <TextField.ErrorText>{questionError}</TextField.ErrorText>
-        )}
       </TextField.Root>
 
       <TextField.Root
@@ -56,13 +58,10 @@ export function QuestionInputForm() {
         <TextField.InputWrapper>
           <TextField.Input
             placeholder="답안 입력"
-            value={selectedQuestion?.answer || ""}
+            value={answerText}
             onChange={(e) => handleAnswerChange(e.target.value)}
           />
         </TextField.InputWrapper>
-        {answerError && (
-          <TextField.ErrorText>{answerError}</TextField.ErrorText>
-        )}
       </TextField.Root>
     </div>
   )
