@@ -1,257 +1,148 @@
-import { v4 as uuidv4 } from "uuid"
+import { fetchClient } from "@shared/lib/fetchClient"
+import { UUID } from "@shared/types/common"
 
-import { createGame, getPresignedUrlsForNewGame } from "../api"
-import { updateGameWithoutNewImages } from "../api/updateGame"
+import { CreateGameState } from "../../../app/create/store/types"
+import {
+  createGame,
+  getPresignedUrlsForExistingGame,
+  getPresignedUrlsForNewGame,
+} from "../api"
 import { GameCreateRequest, GameUpdateRequest } from "../model"
-import { GameCreationState } from "../model/state/create/state"
+import { generateUniqueFileName } from "./fileValidation"
 import { uploadMultipleFilesToS3 } from "./s3Upload"
 
-export interface GameSaveResult {
-  success: boolean
-  error?: string
-  gameId?: string
-}
+export const saveNewGame = async (state: CreateGameState): Promise<UUID> => {
+  const questionsWithNewImages = state.questions.filter((q) => q.imageFile)
 
-export const prepareGameData = (
-  state: GameCreationState,
-): GameCreateRequest => {
-  const gameId = uuidv4()
+  const presignedRequest = questionsWithNewImages.map((question) => ({
+    imageName: generateUniqueFileName(question.imageFile!.name),
+    questionOrder: question.order,
+  }))
 
-  const firstQuestionWithImage = state.questions.find(
-    (question) => question.imageUrl || question.imageFile,
-  )
+  const presignedResponse = await getPresignedUrlsForNewGame(presignedRequest)
 
-  const thumbnailUrl = firstQuestionWithImage?.imageUrl || null
+  if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
+    throw new Error("이미지 업로드 준비에 실패했습니다.")
+  }
 
-  return {
+  const gameId = presignedResponse.data.gameId
+  const imageUrlMap: Map<number, string> = new Map()
+
+  if (questionsWithNewImages.length > 0) {
+    const imageFiles = questionsWithNewImages.map((q) => q.imageFile!)
+    const uploadResult = await uploadMultipleFilesToS3(
+      imageFiles,
+      presignedResponse.data.presignedUrls,
+    )
+
+    if (!uploadResult.success) {
+      throw new Error(
+        "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
+      )
+    }
+
+    presignedResponse.data.presignedUrls.forEach((item) => {
+      imageUrlMap.set(item.questionOrder, item.key)
+    })
+  }
+
+  const firstImageKey: string | null =
+    imageUrlMap.size > 0 ? (imageUrlMap.values().next().value ?? null) : null
+
+  const gameCreateRequest: GameCreateRequest = {
     gameId,
-    gameTitle: state.gameName.trim() || "게임1",
-    gameThumbnailUrl: thumbnailUrl,
-    questions: state.questions.map((question, index) => ({
-      questionOrder: index,
-      imageUrl: question.imageUrl || "",
+    gameTitle: state.gameName.trim(),
+    gameThumbnailUrl: firstImageKey,
+    questions: state.questions.map((question) => ({
+      questionOrder: question.order,
+      imageUrl: imageUrlMap.get(question.order) || "",
       questionText: question.text.trim(),
       questionAnswer: question.answer.trim(),
     })),
   }
-}
 
-export const prepareUpdateGameData = (
-  state: GameCreationState,
-  version: number,
-): GameUpdateRequest => {
-  const firstQuestionWithImage = state.questions.find(
-    (question) => question.imageUrl || question.imageFile,
-  )
+  const createResponse = await createGame(gameCreateRequest)
 
-  const thumbnailUrl = firstQuestionWithImage?.imageUrl || null
-
-  return {
-    version,
-    gameTitle: state.gameName.trim() || "게임1",
-    gameThumbnailUrl: thumbnailUrl,
-    questions: state.questions.map((question, index) => ({
-      questionId: parseInt(question.id),
-      questionOrder: index,
-      imageUrl: question.imageUrl || "",
-      questionText: question.text.trim(),
-      questionAnswer: question.answer.trim(),
-    })),
+  if (createResponse.result !== "SUCCESS") {
+    throw new Error(
+      "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
+    )
   }
-}
 
-export const saveGame = async (
-  state: GameCreationState,
-): Promise<GameSaveResult> => {
-  try {
-    // 기본 검증
-    if (!state.gameName.trim()) {
-      return {
-        success: false,
-        error: "게임 이름을 입력해주세요.",
-      }
-    }
-
-    if (state.questions.length === 0) {
-      return {
-        success: false,
-        error: "최소 1개 이상의 질문이 필요합니다.",
-      }
-    }
-
-    const questionsWithImages = state.questions.filter((q) => q.imageFile)
-
-    let presignedResponse = null
-
-    if (questionsWithImages.length > 0) {
-      const presignedRequest = {
-        images: questionsWithImages.map((question) => ({
-          imageName: `${question.id}.${question.imageFile!.name.split(".").pop()}`,
-          questionOrder: question.order,
-        })),
-      }
-
-      presignedResponse = await getPresignedUrlsForNewGame(
-        presignedRequest.images,
-      )
-
-      if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
-        return {
-          success: false,
-          error: "Presigned URL 발급에 실패했습니다.",
-        }
-      }
-
-      const imageFiles = questionsWithImages.map((q) => q.imageFile!)
-      const uploadResult = await uploadMultipleFilesToS3(
-        imageFiles,
-        presignedResponse.data.presignedUrls,
-      )
-
-      if (!uploadResult.success) {
-        return {
-          success: false,
-          error: uploadResult.error || "이미지 업로드에 실패했습니다.",
-        }
-      }
-    }
-
-    const gameData = prepareGameData(state)
-
-    if (presignedResponse && presignedResponse.data) {
-      gameData.questions = gameData.questions.map((question, index) => {
-        const presignedUrl = presignedResponse.data!.presignedUrls[index]
-        return {
-          ...question,
-          imageUrl: presignedUrl ? presignedUrl.key : "",
-        }
-      })
-
-      const firstImageUrl = presignedResponse.data.presignedUrls[0]?.key
-      if (firstImageUrl) {
-        gameData.gameThumbnailUrl = firstImageUrl
-      }
-    }
-
-    const createResponse = await createGame(gameData)
-
-    if (createResponse.result !== "SUCCESS") {
-      return {
-        success: false,
-        error: "게임 저장에 실패했습니다.",
-      }
-    }
-
-    return {
-      success: true,
-      gameId: gameData.gameId,
-    }
-  } catch (error) {
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "알 수 없는 오류가 발생했습니다.",
-    }
-  }
+  return gameId
 }
 
 export const updateExistingGame = async (
-  state: GameCreationState,
-  gameId: string,
+  state: CreateGameState,
+  gameId: UUID,
   version: number,
-): Promise<GameSaveResult> => {
-  try {
-    // 기본 검증
-    if (!state.gameName.trim()) {
-      return {
-        success: false,
-        error: "게임 이름을 입력해주세요.",
-      }
+): Promise<UUID> => {
+  const questionsWithNewImages = state.questions.filter((q) => q.imageFile)
+  const imageUrlMap: Map<number, string> = new Map()
+
+  if (questionsWithNewImages.length > 0) {
+    const presignedRequest = questionsWithNewImages.map((question) => ({
+      imageName: generateUniqueFileName(question.imageFile!.name),
+      questionOrder: question.order,
+    }))
+
+    const presignedResponse = await getPresignedUrlsForExistingGame(
+      gameId,
+      presignedRequest,
+    )
+
+    if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
+      throw new Error("이미지 업로드 준비에 실패했습니다.")
     }
 
-    if (state.questions.length === 0) {
-      return {
-        success: false,
-        error: "최소 1개 이상의 질문이 필요합니다.",
-      }
-    }
+    const imageFiles = questionsWithNewImages.map((q) => q.imageFile!)
+    const uploadResult = await uploadMultipleFilesToS3(
+      imageFiles,
+      presignedResponse.data.presignedUrls,
+    )
 
-    const questionsWithImages = state.questions.filter((q) => q.imageFile)
-
-    let presignedResponse = null
-
-    if (questionsWithImages.length > 0) {
-      const presignedRequest = {
-        images: questionsWithImages.map((question) => ({
-          imageName: `${question.id}.${question.imageFile!.name.split(".").pop()}`,
-          questionOrder: question.order,
-        })),
-      }
-
-      presignedResponse = await getPresignedUrlsForNewGame(
-        presignedRequest.images,
+    if (!uploadResult.success) {
+      throw new Error(
+        "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
       )
-
-      if (presignedResponse.result !== "SUCCESS" || !presignedResponse.data) {
-        return {
-          success: false,
-          error: "Presigned URL 발급에 실패했습니다.",
-        }
-      }
-
-      const imageFiles = questionsWithImages.map((q) => q.imageFile!)
-      const uploadResult = await uploadMultipleFilesToS3(
-        imageFiles,
-        presignedResponse.data.presignedUrls,
-      )
-
-      if (!uploadResult.success) {
-        return {
-          success: false,
-          error: uploadResult.error || "이미지 업로드에 실패했습니다.",
-        }
-      }
     }
 
-    const gameData = prepareUpdateGameData(state, version)
-
-    if (presignedResponse && presignedResponse.data) {
-      gameData.questions = gameData.questions.map((question, index) => {
-        const presignedUrl = presignedResponse.data!.presignedUrls[index]
-        return {
-          ...question,
-          imageUrl: presignedUrl ? presignedUrl.key : "",
-        }
-      })
-
-      const firstImageUrl = presignedResponse.data.presignedUrls[0]?.key
-      if (firstImageUrl) {
-        gameData.gameThumbnailUrl = firstImageUrl
-      }
-    }
-
-    const updateResponse = await updateGameWithoutNewImages(gameData, gameId)
-
-    if (updateResponse.result !== "SUCCESS") {
-      return {
-        success: false,
-        error: "게임 수정에 실패했습니다.",
-      }
-    }
-
-    return {
-      success: true,
-      gameId: gameId,
-    }
-  } catch (error) {
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "알 수 없는 오류가 발생했습니다.",
-    }
+    presignedResponse.data.presignedUrls.forEach((item) => {
+      imageUrlMap.set(item.questionOrder, item.key)
+    })
   }
+
+  const firstQuestionWithImage = state.questions.find(
+    (q) => imageUrlMap.has(q.order) || q.imageUrl,
+  )
+  const firstImageKey = firstQuestionWithImage
+    ? imageUrlMap.get(firstQuestionWithImage.order) ||
+      firstQuestionWithImage.imageUrl
+    : null
+
+  const gameUpdateRequest: GameUpdateRequest = {
+    version,
+    gameTitle: state.gameName.trim(),
+    gameThumbnailUrl: firstImageKey,
+    questions: state.questions.map((question) => ({
+      questionOrder: question.order,
+      imageUrl: imageUrlMap.get(question.order) || question.imageUrl,
+      questionText: question.text.trim(),
+      questionAnswer: question.answer.trim(),
+    })),
+  }
+
+  // TODO: updateGame 사용
+  const response = await fetchClient.fetch(`/games/${gameId}`, {
+    method: "PUT",
+    body: JSON.stringify(gameUpdateRequest),
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
+    )
+  }
+
+  return gameId
 }

@@ -10,7 +10,7 @@ import { Cross } from "@shared/design/src/icons"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
-import { saveGame } from "@/entities/game/utils/gameSave"
+import { saveNewGame } from "@/entities/game/utils/gameSave"
 
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { openErrorDialog } from "./dialog/errorDialog"
@@ -51,25 +51,14 @@ export function CreateGameNavigation() {
     }
 
     try {
-      const result = await saveGame({
+      await saveNewGame({
         gameName,
         questions,
         selectedQuestionId: questions[0]?.id || "",
       })
 
-      // TODO: 예외 처리 로직 통합
-      if (result.success) {
-        if (typeof window !== "undefined") {
-          reset()
-        }
-
-        router.push("/dashboard")
-      } else {
-        openErrorDialog({
-          description:
-            "저장 중 오류가 발생했습니다. 네트워크 상태를 확인하거나, 잠시 후 다시 시도해 주세요.",
-        })
-      }
+      reset()
+      router.push("/dashboard")
     } catch (error) {
       openErrorDialog({
         description:
