@@ -1,5 +1,4 @@
 import { forwardRef, type Ref, type SVGProps } from "react"
-
 const SunFilled = (
   {
     size = 24,
@@ -29,6 +28,5 @@ const SunFilled = (
     <path d="M4.80039 13.1999C5.46313 13.1999 6.00039 12.6626 6.00039 11.9999C6.00039 11.3372 5.46313 10.7999 4.80039 10.7999H3.60039C2.93765 10.7999 2.40039 11.3372 2.40039 11.9999C2.40039 12.6626 2.93765 13.1999 3.60039 13.1999H4.80039Z" />
   </svg>
 )
-
 const ForwardRef = forwardRef(SunFilled)
 export default ForwardRef
