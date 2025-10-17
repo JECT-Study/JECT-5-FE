@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import { forwardRef } from "react"
 
 import { cn } from "../../utils/cn"
+import { GameCardOptions } from "./gameCardOptions"
 
 interface GameCardProps {
   children: ReactNode
@@ -107,5 +108,7 @@ export const GameCard = Object.assign(GameCardComponent, {
   Badge: GameCardBadge,
   SharedBadge: GameCardSharedBadge,
 })
+
+export { GameCardOptions }
 
 GameCardComponent.displayName = "GameCard"
