@@ -17,7 +17,7 @@ export class CreatePOM {
 
   // 질문 리스트 영역
   readonly questionList: Locator
-  //   readonly addQuestionButton: Locator
+  readonly addQuestionButton: Locator
 
   // 질문/답안 입력 영역
   readonly questionInput: Locator
@@ -50,7 +50,7 @@ export class CreatePOM {
 
     // 질문 리스트 영역
     this.questionList = page.getByTestId("question-list")
-    // this.addQuestionButton = page.getByRole("button", { name: "문제 추가하기" })
+    this.addQuestionButton = page.getByRole("button", { name: "문제 추가하기" })
 
     // 질문/답안 입력 영역
     this.questionInput = page.getByPlaceholder("질문 입력")
@@ -121,6 +121,21 @@ export class CreatePOM {
     return this.getQuestionComponent(index).getByRole("button", {
       name: `${index}번째 문제 아래로 이동`,
     })
+  }
+
+  async getQuestionText(index: number) {
+    const questionComponent = this.getQuestionComponent(index)
+    const titleElement = questionComponent.getByRole("heading")
+    return (await titleElement.textContent()) || ""
+  }
+
+  async getQuestionTexts() {
+    const count = await this.questionComponents.count()
+    const texts: string[] = []
+    for (let i = 1; i <= count; i++) {
+      texts.push(await this.getQuestionText(i))
+    }
+    return texts
   }
 
   async clickSaveGameButton() {
