@@ -96,8 +96,8 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     await pageObj.clickPopupConfirmButton(pageObj.saveGamePopup)
     await page.waitForURL("/dashboard")
 
-    const newGameCard = page.getByRole("group", { name: "게임 카드" }).first()
-    await newGameCard.getByRole("button", { name: "게임 옵션" }).click()
+    const newGameCard = page.getByTestId("gamecard-root").first()
+    await newGameCard.getByTestId("gamecard-options-trigger").click()
     await page.getByRole("menuitem", { name: "게임 수정" }).click()
 
     await page.waitForURL(/\/create/)
@@ -126,8 +126,12 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   }) => {
     await pageObj.fillGameName("게임 수정 테스트")
     await pageObj.saveGame()
-    const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
-    const gameTitle = gameCard.getByRole("heading", { level: 3 })
+    const updatedCard = page
+      .getByTestId("gamecard-root")
+      .filter({ hasText: "게임 수정 테스트" })
+      .first()
+    await expect(updatedCard).toBeVisible()
+    const gameTitle = updatedCard.getByTestId("gamecard-description")
     await expect(gameTitle).toHaveText("게임 수정 테스트")
   })
 
@@ -136,7 +140,7 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   }) => {
     await pageObj.fillQuestionInput("문제 1 테스트 수정")
     await pageObj.saveGame()
-    const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
+    const gameCard = page.getByTestId("gamecard-root").first()
     gameCard.click()
     const gamePreview = page.getByRole("dialog")
     await expect(gamePreview).toBeVisible()
@@ -270,9 +274,9 @@ test.describe("게임 생성 페이지: 게임 저장", () => {
     await pageObj.clickSaveGameButton()
     await pageObj.clickPopupConfirmButton(pageObj.saveGamePopup)
     await page.waitForURL("/dashboard")
-    const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
+    const gameCard = page.getByTestId("gamecard-root").first()
     await expect(gameCard).toBeVisible()
-    const gameTitle = gameCard.getByRole("heading", { level: 3 })
+    const gameTitle = gameCard.getByTestId("gamecard-description")
     await expect(gameTitle).toHaveText("새 게임")
   })
 

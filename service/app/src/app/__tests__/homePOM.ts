@@ -61,7 +61,7 @@ export class HomePOM {
     this.viewMoreGamesButton = page.getByRole("button", {
       name: "게임 더 보기",
     })
-    this.gameSectionCard = page.getByRole("group", { name: "게임 카드" })
+    this.gameSectionCard = page.getByTestId("gamecard-root")
     this.gameSectionCards = page.getByTestId("game-section-cards")
 
     // 미리보기 팝업
