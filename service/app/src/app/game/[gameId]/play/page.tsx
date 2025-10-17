@@ -47,11 +47,6 @@ const ScoreboardGame = () => {
       <GamePlayHeader
         currentRound={currentRound}
         totalRounds={totalRounds}
-        onPrevQuestion={() => {
-          if (currentRound <= 1) return
-          setSearchParams({ q: (currentRound - 1).toString() })
-        }}
-        onNextQuestion={handleNextQuestion}
         onExit={() =>
           openExitConfirmDialog({
             onConfirm: () => router.push("/"),
@@ -62,7 +57,16 @@ const ScoreboardGame = () => {
         <ScoreboardSidebar teams={teams} onUpdateTeamScore={updateTeamScore} />
       </div>
       <div>
-        <GamePlayContent currentQuestion={currentQuestion} />
+        <GamePlayContent
+          currentQuestion={currentQuestion}
+          currentRound={currentRound}
+          totalRounds={totalRounds}
+          onPrevQuestion={() => {
+            if (currentRound <= 1) return
+            setSearchParams({ q: (currentRound - 1).toString() })
+          }}
+          onNextQuestion={handleNextQuestion}
+        />
       </div>
     </>
   )

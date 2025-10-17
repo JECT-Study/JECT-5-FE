@@ -7,11 +7,23 @@ import { useState } from "react"
 
 import type { GameQuestion } from "@/entities/game/model"
 
+import { QuestionNavigationButton } from "./questionNavigationButton"
+
 interface GamePlayContentProps {
   currentQuestion: GameQuestion
+  currentRound: number
+  totalRounds: number
+  onPrevQuestion: () => void
+  onNextQuestion: () => void
 }
 
-export const GamePlayContent = ({ currentQuestion }: GamePlayContentProps) => {
+export const GamePlayContent = ({
+  currentQuestion,
+  currentRound,
+  totalRounds,
+  onPrevQuestion,
+  onNextQuestion,
+}: GamePlayContentProps) => {
   const [showAnswer, setShowAnswer] = useState(false)
 
   return (
@@ -36,22 +48,36 @@ export const GamePlayContent = ({ currentQuestion }: GamePlayContentProps) => {
         </div>
       )}
 
-      {showAnswer ? (
-        <SecondaryOutlineBoxButton
-          size="lg"
-          onClick={() => setShowAnswer(false)}
-        >
-          {currentQuestion?.questionAnswer}
-        </SecondaryOutlineBoxButton>
-      ) : (
-        <PrimaryBoxButton
-          size="2xl"
-          _style="solid"
-          onClick={() => setShowAnswer(true)}
-        >
-          정답 보기
-        </PrimaryBoxButton>
-      )}
+      <div className="flex items-center justify-center gap-6">
+        <QuestionNavigationButton
+          direction="prev"
+          onClick={onPrevQuestion}
+          disabled={currentRound <= 1}
+        />
+
+        {showAnswer ? (
+          <SecondaryOutlineBoxButton
+            size="lg"
+            onClick={() => setShowAnswer(false)}
+          >
+            {currentQuestion?.questionAnswer}
+          </SecondaryOutlineBoxButton>
+        ) : (
+          <PrimaryBoxButton
+            size="2xl"
+            _style="solid"
+            onClick={() => setShowAnswer(true)}
+          >
+            정답 보기
+          </PrimaryBoxButton>
+        )}
+
+        <QuestionNavigationButton
+          direction="next"
+          onClick={onNextQuestion}
+          disabled={currentRound >= totalRounds}
+        />
+      </div>
     </div>
   )
 }
