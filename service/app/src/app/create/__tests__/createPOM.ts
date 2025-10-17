@@ -13,6 +13,7 @@ export class CreatePOM {
   readonly fileUploadArea: Locator
   readonly uploadedImage: Locator
   readonly changeImageButton: Locator
+  readonly deleteImageButton: Locator
 
   // 질문 리스트 영역
   readonly questionList: Locator
@@ -42,9 +43,10 @@ export class CreatePOM {
     this.themeToggleButton = page.getByTestId("theme-toggle-button")
 
     // 파일 업로드 영역
-    this.fileUploadArea = page.getByRole("region")
+    this.fileUploadArea = page.getByTestId("file-upload-area")
     this.uploadedImage = page.getByAltText("업로드된 이미지")
     this.changeImageButton = page.getByRole("button", { name: "이미지 변경" })
+    this.deleteImageButton = page.getByRole("button", { name: "이미지 삭제" })
 
     // 질문 리스트 영역
     this.questionList = page.getByTestId("question-list")

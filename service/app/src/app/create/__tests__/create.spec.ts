@@ -198,11 +198,12 @@ test.describe("게임 생성 페이지: 이미지 업로드", () => {
     await expect(pageObj.changeImageButton).toBeVisible()
   })
 
-  test("이미지 업로드 영역에 업로드된 이미지가 있을 경우 오버레이의 우측 상단 Cross 버튼을 클릭하면 이미지가 삭제되어야 한다", async () => {})
-
-  test("이미지 업로드 영역에 잘못된 파일을 업로드하면 에러 오버레이가 표시되어야 한다", async () => {
+  test("이미지 업로드 영역에 업로드된 이미지가 있을 경우 오버레이의 우측 상단 Cross 버튼을 클릭하면 이미지가 삭제되어야 한다", async () => {
     await pageObj.clickFileUploadArea()
-    await pageObj.uploadImage("public/spinner.gif")
+    await pageObj.uploadImage("public/exampleThumbnail.jpg")
+    await pageObj.imageContainer.hover()
+    await pageObj.deleteImageButton.click()
+    await expect(pageObj.uploadedImage).not.toBeVisible()
   })
 })
 
