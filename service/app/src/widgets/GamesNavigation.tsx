@@ -24,11 +24,6 @@ export const GamesNavigation = ({ className }: GamesNavigationProps) => {
     parseAsString.withDefault(""),
   )
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextValue = event.target.value
-    setQuery(nextValue ? nextValue : null)
-  }
-
   return (
     <Navigation
       className={className}
@@ -39,7 +34,7 @@ export const GamesNavigation = ({ className }: GamesNavigationProps) => {
             <Magnifier className="size-32 text-icon-interactive-input-default" />
             <TextField.Input
               value={query}
-              onChange={handleSearchChange}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="오늘의 추천 게임은?"
             />
           </TextField.InputWrapper>
