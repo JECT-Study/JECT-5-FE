@@ -13,16 +13,20 @@ import { forwardRef } from "react"
 interface GameCardProps extends ComponentPropsWithoutRef<"div"> {
   className?: string
   title?: string
+  ["data-testid"]?: string
 }
 
 export const Root = forwardRef<HTMLDivElement, GameCardProps>(
   ({ children, className, ...props }, ref) => {
+    const { ["data-testid"]: dataTestId, ...rest } = props
+
     return (
       <div
         ref={ref}
         className={cn("group relative flex flex-col gap-12", className)}
         role="group"
-        {...props}
+        data-testid={dataTestId ?? "gamecard-root"}
+        {...rest}
       >
         {children}
       </div>
@@ -53,6 +57,7 @@ export const Image = ({
         "relative aspect-square w-full cursor-pointer overflow-hidden rounded-12",
         className,
       )}
+      data-testid="gamecard-image"
     >
       <NextImage
         {...imageProps}
@@ -61,6 +66,7 @@ export const Image = ({
         fill
         sizes={sizes}
         className={cn("object-cover", imageClassName)}
+        data-testid="gamecard-image-media"
       />
       {children}
     </div>
@@ -91,6 +97,7 @@ export const Badge = ({
         badgeVariantClassName[variant],
         className,
       )}
+      data-testid="gamecard-badge"
     >
       <span className="typography-body-md-medium text-text-inverse">
         {children}
@@ -110,6 +117,7 @@ export const Description = ({ children, className }: DescriptionProps) => {
         "typography-body-lg-bold line-clamp-2 w-full break-keep text-text-secondary",
         className,
       )}
+      data-testid="gamecard-description"
     >
       {children}
     </p>
@@ -132,12 +140,15 @@ export const Options = ({
         "pointer-events-none absolute right-8 top-8 opacity-0 transition-opacity duration-200 ease-out group-focus-within:opacity-100 group-hover:opacity-100",
         className,
       )}
+      data-testid="gamecard-options"
     >
       <DropdownMenuRoot>
         <DropdownMenuTrigger asChild>
           <SecondaryPlainIconButton
             size="sm"
             className="pointer-events-auto"
+            aria-label="게임 옵션"
+            data-testid="gamecard-options-trigger"
             onClick={(event) => {
               event.stopPropagation()
             }}
@@ -154,6 +165,7 @@ export const Options = ({
           contentType="icon"
           side="bottom"
           sideOffset={8}
+          data-testid="gamecard-options-menu"
         >
           {children}
         </DropdownMenuContent>
