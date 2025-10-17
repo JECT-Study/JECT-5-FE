@@ -25,6 +25,9 @@ const pretendard = localFont({
     "BlinkMacSystemFont",
     "Segoe UI",
     "sans-serif",
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Noto Color Emoji",
   ],
 })
 
