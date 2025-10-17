@@ -1,5 +1,7 @@
 export { default as Add } from "./add"
 export { default as Arrow } from "./arrow"
+export { default as ArrowLeft } from "./arrowLeft"
+export { default as ArrowRight } from "./arrowRight"
 export { default as Copy } from "./copy"
 export { default as Cross } from "./cross"
 export { default as Edit } from "./edit"

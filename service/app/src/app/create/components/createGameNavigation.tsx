@@ -4,6 +4,7 @@ import {
   PrimaryBoxButton,
   SecondaryGhostIconButton,
 } from "@ject-5-fe/design/components/button"
+import { Navigation } from "@ject-5-fe/design/components/navigation"
 import * as TextField from "@ject-5-fe/design/components/textField"
 import { Cross } from "@ject-5-fe/design/icons"
 import { useQueryClient } from "@tanstack/react-query"
@@ -103,51 +104,54 @@ export function CreateGameNavigation() {
   }
 
   return (
-    <nav
-      className={`flex h-[110px] w-full items-center justify-between bg-background-primary px-10`}
-    >
-      <div className="flex w-[340px] bg-background-primary">
-        <TextField.Root
-          name="gameTitle"
-          state={gameNameError ? "error" : "default"}
-        >
-          <TextField.InputWrapper className="bg-background-interactive-input-primary">
-            <TextField.Input
-              placeholder="게임 이름 입력"
-              value={gameName}
-              onChange={(e) => setGameName(e.target.value)}
-            />
-          </TextField.InputWrapper>
-        </TextField.Root>
-      </div>
-
-      <div className="flex w-[420px] items-center justify-end gap-4 px-10">
-        <ThemeToggle data-testid="theme-toggle-button" />
-        <PrimaryBoxButton
-          size="sm"
-          disabled={!canSave}
-          onClick={() =>
-            openSaveConfirmDialog({
-              onConfirm: handleSaveGame,
-            })
-          }
-        >
-          게임 저장
-        </PrimaryBoxButton>
-        <SecondaryGhostIconButton
-          onClick={() =>
-            openExitConfirmDialog({
-              onConfirm: () => {
-                reset()
-                router.push("/")
-              },
-            })
-          }
-          data-testid="cross-button"
-        >
-          <Cross />
-        </SecondaryGhostIconButton>
-      </div>
-    </nav>
+    <Navigation
+      leftContent={
+        <div className="flex w-[340px] items-center px-16">
+          <TextField.Root
+            name="gameTitle"
+            className="w-full"
+            state={gameNameError ? "error" : "default"}
+          >
+            <TextField.InputWrapper className="bg-transparent shadow-none">
+              <TextField.Input
+                placeholder="게임 이름 입력"
+                value={gameName}
+                onChange={(e) => setGameName(e.target.value)}
+              />
+            </TextField.InputWrapper>
+          </TextField.Root>
+        </div>
+      }
+      centerContent={null}
+      rightContent={
+        <>
+          <ThemeToggle data-testid="theme-toggle-button" />
+          <PrimaryBoxButton
+            size="sm"
+            disabled={!canSave}
+            onClick={() =>
+              openSaveConfirmDialog({
+                onConfirm: handleSaveGame,
+              })
+            }
+          >
+            게임 저장
+          </PrimaryBoxButton>
+          <SecondaryGhostIconButton
+            onClick={() =>
+              openExitConfirmDialog({
+                onConfirm: () => {
+                  reset()
+                  router.push("/")
+                },
+              })
+            }
+            data-testid="cross-button"
+          >
+            <Cross />
+          </SecondaryGhostIconButton>
+        </>
+      }
+    ></Navigation>
   )
 }

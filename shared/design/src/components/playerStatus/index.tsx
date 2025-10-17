@@ -22,7 +22,7 @@ export const PlayerStatus = ({
   return (
     <div
       className={cn(
-        "flex min-h-[40px] w-[310px] items-center justify-center rounded-12 bg-background-primary",
+        "flex min-h-[40px] w-full items-center justify-center rounded-12 bg-background-primary px-20",
         className,
       )}
       role="group"
@@ -36,7 +36,7 @@ export const PlayerStatus = ({
         </h3>
 
         {scoreView && (
-          <div className="flex h-[40px] w-[138px] items-center justify-between gap-8">
+          <div className="flex h-[40px] w-[138px] items-center justify-between gap-16">
             <SecondaryPlainIconButton
               size="lg"
               onClick={onScoreDecrease}

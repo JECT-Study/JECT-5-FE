@@ -34,7 +34,7 @@ export default function AvatarButton({
       <DropdownMenuContent
         type="vertical"
         contentType="text"
-        sideOffset={22}
+        sideOffset={10}
         align="end"
       >
         <DropdownMenuItem
