@@ -59,7 +59,7 @@ export const saveNewGame = async (
     gameThumbnailUrl: firstImageKey,
     questions: state.questions.map((question) => ({
       questionOrder: question.order,
-      imageUrl: imageUrlMap.get(question.order) || "",
+      imageUrl: imageUrlMap.get(question.order) ?? "",
       questionText: question.text.trim(),
       questionAnswer: question.answer.trim(),
     })),
