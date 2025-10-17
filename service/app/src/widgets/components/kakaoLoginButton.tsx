@@ -1,6 +1,6 @@
 "use client"
 
-import { SecondaryOutlineBoxButton } from "@shared/design/src/components/button"
+import { SecondaryOutlineBoxButton } from "@ject-5-fe/design/components/button"
 import Image from "next/image"
 
 interface KakaoLoginButtonProps {

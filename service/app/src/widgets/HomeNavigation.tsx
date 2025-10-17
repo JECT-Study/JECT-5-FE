@@ -1,6 +1,6 @@
 "use client"
 
-import { Navigation } from "@shared/design/src/components/navigation"
+import { Navigation } from "@ject-5-fe/design/components/navigation"
 
 import { HomeButton } from "./components/homeButton"
 import HomeNavigationRightContent from "./components/HomeNavigationRightContent"

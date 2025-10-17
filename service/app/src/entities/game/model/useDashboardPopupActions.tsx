@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "@shared/design/src/components/dialog"
+} from "@ject-5-fe/design/components/dialog"
 import { overlay } from "overlay-kit"
 
 import type { GameListItem } from "../model"

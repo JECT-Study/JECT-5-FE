@@ -1,16 +1,16 @@
 "use client"
 
 import {
+  PrimaryBoxButton,
+  SecondaryPlainIconButton,
+} from "@ject-5-fe/design/components/button"
+import {
   Dialog,
   DialogBody,
   DialogContent,
   DialogHeader,
 } from "@ject-5-fe/design/components/dialog"
 import { Cross, Play } from "@ject-5-fe/design/icons"
-import {
-  PrimaryBoxButton,
-  SecondaryPlainIconButton,
-} from "@shared/design/src/components/button"
 
 import * as GameCard from "@/shared/gameCard"
 
