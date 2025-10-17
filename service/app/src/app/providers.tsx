@@ -2,6 +2,7 @@
 
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "next-themes"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { OverlayProvider } from "overlay-kit"
 
 import { MSWProvider } from "@/mocks/mswProvider"
@@ -21,7 +22,9 @@ export function Providers({ children }: ProvidersProps) {
         enableColorScheme={true}
       >
         <OverlayProvider>
-          <MSWProvider>{children}</MSWProvider>
+          <MSWProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </MSWProvider>
         </OverlayProvider>
       </ThemeProvider>
     </QueryClientProvider>
