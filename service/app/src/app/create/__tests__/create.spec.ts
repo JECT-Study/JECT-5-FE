@@ -138,7 +138,10 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     await pageObj.saveGame()
     const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
     gameCard.click()
-    await expect(page.getByText("문제 1 테스트 수정")).toBeVisible()
+    const gamePreview = page.getByRole("dialog")
+    await expect(gamePreview).toBeVisible()
+    const gamePreviewQuestions = page.getByTestId("game-preview-questions")
+    await expect(gamePreviewQuestions.first()).toHaveText("문제 1 테스트 수정")
   })
 })
 
