@@ -137,7 +137,7 @@ export const updateExistingGame = async (
   }
 
   const response = await fetchClient
-    .put<{ gameId: UUID }>(`games/${gameId}`, {
+    .put<null>(`games/${gameId}`, {
       json: gameUpdateRequest,
     })
     .json()
@@ -146,5 +146,5 @@ export const updateExistingGame = async (
     throw new Error(response.error ?? "저장 중 오류가 발생했습니다.")
   }
 
-  return response.data.gameId
+  return gameId
 }
