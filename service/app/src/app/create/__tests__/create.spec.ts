@@ -140,8 +140,11 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     gameCard.click()
     const gamePreview = page.getByRole("dialog")
     await expect(gamePreview).toBeVisible()
-    const gamePreviewQuestions = page.getByTestId("game-preview-questions")
-    await expect(gamePreviewQuestions.first()).toHaveText("문제 1 테스트 수정")
+    const gamePreviewQuestion = page
+      .getByTestId("game-preview-questions")
+      .locator("p")
+      .first()
+    await expect(gamePreviewQuestion).toHaveText("문제 1 테스트 수정")
   })
 })
 
