@@ -19,13 +19,13 @@ export const ScoreboardSidebar = ({
   const clampScore = (value: number) => Math.max(-100, Math.min(100, value))
 
   return (
-    <div className="flex max-h-[940px] w-[400px] min-w-[400px] flex-col rounded-[20px] bg-background-tertiary">
-      <div className="relative flex items-center justify-center py-6">
-        <span className="typography-heading-sm-bold text-text-primary">
+    <div className="flex max-h-[940px] w-[400px] min-w-[400px] flex-col rounded-[20px] bg-background-tertiary px-24">
+      <div className="relative flex items-center justify-center py-20">
+        <span className="typography-heading-sm-bold w-full text-center text-text-primary">
           점수판
         </span>
         <PrimarySolidIconButton
-          className="absolute right-9 top-4"
+          className="right-0 top-16"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           aria-label="점수판 토글"
         >
@@ -33,7 +33,7 @@ export const ScoreboardSidebar = ({
         </PrimarySolidIconButton>
       </div>
       {isSidebarOpen && (
-        <div className="flex max-h-[850px] flex-1 flex-col items-center gap-6 overflow-y-scroll px-[25px] py-6">
+        <div className="flex max-h-[850px] flex-1 flex-col items-center gap-24 overflow-y-scroll pb-48">
           {teams.map((team) => (
             <PlayerStatus
               key={team.id}
