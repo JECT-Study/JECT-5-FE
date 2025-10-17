@@ -144,11 +144,14 @@ export class CreatePOM {
   }
 
   async fillQuestionAndAnswer(question: string, answer: string) {
+    await this.questionInput.clear()
+    await this.answerInput.clear()
     await this.fillQuestionInput(question)
     await this.fillAnswerInput(answer)
   }
 
   async fillGameName(gameName: string) {
+    await this.gameNameInput.clear()
     await this.gameNameInput.fill(gameName)
   }
 
