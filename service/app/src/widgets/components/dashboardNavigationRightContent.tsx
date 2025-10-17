@@ -18,6 +18,10 @@ export default function DashboardNavigationRightContent() {
     router.push("/create")
   }
 
+  const handleLogoutComplete = () => {
+    router.push("/")
+  }
+
   return (
     <>
       <PrimaryBoxButton
@@ -30,7 +34,7 @@ export default function DashboardNavigationRightContent() {
         게임 만들기
       </PrimaryBoxButton>
 
-      <AuthButton />
+      <AuthButton onLogoutComplete={handleLogoutComplete} />
 
       <ThemeToggle />
     </>

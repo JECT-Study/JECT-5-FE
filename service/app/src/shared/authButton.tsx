@@ -6,6 +6,10 @@ import { useAuthStore } from "@/entities/auth"
 import AvatarButton from "@/widgets/components/avatarButton"
 import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
 
+interface AuthButtonProps {
+  onLogoutComplete?: () => void
+}
+
 /**
  *
  * next/dynamic을 사용해서 렌더링해야 hydration error를 방지할 수 있음
@@ -14,7 +18,7 @@ import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
   { ssr: false },
 )
  */
-export default function AuthButton() {
+export default function AuthButton({ onLogoutComplete }: AuthButtonProps = {}) {
   const router = useRouter()
   const { isAuthenticated, logout, user } = useAuthStore()
 
@@ -24,6 +28,7 @@ export default function AuthButton() {
 
   const handleLogout = () => {
     logout()
+    onLogoutComplete?.()
   }
 
   const profileImageSrc = user?.profileImageUrl
