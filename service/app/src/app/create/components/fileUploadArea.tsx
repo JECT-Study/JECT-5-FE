@@ -54,7 +54,10 @@ export function FileUploadArea() {
 
   return (
     <FileUpload onAccept={handleFileAccept}>
-      <Dropzone className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]">
+      <Dropzone
+        className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]"
+        data-testid="file-upload-area"
+      >
         {hasImage ? (
           <div className="group relative size-full">
             <Image
@@ -72,6 +75,7 @@ export function FileUploadArea() {
                   e.stopPropagation()
                   deleteImage(selectedQuestionId)
                 }}
+                aria-label="이미지 삭제"
               >
                 <Cross />
               </SecondaryGhostIconButton>
