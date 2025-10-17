@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
 import { overlay } from "overlay-kit"
+import { useState } from "react"
+import { useDebounce } from "react-simplikit"
 
 import { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
@@ -15,11 +17,19 @@ import { filterInput } from "../utils/filterInput"
 export function GamesLibrarySection() {
   const router = useRouter()
   const [searchQuery] = useQueryState("query", parseAsString.withDefault(""))
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery)
+  const updateDebouncedQuery = useDebounce((value: string) => {
+    setDebouncedQuery(value)
+  }, 300)
+
+  if (debouncedQuery !== searchQuery) {
+    updateDebouncedQuery(searchQuery)
+  }
 
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
-      query: searchQuery || undefined,
+      query: debouncedQuery || undefined,
     })
 
   const handleLoadMore = () => {
@@ -60,7 +70,7 @@ export function GamesLibrarySection() {
   }
 
   const filteredGames = games?.filter((game) =>
-    filterInput(game.gameTitle, searchQuery),
+    filterInput(game.gameTitle, debouncedQuery),
   )
 
   return (
