@@ -2,6 +2,7 @@ export { mapStatusToErrorResponse } from "./errorHandlers"
 export type { FileValidationResult } from "./fileValidation"
 export {
   ALLOWED_IMAGE_TYPES,
+  extractS3KeyFromUrl,
   generateUniqueFileName,
   MAX_FILE_SIZE,
   validateImageFile,

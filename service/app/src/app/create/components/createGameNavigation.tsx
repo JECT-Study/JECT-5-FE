@@ -20,17 +20,25 @@ import { openSaveConfirmDialog } from "./dialog/saveConfirmDialog"
 export function CreateGameNavigation() {
   const router = useRouter()
 
-  const { gameName, questions, gameId, version, setGameName, reset } =
-    useCreateGameStore(
-      useShallow((state) => ({
-        gameName: state.gameName,
-        questions: state.questions,
-        gameId: state.gameId,
-        version: state.version,
-        setGameName: state.setGameName,
-        reset: state.reset,
-      })),
-    )
+  const {
+    gameName,
+    questions,
+    gameId,
+    version,
+    setGameName,
+    updateImageUrls,
+    reset,
+  } = useCreateGameStore(
+    useShallow((state) => ({
+      gameName: state.gameName,
+      questions: state.questions,
+      gameId: state.gameId,
+      version: state.version,
+      setGameName: state.setGameName,
+      updateImageUrls: state.updateImageUrls,
+      reset: state.reset,
+    })),
+  )
 
   const gameNameError = gameName.length > 30 || gameName.length < 1
 
@@ -54,8 +62,10 @@ export function CreateGameNavigation() {
     }
 
     try {
+      let result: { gameId: string; imageKeys: Map<number, string> }
+
       if (gameId && version !== null) {
-        await updateExistingGame(
+        result = await updateExistingGame(
           {
             gameName,
             questions,
@@ -68,7 +78,7 @@ export function CreateGameNavigation() {
           version,
         )
       } else {
-        await saveNewGame({
+        result = await saveNewGame({
           gameName,
           questions,
           selectedQuestionId: questions[0]?.id || "",
@@ -78,6 +88,7 @@ export function CreateGameNavigation() {
         })
       }
 
+      updateImageUrls(result.imageKeys)
       reset()
       router.push("/dashboard")
     } catch (error) {

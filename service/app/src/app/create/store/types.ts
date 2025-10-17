@@ -26,6 +26,7 @@ export interface CreateGameActions {
   uploadImage: (id: string, file: File, previewUrl: string) => void
   deleteImage: (id: string) => void
   updateQuestion: (id: string, updates: Partial<Question>) => void
+  updateImageUrls: (imageKeys: Map<number, string>) => void
   loadGameData: (gameId: string) => Promise<void>
   reset: () => void
 }
