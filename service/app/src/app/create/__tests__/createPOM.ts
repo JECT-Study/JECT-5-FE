@@ -136,10 +136,12 @@ export class CreatePOM {
   }
 
   async fillQuestionInput(question: string) {
+    await this.questionInput.clear()
     await this.questionInput.fill(question)
   }
 
   async fillAnswerInput(answer: string) {
+    await this.answerInput.clear()
     await this.answerInput.fill(answer)
   }
 
@@ -149,6 +151,7 @@ export class CreatePOM {
   }
 
   async fillGameName(gameName: string) {
+    await this.gameNameInput.clear()
     await this.gameNameInput.fill(gameName)
   }
 
