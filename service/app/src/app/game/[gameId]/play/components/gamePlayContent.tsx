@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 
 import type { GameQuestion } from "@/entities/game/model"
@@ -55,21 +56,32 @@ export const GamePlayContent = ({
           disabled={currentRound <= 1}
         />
 
-        {showAnswer ? (
-          <div
-            onClick={() => setShowAnswer(false)}
-            className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-12 rounded-12 border-[3px] border-border-interactive-secondary bg-background-interactive-inverse px-32 py-12 text-text-interactive-secondary hover:bg-background-interactive-secondary-hovered active:border-none active:bg-background-interactive-secondary-pressed"
-          >
-            {currentQuestion?.questionAnswer}
-          </div>
-        ) : (
-          <div
-            onClick={() => setShowAnswer(true)}
-            className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-8 rounded-12 border-[3px] border-transparent bg-background-interactive-primary px-32 py-12 text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:border-transparent active:bg-background-interactive-primary-pressed"
-          >
-            정답 보기
-          </div>
-        )}
+        <div className="flex flex-col items-center gap-16">
+          {showAnswer ? (
+            <div
+              onClick={() => setShowAnswer(false)}
+              className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-12 rounded-12 border-[3px] border-border-interactive-secondary bg-background-interactive-inverse px-32 py-12 text-text-interactive-secondary hover:bg-background-interactive-secondary-hovered active:border-none active:bg-background-interactive-secondary-pressed"
+            >
+              {currentQuestion?.questionAnswer}
+            </div>
+          ) : (
+            <div
+              onClick={() => setShowAnswer(true)}
+              className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-8 rounded-12 border-[3px] border-transparent bg-background-interactive-primary px-32 py-12 text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:border-transparent active:bg-background-interactive-primary-pressed"
+            >
+              정답 보기
+            </div>
+          )}
+
+          {currentRound === totalRounds && (
+            <Link
+              href="./result"
+              className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-8 rounded-12 border-[3px] border-transparent bg-background-secondary px-32 py-12 text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:border-transparent active:bg-background-interactive-primary-pressed"
+            >
+              결과 화면으로 이동하기
+            </Link>
+          )}
+        </div>
 
         <QuestionNavigationButton
           direction="next"

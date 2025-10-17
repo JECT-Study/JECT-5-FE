@@ -15,7 +15,7 @@ export const GameResultContent = ({ teams }: GameResultContentProps) => {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-10">
       {/* Winner Title */}
-      <div className="flex h-24 items-center justify-center gap-2.5 rounded-[15px] bg-blue-400 px-8 py-2.5">
+      <div className="flex h-[96px] items-center justify-center gap-2.5 rounded-[15px] bg-blue-400 px-32 py-8">
         <h2 className="typography-heading-3xl-semibold text-neutral-white">
           🎉 이번 게임의 Winner는?
         </h2>
