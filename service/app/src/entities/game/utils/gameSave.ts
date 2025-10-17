@@ -8,7 +8,7 @@ import {
   getPresignedUrlsForNewGame,
 } from "../api"
 import { GameCreateRequest, GameUpdateRequest } from "../model"
-import { generateUniqueFileName } from "./fileValidation"
+import { extractS3KeyFromUrl, generateUniqueFileName } from "./fileValidation"
 import { uploadMultipleFilesToS3 } from "./s3Upload"
 
 export const saveNewGame = async (
@@ -86,7 +86,8 @@ export const updateExistingGame = async (
 
   state.questions.forEach((question) => {
     if (question.imageUrl) {
-      imageUrlMap.set(question.order, question.imageUrl)
+      const key = extractS3KeyFromUrl(question.imageUrl)
+      imageUrlMap.set(question.order, key)
     }
   })
 
@@ -129,7 +130,9 @@ export const updateExistingGame = async (
   )
   const firstImageKey = firstQuestionWithImage
     ? imageUrlMap.get(firstQuestionWithImage.order) ||
-      firstQuestionWithImage.imageUrl
+      (firstQuestionWithImage.imageUrl
+        ? extractS3KeyFromUrl(firstQuestionWithImage.imageUrl)
+        : null)
     : null
 
   const gameUpdateRequest: GameUpdateRequest = {

@@ -54,3 +54,10 @@ export const validateMultipleFiles = (files: File[]): FileValidationResult => {
   }
   return { isValid: true }
 }
+
+export const extractS3KeyFromUrl = (url: string): string => {
+  if (url.includes("games/")) {
+    return url.substring(url.indexOf("games/"))
+  }
+  return url
+}
