@@ -90,10 +90,7 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     pageObj = new CreatePOM(page)
 
     await pageObj.fillGameName("테스트")
-    await pageObj.fillQuestionAndAnswer(
-      "문제 1: 이것은 1번째 문제입니다.",
-      "정답 1",
-    )
+    await pageObj.fillQuestionAndAnswer("문제 1 테스트", "정답 1 테스트")
     await pageObj.uploadImage("public/exampleThumbnail.jpg")
     await pageObj.clickSaveGameButton()
     await pageObj.clickPopupConfirmButton(pageObj.saveGamePopup)
@@ -111,10 +108,8 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 질문이 알맞게 표시되어야 한다", async () => {
-    await expect(pageObj.questionInput).toHaveValue(
-      "문제 1: 이것은 1번째 문제입니다.",
-    )
-    await expect(pageObj.answerInput).toHaveValue("정답 1")
+    await expect(pageObj.questionInput).toHaveValue("문제 1 테스트")
+    await expect(pageObj.answerInput).toHaveValue("정답 1 테스트")
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 이미지가 알맞게 표시되어야 한다", async () => {
