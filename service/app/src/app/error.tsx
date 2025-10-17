@@ -1,6 +1,6 @@
 "use client"
 
-import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import Link from "next/link"
 
 export default function ErrorPage() {

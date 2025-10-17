@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "@shared/design/src/components/dialog"
+} from "@ject-5-fe/design/components/dialog"
 import { overlay } from "overlay-kit"
 
 interface SaveConfirmOptions {

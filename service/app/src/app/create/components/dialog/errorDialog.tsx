@@ -5,7 +5,7 @@ import {
   DialogClose,
   DialogContent,
   DialogFooter,
-} from "@shared/design/src/components/dialog"
+} from "@ject-5-fe/design/components/dialog"
 import { overlay } from "overlay-kit"
 
 interface ErrorDialogOptions {

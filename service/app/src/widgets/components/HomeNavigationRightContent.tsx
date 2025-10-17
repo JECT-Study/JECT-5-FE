@@ -1,12 +1,12 @@
 "use client"
 
-import { PrimaryBoxButton } from "@shared/design/src/components/button"
-import { Add } from "@shared/design/src/icons"
+import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
+import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
+import { Add } from "@ject-5-fe/design/icons"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
 
 import { useAuthStore } from "@/entities/auth"
-import { ThemeToggle } from "@/shared/themeToggleButton"
 
 const LoginButton = dynamic(() => import("@/shared/authButton"), {
   ssr: false,

@@ -1,6 +1,6 @@
 "use client"
 
-import { Question } from "@shared/design/src/components/question"
+import { Question } from "@ject-5-fe/design/components/question"
 import Image from "next/image"
 import { useShallow } from "zustand/react/shallow"
 

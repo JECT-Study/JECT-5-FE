@@ -2,10 +2,9 @@ import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
+import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
-
-import { ThemeToggle } from "@/shared/themeToggleButton"
 
 interface GameResultNavigationProps {
   onGoHome: () => void

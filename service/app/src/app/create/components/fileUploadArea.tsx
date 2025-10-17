@@ -3,13 +3,13 @@
 import {
   PrimaryBoxButton,
   SecondaryGhostIconButton,
-} from "@shared/design/src/components/button"
+} from "@ject-5-fe/design/components/button"
 import {
   Dropzone,
   FileUpload,
   FileUploadTrigger,
-} from "@shared/design/src/components/upload"
-import { Cross } from "@shared/design/src/icons"
+} from "@ject-5-fe/design/components/upload"
+import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import { useShallow } from "zustand/react/shallow"
 

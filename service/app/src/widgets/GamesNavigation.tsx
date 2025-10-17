@@ -1,11 +1,10 @@
 "use client"
 
+import { Navigation } from "@ject-5-fe/design/components/navigation"
 import * as TextField from "@ject-5-fe/design/components/textField"
-import { Navigation } from "@shared/design/src/components/navigation"
-import { Magnifier } from "@shared/design/src/icons"
+import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
+import { Magnifier } from "@ject-5-fe/design/icons"
 import dynamic from "next/dynamic"
-
-import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { HomeButton } from "./components/homeButton"
 
