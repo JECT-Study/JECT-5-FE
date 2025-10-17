@@ -19,6 +19,13 @@ const pretendard = localFont({
   src: "../../public/PretendardVariable.woff2",
   weight: "400",
   variable: "--font-pretendard",
+  fallback: [
+    "system-ui",
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "sans-serif",
+  ],
 })
 
 const joyofSinging = localFont({
