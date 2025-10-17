@@ -16,7 +16,7 @@ import { KakaoLoginButton } from "@/widgets/components/kakaoLoginButton"
  */
 export default function AuthButton() {
   const router = useRouter()
-  const { isAuthenticated, logout } = useAuthStore()
+  const { isAuthenticated, logout, user } = useAuthStore()
 
   const handleLogin = () => {
     router.push("/login")
@@ -26,10 +26,14 @@ export default function AuthButton() {
     logout()
   }
 
+  const profileImageSrc = user?.profileImageUrl
+    ? `/${user.profileImageUrl}`
+    : "/checker.svg"
+
   return (
     <>
       {isAuthenticated ? (
-        <AvatarButton onClick={handleLogout} />
+        <AvatarButton src={profileImageSrc} onClick={handleLogout} />
       ) : (
         <KakaoLoginButton onClick={handleLogin} />
       )}
