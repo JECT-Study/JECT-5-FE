@@ -1,103 +1,21 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { overlay } from "overlay-kit"
-import { useState } from "react"
+import { Suspense } from "react"
 
-import { GameListItem } from "@/entities/game"
-import { getGameDetail } from "@/entities/game/api/getGameDetail"
-import { GameQuestion } from "@/entities/game/model/game"
-import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
-import { GameLibraryGrid } from "@/entities/game/ui/components"
-import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 import { GamesNavigation } from "@/widgets/GamesNavigation"
 
+import { GamesLibrarySection } from "./components/gamesLibrarySection"
+//useSearchParams를 내부적으로 사용하고 있어 이를 위해서만 Suspense 사용
+
 export default function GamesPage() {
-  const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState("")
-
-  const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteGameList({
-      limit: 19,
-    })
-
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
-  const filteredGames = games.filter((game) => {
-    if (!searchQuery.trim()) return true
-
-    const query = searchQuery.toLowerCase().replace(/\s/g, "")
-    const title = game.gameTitle.toLowerCase().replace(/\s/g, "")
-
-    return title.includes(query)
-  })
-
-  const handleCreateGame = () => {
-    router.push("/create")
-  }
-
-  const handleGameClick = async (game: GameListItem) => {
-    try {
-      const gameDetailRes = await getGameDetail(game.gameId)
-
-      if (gameDetailRes.result === "SUCCESS" && gameDetailRes.data) {
-        const gameDetail = gameDetailRes.data
-
-        overlay.open(({ close, isOpen }) => {
-          const handleStartGame = () => {
-            close()
-            router.push(`/game/${game.gameId}`)
-          }
-
-          return (
-            <GamePreview
-              gameTitle={gameDetail.gameTitle}
-              creatorName={gameDetail.nickname}
-              questionCount={gameDetail.questionCount}
-              questions={gameDetail.questions.map((question: GameQuestion) => ({
-                id: question.questionId.toString(),
-                title: question.questionText,
-                imageUrl: question.imageUrl,
-              }))}
-              onClose={close}
-              onStartGame={handleStartGame}
-              isOpen={isOpen}
-            />
-          )
-        })
-      } else {
-        console.error("Failed to fetch game detail")
-      }
-    } catch (error) {
-      console.error("Error fetching game detail:", error)
-    }
-  }
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
   return (
     <>
-      <GamesNavigation
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-      />
-      <div className="flex w-full flex-col items-center gap-[45px] pt-[40px]">
-        <GameLibraryGrid
-          games={filteredGames}
-          isLoading={isLoading}
-          isFetchingNextPage={isFetchingNextPage}
-          hasNextPage={hasNextPage}
-          onCreateGame={handleCreateGame}
-          onGameClick={handleGameClick}
-          onLoadMore={handleLoadMore}
-        />
-      </div>
+      <Suspense fallback={null}>
+        <GamesNavigation />
+      </Suspense>
+      <Suspense fallback={null}>
+        <GamesLibrarySection />
+      </Suspense>
     </>
   )
 }

@@ -862,7 +862,7 @@ __metadata:
 "@figma/plugin-typings@npm:^1.100.2":
   version: 1.116.0
   resolution: "@figma/plugin-typings@npm:1.116.0"
-  checksum: 10c0/cb4526d6294053ba3119843b3c212ad32c96d47d9f9f037fb1a3b2e7cd46ccfd99ab9af571ec2c8c59b1009d17fba6c1538d3a31dd8bd2ca171511b38e3b3483
+  checksum: 10c0/f4cafcc6c7de929c60cd8920642ec113bccc845dd0880c8ac225dc2213d5fc2cda6d94b7432d953b825c7ff1a5d40717f64d448b03827bcbff108c8fdeaaa7fa
   languageName: node
   linkType: hard
 
@@ -1443,6 +1443,7 @@ __metadata:
     msw: "npm:^2.10.3"
     next: "npm:^14.2"
     next-themes: "npm:^0.4.6"
+    nuqs: "npm:^2.7.2"
     overlay-kit: "npm:^1.8.4"
     playwright: "npm:^1.53.1"
     postcss: "npm:^8.5.5"
@@ -3408,6 +3409,13 @@ __metadata:
   version: 1.12.0
   resolution: "@rushstack/eslint-patch@npm:1.12.0"
   checksum: 10c0/1e567656d92632c085a446f40767bc451caffe1131e8d6a7a3e8f3e3f4167f5f29744a84c709f2440f299442d4bc68ff773784462166800b8c09c0e08042415b
+  languageName: node
+  linkType: hard
+
+"@standard-schema/spec@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@standard-schema/spec@npm:1.0.0"
+  checksum: 10c0/a1ab9a8bdc09b5b47aa8365d0e0ec40cc2df6437be02853696a0e377321653b0d3ac6f079a8c67d5ddbe9821025584b1fb71d9cc041a6666a96f1fadf2ece15f
   languageName: node
   linkType: hard
 
@@ -9491,7 +9499,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/47b6a1e96d9263894da150bbb2c98c123b1630a0a88eb55c2129938557c51e8e55edf1d43364f7721b472fb4977e9567541f9c504a69ccf8138d0128cb682561
+  checksum: 10c0/0ebd8fce04e396b9b40152754ccecb5b2b4f3f8774e6ca2b4175b3dcb86e09f11bc2d33d04dd282b0d770382d9669337a08ca1e6a620cd38471bed3caf781daa
   languageName: node
   linkType: hard
 
@@ -9563,6 +9571,33 @@ __metadata:
   dependencies:
     boolbase: "npm:^1.0.0"
   checksum: 10c0/5fee7ff309727763689cfad844d979aedd2204a817fbaaf0e1603794a7c20db28548d7b024692f953557df6ce4a0ee4ae46cd8ebd9b36cfb300b9226b567c479
+  languageName: node
+  linkType: hard
+
+"nuqs@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "nuqs@npm:2.7.2"
+  dependencies:
+    "@standard-schema/spec": "npm:1.0.0"
+  peerDependencies:
+    "@remix-run/react": ">=2"
+    "@tanstack/react-router": ^1
+    next: ">=14.2.0"
+    react: ">=18.2.0 || ^19.0.0-0"
+    react-router: ^6 || ^7
+    react-router-dom: ^6 || ^7
+  peerDependenciesMeta:
+    "@remix-run/react":
+      optional: true
+    "@tanstack/react-router":
+      optional: true
+    next:
+      optional: true
+    react-router:
+      optional: true
+    react-router-dom:
+      optional: true
+  checksum: 10c0/08f130a9a4d4287d5a7151edc534229a7909de69d54d33ec1e2178759c4e8cec8d5c3d673f3b0a66186297bffd41eb1f88a411b2b69792b0ee2e5b90323e81f7
   languageName: node
   linkType: hard
 

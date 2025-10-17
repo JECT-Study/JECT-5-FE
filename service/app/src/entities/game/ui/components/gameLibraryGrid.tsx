@@ -1,28 +1,32 @@
 "use client"
 
-import {
-  GameCard,
-  GameCardOptions,
-} from "@ject-5-fe/design/components/gameCard"
 import { GameCreate } from "@ject-5-fe/design/components/gameCreate"
-import Image from "next/image"
+import { DropdownMenuItem } from "@ject-5-fe/design/components/menu"
+import { Copy, Share } from "@ject-5-fe/design/icons"
+import Link from "next/link"
+import { useIntersectionObserver } from "react-simplikit"
 
 import type { GameListItem } from "@/entities/game/model"
-import { useIntersectionObserver } from "@/entities/game/model/useInfiniteGameList"
+import * as GameCard from "@/shared/gameCard"
+
+import { useActions } from "../../model/useGameCardActions"
+import { GameLibrarySkeleton } from "./gameLibrarySkeleton"
 
 interface GameLibraryGridProps {
   className?: string
   games?: GameListItem[]
   isLoading?: boolean
+  isDashboard?: boolean
   isFetchingNextPage?: boolean
   hasNextPage?: boolean
   onCreateGame?: () => void
   onGameClick?: (game: GameListItem) => void
   onLoadMore?: () => void
-  isDashboard?: boolean
   onEditGame?: (game: GameListItem) => void
   onShareGame?: (game: GameListItem) => void
   onDeleteGame?: (game: GameListItem) => void
+  onCopyLinkGame?: (game: GameListItem) => void
+  onCloneGame?: (game: GameListItem) => void
 }
 
 export const GameLibraryGrid = ({
@@ -31,110 +35,104 @@ export const GameLibraryGrid = ({
   isLoading = false,
   isFetchingNextPage = false,
   hasNextPage = false,
-  onCreateGame,
   onGameClick,
   onLoadMore,
-  isDashboard = false,
-  onEditGame,
-  onShareGame,
-  onDeleteGame,
 }: GameLibraryGridProps) => {
-  const setObserverRef = useIntersectionObserver(() => {
-    if (hasNextPage && !isFetchingNextPage && onLoadMore) {
-      onLoadMore()
-    }
-  })
+  const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
+    (entry) => {
+      if (
+        entry.isIntersecting &&
+        hasNextPage &&
+        !isFetchingNextPage &&
+        onLoadMore
+      ) {
+        onLoadMore()
+      }
+    },
+    {
+      root: null,
+      rootMargin: "100px",
+      threshold: 0.1,
+    },
+  )
+
+  const { copy, clone } = useActions()
 
   return (
-    <div className={`w-[1130px] ${className}`}>
-      <div className="grid grid-cols-5 gap-[60px]">
-        <div className="flex justify-center">
-          <GameCreate onClick={onCreateGame} />
-        </div>
+    <div
+      className={`mx-auto w-full max-w-[1130px] px-10 sm:px-6 lg:px-0 ${className}`}
+    >
+      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-60">
+        <Link href="/create" prefetch={true}>
+          <GameCreate />
+        </Link>
 
-        {isLoading
-          ? Array.from({ length: 19 }).map((_, index) => (
-              <div
-                key={`loading-${index}`}
-                className="flex w-[178px] flex-col items-start gap-[14px]"
-              >
-                <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-                <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
-              </div>
-            ))
-          : games.map((game) => (
-              <div
-                key={game.gameId}
-                onClick={() => onGameClick?.(game)}
-                className="cursor-pointer"
-              >
-                <GameCard title={game.gameTitle}>
-                  <GameCard.Image>
-                    {game.gameThumbnailUrl ? (
-                      <Image
-                        src={game.gameThumbnailUrl}
-                        alt={game.gameTitle}
-                        fill
-                        className="rounded-[10px] object-cover"
-                        sizes="178px"
-                        placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-                      />
-                    ) : (
-                      <div className="flex size-full items-center justify-center rounded-[10px] bg-gray-200">
-                        <span className="text-[14px] font-medium text-gray-500">
-                          이미지 없음
-                        </span>
-                      </div>
-                    )}
-                    <GameCard.Badge className="left-[8px] top-[8px]">
-                      {game.questionCount}문제
-                    </GameCard.Badge>
-                    {game.isShared && (
-                      <GameCard.SharedBadge>공유</GameCard.SharedBadge>
-                    )}
-                  </GameCard.Image>
-                  {isDashboard ? (
-                    <>
-                      <GameCard.Title data-testid="game-title">
-                        {game.gameTitle}
-                      </GameCard.Title>
-                      <div className="absolute bottom-[16px] right-0">
-                        <GameCardOptions
-                          shared={game.isShared}
-                          onEdit={() => onEditGame?.(game)}
-                          onShare={() => onShareGame?.(game)}
-                          onDelete={() => onDeleteGame?.(game)}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <GameCard.Title>{game.gameTitle}</GameCard.Title>
+        {isLoading ? (
+          <GameLibrarySkeleton count={19} />
+        ) : (
+          games.map((game) => (
+            <div
+              key={game.gameId}
+              onClick={() => onGameClick?.(game)}
+              className="cursor-pointer"
+            >
+              <GameCard.Root title={game.gameTitle}>
+                <GameCard.Image
+                  src={game.gameThumbnailUrl || ""}
+                  alt={game.gameTitle}
+                  fill
+                  sizes="178px"
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                >
+                  <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
+                  {game.isShared && (
+                    <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
                   )}
-                </GameCard>
-              </div>
-            ))}
+                </GameCard.Image>
+                <GameCard.Description data-testid="game-title">
+                  {game.gameTitle}
+                </GameCard.Description>
+                <GameCard.Options>
+                  <DropdownMenuItem
+                    type="icon"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      const origin = window.location.origin
+                      copy(`${origin}/game/${game.gameId}`)
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Share />
+                    <span className="text-text-interactive-secondary">
+                      링크 복사
+                    </span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    type="icon"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      clone(game.gameId)
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Copy />
+                    <span className="text-text-interactive-secondary">
+                      게임 복제
+                    </span>
+                  </DropdownMenuItem>
+                </GameCard.Options>
+              </GameCard.Root>
+            </div>
+          ))
+        )}
       </div>
 
-      {isFetchingNextPage && (
-        <div className="mt-[60px] flex w-full justify-center">
-          <div className="grid grid-cols-5 gap-[60px]">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div
-                key={`next-loading-${index}`}
-                className="flex w-[178px] flex-col items-start gap-[14px]"
-              >
-                <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-                <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {isFetchingNextPage && <GameLibrarySkeleton count={5} />}
 
       {hasNextPage && (
         <div
-          ref={setObserverRef}
+          ref={loadMoreRef}
           className="mt-[60px] h-[20px] w-full"
           aria-hidden="true"
         />
