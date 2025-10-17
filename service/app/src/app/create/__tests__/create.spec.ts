@@ -116,11 +116,6 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     await expect(pageObj.uploadedImage).toBeVisible()
   })
 
-  // test("게임 수정 페이지에 들어왔을 경우, 기본 질문 리스트가 알맞게 표시되어야 한다", async () => {
-  //   await expect(pageObj.questionList).toBeVisible()
-  //   await expect(pageObj.questionComponents).toHaveCount(1)
-  // })
-
   test("게임 수정 페이지에서 제목을 수정하면 알맞게 반영되어야 한다", async ({
     page,
   }) => {
@@ -187,18 +182,69 @@ test.describe("게임 생성 페이지: 유효성 검사", () => {
   })
 })
 
-// test.describe("게임 생성 페이지: 문제 관리", () => {
-//   test.use({ storageState: "playwright/.auth/user.json" })
+test.describe("게임 생성 페이지: 문제 관리", () => {
+  test.use({ storageState: "playwright/.auth/user.json" })
 
-//   let pageObj: CreatePOM
+  let pageObj: CreatePOM
 
-//   test.beforeEach(async ({ page }) => {
-//     await page.goto("/create")
-//     pageObj = new CreatePOM(page)
-//   })
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/create")
+    pageObj = new CreatePOM(page)
+  })
 
-//   test("문제 추가 버튼을 클릭하면 새 문제가 추가되어야 한다", async () => {})
-// })
+  test("문제 추가 버튼을 클릭하면 새 문제가 추가되어야 한다", async () => {
+    await pageObj.addQuestionButton.click()
+    await expect(pageObj.questionComponents).toHaveCount(2)
+  })
+
+  test("문제가 두 개 이상일 경우, 문제 삭제 버튼을 클릭하면 문제가 삭제되어야 한다", async () => {
+    await pageObj.addQuestionButton.click()
+    await pageObj.getQuestionDeleteButton(1).click()
+    await expect(pageObj.questionComponents).toHaveCount(1)
+  })
+
+  test("문제가 두 개 이상일 경우, 문제 아래로 이동 버튼을 클릭하면 문제가 아래로 이동되어야 한다", async () => {
+    await pageObj.addQuestionButton.click()
+    await expect(pageObj.questionComponents).toHaveCount(2)
+
+    await pageObj.getQuestionComponent(1).click()
+    await pageObj.fillQuestionInput("첫 번째 질문")
+    await pageObj.fillAnswerInput("답안 1")
+
+    await pageObj.getQuestionComponent(2).click()
+    await pageObj.fillQuestionInput("두 번째 질문")
+    await pageObj.fillAnswerInput("답안 2")
+
+    expect(await pageObj.getQuestionText(1)).toBe("첫 번째 질문")
+    expect(await pageObj.getQuestionText(2)).toBe("두 번째 질문")
+
+    await pageObj.getQuestionMoveDownButton(1).click()
+
+    expect(await pageObj.getQuestionText(1)).toBe("두 번째 질문")
+    expect(await pageObj.getQuestionText(2)).toBe("첫 번째 질문")
+  })
+
+  test("문제가 두 개 이상일 경우, 문제 위로 이동 버튼을 클릭하면 문제가 위로 이동되어야 한다", async () => {
+    await pageObj.addQuestionButton.click()
+    await expect(pageObj.questionComponents).toHaveCount(2)
+
+    await pageObj.getQuestionComponent(1).click()
+    await pageObj.fillQuestionInput("첫 번째 질문")
+    await pageObj.fillAnswerInput("답안 1")
+
+    await pageObj.getQuestionComponent(2).click()
+    await pageObj.fillQuestionInput("두 번째 질문")
+    await pageObj.fillAnswerInput("답안 2")
+
+    expect(await pageObj.getQuestionText(1)).toBe("첫 번째 질문")
+    expect(await pageObj.getQuestionText(2)).toBe("두 번째 질문")
+
+    await pageObj.getQuestionMoveUpButton(2).click()
+
+    expect(await pageObj.getQuestionText(1)).toBe("두 번째 질문")
+    expect(await pageObj.getQuestionText(2)).toBe("첫 번째 질문")
+  })
+})
 
 test.describe("게임 생성 페이지: 이미지 업로드", () => {
   test.use({ storageState: "playwright/.auth/user.json" })
