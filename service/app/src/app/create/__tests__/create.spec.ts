@@ -13,10 +13,13 @@ test.describe("게임 생성 페이지: 비로그인 상태", () => {
   test("비로그인 상태에서 접근하면 alert 표시 후 홈 화면으로 이동해야 한다", async ({
     page,
   }) => {
+    let dialogShown = false
     page.on("dialog", async (dialog) => {
+      dialogShown = true
       await dialog.accept()
-      await page.waitForURL("/")
     })
+    await page.waitForURL("/")
+    expect(dialogShown).toBe(true)
   })
 })
 
