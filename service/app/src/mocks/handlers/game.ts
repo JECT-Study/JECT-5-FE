@@ -43,7 +43,11 @@ import {
   validateQuestionsArray,
   validateSessionCookie,
 } from "../utils/gameHandlers"
-import { generateGameDetailData } from "../utils/mockGenerators"
+import {
+  generateFakeUUID,
+  generateGameDetailData,
+} from "../utils/mockGenerators"
+import { generateSuccessResponse } from "../utils/responseHelpers"
 
 export const gameHandlers = [
   http.get(`${MSW_BASE_URL}/games/default`, () => {
@@ -174,6 +178,46 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
+  http.post(
+    `${MSW_BASE_URL}/games/:gameId/clone`,
+    async ({ request, params }) => {
+      try {
+        const { gameId } = params
+
+        const cookieHeader = request.headers.get("Cookie")
+        if (!validateSessionCookie(cookieHeader)) {
+          return HttpResponse.json(loginRequiredError, { status: 401 })
+        }
+
+        const sourceGame = findGameById(gameId as string)
+        if (!sourceGame) {
+          return HttpResponse.json(gameNotFoundError(gameId as string), {
+            status: 404,
+          })
+        }
+
+        const clonedGameId = generateFakeUUID()
+        const clonedGame: GameListItem = {
+          gameId: clonedGameId,
+          gameTitle: `${sourceGame.gameTitle} 사본`,
+          gameThumbnailUrl: sourceGame.gameThumbnailUrl,
+          questionCount: sourceGame.questionCount,
+          playCount: 0,
+          isShared: false,
+          version: 1,
+          updatedAt: new Date().toISOString(),
+        }
+
+        mockGameList.push(clonedGame)
+
+        return HttpResponse.json(
+          generateSuccessResponse({ gameId: clonedGameId }),
+        )
+      } catch {
+        return HttpResponse.json(internalServerError, { status: 500 })
+      }
+    },
+  ),
   http.post(`${MSW_BASE_URL}/games`, async ({ request }) => {
     try {
       const body = (await request.json()) as GameCreateRequest
