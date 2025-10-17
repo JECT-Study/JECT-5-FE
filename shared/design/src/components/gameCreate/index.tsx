@@ -8,19 +8,19 @@ interface GameCreateProps {
 export const GameCreate = ({ onClick, className = "" }: GameCreateProps) => {
   return (
     <div
-      className={`flex w-[178px] cursor-pointer flex-col items-center gap-16 ${className}`}
+      className={`flex w-full cursor-pointer flex-col items-center gap-12 ${className}`}
       onClick={onClick}
       role="button"
       aria-label="게임 만들기"
     >
       {/* Icon */}
-      <div className="flex size-[178px] items-center justify-center">
+      <div className="flex aspect-square w-full items-center justify-center">
         <img
           src="/create-game-icon.svg"
           alt="게임 만들기 아이콘"
           width={178}
           height={168}
-          className="size-full"
+          className="size-full object-contain"
         />
       </div>
 
