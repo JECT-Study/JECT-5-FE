@@ -6,10 +6,6 @@ import { CreatePOM } from "./createPOM"
 // guides/playwright-convention.mdc 및 test-convention.mdc 준수
 
 test.describe("게임 생성 페이지: 비로그인 상태", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/create")
-  })
-
   test("비로그인 상태에서 접근하면 alert 표시 후 홈 화면으로 이동해야 한다", async ({
     page,
   }) => {
@@ -18,6 +14,8 @@ test.describe("게임 생성 페이지: 비로그인 상태", () => {
       dialogShown = true
       await dialog.accept()
     })
+
+    await page.goto("/create")
     await page.waitForURL("/")
     expect(dialogShown).toBe(true)
   })
