@@ -58,7 +58,7 @@ const ScoreboardGame = () => {
           })
         }
       />
-      <div className="absolute left-[20px] top-[110px]">
+      <div className="absolute left-[20px] top-[110px] z-10">
         <ScoreboardSidebar teams={teams} onUpdateTeamScore={updateTeamScore} />
       </div>
       <div>

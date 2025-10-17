@@ -42,13 +42,13 @@ export const GamePlayHeader = ({
 
       <div className="flex flex-1 items-center justify-center">
         <Progress
-          className="h-[25px] w-[1080px]"
+          className="h-[25px] w-full"
           value={totalRounds > 0 ? (currentRound / totalRounds) * 100 : 0}
           max={100}
         />
       </div>
 
-      <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
+      <div className="flex w-[420px] flex-col items-end justify-center gap-16">
         <div className="flex items-center justify-end gap-4 px-10">
           <ThemeToggle />
 

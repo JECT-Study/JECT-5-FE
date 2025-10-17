@@ -15,18 +15,19 @@ export const GamePlayContent = ({ currentQuestion }: GamePlayContentProps) => {
   const [showAnswer, setShowAnswer] = useState(false)
 
   return (
-    <div className="flex w-full flex-1 flex-col items-center justify-center">
-      <h1 className="typography-heading-4xl-bold mb-[118px] max-w-[1080px] text-center text-text-primary">
+    <div className="flex w-full flex-1 flex-col items-center justify-center gap-[68px]">
+      <h1 className="typography-heading-4xl-bold max-w-[1080px] text-center text-text-primary">
         {currentQuestion.questionText}
       </h1>
 
       {currentQuestion?.imageUrl && (
-        <div className="relative mb-[85px] min-h-[459px] w-[727px] overflow-hidden rounded-[10px]">
+        <div className="relative max-h-[40vh] w-full overflow-hidden rounded-[10px]">
           <Image
             src={currentQuestion.imageUrl}
             alt="문제 이미지"
-            className="size-full rounded-[10px] object-contain transition-opacity duration-300"
-            fill
+            className="h-auto max-h-[40vh] w-full rounded-[10px] object-contain transition-opacity duration-300"
+            width={727}
+            height={459}
             placeholder="blur"
             blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
             loading="eager"
