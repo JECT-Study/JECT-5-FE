@@ -1,5 +1,6 @@
 import "./globals.css"
 
+import { Toast } from "@ject-5-fe/design/components/toast"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { type Metadata } from "next"
 import localFont from "next/font/local"
@@ -40,6 +41,7 @@ export default function RootLayout({
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
         <Providers>{children}</Providers>
+        <Toast />
       </body>
     </html>
   )
