@@ -3,7 +3,7 @@ import {
   SecondaryOutlineBoxButton,
 } from "@ject-5-fe/design/components/button"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import type { GameQuestion } from "@/entities/game/model"
 
@@ -25,6 +25,10 @@ export const GamePlayContent = ({
   onNextQuestion,
 }: GamePlayContentProps) => {
   const [showAnswer, setShowAnswer] = useState(false)
+
+  useEffect(() => {
+    setShowAnswer(false)
+  }, [currentRound])
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-center gap-[68px]">
