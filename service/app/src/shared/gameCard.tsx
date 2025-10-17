@@ -1,4 +1,4 @@
-import { SecondaryPlainIconButton } from "@shared/design/src/components/button"
+import { SecondaryPlainIconButton } from "@ject-5-fe/design/components/button"
 import {
   DropdownMenuContent,
   DropdownMenuRoot,
@@ -74,9 +74,9 @@ interface BadgeProps extends PropsWithChildren {
   className?: string
 }
 
-const badgeVariantClassName: Record<BadgeVariant, string> = {
+const badgeVariantClassName = {
   "top-left": "left-8 top-8",
-  "bottom-left": "bottom-8 left-8",
+  "bottom-left": "bottom-8 left-8 bg-background-badge-secondary",
 }
 
 export const Badge = ({
