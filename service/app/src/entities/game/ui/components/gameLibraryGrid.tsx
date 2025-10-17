@@ -1,8 +1,10 @@
 "use client"
 
-import { GameCard } from "@shared/design/src/components/gameCard"
-import { GameCardOptions } from "@shared/design/src/components/gameCard/gameCardOptions"
-import { GameCreate } from "@shared/design/src/components/gameCreate"
+import {
+  GameCard,
+  GameCardOptions,
+} from "@ject-5-fe/design/components/gameCard"
+import { GameCreate } from "@ject-5-fe/design/components/gameCreate"
 import Image from "next/image"
 
 import type { GameListItem } from "@/entities/game/model"
