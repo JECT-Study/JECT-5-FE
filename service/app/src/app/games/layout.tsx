@@ -5,5 +5,9 @@ interface GamesLayoutProps {
 }
 
 export default function GamesLayout({ children }: GamesLayoutProps) {
-  return <main className="min-h-screen bg-background-primary">{children}</main>
+  return (
+    <main className="flex min-h-screen flex-col gap-120 bg-background-primary">
+      {children}
+    </main>
+  )
 }
