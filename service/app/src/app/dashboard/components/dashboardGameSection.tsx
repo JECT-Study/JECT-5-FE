@@ -1,25 +1,23 @@
 "use client"
 
-import { parseAsString, useQueryState } from "nuqs"
+import { GameCreate } from "@ject-5-fe/design/components/gameCreate"
 import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
-import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
+import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
+import { GameCardOptions } from "@/entities/game/ui/components/gameCardOptions"
 import { GameLibrarySkeleton } from "@/entities/game/ui/components/gameLibrarySkeleton"
 import * as GameCard from "@/shared/gameCard"
 
-import { filterInput } from "../utils/filterInput"
-import { GameCardActions } from "./gameCardActions"
+import { useDashboardGameActions } from "../hooks/useDashboardGameActions"
 
-export function GamesLibrarySection() {
-  const [searchQuery] = useQueryState("query", parseAsString.withDefault(""))
+export const DashboardGameSection = () => {
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteGameList({
+    useInfiniteMyGames({
       limit: 19,
-      query: searchQuery || undefined,
     })
 
-  const intersectRef = useIntersectionObserver<HTMLDivElement>(
+  const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
     (entry) => {
       if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
         fetchNextPage()
@@ -32,20 +30,29 @@ export function GamesLibrarySection() {
     },
   )
 
-  const filteredGames = games?.filter((game) =>
-    filterInput(game.gameTitle, searchQuery),
-  )
+  const {
+    handleCreateGame,
+    handleEditGame,
+    handleShareGame,
+    handleDeleteGame,
+    handleCopyLink,
+    handleCloneGame,
+  } = useDashboardGameActions()
 
   const { openPreview } = useGamePreview()
 
   return (
     <div className="mx-auto flex w-full max-w-[1130px] flex-col items-center px-10 sm:px-6 lg:px-0">
       <div className="grid w-full grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-60">
-        {isLoading && (!filteredGames || filteredGames.length === 0) && (
+        <div onClick={handleCreateGame} className="cursor-pointer">
+          <GameCreate />
+        </div>
+
+        {isLoading && (!games || games.length === 0) && (
           <GameLibrarySkeleton count={19} />
         )}
 
-        {filteredGames?.map((game) => (
+        {games?.map((game) => (
           <div
             key={game.gameId}
             onClick={() => openPreview(game)}
@@ -67,15 +74,22 @@ export function GamesLibrarySection() {
               </GameCard.Image>
               <GameCard.Description>{game.gameTitle}</GameCard.Description>
               <GameCard.Options>
-                <GameCardActions game={game} />
+                <GameCardOptions
+                  shared={game.isShared}
+                  onEdit={() => handleEditGame(game)}
+                  onShare={() => handleShareGame(game)}
+                  onDelete={() => handleDeleteGame(game)}
+                  onCopyLink={() => handleCopyLink(game)}
+                  onClone={() => handleCloneGame(game)}
+                />
               </GameCard.Options>
             </GameCard.Root>
           </div>
         ))}
 
-        {!isLoading && filteredGames?.length === 0 && (
+        {!isLoading && (games?.length ?? 0) === 0 && (
           <p className="col-span-full text-center text-text-secondary">
-            검색 결과가 없습니다.
+            등록된 게임이 없습니다.
           </p>
         )}
       </div>
@@ -84,7 +98,7 @@ export function GamesLibrarySection() {
 
       {hasNextPage && (
         <div
-          ref={intersectRef}
+          ref={loadMoreRef}
           className="mt-[60px] h-[20px] w-full"
           aria-hidden="true"
         />

@@ -7,6 +7,7 @@ import {
 import { Navigation } from "@ject-5-fe/design/components/navigation"
 import * as TextField from "@ject-5-fe/design/components/textField"
 import { Cross } from "@ject-5-fe/design/icons"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
@@ -20,6 +21,7 @@ import { openSaveConfirmDialog } from "./dialog/saveConfirmDialog"
 
 export function CreateGameNavigation() {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const {
     gameName,
@@ -90,6 +92,7 @@ export function CreateGameNavigation() {
       }
 
       updateImageUrls(result.imageKeys)
+      await queryClient.invalidateQueries({ queryKey: ["infiniteMyGames"] })
       reset()
       router.push("/dashboard")
     } catch (error) {

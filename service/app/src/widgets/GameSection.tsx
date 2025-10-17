@@ -88,7 +88,6 @@ const GameSectionCards = ({
           key={game.gameId}
           className="w-[178px]"
           title={game.gameTitle}
-          data-testid="game-section-card"
           onClick={() => onGameCardClick(game)}
           onKeyDown={(e) => onGameCardKeyDown(e, game)}
           aria-label="게임 카드"
