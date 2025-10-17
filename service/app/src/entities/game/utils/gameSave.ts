@@ -57,7 +57,7 @@ export const saveNewGame = async (state: CreateGameState): Promise<UUID> => {
     gameThumbnailUrl: firstImageKey,
     questions: state.questions.map((question) => ({
       questionOrder: question.order,
-      imageUrl: imageUrlMap.get(question.order) || "",
+      imageUrl: imageUrlMap.get(question.order) ?? "",
       questionText: question.text.trim(),
       questionAnswer: question.answer.trim(),
     })),
@@ -130,7 +130,7 @@ export const updateExistingGame = async (
     gameThumbnailUrl: firstImageKey,
     questions: state.questions.map((question) => ({
       questionOrder: question.order,
-      imageUrl: imageUrlMap.get(question.order) || question.imageUrl,
+      imageUrl: imageUrlMap.get(question.order) ?? (question.imageUrl || null),
       questionText: question.text.trim(),
       questionAnswer: question.answer.trim(),
     })),
