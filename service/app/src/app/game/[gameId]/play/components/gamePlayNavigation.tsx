@@ -1,7 +1,4 @@
-import {
-  PrimaryBoxButton,
-  SecondaryPlainIconButton,
-} from "@ject-5-fe/design/components/button"
+import { SecondaryPlainIconButton } from "@ject-5-fe/design/components/button"
 import { Progress } from "@ject-5-fe/design/components/progress"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
@@ -11,16 +8,12 @@ import { ThemeToggle } from "@/shared/themeToggleButton"
 interface GamePlayHeaderProps {
   currentRound: number
   totalRounds: number
-  onPrevQuestion: () => void
-  onNextQuestion: () => void
   onExit: () => void
 }
 
 export const GamePlayHeader = ({
   currentRound,
   totalRounds,
-  onPrevQuestion,
-  onNextQuestion,
   onExit,
 }: GamePlayHeaderProps) => {
   return (
@@ -42,25 +35,15 @@ export const GamePlayHeader = ({
 
       <div className="flex flex-1 items-center justify-center">
         <Progress
-          className="h-[25px] w-[1080px]"
+          className="h-[25px] w-full"
           value={totalRounds > 0 ? (currentRound / totalRounds) * 100 : 0}
           max={100}
         />
       </div>
 
-      <div className="flex w-[420px] flex-col items-end justify-center gap-2.5">
-        <div className="flex items-center justify-end gap-4 px-10">
+      <div className="flex w-[420px] flex-col items-end justify-center">
+        <div className="flex items-center justify-end gap-16 px-10">
           <ThemeToggle />
-
-          {currentRound > 1 && (
-            <PrimaryBoxButton size="sm" _style="solid" onClick={onPrevQuestion}>
-              이전 문제
-            </PrimaryBoxButton>
-          )}
-
-          <PrimaryBoxButton size="sm" _style="solid" onClick={onNextQuestion}>
-            다음 문제
-          </PrimaryBoxButton>
 
           <SecondaryPlainIconButton
             size="lg"

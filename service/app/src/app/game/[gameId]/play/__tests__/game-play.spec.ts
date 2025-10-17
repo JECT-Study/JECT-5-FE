@@ -20,19 +20,21 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
     pageObj = new GamePlayPOM(page)
   })
 
-  test("1번 문제: 이전 버튼은 안 보이고 다음 버튼은 보여야 한다", async () => {
-    await expect(pageObj.prevQuestionButton).not.toBeVisible()
-    await expect(pageObj.nextQuestionButton).toBeVisible()
+  test("1번 문제: 이전 버튼은 비활성화되고 다음 버튼은 활성화되어야 한다", async () => {
+    await expect(pageObj.prevQuestionButton).toBeDisabled()
+    await expect(pageObj.nextQuestionButton).toBeEnabled()
 
     const progress = await pageObj.getProgressValue()
     expect(progress).not.toBeNull()
   })
 
-  test("2번 문제: 이전/다음 버튼이 모두 보여야 한다", async ({ page }) => {
+  test("2번 문제: 이전/다음 버튼이 모두 활성화되어야 한다", async ({
+    page,
+  }) => {
     await pageObj.goToNextQuestion()
     await expect(page).toHaveURL(/\?q=2/)
-    await expect(pageObj.prevQuestionButton).toBeVisible()
-    await expect(pageObj.nextQuestionButton).toBeVisible()
+    await expect(pageObj.prevQuestionButton).toBeEnabled()
+    await expect(pageObj.nextQuestionButton).toBeEnabled()
   })
 
   test("홈 로고 클릭 시 나가기 다이얼로그가 뜨고, '아니요' 클릭 시 페이지에 머문다", async ({

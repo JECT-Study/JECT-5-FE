@@ -100,6 +100,6 @@ export class GameSetupPOM {
   async startGame(): Promise<void> {
     await expect(this.startButton).toBeEnabled()
     await this.startButton.click()
-    await expect(this.page).toHaveURL(/\/game\/\d+\/play/)
+    await this.page.waitForURL(/\/game\/\d+\/play/)
   }
 }
