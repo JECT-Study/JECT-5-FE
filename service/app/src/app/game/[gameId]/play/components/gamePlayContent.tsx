@@ -1,7 +1,3 @@
-import {
-  PrimaryBoxButton,
-  SecondaryOutlineBoxButton,
-} from "@ject-5-fe/design/components/button"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 
@@ -60,20 +56,19 @@ export const GamePlayContent = ({
         />
 
         {showAnswer ? (
-          <SecondaryOutlineBoxButton
-            size="lg"
+          <div
             onClick={() => setShowAnswer(false)}
+            className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-12 rounded-12 border-[3px] border-border-interactive-secondary bg-background-interactive-inverse px-32 py-12 text-text-interactive-secondary hover:bg-background-interactive-secondary-hovered active:border-none active:bg-background-interactive-secondary-pressed"
           >
             {currentQuestion?.questionAnswer}
-          </SecondaryOutlineBoxButton>
+          </div>
         ) : (
-          <PrimaryBoxButton
-            size="2xl"
-            _style="solid"
+          <div
             onClick={() => setShowAnswer(true)}
+            className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-8 rounded-12 border-[3px] border-transparent bg-background-interactive-primary px-32 py-12 text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:border-transparent active:bg-background-interactive-primary-pressed"
           >
             정답 보기
-          </PrimaryBoxButton>
+          </div>
         )}
 
         <QuestionNavigationButton
