@@ -123,6 +123,17 @@ const createGameStore = (initialGameName: string = "새 게임") =>
               }
             }
           }),
+        updateImageUrls: (imageKeys) =>
+          set((state) => {
+            imageKeys.forEach((key, questionOrder) => {
+              const questionIndex = state.questions.findIndex(
+                (q) => q.order === questionOrder,
+              )
+              if (questionIndex !== -1) {
+                state.questions[questionIndex].imageUrl = key
+              }
+            })
+          }),
         loadGameData: async (gameId) => {
           set((state) => {
             state.isLoading = true
