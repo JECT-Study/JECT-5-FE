@@ -93,13 +93,18 @@ export const generateMockQuestions = (
   return questions
 }
 
-export const generateGameDetailData = (game: GameListItem): GameDetailData => {
+export const generateGameDetailData = (
+  game: GameListItem,
+  storedQuestions?: GameQuestion[],
+): GameDetailData => {
   return {
     gameTitle: game.gameTitle,
     nickname: `Creator_${game.gameId.slice(0, 8)}`,
     questionCount: game.questionCount,
     version: game.version || 1,
-    questions: generateMockQuestions(game.questionCount, game.version || 1),
+    questions:
+      storedQuestions ||
+      generateMockQuestions(game.questionCount, game.version || 1),
   }
 }
 

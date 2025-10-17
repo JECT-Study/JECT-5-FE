@@ -108,7 +108,7 @@ export function CreateGameNavigation() {
       </div>
 
       <div className="flex w-[420px] items-center justify-end gap-4 px-10">
-        <ThemeToggle />
+        <ThemeToggle data-testid="theme-toggle-button" />
         <PrimaryBoxButton
           size="sm"
           disabled={!canSave}
@@ -129,6 +129,7 @@ export function CreateGameNavigation() {
               },
             })
           }
+          data-testid="cross-button"
         >
           <Cross />
         </SecondaryGhostIconButton>

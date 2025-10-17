@@ -24,7 +24,10 @@ export function QuestionList() {
   )
 
   return (
-    <div className="flex w-[420px] flex-col items-start overflow-y-auto bg-background-tertiary px-[32px] py-[16px]">
+    <div
+      className="flex w-[420px] flex-col items-start overflow-y-auto bg-background-tertiary px-[32px] py-[16px]"
+      data-testid="question-list"
+    >
       {questions.map((question, index) => {
         const isSelected = selectedQuestionId === question.id
         const questionError =
