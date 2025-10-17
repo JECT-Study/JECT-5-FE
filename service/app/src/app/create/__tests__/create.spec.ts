@@ -120,6 +120,26 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   //   await expect(pageObj.questionList).toBeVisible()
   //   await expect(pageObj.questionComponents).toHaveCount(1)
   // })
+
+  test("게임 수정 페이지에서 제목을 수정하면 알맞게 반영되어야 한다", async ({
+    page,
+  }) => {
+    await pageObj.fillGameName("게임 수정 테스트")
+    await pageObj.saveGame()
+    const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
+    const gameTitle = gameCard.getByRole("heading", { level: 3 })
+    await expect(gameTitle).toHaveText("게임 수정 테스트")
+  })
+
+  test("게임 수정 페이지에서 질문을 수정하면 알맞게 반영되어야 한다", async ({
+    page,
+  }) => {
+    await pageObj.fillQuestionInput("문제 1 테스트 수정")
+    await pageObj.saveGame()
+    const gameCard = page.getByRole("group", { name: "게임 카드" }).first()
+    gameCard.click()
+    await expect(page.getByText("문제 1 테스트 수정")).toBeVisible()
+  })
 })
 
 test.describe("게임 생성 페이지: 유효성 검사", () => {

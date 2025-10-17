@@ -163,4 +163,10 @@ export class CreatePOM {
   get imageContainer() {
     return this.uploadedImage.locator("..")
   }
+
+  async saveGame() {
+    await this.saveGameButton.click()
+    await this.clickPopupConfirmButton(this.saveGamePopup)
+    await this.page.waitForURL("/dashboard")
+  }
 }
