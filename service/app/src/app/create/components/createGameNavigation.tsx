@@ -3,9 +3,9 @@
 import {
   PrimaryBoxButton,
   SecondaryGhostIconButton,
-} from "@shared/design/src/components/button"
-import * as TextField from "@shared/design/src/components/textField"
-import { Cross } from "@shared/design/src/icons"
+} from "@ject-5-fe/design/components/button"
+import * as TextField from "@ject-5-fe/design/components/textField"
+import { Cross } from "@ject-5-fe/design/icons"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 

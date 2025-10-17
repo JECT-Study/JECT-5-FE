@@ -3,8 +3,8 @@ import {
   PrimaryBoxButton,
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
+import { Navigation } from "@ject-5-fe/design/components/navigation"
 import { Cross } from "@ject-5-fe/design/icons"
-import { Navigation } from "@shared/design/src/components/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"

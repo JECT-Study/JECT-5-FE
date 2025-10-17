@@ -3,9 +3,9 @@ import {
   DropdownMenuContent,
   DropdownMenuRoot,
   DropdownMenuTrigger,
-} from "@shared/design/src/components/menu"
-import { MoreDot } from "@shared/design/src/icons"
-import { cn } from "@shared/design/src/utils/cn"
+} from "@ject-5-fe/design/components/menu"
+import { MoreDot } from "@ject-5-fe/design/icons"
+import { cn } from "@ject-5-fe/design/utils/cn"
 import NextImage from "next/image"
 import type { ComponentPropsWithoutRef, PropsWithChildren } from "react"
 import { forwardRef } from "react"

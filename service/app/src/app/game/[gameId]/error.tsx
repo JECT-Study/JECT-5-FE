@@ -1,6 +1,6 @@
 "use client"
 
-import { PrimaryBoxButton } from "@shared/design/src/components/button"
+import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 

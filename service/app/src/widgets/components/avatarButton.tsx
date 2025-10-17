@@ -1,10 +1,10 @@
-import { SecondaryPlainIconButton } from "@shared/design/src/components/button"
+import { SecondaryPlainIconButton } from "@ject-5-fe/design/components/button"
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuRoot,
   DropdownMenuTrigger,
-} from "@shared/design/src/components/menu"
+} from "@ject-5-fe/design/components/menu"
 import Image from "next/image"
 
 interface AvatarButtonProps {
