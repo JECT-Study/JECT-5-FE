@@ -6,6 +6,7 @@ import {
 } from "@ject-5-fe/design/components/button"
 import * as TextField from "@ject-5-fe/design/components/textField"
 import { Trash } from "@ject-5-fe/design/icons"
+import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { useShallow } from "zustand/react/shallow"
@@ -13,6 +14,7 @@ import { useShallow } from "zustand/react/shallow"
 import { useGameStore } from "../../store/useGameStore"
 import { generateTeamName } from "../../utils/generateTeamName"
 import {
+  canStartGame,
   getTeamErrors,
   MAX_TEAM_NAME_LENGTH,
   MAX_TEAMS,
@@ -20,16 +22,27 @@ import {
 } from "../../utils/teamValidation"
 
 export function TeamInputForm() {
-  const { teams, addTeam, removeTeam, updateTeamName } = useGameStore(
-    useShallow((state) => ({
-      teams: state.teams,
-      addTeam: state.addTeam,
-      removeTeam: state.removeTeam,
-      updateTeamName: state.updateTeamName,
-    })),
-  )
+  const { teams, addTeam, removeTeam, updateTeamName, setGameStatus } =
+    useGameStore(
+      useShallow((state) => ({
+        teams: state.teams,
+        addTeam: state.addTeam,
+        removeTeam: state.removeTeam,
+        updateTeamName: state.updateTeamName,
+        setGameStatus: state.setGameStatus,
+      })),
+    )
+  const router = useRouter()
 
   const teamErrors = useMemo(() => getTeamErrors(teams), [teams])
+  const isGameReady = useMemo(() => canStartGame(teams), [teams])
+
+  const handleStartGame = () => {
+    if (!isGameReady) return
+
+    setGameStatus("playing")
+    router.push("./play")
+  }
 
   return (
     <form
@@ -80,11 +93,14 @@ export function TeamInputForm() {
         )
       })}
       <PrimaryBoxButton
+        type="button"
         size="xl"
         _style="solid"
-        disabled={teams.length >= MAX_TEAMS}
+        className="w-full"
+        disabled={!isGameReady}
+        onClick={handleStartGame}
       >
-        참가자 및 팀 추가하기
+        게임 시작
       </PrimaryBoxButton>
     </form>
   )

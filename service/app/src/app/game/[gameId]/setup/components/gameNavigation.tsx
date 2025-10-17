@@ -1,8 +1,5 @@
 "use client"
-import {
-  PrimaryBoxButton,
-  SecondaryPlainIconButton,
-} from "@ject-5-fe/design/components/button"
+import { SecondaryPlainIconButton } from "@ject-5-fe/design/components/button"
 import { Navigation } from "@ject-5-fe/design/components/navigation"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
@@ -12,15 +9,8 @@ import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
-import { useGameStore } from "../../store/useGameStore"
-import { canStartGame } from "../../utils/teamValidation"
 
 export function GameNavigation() {
-  const setGameStatus = useGameStore((state) => state.setGameStatus)
-  const teams = useGameStore((state) => state.teams)
-
-  const isGameReady = canStartGame(teams)
-
   const router = useRouter()
 
   return (
@@ -44,19 +34,6 @@ export function GameNavigation() {
       rightContent={
         <>
           <ThemeToggle />
-          <PrimaryBoxButton
-            size="sm"
-            _style="solid"
-            disabled={!isGameReady}
-            onClick={() => {
-              if (isGameReady) {
-                setGameStatus("playing")
-                router.push("./play")
-              }
-            }}
-          >
-            게임 시작
-          </PrimaryBoxButton>
           <SecondaryPlainIconButton
             size="lg"
             onClick={() => {
