@@ -11,7 +11,9 @@ import { GameCreateRequest, GameUpdateRequest } from "../model"
 import { generateUniqueFileName } from "./fileValidation"
 import { uploadMultipleFilesToS3 } from "./s3Upload"
 
-export const saveNewGame = async (state: CreateGameState): Promise<UUID> => {
+export const saveNewGame = async (
+  state: CreateGameState,
+): Promise<{ gameId: UUID; imageKeys: Map<number, string> }> => {
   const questionsWithNewImages = state.questions.filter((q) => q.imageFile)
 
   const presignedRequest = questionsWithNewImages.map((question) => ({
@@ -71,16 +73,22 @@ export const saveNewGame = async (state: CreateGameState): Promise<UUID> => {
     )
   }
 
-  return gameId
+  return { gameId, imageKeys: imageUrlMap }
 }
 
 export const updateExistingGame = async (
   state: CreateGameState,
   gameId: UUID,
   version: number,
-): Promise<UUID> => {
+): Promise<{ gameId: UUID; imageKeys: Map<number, string> }> => {
   const questionsWithNewImages = state.questions.filter((q) => q.imageFile)
   const imageUrlMap: Map<number, string> = new Map()
+
+  state.questions.forEach((question) => {
+    if (question.imageUrl) {
+      imageUrlMap.set(question.order, question.imageUrl)
+    }
+  })
 
   if (questionsWithNewImages.length > 0) {
     const presignedRequest = questionsWithNewImages.map((question) => ({
@@ -130,7 +138,7 @@ export const updateExistingGame = async (
     gameThumbnailUrl: firstImageKey,
     questions: state.questions.map((question) => ({
       questionOrder: question.order,
-      imageUrl: imageUrlMap.get(question.order) || question.imageUrl,
+      imageUrl: imageUrlMap.get(question.order) || "",
       questionText: question.text.trim(),
       questionAnswer: question.answer.trim(),
     })),
@@ -146,5 +154,5 @@ export const updateExistingGame = async (
     throw new Error(response.error ?? "저장 중 오류가 발생했습니다.")
   }
 
-  return gameId
+  return { gameId, imageKeys: imageUrlMap }
 }
