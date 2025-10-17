@@ -67,7 +67,7 @@ export function GameCardOptions({
         }}
       >
         <Copy />
-        <span className="text-text-interactive-secondary">게임 복제</span>
+        <span className="text-text-interactive-secondary">게임 등록</span>
       </DropdownMenuItem>
       <DropdownMenuItem
         type="icon"

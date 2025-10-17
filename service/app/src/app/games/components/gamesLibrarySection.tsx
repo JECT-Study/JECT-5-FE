@@ -1,88 +1,94 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
-import { overlay } from "overlay-kit"
-import { useState } from "react"
-import { useDebounce } from "react-simplikit"
+import { useIntersectionObserver } from "react-simplikit"
 
-import { GameListItem } from "@/entities/game"
-import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
-import { GameLibraryGrid } from "@/entities/game/ui/components"
-import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import { GameLibrarySkeleton } from "@/entities/game/ui/components/gameLibrarySkeleton"
+import * as GameCard from "@/shared/gameCard"
 
 import { filterInput } from "../utils/filterInput"
+import { GameCardActions } from "./gameCardActions"
 
 export function GamesLibrarySection() {
-  const router = useRouter()
   const [searchQuery] = useQueryState("query", parseAsString.withDefault(""))
-  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery)
-  const updateDebouncedQuery = useDebounce((value: string) => {
-    setDebouncedQuery(value)
-  }, 300)
-
-  if (debouncedQuery !== searchQuery) {
-    updateDebouncedQuery(searchQuery)
-  }
-
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
-      query: debouncedQuery || undefined,
+      query: searchQuery || undefined,
     })
 
-  const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
-
-  const handleGameClick = async (game: GameListItem) => {
-    try {
-      const { data: gameDetail } = await getGameDetail(game.gameId)
-
-      overlay.open(({ close, isOpen }) => {
-        const handleStartGame = () => {
-          close()
-          router.push(`/game/${game.gameId}`)
-        }
-
-        return (
-          <GamePreview
-            gameTitle={gameDetail.gameTitle}
-            creatorName={gameDetail.nickname}
-            questionCount={gameDetail.questionCount}
-            questions={gameDetail.questions.map((question) => ({
-              id: question.questionId.toString(),
-              title: question.questionText,
-              imageUrl: question.imageUrl,
-            }))}
-            onClose={close}
-            onStartGame={handleStartGame}
-            isOpen={isOpen}
-          />
-        )
-      })
-    } catch (error) {
-      console.error("Error fetching game detail:", error)
-    }
-  }
-
-  const filteredGames = games?.filter((game) =>
-    filterInput(game.gameTitle, debouncedQuery),
+  const intersectRef = useIntersectionObserver<HTMLDivElement>(
+    (entry) => {
+      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage()
+      }
+    },
+    {
+      root: null,
+      rootMargin: "100px",
+      threshold: 0.1,
+    },
   )
 
+  const filteredGames = games?.filter((game) =>
+    filterInput(game.gameTitle, searchQuery),
+  )
+
+  const { openPreview } = useGamePreview()
+
   return (
-    <div className="flex w-full flex-col items-center">
-      <GameLibraryGrid
-        games={filteredGames}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-        hasNextPage={hasNextPage}
-        onGameClick={handleGameClick}
-        onLoadMore={handleLoadMore}
-      />
+    <div className="mx-auto flex w-full max-w-[1130px] flex-col items-center px-10 sm:px-6 lg:px-0">
+      <div className="grid w-full grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-60">
+        {isLoading && (!filteredGames || filteredGames.length === 0) && (
+          <GameLibrarySkeleton count={19} />
+        )}
+
+        {filteredGames?.map((game) => (
+          <div
+            key={game.gameId}
+            onClick={() => openPreview(game)}
+            className="cursor-pointer"
+          >
+            <GameCard.Root title={game.gameTitle}>
+              <GameCard.Image
+                src={game.gameThumbnailUrl || ""}
+                alt={game.gameTitle}
+                fill
+                sizes="178px"
+                placeholder="blur"
+                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+              >
+                <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
+                {game.isShared && (
+                  <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
+                )}
+              </GameCard.Image>
+              <GameCard.Description>{game.gameTitle}</GameCard.Description>
+              <GameCard.Options>
+                <GameCardActions game={game} />
+              </GameCard.Options>
+            </GameCard.Root>
+          </div>
+        ))}
+
+        {!isLoading && filteredGames?.length === 0 && (
+          <p className="col-span-full text-center text-text-secondary">
+            검색 결과가 없습니다.
+          </p>
+        )}
+      </div>
+
+      {isFetchingNextPage && <GameLibrarySkeleton count={5} />}
+
+      {hasNextPage && (
+        <div
+          ref={intersectRef}
+          className="mt-[60px] h-[20px] w-full"
+          aria-hidden="true"
+        />
+      )}
     </div>
   )
 }

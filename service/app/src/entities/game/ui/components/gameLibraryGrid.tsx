@@ -9,7 +9,7 @@ import { useIntersectionObserver } from "react-simplikit"
 import type { GameListItem } from "@/entities/game/model"
 import * as GameCard from "@/shared/gameCard"
 
-import { useActions } from "../../model/useGameCardActions"
+import { useActions } from "../../../../app/games/hooks/useGameCardActions"
 import { GameLibrarySkeleton } from "./gameLibrarySkeleton"
 
 interface GameLibraryGridProps {
@@ -90,9 +90,7 @@ export const GameLibraryGrid = ({
                     <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
                   )}
                 </GameCard.Image>
-                <GameCard.Description data-testid="game-title">
-                  {game.gameTitle}
-                </GameCard.Description>
+                <GameCard.Description>{game.gameTitle}</GameCard.Description>
                 <GameCard.Options>
                   <DropdownMenuItem
                     type="icon"
