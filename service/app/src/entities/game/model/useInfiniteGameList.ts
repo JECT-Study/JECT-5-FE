@@ -69,6 +69,7 @@ export const useInfiniteGameList = ({
     },
     enabled,
     select: (data) => data?.pages.flatMap((page) => page.games),
+    placeholderData: (previousData) => previousData,
   })
 
   return {
