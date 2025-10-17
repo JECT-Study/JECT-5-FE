@@ -8,7 +8,7 @@ import {
 } from "@/entities/game"
 import { UUID } from "@/shared/api/types/common"
 
-import { mockGameList } from "../data/common"
+import { mockGameList, mockGameQuestions } from "../data/common"
 
 export const findGameById = (gameId: UUID): GameListItem | undefined => {
   return mockGameList.find((g) => g.gameId === gameId)
@@ -90,4 +90,49 @@ export const toggleGameShare = (
 export const incrementGamePlayCount = (game: GameListItem): void => {
   game.playCount += 1
   game.updatedAt = new Date().toISOString()
+}
+
+export const convertCreateQuestionToGameQuestion = (
+  question: GameCreateQuestion,
+  questionId: number,
+  version: number,
+): GameQuestion => {
+  return {
+    questionId,
+    questionOrder: question.questionOrder,
+    imageUrl: question.imageUrl,
+    questionText: question.questionText,
+    questionAnswer: question.questionAnswer,
+    version,
+  }
+}
+
+export const convertUpdateQuestionToGameQuestion = (
+  question: GameUpdateQuestion,
+  questionId: number,
+  version: number,
+): GameQuestion => {
+  return {
+    questionId,
+    questionOrder: question.questionOrder,
+    imageUrl: question.imageUrl || "",
+    questionText: question.questionText,
+    questionAnswer: question.questionAnswer,
+    version,
+  }
+}
+
+export const storeGameQuestions = (
+  gameId: UUID,
+  questions: GameQuestion[],
+): void => {
+  mockGameQuestions.set(gameId, questions)
+}
+
+export const getGameQuestions = (gameId: UUID): GameQuestion[] | undefined => {
+  return mockGameQuestions.get(gameId)
+}
+
+export const deleteGameQuestions = (gameId: UUID): void => {
+  mockGameQuestions.delete(gameId)
 }

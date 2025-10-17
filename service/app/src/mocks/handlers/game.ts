@@ -27,9 +27,14 @@ import {
   presignedUrlDataSuccess,
 } from "../data/game"
 import {
+  convertCreateQuestionToGameQuestion,
+  convertUpdateQuestionToGameQuestion,
+  deleteGameQuestions,
   findGameById,
+  getGameQuestions,
   incrementGamePlayCount,
   softDeleteGame,
+  storeGameQuestions,
   toggleGameShare,
   updateGameFields,
   validateGameCreateFields,
@@ -145,7 +150,8 @@ export const gameHandlers = [
         })
       }
 
-      const gameDetailData = generateGameDetailData(game)
+      const storedQuestions = getGameQuestions(gameId as string)
+      const gameDetailData = generateGameDetailData(game, storedQuestions)
       return HttpResponse.json(gameDetailSuccess(gameDetailData))
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })
@@ -203,6 +209,12 @@ export const gameHandlers = [
         updatedAt: new Date().toISOString(),
       }
 
+      // Convert and store questions
+      const gameQuestions = questions.map((q, index) =>
+        convertCreateQuestionToGameQuestion(q, 1000 + index, 1),
+      )
+      storeGameQuestions(gameId, gameQuestions)
+
       mockGameList.push(newGame)
       return HttpResponse.json(gameSuccessResponse())
     } catch {
@@ -254,6 +266,12 @@ export const gameHandlers = [
         version: version + 1,
       })
 
+      // Convert and update stored questions
+      const gameQuestions = body.questions.map((q, index) =>
+        convertUpdateQuestionToGameQuestion(q, 1000 + index, version + 1),
+      )
+      storeGameQuestions(gameId as string, gameQuestions)
+
       return HttpResponse.json(gameSuccessResponse())
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })
@@ -276,6 +294,7 @@ export const gameHandlers = [
       }
 
       softDeleteGame(game)
+      deleteGameQuestions(gameId as string)
       return HttpResponse.json(gameSuccessResponse())
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })
