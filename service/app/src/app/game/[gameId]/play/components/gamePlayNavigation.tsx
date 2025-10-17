@@ -3,9 +3,10 @@ import {
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
 import { Progress } from "@ject-5-fe/design/components/progress"
-import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
+
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 interface GamePlayHeaderProps {
   currentRound: number

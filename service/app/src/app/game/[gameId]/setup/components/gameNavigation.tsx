@@ -4,11 +4,12 @@ import {
   SecondaryPlainIconButton,
 } from "@ject-5-fe/design/components/button"
 import { Navigation } from "@ject-5-fe/design/components/navigation"
-import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
 import { useGameStore } from "../../store/useGameStore"

@@ -5,12 +5,12 @@ import {
   SecondaryGhostIconButton,
 } from "@ject-5-fe/design/components/button"
 import * as TextField from "@ject-5-fe/design/components/textField"
-import { ThemeToggle } from "@ject-5-fe/design/components/themeToggle"
 import { Cross } from "@ject-5-fe/design/icons"
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
 import { saveNewGame, updateExistingGame } from "@/entities/game/utils/gameSave"
+import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { openErrorDialog } from "./dialog/errorDialog"
