@@ -34,17 +34,13 @@ export const GamePlayContent = ({
       </h1>
 
       {currentQuestion?.imageUrl && (
-        <div className="relative max-h-[40vh] w-full overflow-hidden rounded-[10px]">
+        <div className="relative mx-auto w-[600px] overflow-hidden rounded-lg">
           <Image
             src={currentQuestion.imageUrl}
             alt="문제 이미지"
-            className="h-auto max-h-[40vh] w-full rounded-[10px] object-contain transition-opacity duration-300"
-            width={727}
-            height={459}
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
-            loading="eager"
-            sizes="(max-width: 1920px) 727px, 1454px"
+            width={600}
+            height={400}
+            className="object-cover"
           />
         </div>
       )}
