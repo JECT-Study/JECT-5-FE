@@ -19,6 +19,7 @@
     "@ject-5-fe/design": "workspace:*",
     "@next/third-parties": "^15.4.6",
     "@tanstack/react-query": "^5.83.0",
+    "@vercel/speed-insights": "^1.2.0",
     "es-toolkit": "^1.39.8",
     "immer": "^10.1.1",
     "ky": "^1.12.0",
