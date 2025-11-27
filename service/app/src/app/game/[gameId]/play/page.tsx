@@ -17,14 +17,16 @@ const ScoreboardGame = () => {
   const [{ q: currentRound }, setSearchParams] =
     useTypedSearchParams(gamePlaySchema)
 
-  const { gameDetail, teams, totalRounds, updateTeamScore } = useGameStore(
-    useShallow((state) => ({
-      gameDetail: state.gameDetail,
-      teams: state.teams,
-      totalRounds: state.totalRounds,
-      updateTeamScore: state.updateTeamScore,
-    })),
-  )
+  const { gameDetail, teams, totalRounds, updateTeamScore, resetGame } =
+    useGameStore(
+      useShallow((state) => ({
+        gameDetail: state.gameDetail,
+        teams: state.teams,
+        totalRounds: state.totalRounds,
+        updateTeamScore: state.updateTeamScore,
+        resetGame: state.resetGame,
+      })),
+    )
 
   const currentQuestion = gameDetail.questions.find(
     (q) => q.questionOrder === currentRound - 1,
@@ -36,6 +38,7 @@ const ScoreboardGame = () => {
 
   const handleNextQuestion = () => {
     if (currentRound === totalRounds) {
+      resetGame()
       router.push("./result")
       return
     }
@@ -49,7 +52,10 @@ const ScoreboardGame = () => {
         totalRounds={totalRounds}
         onExit={() =>
           openExitConfirmDialog({
-            onConfirm: () => router.push("/"),
+            onConfirm: () => {
+              resetGame()
+              router.push("/")
+            },
           })
         }
       />
