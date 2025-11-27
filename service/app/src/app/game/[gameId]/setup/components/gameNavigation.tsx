@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
+import { useGameStore } from "../../store/useGameStore"
 
 export function GameNavigation() {
   const router = useRouter()
+  const resetGame = useGameStore((state) => state.resetGame)
 
   return (
     <Navigation
@@ -38,7 +40,10 @@ export function GameNavigation() {
             size="lg"
             onClick={() => {
               openExitConfirmDialog({
-                onConfirm: () => router.push("/"),
+                onConfirm: () => {
+                  resetGame()
+                  router.push("/")
+                },
               })
             }}
           >
