@@ -18,7 +18,7 @@ export default function GameResultPage() {
     <>
       <GameResultNavigation
         onGoHome={handleGoHome}
-        onPreviousQuestion={() => router.push(`./play?q=${totalRounds - 1}`)}
+        onPreviousQuestion={() => router.push(`./play?q=${totalRounds}`)}
       />
       <GameResultContent teams={teams} />
     </>
