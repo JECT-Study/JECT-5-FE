@@ -4,16 +4,16 @@ import { Navigation } from "@ject-5-fe/design/components/navigation"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
+import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
 import { useGameStore } from "../../store/useGameStore"
 
 export function GameNavigation() {
-  const router = useRouter()
   const resetGame = useGameStore((state) => state.resetGame)
+  const { goBackToEntry } = useGameEntryNavigation()
 
   return (
     <Navigation
@@ -42,7 +42,7 @@ export function GameNavigation() {
               openExitConfirmDialog({
                 onConfirm: () => {
                   resetGame()
-                  router.push("/")
+                  goBackToEntry()
                 },
               })
             }}

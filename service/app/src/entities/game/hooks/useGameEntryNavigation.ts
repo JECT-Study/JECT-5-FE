@@ -7,7 +7,7 @@ export const useGameEntryNavigation = () => {
 
   const startGame = (gameId: string) => {
     saveEntry()
-    router.push(`/game/${gameId}/play`)
+    router.push(`/game/${gameId}/setup`)
   }
 
   const goBackToEntry = () => {

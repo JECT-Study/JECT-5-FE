@@ -107,7 +107,6 @@ export const createGameStore = (
         storage: createJSONStorage(() => sessionStorage),
         partialize: (state) => ({
           teams: state.teams,
-          gameStatus: state.gameStatus,
         }),
       },
     ),

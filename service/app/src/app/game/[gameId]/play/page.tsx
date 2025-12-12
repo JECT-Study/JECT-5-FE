@@ -39,7 +39,6 @@ const ScoreboardGame = () => {
 
   const handleNextQuestion = () => {
     if (currentRound === totalRounds) {
-      resetGame()
       router.push("./result")
       return
     }
