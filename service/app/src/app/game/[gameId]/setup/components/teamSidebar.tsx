@@ -24,7 +24,6 @@ export function TeamSidebar() {
     addTeam({
       id: uuidv4(),
       name: generateTeamName(teams.length),
-      score: 0,
       members: [],
     })
   }

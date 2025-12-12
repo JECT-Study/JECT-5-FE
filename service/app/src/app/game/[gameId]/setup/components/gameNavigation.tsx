@@ -9,10 +9,8 @@ import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNaviga
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
 import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
-import { useGameStore } from "../../store/useGameStore"
 
 export function GameNavigation() {
-  const resetGame = useGameStore((state) => state.resetGame)
   const { goBackToEntry } = useGameEntryNavigation()
 
   return (
@@ -41,7 +39,6 @@ export function GameNavigation() {
             onClick={() => {
               openExitConfirmDialog({
                 onConfirm: () => {
-                  resetGame()
                   goBackToEntry()
                 },
               })

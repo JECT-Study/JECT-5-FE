@@ -18,14 +18,14 @@ const ScoreboardGame = () => {
   const [{ q: currentRound }, setSearchParams] =
     useTypedSearchParams(gamePlaySchema)
 
-  const { gameDetail, teams, totalRounds, updateTeamScore, resetGame } =
+  const { gameDetail, teams, totalRounds, updateTeamScore, scores } =
     useGameStore(
       useShallow((state) => ({
         gameDetail: state.gameDetail,
         teams: state.teams,
         totalRounds: state.totalRounds,
         updateTeamScore: state.updateTeamScore,
-        resetGame: state.resetGame,
+        scores: state.scores,
       })),
     )
 
@@ -55,14 +55,17 @@ const ScoreboardGame = () => {
         onExit={() =>
           openExitConfirmDialog({
             onConfirm: () => {
-              resetGame()
               goBackToEntry()
             },
           })
         }
       />
       <div className="absolute left-[20px] top-[110px] z-10">
-        <ScoreboardSidebar teams={teams} onUpdateTeamScore={updateTeamScore} />
+        <ScoreboardSidebar
+          teams={teams}
+          scores={scores}
+          onUpdateTeamScore={updateTeamScore}
+        />
       </div>
       <div>
         <GamePlayContent

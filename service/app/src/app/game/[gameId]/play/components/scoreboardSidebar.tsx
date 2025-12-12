@@ -7,11 +7,13 @@ import type { Team } from "../../store/useGameStore"
 
 interface ScoreboardSidebarProps {
   teams: Team[]
+  scores: Record<string, number>
   onUpdateTeamScore: (teamId: string, score: number) => void
 }
 
 export const ScoreboardSidebar = ({
   teams,
+  scores,
   onUpdateTeamScore,
 }: ScoreboardSidebarProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -38,13 +40,13 @@ export const ScoreboardSidebar = ({
             <PlayerStatus
               key={team.id}
               name={team.name}
-              score={`${team.score}점`}
+              score={`${scores[team.id]}점`}
               onScoreIncrease={() => {
-                const newScore = clampScore(team.score + 1)
+                const newScore = clampScore(scores[team.id] + 1)
                 onUpdateTeamScore(team.id, newScore)
               }}
               onScoreDecrease={() => {
-                const newScore = clampScore(team.score - 1)
+                const newScore = clampScore(scores[team.id] - 1)
                 onUpdateTeamScore(team.id, newScore)
               }}
               className="min-h-[118px]"
