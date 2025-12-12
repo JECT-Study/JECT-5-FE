@@ -100,7 +100,6 @@ export const createGameStore = (
         resetGame: () =>
           set((state) => {
             state.teams = DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 }))
-            state.gameStatus = "setup"
           }),
       })),
       {

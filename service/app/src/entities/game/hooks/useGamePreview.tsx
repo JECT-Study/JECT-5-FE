@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
 import { useCallback } from "react"
 
@@ -9,12 +8,14 @@ import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GameQuestion } from "@/entities/game/model/game"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 
+import { useGameEntryNavigation } from "./useGameEntryNavigation"
+
 interface UseGamePreviewParams {
   onError?: (error: unknown) => void
 }
 
 export const useGamePreview = ({ onError }: UseGamePreviewParams = {}) => {
-  const router = useRouter()
+  const { startGame } = useGameEntryNavigation()
 
   const openPreview = useCallback(
     async (game: GameListItem) => {
@@ -24,7 +25,7 @@ export const useGamePreview = ({ onError }: UseGamePreviewParams = {}) => {
         overlay.open(({ close, isOpen }) => {
           const handleStartGame = () => {
             close()
-            router.push(`/game/${game.gameId}`)
+            startGame(game.gameId)
           }
 
           return (
@@ -48,7 +49,7 @@ export const useGamePreview = ({ onError }: UseGamePreviewParams = {}) => {
         onError?.(error)
       }
     },
-    [onError, router],
+    [onError, startGame],
   )
 
   return { openPreview }

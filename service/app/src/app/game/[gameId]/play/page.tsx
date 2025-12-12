@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
+import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
 import { useTypedSearchParams } from "@/shared/lib/useTypedSearchParams"
 
 import { openExitConfirmDialog } from "../components/dialogs/exitConfirmDialog"
@@ -45,6 +46,8 @@ const ScoreboardGame = () => {
     setSearchParams({ q: (currentRound + 1).toString() })
   }
 
+  const { goBackToEntry } = useGameEntryNavigation()
+
   return (
     <>
       <GamePlayHeader
@@ -54,7 +57,7 @@ const ScoreboardGame = () => {
           openExitConfirmDialog({
             onConfirm: () => {
               resetGame()
-              router.push("/")
+              goBackToEntry()
             },
           })
         }

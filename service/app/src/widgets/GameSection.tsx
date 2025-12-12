@@ -9,10 +9,10 @@ import { ErrorBoundary } from "react-error-boundary"
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
+import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
 import { GamePreview } from "@/entities/game/ui/components/gamePreview"
 import * as GameCard from "@/shared/gameCard"
 import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
-
 interface GameSectionProps {
   className?: string
 }
@@ -114,6 +114,7 @@ const GameSectionCards = ({
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
   const router = useRouter()
+  const { startGame } = useGameEntryNavigation()
 
   const handleViewMoreGames = () => {
     router.push("/games")
@@ -125,7 +126,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     overlay.open(({ close, isOpen }) => {
       const handleStartGame = () => {
         close()
-        router.push(`/game/${game.gameId}`)
+        startGame(game.gameId)
       }
 
       return (
