@@ -1,0 +1,183 @@
+---
+title: textField.stories.tsx
+source: src/stories/textField.stories.tsx
+generated: 2025-12-08T12:37:12.104Z
+---
+# textField.stories.tsx
+
+```tsx
+// Source: src/stories/textField.stories.tsx
+import type { Meta, StoryObj } from "@storybook/react-vite"
+import { useState } from "react"
+import { expect, userEvent, within } from "storybook/test"
+
+import * as TextField from "../components/textField"
+
+const meta: Meta<typeof TextField.Root> = {
+  title: "Components/TextField",
+  component: TextField.Root,
+  parameters: {
+    layout: "centered",
+    docs: {
+      description: {
+        component: `
+- Root (\`<div>\`): 단순 컨테이너로, 폼 제출이 필요하면 외부 \`<form>\`을 사용해야 합니다
+  - name(required): 필수 prop으로, 하위 태그들의 attribute의 prefix로 사용됩니다
+  - state: default | error : 기본값은 default로, error로 변경 시 input과 errorText에 스타일이 적용됩니다
+
+- Label (\`<label>\`):
+  - html label 태그입니다
+  - for(htmlFor): [name]-input
+  - htmlFor 속성과 input 태그의 id가 자동으로 연결됩니다
+
+- Input (\`<input>\`):
+  - type: text
+  - aria-invalid: state가 'error'일 때 true로 설정됩니다
+  - aria-describedby: ErrorText 컴포넌트가 있을 경우, 해당 태그의 id([name]-input-error)와 연결됩니다
+
+- ErrorText (\`<p>\`):
+  - id: "[name]-input-error"
+  - role="alert" aria-live="polite" aria-atomic="true"
+  - 마운트 시 Field 컨텍스트에 id를 등록/해제하여 Input의 aria-describedby에 반영됩니다
+
+
+`,
+      },
+    },
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    state: {
+      control: { type: "select" },
+      options: ["default", "error"],
+    },
+  },
+}
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: {
+    name: "example",
+    state: "default",
+  },
+  render: (args) => {
+    const [val, setVal] = useState("")
+    return (
+      <TextField.Root {...args}>
+        <TextField.Label>이름</TextField.Label>
+        <TextField.InputWrapper>
+          <TextField.Input
+            placeholder="이름을 입력하세요"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+          />
+        </TextField.InputWrapper>
+      </TextField.Root>
+    )
+  },
+}
+
+export const Error: Story = {
+  args: {
+    name: "example-error",
+    state: "error",
+  },
+  render: (args) => {
+    const [val, setVal] = useState("")
+    return (
+      <TextField.Root {...args}>
+        <TextField.Label>이메일</TextField.Label>
+        <TextField.InputWrapper>
+          <TextField.Input
+            placeholder="이메일을 입력하세요"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+          />
+        </TextField.InputWrapper>
+        <TextField.ErrorText>올바른 이메일을 입력해주세요</TextField.ErrorText>
+      </TextField.Root>
+    )
+  },
+}
+
+export const NoLabel: Story = {
+  args: {
+    name: "no-label",
+    state: "default",
+  },
+  render: (args) => {
+    const [val, setVal] = useState("")
+    return (
+      <TextField.Root {...args}>
+        <TextField.InputWrapper>
+          <TextField.Input
+            placeholder="라벨 없이 입력"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+          />
+        </TextField.InputWrapper>
+      </TextField.Root>
+    )
+  },
+}
+
+export const WithValidation: Story = {
+  args: {
+    name: "email-validation",
+  },
+  render: (args) => {
+    const [val, setVal] = useState("")
+    const isError = val.length === 0 || !/^\S+@\S+\.\S+$/.test(val)
+
+    return (
+      <TextField.Root {...args} state={isError ? "error" : "default"}>
+        <TextField.Label>유효성 검증</TextField.Label>
+        <TextField.InputWrapper>
+          <TextField.Input
+            placeholder="이메일을 입력하세요"
+            value={val}
+            onChange={(e) => setVal(e.target.value)}
+          />
+        </TextField.InputWrapper>
+        {isError && (
+          <TextField.ErrorText>
+            올바른 이메일을 입력해주세요
+          </TextField.ErrorText>
+        )}
+      </TextField.Root>
+    )
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByLabelText("유효성 검증")
+
+    await step(
+      "유효성 검사에 실패하면 에러텍스트가 렌더링되고 aria-invalid / aria-describedby가 설정됨",
+      async () => {
+        const alertEl = canvas.getByRole("alert")
+        expect(alertEl).toBeInTheDocument()
+        expect(alertEl).toHaveAttribute("id", "email-validation-input-error")
+        expect(input).toHaveAttribute("aria-invalid", "true")
+        expect(input).toHaveAttribute(
+          "aria-describedby",
+          "email-validation-input-error",
+        )
+      },
+    )
+
+    await step(
+      "유효성 검사에 통과하면 에러텍스트가 제거되고 aria-invalid / aria-describedby가 제거됨",
+      async () => {
+        await userEvent.clear(input)
+        await userEvent.type(input, "test@example.com")
+        expect(canvas.queryByRole("alert")).toBeNull()
+        expect(input).not.toHaveAttribute("aria-invalid")
+        expect(input).not.toHaveAttribute("aria-describedby")
+      },
+    )
+  },
+}
+
+```
