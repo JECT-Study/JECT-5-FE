@@ -93,22 +93,53 @@ test.describe("게임 설정 - 팀 관리 E2E 테스트", () => {
     await gameSetupPage.expectAddButtonDisabled()
   })
 
-  test.skip("페이지 새로고침 후에는 초기 상태로 돌아가야 한다", async () => {
-    // 첫 번째 팀 이름을 "테스트팀"으로 변경하고 팀 하나 추가
-    await gameSetupPage.changeTeamName(0, "테스트팀")
-    await gameSetupPage.addTeam()
-
-    // 변경사항 확인
-    await gameSetupPage.expectTeamCount(3)
-
-    // 페이지 새로고침
+  test("팀 구성을 변경한 뒤 페이지를 새로고침하면 변경된 팀 구성이 유지되어야 한다", async () => {
+    // 팀 구성을 변경
+    await gameSetupPage.changeTeamName(0, "슈퍼팀")
+    // 페이지를 새로고침
     await gameSetupPage.reloadPage()
+    // 변경된 팀 구성이 유지되어야 한다
+    await gameSetupPage.expectTeamToBeVisible("슈퍼팀")
+  })
 
-    // 초기 상태로 돌아갔는지 확인
-    await gameSetupPage.expectTeamToBeVisible("A팀")
-    await gameSetupPage.expectTeamToBeVisible("B팀")
+  test("팀 구성을 변경한 뒤 나갔다가 다시 진입해도 변경된 팀 구성이 유지되어야 한다", async () => {
+    // 팀 구성을 변경
+    await gameSetupPage.changeTeamName(0, "슈퍼팀")
+    // 나가기
+    await gameSetupPage.clickHomeLogo()
+    // 다시 진입
+    await gameSetupPage.goto()
+    // 변경된 팀 구성이 유지되어야 한다
+    await gameSetupPage.expectTeamToBeVisible("슈퍼팀")
+  })
 
-    // 총 팀 수가 초기값(2개)으로 돌아갔는지 확인
-    await gameSetupPage.expectTeamCount(MIN_TEAMS)
+  test("홈 로고를 클릭하면 게임 시작 전 머물던 화면 (entry)로 이동해야 한다", async ({
+    page,
+  }) => {
+    const entry = "/games"
+    await page.evaluate((e) => {
+      window.sessionStorage.setItem("entry", e)
+    }, entry)
+    await gameSetupPage.clickHomeLogo()
+    await expect(page).toHaveURL(entry)
+  })
+
+  test("entry 정보가 없으면 홈 페이지로 이동해야 한다", async ({ page }) => {
+    await page.evaluate(() => {
+      window.sessionStorage.removeItem("entry")
+    })
+    await gameSetupPage.clickHomeLogo()
+    await expect(page).toHaveURL("/")
+  })
+
+  test("X 버튼을 클릭하면 게임 시작 전 머물던 화면 (entry)로 이동해야 한다", async ({
+    page,
+  }) => {
+    const entry = "/games"
+    await page.evaluate((e) => {
+      window.sessionStorage.setItem("entry", e)
+    }, entry)
+    await gameSetupPage.clickExitIcon()
+    await expect(page).toHaveURL(entry)
   })
 })
