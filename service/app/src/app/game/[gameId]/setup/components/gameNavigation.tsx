@@ -3,12 +3,9 @@ import { SecondaryPlainIconButton } from "@ject-5-fe/design/components/button"
 import { Navigation } from "@ject-5-fe/design/components/navigation"
 import { Cross } from "@ject-5-fe/design/icons"
 import Image from "next/image"
-import Link from "next/link"
 
 import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
 import { ThemeToggle } from "@/shared/themeToggleButton"
-
-import { openExitConfirmDialog } from "../../components/dialogs/exitConfirmDialog"
 
 export function GameNavigation() {
   const { goBackToEntry } = useGameEntryNavigation()
@@ -16,7 +13,7 @@ export function GameNavigation() {
   return (
     <Navigation
       leftContent={
-        <Link href="/">
+        <SecondaryPlainIconButton asChild onClick={goBackToEntry}>
           <Image
             src="/logo.svg"
             alt="홈 로고"
@@ -24,7 +21,7 @@ export function GameNavigation() {
             width={268}
             height={60}
           />
-        </Link>
+        </SecondaryPlainIconButton>
       }
       centerContent={
         <h1 className="typography-heading-lg-semibold whitespace-nowrap text-text-primary">
@@ -36,12 +33,9 @@ export function GameNavigation() {
           <ThemeToggle />
           <SecondaryPlainIconButton
             size="lg"
+            aria-label="나가기"
             onClick={() => {
-              openExitConfirmDialog({
-                onConfirm: () => {
-                  goBackToEntry()
-                },
-              })
+              goBackToEntry()
             }}
           >
             <Cross />
