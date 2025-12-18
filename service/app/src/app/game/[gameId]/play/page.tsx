@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useShallow } from "zustand/react/shallow"
 
+import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
 import { useTypedSearchParams } from "@/shared/lib/useTypedSearchParams"
 
 import { openExitConfirmDialog } from "../components/dialogs/exitConfirmDialog"
@@ -17,14 +18,16 @@ const ScoreboardGame = () => {
   const [{ q: currentRound }, setSearchParams] =
     useTypedSearchParams(gamePlaySchema)
 
-  const { gameDetail, teams, totalRounds, updateTeamScore } = useGameStore(
-    useShallow((state) => ({
-      gameDetail: state.gameDetail,
-      teams: state.teams,
-      totalRounds: state.totalRounds,
-      updateTeamScore: state.updateTeamScore,
-    })),
-  )
+  const { gameDetail, teams, totalRounds, updateTeamScore, scores } =
+    useGameStore(
+      useShallow((state) => ({
+        gameDetail: state.gameDetail,
+        teams: state.teams,
+        totalRounds: state.totalRounds,
+        updateTeamScore: state.updateTeamScore,
+        scores: state.scores,
+      })),
+    )
 
   const currentQuestion = gameDetail.questions.find(
     (q) => q.questionOrder === currentRound - 1,
@@ -42,6 +45,8 @@ const ScoreboardGame = () => {
     setSearchParams({ q: (currentRound + 1).toString() })
   }
 
+  const { goBackToEntry } = useGameEntryNavigation()
+
   return (
     <>
       <GamePlayHeader
@@ -49,12 +54,18 @@ const ScoreboardGame = () => {
         totalRounds={totalRounds}
         onExit={() =>
           openExitConfirmDialog({
-            onConfirm: () => router.push("/"),
+            onConfirm: () => {
+              goBackToEntry()
+            },
           })
         }
       />
       <div className="absolute left-[20px] top-[110px] z-10">
-        <ScoreboardSidebar teams={teams} onUpdateTeamScore={updateTeamScore} />
+        <ScoreboardSidebar
+          teams={teams}
+          scores={scores}
+          onUpdateTeamScore={updateTeamScore}
+        />
       </div>
       <div>
         <GamePlayContent

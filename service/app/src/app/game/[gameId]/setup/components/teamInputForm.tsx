@@ -22,16 +22,23 @@ import {
 } from "../../utils/teamValidation"
 
 export function TeamInputForm() {
-  const { teams, addTeam, removeTeam, updateTeamName, setGameStatus } =
-    useGameStore(
-      useShallow((state) => ({
-        teams: state.teams,
-        addTeam: state.addTeam,
-        removeTeam: state.removeTeam,
-        updateTeamName: state.updateTeamName,
-        setGameStatus: state.setGameStatus,
-      })),
-    )
+  const {
+    teams,
+    addTeam,
+    removeTeam,
+    updateTeamName,
+    setGameStatus,
+    resetScores,
+  } = useGameStore(
+    useShallow((state) => ({
+      teams: state.teams,
+      addTeam: state.addTeam,
+      removeTeam: state.removeTeam,
+      updateTeamName: state.updateTeamName,
+      setGameStatus: state.setGameStatus,
+      resetScores: state.resetScores,
+    })),
+  )
   const router = useRouter()
 
   const teamErrors = useMemo(() => getTeamErrors(teams), [teams])
@@ -40,6 +47,7 @@ export function TeamInputForm() {
   const handleStartGame = () => {
     if (!isGameReady) return
 
+    resetScores()
     setGameStatus("playing")
     router.push("./play")
   }
@@ -54,7 +62,6 @@ export function TeamInputForm() {
         addTeam({
           id: uuidv4(),
           name: generateTeamName(teams.length),
-          score: 0,
           members: [],
         })
       }}

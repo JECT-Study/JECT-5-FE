@@ -2,25 +2,29 @@
 
 import { useRouter } from "next/navigation"
 
+import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
+
 import { useGameStore } from "../store/useGameStore"
 import { GameResultContent } from "./components/gameResultContent"
 import { GameResultNavigation } from "./components/gameResultNavigation"
 
 export default function GameResultPage() {
   const router = useRouter()
-  const { teams, totalRounds } = useGameStore((state) => state)
+  const { teams, totalRounds, scores } = useGameStore((state) => state)
 
-  const handleGoHome = () => {
-    router.push("/")
+  const { goBackToEntry } = useGameEntryNavigation()
+
+  const handleExit = () => {
+    goBackToEntry()
   }
 
   return (
     <>
       <GameResultNavigation
-        onGoHome={handleGoHome}
+        onExit={handleExit}
         onPreviousQuestion={() => router.push(`./play?q=${totalRounds}`)}
       />
-      <GameResultContent teams={teams} />
+      <GameResultContent teams={teams} scores={scores} />
     </>
   )
 }

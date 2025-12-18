@@ -16,18 +16,16 @@ const [GameStoreProvider, useGameStoreContext] = buildContext<GameStoreApi>(
 export interface GameProviderProps {
   children: ReactNode
   initialGameDetail: GameDetailData
-  gameId?: string
 }
 
 export const GameProvider = ({
   children,
   initialGameDetail,
-  gameId,
 }: GameProviderProps) => {
   const storeRef = useRef<GameStoreApi | null>(null)
 
   if (storeRef.current === null) {
-    storeRef.current = createGameStore(initialGameDetail, gameId)
+    storeRef.current = createGameStore(initialGameDetail)
   }
 
   return <GameStoreProvider {...storeRef.current}>{children}</GameStoreProvider>

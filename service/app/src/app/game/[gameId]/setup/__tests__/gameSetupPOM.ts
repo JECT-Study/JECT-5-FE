@@ -7,6 +7,8 @@ export class GameSetupPOM {
   readonly sidebar: Locator
   readonly deleteButtons: Locator
   readonly startButton: Locator
+  readonly homeLogoImage: Locator
+  readonly exitIcon: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -17,6 +19,16 @@ export class GameSetupPOM {
     this.sidebar = page.getByRole("complementary")
     this.deleteButtons = page.getByRole("button", { name: "clear input" })
     this.startButton = page.getByRole("button", { name: "게임 시작" })
+    this.homeLogoImage = page.getByAltText("홈 로고")
+    this.exitIcon = page.getByRole("button", { name: "나가기" })
+  }
+
+  async clickHomeLogo(): Promise<void> {
+    await this.homeLogoImage.click()
+  }
+
+  async clickExitIcon(): Promise<void> {
+    await this.exitIcon.click()
   }
 
   async goto(gameId: string = "1") {

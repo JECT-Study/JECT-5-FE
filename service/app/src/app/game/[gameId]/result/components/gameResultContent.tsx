@@ -4,13 +4,17 @@ import type { Team } from "../../store/useGameStore"
 
 interface GameResultContentProps {
   teams: Team[]
+  scores: Record<string, number>
 }
 
-export const GameResultContent = ({ teams }: GameResultContentProps) => {
+export const GameResultContent = ({
+  teams,
+  scores,
+}: GameResultContentProps) => {
   // 점수 내림차순으로 정렬하여 상위 3팀 추출
   const topTeams = useMemo(() => {
-    return [...teams].sort((a, b) => b.score - a.score).slice(0, 3)
-  }, [teams])
+    return [...teams].sort((a, b) => scores[b.id] - scores[a.id]).slice(0, 3)
+  }, [teams, scores])
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-10">
@@ -32,7 +36,7 @@ export const GameResultContent = ({ teams }: GameResultContentProps) => {
               {team.name}
             </span>
             <span className="text-[57px] font-bold text-blue-400">
-              {team.score}점
+              {scores[team.id]}점
             </span>
           </div>
         ))}

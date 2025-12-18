@@ -8,19 +8,19 @@ import Image from "next/image"
 import { ThemeToggle } from "@/shared/themeToggleButton"
 
 interface GameResultNavigationProps {
-  onGoHome: () => void
+  onExit: () => void
   onPreviousQuestion: () => void
 }
 
 export const GameResultNavigation = ({
-  onGoHome,
+  onExit,
   onPreviousQuestion,
 }: GameResultNavigationProps) => {
   return (
     <div className="mx-auto flex h-[110px] w-full shrink-0 items-center justify-between">
       <div className="flex w-[420px] items-center gap-[10px] self-stretch px-[40px]">
         <button
-          onClick={onGoHome}
+          onClick={onExit}
           className="flex h-[60px] w-[268px] flex-col items-center justify-center gap-2.5 p-3.5"
         >
           <Image
@@ -51,7 +51,7 @@ export const GameResultNavigation = ({
 
           <SecondaryPlainIconButton
             size="lg"
-            onClick={onGoHome}
+            onClick={onExit}
             aria-label="게임 종료"
           >
             <Cross />

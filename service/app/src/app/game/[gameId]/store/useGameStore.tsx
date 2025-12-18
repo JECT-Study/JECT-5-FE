@@ -15,7 +15,6 @@ const DEFAULT_TEAMS = [
 export interface Team {
   id: string
   name: string
-  score: number
   members: string[]
 }
 
@@ -24,6 +23,7 @@ interface GameState {
   teams: Team[]
   gameStatus: "setup" | "playing" | "paused" | "finished"
   totalRounds: number
+  scores: Record<string, number>
 }
 
 interface GameActions {
@@ -36,8 +36,7 @@ interface GameActions {
   // 게임 진행
   setGameStatus: (status: GameState["gameStatus"]) => void
 
-  // 초기화
-  resetGame: () => void
+  resetScores: () => void
 }
 
 // 헬퍼 함수들
@@ -45,21 +44,20 @@ const findTeamIndex = (teams: Team[], teamId: string): number => {
   return teams.findIndex((team) => team.id === teamId)
 }
 
-export const createGameStore = (
-  initialGameDetail: GameDetailData,
-  gameId?: string,
-) =>
+export const createGameStore = (initialGameDetail: GameDetailData) =>
   create<GameState & GameActions>()(
     persist(
       immer((set) => ({
         gameDetail: initialGameDetail,
-        teams: DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 })),
+        teams: DEFAULT_TEAMS.map((team) => ({ ...team })),
+        scores: Object.fromEntries(DEFAULT_TEAMS.map((t) => [t.id, 0])),
         gameStatus: "setup",
         totalRounds: initialGameDetail.questionCount,
 
         addTeam: (team) =>
           set((state) => {
             state.teams.push({ ...team })
+            state.scores[team.id] = 0
           }),
 
         removeTeam: (teamId) =>
@@ -67,6 +65,7 @@ export const createGameStore = (
             const index = findTeamIndex(state.teams, teamId)
             if (index !== -1) {
               state.teams.splice(index, 1)
+              delete state.scores[teamId]
             }
           }),
 
@@ -80,35 +79,27 @@ export const createGameStore = (
 
         updateTeamScore: (teamId, score) =>
           set((state) => {
-            const index = findTeamIndex(state.teams, teamId)
-            if (index !== -1) {
-              state.teams[index].score = score
-            }
+            state.scores[teamId] = score
           }),
 
         addTeamScore: (teamId, points) =>
           set((state) => {
-            const index = findTeamIndex(state.teams, teamId)
-            if (index !== -1) {
-              state.teams[index].score += points
-            }
+            state.scores[teamId] = (state.scores[teamId] ?? 0) + points
           }),
 
         // 게임 진행 액션들
         setGameStatus: (gameStatus) => set({ gameStatus }),
 
-        resetGame: () =>
+        resetScores: () =>
           set((state) => {
-            state.teams = DEFAULT_TEAMS.map((team) => ({ ...team, score: 0 }))
-            state.gameStatus = "setup"
+            state.scores = Object.fromEntries(state.teams.map((t) => [t.id, 0]))
           }),
       })),
       {
-        name: `game-store-${gameId || "default"}`,
+        name: "game-store",
         storage: createJSONStorage(() => sessionStorage),
         partialize: (state) => ({
           teams: state.teams,
-          gameStatus: state.gameStatus,
         }),
       },
     ),

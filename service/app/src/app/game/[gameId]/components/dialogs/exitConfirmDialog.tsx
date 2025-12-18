@@ -2,6 +2,7 @@
 
 import {
   Dialog,
+  DialogBody,
   DialogButton,
   DialogClose,
   DialogContent,
@@ -20,7 +21,8 @@ export interface ExitConfirmOptions {
 }
 
 export function openExitConfirmDialog({
-  title = "게임을 종료하시겠습니까?",
+  title = "이 게임을 종료하시겠습니까?",
+  description = "설정한 내용은 저장되지 않습니다. 나가시겠습니까?",
   confirmText = "네",
   cancelText = "아니요",
   onConfirm,
@@ -30,6 +32,7 @@ export function openExitConfirmDialog({
     <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent>
         <DialogHeader>{title}</DialogHeader>
+        <DialogBody>{description}</DialogBody>
         <DialogFooter>
           <DialogClose asChild>
             <DialogButton.Secondary
