@@ -1,14 +1,11 @@
 "use client"
 
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { overlay } from "overlay-kit"
 
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
-import { getGameDetail } from "@/entities/game/api/getGameDetail"
-import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
+import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
-import { GamePreview } from "@/entities/game/ui/gamePreview"
 import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 interface GameSectionProps {
   className?: string
@@ -19,13 +16,9 @@ import { GameSectionSkeleton } from "./GameSection/GameSectionSkeleton"
 
 interface GameSectionCardsProps {
   onGameCardClick: (game: GameListItem) => void
-  onGameCardKeyDown: (event: React.KeyboardEvent, game: GameListItem) => void
 }
 
-const GameSectionCards = ({
-  onGameCardClick,
-  onGameCardKeyDown,
-}: GameSectionCardsProps) => {
+const GameSectionCards = ({ onGameCardClick }: GameSectionCardsProps) => {
   const { data: games } = useSuspenseQuery({
     queryKey: ["defaultGames"],
     queryFn: async () => await getDefaultGame({ cache: "force-cache" }),
@@ -44,7 +37,6 @@ const GameSectionCards = ({
           className="w-[178px]"
           title={game.gameTitle}
           onClick={() => onGameCardClick(game)}
-          onKeyDown={(e) => onGameCardKeyDown(e, game)}
           aria-label="게임 카드"
           tabIndex={0}
         >
@@ -68,43 +60,10 @@ const GameSectionCards = ({
 }
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
-  const { startGame } = useGameEntryNavigation()
+  const { openPreview } = useGamePreview()
 
-  const handleGameCardClick = async (game: GameListItem) => {
-    const { data: gameDetail } = await getGameDetail(game.gameId)
-
-    overlay.open(({ close, isOpen }) => {
-      const handleStartGame = () => {
-        close()
-        startGame(game.gameId)
-      }
-
-      return (
-        <GamePreview
-          gameTitle={gameDetail.gameTitle}
-          creatorName={gameDetail.nickname}
-          questionCount={gameDetail.questionCount}
-          questions={gameDetail.questions.map((question) => ({
-            id: question.questionId.toString(),
-            title: question.questionText,
-            imageUrl: question.imageUrl,
-          }))}
-          onClose={close}
-          onStartGame={handleStartGame}
-          isOpen={isOpen}
-        />
-      )
-    })
-  }
-
-  const handleGameCardKeyDown = (
-    event: React.KeyboardEvent,
-    game: GameListItem,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault()
-      handleGameCardClick(game)
-    }
+  const handleGameCardClick = (game: GameListItem) => {
+    void openPreview(game)
   }
 
   return (
@@ -115,10 +74,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       <div className="flex min-w-[952px] flex-col gap-28">
         <GameSectionHeader />
         <SSRSafeSuspense fallback={<GameSectionSkeleton />}>
-          <GameSectionCards
-            onGameCardClick={handleGameCardClick}
-            onGameCardKeyDown={handleGameCardKeyDown}
-          />
+          <GameSectionCards onGameCardClick={handleGameCardClick} />
         </SSRSafeSuspense>
       </div>
     </section>
