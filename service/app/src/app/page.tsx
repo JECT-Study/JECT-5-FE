@@ -1,4 +1,4 @@
-import { GameSection } from "@/app/_components/GameSection"
+import { GameSection } from "@/app/_components/GameSection/GameSection"
 import { HeroSection } from "@/app/_components/HeroSection"
 import { HomeNavigation } from "@/widgets/HomeNavigation"
 
