@@ -6,7 +6,7 @@ import { useCallback } from "react"
 import type { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GameQuestion } from "@/entities/game/model/game"
-import { GamePreview } from "@/entities/game/ui/components/gamePreview"
+import { GamePreview } from "@/entities/game/ui/gamePreview"
 
 import { useGameEntryNavigation } from "./useGameEntryNavigation"
 
