@@ -5,7 +5,7 @@ import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
-import * as GameCard from "@/entities/game/ui/gameCard"
+import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 import { GameCardOptions } from "@/entities/game/ui/gameCardOptions"
 import { GameLibrarySkeleton } from "@/entities/game/ui/gameLibrarySkeleton"
 

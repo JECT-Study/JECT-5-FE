@@ -8,22 +8,15 @@ import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
-import * as GameCard from "@/entities/game/ui/gameCard"
+import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 import { GamePreview } from "@/entities/game/ui/gamePreview"
 import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 interface GameSectionProps {
   className?: string
 }
-import { GameSectionHeader } from "./GameSection/GameSectionHeader"
+import { GameCardSkeleton } from "@/entities/game/ui/GameCard/GameCardSkeleton"
 
-const GameCardSkeleton = () => {
-  return (
-    <div className="flex w-[178px] flex-col items-start gap-[14px]">
-      <div className="size-[178px] animate-pulse rounded-[10px] bg-gray-200" />
-      <div className="h-[46px] w-[178px] animate-pulse rounded bg-gray-200" />
-    </div>
-  )
-}
+import { GameSectionHeader } from "./GameSection/GameSectionHeader"
 
 const GameCardSectionSkeleton = () => {
   return (
