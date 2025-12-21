@@ -2,7 +2,6 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { overlay } from "overlay-kit"
-import { ErrorBoundary } from "react-error-boundary"
 
 import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
@@ -24,15 +23,6 @@ const GameCardSectionSkeleton = () => {
       {Array.from({ length: 4 }).map((_, index) => (
         <GameCardSkeleton key={index} />
       ))}
-    </div>
-  )
-}
-
-const GameSectionCardsError = ({ ...props }) => {
-  console.log(props)
-  return (
-    <div className="flex size-full items-center justify-center">
-      <p className="text-red-500">게임을 불러오는 중 오류가 발생했습니다.</p>
     </div>
   )
 }
@@ -134,14 +124,12 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     >
       <div className="flex min-w-[952px] flex-col gap-28">
         <GameSectionHeader />
-        <ErrorBoundary FallbackComponent={GameSectionCardsError}>
-          <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
-            <GameSectionCards
-              onGameCardClick={handleGameCardClick}
-              onGameCardKeyDown={handleGameCardKeyDown}
-            />
-          </SSRSafeSuspense>
-        </ErrorBoundary>
+        <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
+          <GameSectionCards
+            onGameCardClick={handleGameCardClick}
+            onGameCardKeyDown={handleGameCardKeyDown}
+          />
+        </SSRSafeSuspense>
       </div>
     </section>
   )
