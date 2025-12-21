@@ -1,6 +1,7 @@
-import { GameSection } from "@/widgets/GameSection"
 import { HeroSection } from "@/widgets/HeroSection"
 import { HomeNavigation } from "@/widgets/HomeNavigation"
+
+import { GameSection } from "./_components/GameSection"
 
 export default function Home() {
   return (

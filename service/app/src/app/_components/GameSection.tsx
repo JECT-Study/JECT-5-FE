@@ -1,8 +1,6 @@
 "use client"
 
-import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
 import { overlay } from "overlay-kit"
 import { ErrorBoundary } from "react-error-boundary"
 
@@ -16,23 +14,7 @@ import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 interface GameSectionProps {
   className?: string
 }
-
-interface GameSectionHeaderProps {
-  onViewMoreGames: () => void
-}
-
-const GameSectionHeader = ({ onViewMoreGames }: GameSectionHeaderProps) => {
-  return (
-    <div className="flex w-full items-center justify-between">
-      <h2 className="typography-heading-lg-semibold text-text-interactive-secondary">
-        어떤 게임으로 시작해 볼까요?
-      </h2>
-      <PrimaryBoxButton size="md" _style="outline" onClick={onViewMoreGames}>
-        게임 더 보기
-      </PrimaryBoxButton>
-    </div>
-  )
-}
+import { GameSectionHeader } from "./GameSection/GameSectionHeader"
 
 const GameCardSkeleton = () => {
   return (
@@ -113,12 +95,7 @@ const GameSectionCards = ({
 }
 
 export const GameSection = ({ className = "" }: GameSectionProps) => {
-  const router = useRouter()
   const { startGame } = useGameEntryNavigation()
-
-  const handleViewMoreGames = () => {
-    router.push("/games")
-  }
 
   const handleGameCardClick = async (game: GameListItem) => {
     const { data: gameDetail } = await getGameDetail(game.gameId)
@@ -163,7 +140,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
       aria-label="게임 섹션"
     >
       <div className="flex min-w-[952px] flex-col gap-28">
-        <GameSectionHeader onViewMoreGames={handleViewMoreGames} />
+        <GameSectionHeader />
         <ErrorBoundary FallbackComponent={GameSectionCardsError}>
           <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
             <GameSectionCards
