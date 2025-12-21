@@ -8,8 +8,8 @@ import { GameListItem } from "@/entities/game"
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { useGameEntryNavigation } from "@/entities/game/hooks/useGameEntryNavigation"
+import * as GameCard from "@/entities/game/ui/gameCard"
 import { GamePreview } from "@/entities/game/ui/gamePreview"
-import * as GameCard from "@/shared/gameCard"
 import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 interface GameSectionProps {
   className?: string
