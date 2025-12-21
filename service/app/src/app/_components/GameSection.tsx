@@ -13,19 +13,9 @@ import SSRSafeSuspense from "@/shared/SSRSafeSuspense"
 interface GameSectionProps {
   className?: string
 }
-import { GameCardSkeleton } from "@/entities/game/ui/GameCard/GameCardSkeleton"
 
 import { GameSectionHeader } from "./GameSection/GameSectionHeader"
-
-const GameCardSectionSkeleton = () => {
-  return (
-    <div className="flex items-center justify-between">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <GameCardSkeleton key={index} />
-      ))}
-    </div>
-  )
-}
+import { GameSectionSkeleton } from "./GameSection/GameSectionSkeleton"
 
 interface GameSectionCardsProps {
   onGameCardClick: (game: GameListItem) => void
@@ -124,7 +114,7 @@ export const GameSection = ({ className = "" }: GameSectionProps) => {
     >
       <div className="flex min-w-[952px] flex-col gap-28">
         <GameSectionHeader />
-        <SSRSafeSuspense fallback={<GameCardSectionSkeleton />}>
+        <SSRSafeSuspense fallback={<GameSectionSkeleton />}>
           <GameSectionCards
             onGameCardClick={handleGameCardClick}
             onGameCardKeyDown={handleGameCardKeyDown}
