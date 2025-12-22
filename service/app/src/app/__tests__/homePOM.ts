@@ -58,7 +58,7 @@ export class HomePOM {
 
     // 게임 섹션
     this.gameSectionTitle = page.getByRole("heading", { level: 2 })
-    this.viewMoreGamesButton = page.getByRole("button", {
+    this.viewMoreGamesButton = page.getByRole("link", {
       name: "게임 더 보기",
     })
     this.gameSectionCard = page.getByTestId("gamecard-root")
