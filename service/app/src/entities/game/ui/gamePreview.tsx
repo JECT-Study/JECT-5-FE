@@ -12,7 +12,7 @@ import {
 } from "@ject-5-fe/design/components/dialog"
 import { Cross, Play } from "@ject-5-fe/design/icons"
 
-import * as GameCard from "@/shared/gameCard"
+import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 
 interface GamePreviewProps {
   className?: string

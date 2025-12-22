@@ -7,9 +7,9 @@ import Link from "next/link"
 import { useIntersectionObserver } from "react-simplikit"
 
 import type { GameListItem } from "@/entities/game/model"
-import * as GameCard from "@/shared/gameCard"
+import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 
-import { useActions } from "../../../../app/games/hooks/useGameCardActions"
+import { useActions } from "../../../app/games/hooks/useGameCardActions"
 import { GameLibrarySkeleton } from "./gameLibrarySkeleton"
 
 interface GameLibraryGridProps {
