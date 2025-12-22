@@ -135,6 +135,12 @@
               "value": "#51A2FF"
             },
             {
+              "name": "blue/450",
+              "type": "color",
+              "isAlias": false,
+              "value": "#3F90FF"
+            },
+            {
               "name": "blue/500",
               "type": "color",
               "isAlias": false,
@@ -1092,7 +1098,7 @@
               "isAlias": true,
               "value": {
                 "collection": "primitive",
-                "name": "blue/500"
+                "name": "blue/450"
               }
             },
             {
