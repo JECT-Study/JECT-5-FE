@@ -4,14 +4,8 @@ import { type ApiError, type ApiSuccess, errorSchema } from "./types/response"
 
 const isDev = process.env.NODE_ENV === "development"
 
-// const base = createFetchClient({
-//   baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
-//   timeout: 10000,
-//   credentials: "include",
-// })
-
 const _instance = ky.create({
-  prefixUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  prefixUrl: process.env.API_URL || "http://localhost:3000",
   credentials: "include",
   timeout: 10000,
   headers: {
@@ -84,54 +78,3 @@ export const fetchClient = {
 export const isError = (e: unknown): e is HTTPError<ApiError> => {
   return isHTTPError(e)
 }
-
-// if (process.env.NODE_ENV === "development") {
-//   base.addRequestInterceptor(async (url, options) => {
-//     console.log("🚀 Request:", url, options)
-//     return { url, options }
-//   })
-//   base.addResponseInterceptor(async (response) => {
-//     console.log("📥 Response:", response.status, response.url)
-//     return response
-//   })
-// }
-
-// base.addResponseInterceptor(
-//   async (response: Response) => {
-//     if (response.status === 401 && typeof window !== "undefined") {
-//       localStorage.removeItem("auth_user")
-//       document.cookie =
-//         "JSESSIONID=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
-//       window.dispatchEvent(new CustomEvent("auth:session-expired"))
-//     }
-
-//     let body: unknown
-//     try {
-//       body = await response.clone().json()
-//     } catch {
-//       body = undefined
-//     }
-
-//     const successResponse = successSchema.safeParse(body)
-//     if (successResponse.success) {
-//       return response
-//     } //성공 데이터
-
-//     const errorResponse = errorSchema.safeParse(body)
-
-//     if (errorResponse.success) {
-//       throw new FetchError(response.status, errorResponse.data.error)
-//     } //에러 데이터
-//     else {
-//       throw new FetchError(response.status, {
-//         code: "unknown error",
-//         message: response.statusText || "unknown error occured",
-//         data: null,
-//       }) //예상하지 못한 에러
-//     }
-//   },
-//   async (error) => {
-//     console.error("Response interceptor error:", error)
-//     throw error
-//   },
-// )
