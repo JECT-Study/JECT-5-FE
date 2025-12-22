@@ -64,7 +64,7 @@ jobs:
       - name: Build Next.js app for E2E tests
         env:
           NEXT_PUBLIC_TEST: "1"
-          API_URL: ${{ secrets.API_URL }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
         run: yarn workspace @ject-5-fe/app build
 
       - name: Cache E2E test results
