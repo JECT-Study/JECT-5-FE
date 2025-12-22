@@ -5,7 +5,7 @@ import { type ApiError, type ApiSuccess, errorSchema } from "./types/response"
 const isDev = process.env.NODE_ENV === "development"
 
 const _instance = ky.create({
-  prefixUrl: process.env.API_URL || "http://localhost:3000",
+  prefixUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   credentials: "include",
   timeout: 10000,
   headers: {
