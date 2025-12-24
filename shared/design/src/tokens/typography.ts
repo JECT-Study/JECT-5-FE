@@ -42,4 +42,6 @@ export const fontWeightTokens = {
   "--font-weight-medium": "500",
   "--font-weight-semibold": "600",
   "--font-weight-bold": "700",
+  "--font-weight-extrabold": "800",
+  "--font-weight-black": "900",
 }
