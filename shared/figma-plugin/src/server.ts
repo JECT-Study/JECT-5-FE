@@ -1,15 +1,13 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
+import {
+  McpServer,
+  ResourceTemplate,
+} from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
-import { v4 as uuidv4 } from "uuid"
-import WebSocket from "ws"
+import fs from "fs"
+import path from "path"
 import { z } from "zod"
 
-// Define TypeScript interfaces for Figma responses
-interface FigmaResponse {
-  id: string
-  result?: any
-  error?: string
-}
+import { createFigmaClient } from "./figmaClient"
 
 // Custom logging functions that write to stderr instead of stdout to avoid being captured
 const logger = {
@@ -20,22 +18,100 @@ const logger = {
   log: (message: string) => process.stderr.write(`[LOG] ${message}\n`),
 }
 
-// WebSocket connection and request tracking
-let ws: WebSocket | null = null
-const pendingRequests = new Map<
-  string,
-  {
-    resolve: (value: any) => void
-    reject: (reason: any) => void
-    timeout: ReturnType<typeof setTimeout>
+const BASE_DIR = path.join(__dirname, "../../", "rules")
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length
+  const n = b.length
+
+  if (m === 0) return n
+  if (n === 0) return m
+
+  const dp: number[][] = Array.from({ length: m + 1 }, () =>
+    Array(n + 1).fill(0),
+  )
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i
+  for (let j = 0; j <= n; j++) dp[0][j] = j
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1, // 삭제
+        dp[i][j - 1] + 1, // 삽입
+        dp[i - 1][j - 1] + cost, // 교체
+      )
+    }
   }
->()
+
+  return dp[m][n]
+}
+
+function getSimilarityScore(target: string, candidate: string): number {
+  if (target === candidate) return 100
+
+  // prefix / suffix / includes 가 우선
+  if (candidate.startsWith(target) || target.startsWith(candidate)) return 95
+  if (candidate.includes(target) || target.includes(candidate)) return 85
+
+  const distance = levenshtein(target, candidate)
+  const maxLen = Math.max(target.length, candidate.length)
+
+  // 거리 기반 스코어 (대충 0~80 사이)
+  const normalized = 1 - distance / maxLen // 0 ~ 1
+  const score = Math.floor(normalized * 80)
+
+  return score > 0 ? score : 0
+}
+
+const STORIES_EXT = ".stories.mdx" as const
+
+/**
+ * BASE_DIR 안에서 componentName 과 유사한 .stories.mdx 파일들을
+ * 유사도 높은 순으로 반환
+ */
+function findSimilarStoriesFiles(baseDir: string, componentName: string) {
+  const compName = componentName.toLowerCase()
+
+  const files = fs
+    .readdirSync(baseDir)
+    .filter((file) => file.toLowerCase().endsWith(STORIES_EXT))
+
+  const scored = files
+    .map((file) => {
+      const baseName = file
+        .toLowerCase()
+        .replace(new RegExp(`${STORIES_EXT.replace(".", "\\.")}$`), "")
+
+      return {
+        file,
+        baseName,
+        score: getSimilarityScore(compName, baseName),
+      }
+    })
+    .filter(({ score }) => score > 0) // 완전 노이즈는 버림
+    .sort((a, b) => b.score - a.score)
+
+  return scored
+}
 
 // Create MCP server
-const server = new McpServer({
-  name: "@jongh/figma-plugin",
-  version: "1.0.0",
-})
+const server = new McpServer(
+  {
+    name: "@jongh/figma-plugin",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {
+      logging: logger,
+      resources: {
+        subscribe: true,
+        listChanged: true,
+      },
+    },
+  },
+)
 // Add command line argument parsing
 const args = process.argv.slice(2)
 const serverArg = args.find((arg) => arg.startsWith("--server="))
@@ -43,40 +119,49 @@ const serverUrl = serverArg ? serverArg.split("=")[1] : "localhost"
 const WS_URL =
   serverUrl === "localhost" ? `ws://${serverUrl}` : `wss://${serverUrl}`
 
-// Document Info Tool
-server.tool(
-  "get_document_info",
-  "Get detailed information about the current Figma document",
-  {},
-  async () => {
-    try {
-      const result = await sendCommandToFigma("get_document_info")
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result),
-          },
-        ],
-      }
-    } catch (error) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error getting document info: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-      }
-    }
-  },
-)
+const { connectToFigma, sendCommandToFigma } = createFigmaClient({
+  logger,
+  serverUrl,
+  wsUrlBase: WS_URL,
+})
 
-// Selection Tool
-server.tool(
+// Document Info Tool
+// server.registerTool(
+//   "get_document_info",
+//   {
+//     description: "Get detailed information about the current Figma document",
+//     inputSchema: {},
+//   },
+//   async () => {
+//     try {
+//       const result = await sendCommandToFigma("get_document_info")
+//       return {
+//         content: [
+//           {
+//             type: "text",
+//             text: JSON.stringify(result),
+//           },
+//         ],
+//       }
+//     } catch (error) {
+//       return {
+//         content: [
+//           {
+//             type: "text",
+//             text: `Error getting document info: ${error instanceof Error ? error.message : String(error)}`,
+//           },
+//         ],
+//       }
+//     }
+//   },
+// )
+
+server.registerTool(
   "get_selection",
-  "Get information about the current selection in Figma",
-  {},
+  {
+    description: "Get information about the current selection in Figma",
+    inputSchema: {},
+  },
   async () => {
     try {
       const result = await sendCommandToFigma("get_selection")
@@ -84,7 +169,7 @@ server.tool(
         content: [
           {
             type: "text",
-            text: JSON.stringify(result),
+            text: "test",
           },
         ],
       }
@@ -102,63 +187,54 @@ server.tool(
 )
 
 // Node Info Tool
-server.tool(
-  "get_node_info",
-  "Get detailed information about a specific node in Figma",
-  {
-    nodeId: z.string().describe("The ID of the node to get information about"),
-  },
-  async ({ nodeId }) => {
-    try {
-      const result = await sendCommandToFigma("get_node_info", { nodeId })
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result),
-          },
-        ],
-      }
-    } catch (error) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error getting node info: ${error instanceof Error ? error.message : String(error)}`,
-          },
-        ],
-      }
-    }
-  },
-)
+// server.registerTool(
+//   "get_node_info",
+//   {
+//     description: "Get detailed information about a specific node in Figma",
+//     inputSchema: {
+//       nodeId: z
+//         .string()
+//         .describe("The ID of the node to get information about"),
+//     },
+//   },
+//   async ({ nodeId }) => {
+//     try {
+//       const result = await sendCommandToFigma("get_node_info", { nodeId })
+//       return {
+//         content: [
+//           {
+//             type: "text",
+//             text: JSON.stringify(result),
+//           },
+//         ],
+//       }
+//     } catch (error) {
+//       return {
+//         content: [
+//           {
+//             type: "text",
+//             text: `Error getting node info: ${error instanceof Error ? error.message : String(error)}`,
+//           },
+//         ],
+//       }
+//     }
+//   },
+// )
 
-server.prompt(
-  "connection_troubleshooting",
-  "Help users troubleshoot connection issues",
+server.registerPrompt(
+  "design system components",
+  {
+    description: "help analyze design system common components",
+  },
   () => {
     return {
       messages: [
         {
-          role: "assistant",
+          role: "assistant" as const,
           content: {
             type: "text",
-            text: `When users report connection issues, ask them to check:
-
-1. Figma Plugin Connection:
-  - Did you click the "Connect" button in the Figma plugin?
-  - Is the Figma plugin running and showing a connected status?
-  - Try refreshing the plugin or restarting it if needed
-
-2. MCP Connection in Cursor:
-  - Go to Cursor Settings/Preferences
-  - Check if the MCP server connection is properly configured(green light)
-  - Verify the MCP server is running and connected
-  - Look for any connection error messages in the settings
-
-If both are properly connected and issues persist, try:
-- Restarting both the Figma plugin and Cursor
-- Checking if the WebSocket connection is blocked by firewall
-- Verifying the correct server URL and port configuration`,
+            text: `공통 컴포넌트의 구현 정보를 파악하여 코드 제작에 활용해야 합니다. 코드 사용 예시, 설명 등을 정확하게 파악하여 실제 코드 제작에 정확하게 활용할 수 있어야 합니다.  
+            특히 Figma 인터페이스와 코드 간의 구현 차이를 정확하게 파악하고 코드에 맞게 활용해야 합니다.`,
           },
         },
       ],
@@ -168,9 +244,87 @@ If both are properly connected and issues persist, try:
   },
 )
 
-server.prompt(
+server.registerTool(
+  "get_rule_of_components",
+  {
+    title: "Rule of design system component",
+    description: [
+      "디자인 시스템에서 사용하는 공통 컴포넌트의 구현 규칙(구조, props, 스타일 등)을 조회하는 MCP 도구입니다.",
+      "Figma 디자인에서 사용된 공통 컴포넌트의 이름을 componentName 인자로 넘겨 호출하면,",
+      "해당 컴포넌트의 구현 정보를 반환하여 ‘MCP를 통해 사용된 공통 컴포넌트의 구현 정보를 파악한 뒤’ 페이지 코드를 작성할 때 사용할 수 있습니다.",
+      "예: Figma에서 Button 컴포넌트가 쓰였다면 componentName에 'button'을 넣어 이 도구를 호출해 구현 규칙을 조회하세요.",
+    ].join(" "),
+    inputSchema: z.object({
+      componentName: z
+        .string()
+        .describe(
+          "Figma/디자인 시스템에서 사용된 공통 컴포넌트 이름 (예: 'button', 'input', 'modal')",
+        ),
+    }),
+  },
+  async ({ componentName }) => {
+    const similarFiles = findSimilarStoriesFiles(BASE_DIR, componentName)
+
+    const compName = componentName.toLocaleLowerCase()
+    const texts = similarFiles.map(({ file }) =>
+      fs.readFileSync(path.join(BASE_DIR, file), "utf-8"),
+    )
+    return {
+      content: [
+        {
+          type: "text",
+          text: `${texts.join("")}`,
+        },
+      ],
+    }
+  },
+)
+
+server.registerResource(
+  "file", // 리소스 ID
+  new ResourceTemplate("file://{path}/", {
+    list: async () => {
+      const paths = fs.readdirSync(BASE_DIR)
+      return {
+        resources: paths.map((path) => ({
+          uri: `file://${path}`,
+          name: path,
+          title: path,
+          description: "local file from design-rules",
+          mimeType: "text/plain", // 필요시 확장자 보고 바꾸셔도 됩니다
+          _meta: {
+            filePath: path,
+          },
+        })),
+      }
+    },
+  }),
+  {
+    title: "design rule",
+    description: "important rules and guidelines for resolving design data",
+  },
+  // resources/read 핸들러
+  async (uri, props) => {
+    const text = fs.readFileSync(
+      path.join(BASE_DIR, props.path as string),
+      "utf-8",
+    )
+    return {
+      contents: [
+        {
+          uri: uri.href,
+          mimeType: "text/plain",
+          text: text,
+        },
+      ],
+    }
+  },
+)
+server.registerPrompt(
   "data_analysis_strategy",
-  "Best practices for analyzing Figma design data",
+  {
+    description: "Best practices for analyzing Figma design data",
+  },
   () => {
     return {
       messages: [
@@ -196,6 +350,8 @@ server.prompt(
             - Identify responsive design patterns
             - Note alignment and positioning strategies
 
+            
+
 
             `,
           },
@@ -205,128 +361,6 @@ server.prompt(
     }
   },
 )
-
-// Define command types and parameters
-type FigmaCommand = "get_document_info" | "get_selection" | "get_node_info"
-
-// Update the connectToFigma function
-function connectToFigma(port = 3055) {
-  // If already connected, do nothing
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    logger.info("Already connected to Figma")
-    return
-  }
-
-  const wsUrl = serverUrl === "localhost" ? `${WS_URL}:${port}` : WS_URL
-  logger.info(`Connecting to Figma socket server at ${wsUrl}...`)
-  ws = new WebSocket(wsUrl)
-
-  ws.on("open", () => {
-    logger.info("Connected to Figma socket server")
-  })
-
-  ws.on("message", (data: any) => {
-    try {
-      const json = JSON.parse(data) as { message: FigmaResponse }
-      const myResponse = json.message
-      logger.debug(`Received message: ${JSON.stringify(myResponse)}`)
-      logger.log("myResponse" + JSON.stringify(myResponse))
-
-      // Handle response to a request
-      if (
-        myResponse.id &&
-        pendingRequests.has(myResponse.id) &&
-        myResponse.result
-      ) {
-        const request = pendingRequests.get(myResponse.id)!
-        clearTimeout(request.timeout)
-
-        if (myResponse.error) {
-          logger.error(`Error from Figma: ${myResponse.error}`)
-          request.reject(new Error(myResponse.error))
-        } else {
-          if (myResponse.result) {
-            request.resolve(myResponse.result)
-          }
-        }
-
-        pendingRequests.delete(myResponse.id)
-      } else {
-        // Handle broadcast messages or events
-        logger.info(`Received broadcast message: ${JSON.stringify(myResponse)}`)
-      }
-    } catch (error) {
-      logger.error(
-        `Error parsing message: ${error instanceof Error ? error.message : String(error)}`,
-      )
-    }
-  })
-
-  ws.on("error", (error) => {
-    logger.error(`Socket error: ${error}`)
-  })
-
-  ws.on("close", () => {
-    logger.info("Disconnected from Figma socket server")
-    ws = null
-
-    // Reject all pending requests
-    for (const [id, request] of pendingRequests.entries()) {
-      clearTimeout(request.timeout)
-      request.reject(new Error("Connection closed"))
-      pendingRequests.delete(id)
-    }
-
-    // Attempt to reconnect
-    logger.info("Attempting to reconnect in 2 seconds...")
-    setTimeout(() => connectToFigma(port), 2000)
-  })
-}
-
-// Function to send commands to Figma
-function sendCommandToFigma(
-  command: FigmaCommand,
-  params: unknown = {},
-): Promise<unknown> {
-  return new Promise((resolve, reject) => {
-    // If not connected, try to connect first
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      connectToFigma()
-      reject(new Error("Not connected to Figma. Attempting to connect..."))
-      return
-    }
-
-    const id = uuidv4()
-    const request = {
-      id,
-      type: "message",
-      message: {
-        id,
-        command,
-        params: {
-          ...(params as any),
-        },
-      },
-    }
-
-    // Set timeout for request
-    const timeout = setTimeout(() => {
-      if (pendingRequests.has(id)) {
-        pendingRequests.delete(id)
-        logger.error(`Request ${id} to Figma timed out after 30 seconds`)
-        reject(new Error("Request to Figma timed out"))
-      }
-    }, 30000) // 30 second timeout
-
-    // Store the promise callbacks to resolve/reject later
-    pendingRequests.set(id, { resolve, reject, timeout })
-
-    // Send the request
-    logger.info(`Sending command to Figma: ${command}`)
-    logger.debug(`Request details: ${JSON.stringify(request)}`)
-    ws.send(JSON.stringify(request))
-  })
-}
 
 // Start the server
 async function main() {
