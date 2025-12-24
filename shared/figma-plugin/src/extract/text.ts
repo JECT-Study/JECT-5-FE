@@ -1,10 +1,10 @@
 import { isUndefined } from "es-toolkit"
 
 import type {
-  TextNodeStyle,
+  ExtractedTextNodeStyle,
+  FigmaTextTypographyDefaults,
+  FigmaTextTypographyMixedFlags,
   TextStyledSegment,
-  TextTypographyDefaults,
-  TextTypographyMixedFlags,
 } from "../types/figmaNode"
 import { extractNodeStyle } from "./style"
 
@@ -33,23 +33,24 @@ const isFigmaMixed = (value: unknown): boolean =>
 /**
  * typography 구조에 실제 값이 존재하는지 판단합니다.
  */
-const hasTypographyValue = (defaults: TextTypographyDefaults): boolean =>
+const hasTypographyValue = (defaults: FigmaTextTypographyDefaults): boolean =>
   Object.values(defaults).some((value) => value !== undefined)
 
 /**
- * TextNode의 기본 Typography 값을 모아 TextTypographyDefaults 형태로 생성합니다.
+ * TextNode의 기본 Typography 값을 모아 FigmaTextTypographyDefaults 형태로 생성합니다.
  */
 const buildTypographyDefaults = (
   node: TextNode,
-): TextTypographyDefaults | undefined => {
-  const defaults: TextTypographyDefaults = {}
-  const mixed: TextTypographyMixedFlags = {}
+): FigmaTextTypographyDefaults | undefined => {
+  const defaults: FigmaTextTypographyDefaults = {}
+  const mixed: FigmaTextTypographyMixedFlags = {}
 
   const registerTypography = <
-    K extends keyof TextTypographyMixedFlags & keyof TextTypographyDefaults,
+    K extends keyof FigmaTextTypographyMixedFlags &
+      keyof FigmaTextTypographyDefaults,
   >(
     key: K,
-    value: TextTypographyDefaults[K],
+    value: FigmaTextTypographyDefaults[K],
   ) => {
     if (isFigmaMixed(value)) {
       mixed[key] = true
@@ -80,13 +81,15 @@ const buildTypographyDefaults = (
 }
 
 /**
- * TextNode 전용 스타일 정보를 NodeStyle 기반으로 확장해 typography 기본값을 포함시킵니다.
+ * TextNode 전용 스타일 정보를 ExtractedNodeStyle 기반으로 확장해 typography 기본값을 포함시킵니다.
  */
-export const extractTextNodeStyle = (node: TextNode): TextNodeStyle => {
+export const extractTextNodeStyle = (
+  node: TextNode,
+): ExtractedTextNodeStyle => {
   const baseStyle = extractNodeStyle(node)
   const typography = buildTypographyDefaults(node)
 
-  const textStyle: TextNodeStyle = {
+  const textStyle: ExtractedTextNodeStyle = {
     ...baseStyle,
   }
 

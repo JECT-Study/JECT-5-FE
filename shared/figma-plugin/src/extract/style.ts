@@ -1,18 +1,18 @@
 import { isUndefined } from "es-toolkit"
 
 import type {
-  NodeAutoLayoutPadding,
-  NodeAutoLayoutStyle,
-  NodeCornerRadii,
-  NodeDimensions,
-  NodeLayoutSizing,
-  NodeStyle,
+  ExtractedNodeStyle,
+  FigmaAutoLayoutPadding,
+  FigmaAutoLayoutStyle,
+  FigmaCornerRadii,
+  FigmaLayoutSizing,
+  FigmaNodeDimensions,
 } from "../types/figmaNode"
 
 /**
- * SceneNode의 위치·크기 기본 치수를 NodeDimensions 형태로 추출합니다.
+ * SceneNode의 위치·크기 기본 치수를 FigmaNodeDimensions 형태로 추출합니다.
  */
-const DIMENSION_KEYS: ReadonlyArray<keyof NodeDimensions> = [
+const DIMENSION_KEYS: ReadonlyArray<keyof FigmaNodeDimensions> = [
   "x",
   "y",
   "width",
@@ -20,9 +20,9 @@ const DIMENSION_KEYS: ReadonlyArray<keyof NodeDimensions> = [
 ]
 
 /**
- * LayoutMixin이 제공하는 배치 관련 속성을 NodeLayoutSizing으로 수집합니다.
+ * LayoutMixin이 제공하는 배치 관련 속성을 FigmaLayoutSizing으로 수집합니다.
  */
-const LAYOUT_SIZING_KEYS: ReadonlyArray<keyof NodeLayoutSizing> = [
+const LAYOUT_SIZING_KEYS: ReadonlyArray<keyof FigmaLayoutSizing> = [
   "layoutAlign",
   "layoutGrow",
   "layoutSizingHorizontal",
@@ -92,12 +92,12 @@ const pick = <T extends object, K extends keyof T>(
 const isFigmaMixed = (value: unknown): boolean =>
   typeof figma !== "undefined" && value === figma.mixed
 
-const collectCornerRadii = (node: SceneNode): NodeCornerRadii | undefined => {
+const collectCornerRadii = (node: SceneNode): FigmaCornerRadii | undefined => {
   if (!hasRectangleCornerMixin(node)) {
     return undefined
   }
 
-  const radii: NodeCornerRadii = {}
+  const radii: FigmaCornerRadii = {}
 
   if (!isUndefined(node.topLeftRadius)) {
     radii.topLeft = node.topLeftRadius
@@ -118,7 +118,7 @@ const collectCornerRadii = (node: SceneNode): NodeCornerRadii | undefined => {
   return Object.keys(radii).length > 0 ? radii : undefined
 }
 
-export const extractDimensions = (node: SceneNode): NodeDimensions =>
+export const extractDimensions = (node: SceneNode): FigmaNodeDimensions =>
   pick(node, DIMENSION_KEYS)
 
 /**
@@ -126,7 +126,7 @@ export const extractDimensions = (node: SceneNode): NodeDimensions =>
  */
 export const extractLayoutSizing = (
   node: SceneNode,
-): NodeLayoutSizing | undefined => {
+): FigmaLayoutSizing | undefined => {
   if (!hasLayoutMixin(node)) {
     return undefined
   }
@@ -141,12 +141,12 @@ export const extractLayoutSizing = (
 }
 
 /**
- * AutoLayoutMixin 노드의 padding 값을 NodeAutoLayoutPadding 구조로 변환합니다.
+ * AutoLayoutMixin 노드의 padding 값을 FigmaAutoLayoutPadding 구조로 변환합니다.
  */
 const extractAutoLayoutPadding = (
   node: AutoLayoutNode,
-): NodeAutoLayoutPadding | undefined => {
-  const padding: NodeAutoLayoutPadding = {}
+): FigmaAutoLayoutPadding | undefined => {
+  const padding: FigmaAutoLayoutPadding = {}
 
   if (!isUndefined(node.paddingLeft)) {
     padding.left = node.paddingLeft
@@ -173,13 +173,13 @@ const extractAutoLayoutPadding = (
  */
 export const extractAutoLayout = (
   node: SceneNode,
-): NodeAutoLayoutStyle | undefined => {
+): FigmaAutoLayoutStyle | undefined => {
   if (!hasAutoLayoutMixin(node)) {
     return undefined
   }
 
   const picked = pick(node, AUTO_LAYOUT_KEYS)
-  const style: NodeAutoLayoutStyle = {}
+  const style: FigmaAutoLayoutStyle = {}
 
   if (!isUndefined(picked.layoutMode)) {
     style.layoutMode = picked.layoutMode
@@ -223,8 +223,8 @@ export const extractAutoLayout = (
 const extractFill = (
   node: SceneNode,
 ): {
-  fills?: NodeStyle["fills"]
-  fillStyleId?: NodeStyle["fillStyleId"]
+  fills?: ExtractedNodeStyle["fills"]
+  fillStyleId?: ExtractedNodeStyle["fillStyleId"]
   hasMixedFills?: boolean
   hasMixedFillStyleId?: boolean
 } => {
@@ -234,8 +234,8 @@ const extractFill = (
 
   const fills = node.fills
   const result: {
-    fills?: NodeStyle["fills"]
-    fillStyleId?: NodeStyle["fillStyleId"]
+    fills?: ExtractedNodeStyle["fills"]
+    fillStyleId?: ExtractedNodeStyle["fillStyleId"]
     hasMixedFills?: boolean
     hasMixedFillStyleId?: boolean
   } = {}
@@ -266,22 +266,21 @@ const extractFill = (
 const extractStroke = (
   node: SceneNode,
 ): {
-  strokes?: NodeStyle["strokes"]
-  strokeStyleId?: NodeStyle["strokeStyleId"]
-  cornerRadius?: NodeStyle["cornerRadius"]
+  strokes?: ExtractedNodeStyle["strokes"]
+  strokeStyleId?: ExtractedNodeStyle["strokeStyleId"]
+  cornerRadius?: ExtractedNodeStyle["cornerRadius"]
   hasMixedStrokes?: boolean
   hasMixedCornerRadius?: boolean
-  cornerRadii?: NodeCornerRadii
+  cornerRadii?: FigmaCornerRadii
 } => {
   const result: {
-    strokes?: NodeStyle["strokes"]
-    strokeStyleId?: NodeStyle["strokeStyleId"]
-    cornerRadius?: NodeStyle["cornerRadius"]
+    strokes?: ExtractedNodeStyle["strokes"]
+    strokeStyleId?: ExtractedNodeStyle["strokeStyleId"]
+    cornerRadius?: ExtractedNodeStyle["cornerRadius"]
     hasMixedStrokes?: boolean
     hasMixedCornerRadius?: boolean
-    cornerRadii?: NodeCornerRadii
+    cornerRadii?: FigmaCornerRadii
   } = {}
-
   if (hasGeometryMixin(node)) {
     const strokes = node.strokes
     if (!isUndefined(strokes)) {
@@ -314,10 +313,10 @@ const extractStroke = (
 }
 
 /**
- * SceneNode 전반에서 공통적으로 사용 가능한 스타일 정보를 NodeStyle 형태로 구성합니다.
+ * SceneNode 전반에서 공통적으로 사용 가능한 스타일 정보를 ExtractedNodeStyle 형태로 구성합니다.
  */
-export const extractNodeStyle = (node: SceneNode): NodeStyle => {
-  const style: NodeStyle = {
+export const extractNodeStyle = (node: SceneNode): ExtractedNodeStyle => {
+  const style: ExtractedNodeStyle = {
     dimensions: extractDimensions(node),
   }
 

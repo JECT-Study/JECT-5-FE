@@ -3,9 +3,12 @@
  * https://developers.figma.com/docs/plugins/api/node-properties/
  */
 
-export type NodeDimensions = Rect
+// =============================================================================
+// Node layout & styling primitives
+// =============================================================================
+export type FigmaNodeDimensions = Rect
 
-export interface NodeLayoutSizing {
+export interface FigmaLayoutSizing {
   layoutAlign?: LayoutMixin["layoutAlign"]
   layoutGrow?: LayoutMixin["layoutGrow"]
   layoutSizingHorizontal?: LayoutMixin["layoutSizingHorizontal"]
@@ -15,31 +18,31 @@ export interface NodeLayoutSizing {
 /**
  * padding
  */
-export interface NodeAutoLayoutPadding {
+export interface FigmaAutoLayoutPadding {
   left?: AutoLayoutMixin["paddingLeft"]
   right?: AutoLayoutMixin["paddingRight"]
   top?: AutoLayoutMixin["paddingTop"]
   bottom?: AutoLayoutMixin["paddingBottom"]
 }
 
-export interface NodeAutoLayoutStyle {
+export interface FigmaAutoLayoutStyle {
   layoutMode?: AutoLayoutMixin["layoutMode"]
   primaryAxisAlignItems?: AutoLayoutMixin["primaryAxisAlignItems"]
   counterAxisAlignItems?: AutoLayoutMixin["counterAxisAlignItems"]
   primaryAxisSizingMode?: AutoLayoutMixin["primaryAxisSizingMode"]
   counterAxisSizingMode?: AutoLayoutMixin["counterAxisSizingMode"]
   itemSpacing?: AutoLayoutMixin["itemSpacing"]
-  padding?: NodeAutoLayoutPadding
+  padding?: FigmaAutoLayoutPadding
 }
 
-export interface NodeCornerRadii {
+export interface FigmaCornerRadii {
   topLeft?: RectangleCornerMixin["topLeftRadius"]
   topRight?: RectangleCornerMixin["topRightRadius"]
   bottomLeft?: RectangleCornerMixin["bottomLeftRadius"]
   bottomRight?: RectangleCornerMixin["bottomRightRadius"]
 }
 
-export interface TextTypographyMixedFlags {
+export interface FigmaTextTypographyMixedFlags {
   textAlignHorizontal?: true
   textAlignVertical?: true
   paragraphIndent?: true
@@ -50,10 +53,10 @@ export interface TextTypographyMixedFlags {
   textDecoration?: true
 }
 
-export interface NodeStyle {
-  dimensions: NodeDimensions
-  layout?: NodeLayoutSizing
-  autoLayout?: NodeAutoLayoutStyle
+export interface ExtractedNodeStyle {
+  dimensions: FigmaNodeDimensions
+  layout?: FigmaLayoutSizing
+  autoLayout?: FigmaAutoLayoutStyle
   fills?: GeometryMixin["fills"]
   fillStyleId?: GeometryMixin["fillStyleId"]
   hasMixedFills?: boolean
@@ -63,10 +66,13 @@ export interface NodeStyle {
   hasMixedStrokes?: boolean
   cornerRadius?: CornerMixin["cornerRadius"]
   hasMixedCornerRadius?: boolean
-  cornerRadii?: NodeCornerRadii
+  cornerRadii?: FigmaCornerRadii
 }
 
-export interface TextTypographyDefaults {
+// =============================================================================
+// Text styling helpers
+// =============================================================================
+export interface FigmaTextTypographyDefaults {
   textAlignHorizontal?: TextNode["textAlignHorizontal"]
   textAlignVertical?: TextNode["textAlignVertical"]
   paragraphIndent?: TextNode["paragraphIndent"]
@@ -75,17 +81,20 @@ export interface TextTypographyDefaults {
   letterSpacing?: TextNode["letterSpacing"]
   textCase?: TextNode["textCase"]
   textDecoration?: TextNode["textDecoration"]
-  mixed?: TextTypographyMixedFlags
+  mixed?: FigmaTextTypographyMixedFlags
 }
 
-export interface TextNodeStyle extends NodeStyle {
-  typography?: TextTypographyDefaults
+export interface ExtractedTextNodeStyle extends ExtractedNodeStyle {
+  typography?: FigmaTextTypographyDefaults
 }
 
 export type TextStyledSegment = ReturnType<
   TextNode["getStyledTextSegments"]
 >[number]
 
+// =============================================================================
+// Component instance overrides
+// =============================================================================
 export type InstanceComponentPropertyDefinition =
   InstanceNode["componentProperties"][string]
 
@@ -99,6 +108,9 @@ export type InstanceComponentValueMap = Record<
   InstanceComponentPropertyDefinition["value"]
 >
 
+// =============================================================================
+// Variable binding references
+// =============================================================================
 export interface BoundVariableReference {
   property: string
   aliasIds: string[]
@@ -112,7 +124,10 @@ export interface VariableBindingOccurrence {
 
 export type VariableBindingIndex = Map<string, VariableBindingOccurrence[]>
 
-export interface BaseNodeProps<TStyle = NodeStyle | undefined> {
+// =============================================================================
+// Node prop contracts (node props → React props)
+// =============================================================================
+export interface BaseNodeProps<TStyle = ExtractedNodeStyle | undefined> {
   id: SceneNode["id"]
   name: string
   style?: TStyle
@@ -120,24 +135,24 @@ export interface BaseNodeProps<TStyle = NodeStyle | undefined> {
   boundVariables?: BoundVariableReference[]
 }
 
-export interface InstanceNodeProps extends BaseNodeProps<NodeStyle> {
-  style: NodeStyle
+export interface InstanceNodeProps extends BaseNodeProps<ExtractedNodeStyle> {
+  style: ExtractedNodeStyle
   componentProperties: InstanceComponentPropertyMap
   componentValues: InstanceComponentValueMap
 }
 
-export interface FrameNodeProps extends BaseNodeProps<NodeStyle> {
-  style: NodeStyle
+export interface FrameNodeProps extends BaseNodeProps<ExtractedNodeStyle> {
+  style: ExtractedNodeStyle
 }
 
-export interface TextNodeProps extends BaseNodeProps<TextNodeStyle> {
-  style: TextNodeStyle
+export interface TextNodeProps extends BaseNodeProps<ExtractedTextNodeStyle> {
+  style: ExtractedTextNodeStyle
   characters: string
   segments: readonly TextStyledSegment[]
 }
 
-export interface RectangleNodeProps extends BaseNodeProps<NodeStyle> {
-  style: NodeStyle
+export interface RectangleNodeProps extends BaseNodeProps<ExtractedNodeStyle> {
+  style: ExtractedNodeStyle
 }
 
 export interface GroupNodeProps extends BaseNodeProps<undefined> {}
@@ -146,6 +161,9 @@ export interface GenericNodeProps extends BaseNodeProps<undefined> {
   rawType: SceneNode["type"]
 }
 
+// =============================================================================
+// React-friendly node tree definitions
+// =============================================================================
 export interface BaseReactNode<
   TType extends string,
   TProps extends BaseNodeProps,
@@ -180,6 +198,9 @@ export type ReactFigmaNode =
   | GroupReactNode
   | GenericReactNode
 
+// =============================================================================
+// Variable usage + selection payload helpers
+// =============================================================================
 export interface VariableUsageSummary {
   id: string
   name: string
