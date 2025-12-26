@@ -1,6 +1,5 @@
 "use client"
 
-import { GameCreate } from "@ject-5-fe/design/components/gameCreate"
 import { DropdownMenuItem } from "@ject-5-fe/design/components/menu"
 import { Copy, Share } from "@ject-5-fe/design/icons"
 import Link from "next/link"
@@ -8,6 +7,7 @@ import { useIntersectionObserver } from "react-simplikit"
 
 import type { GameListItem } from "@/entities/game/model"
 import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
+import { GameCreate } from "@/entities/game/ui/gameCreate"
 
 import { useActions } from "../../../app/games/hooks/useGameCardActions"
 import { GameLibrarySkeleton } from "./gameLibrarySkeleton"

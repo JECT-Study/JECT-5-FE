@@ -1,12 +1,12 @@
 "use client"
 
-import { GameCreate } from "@ject-5-fe/design/components/gameCreate"
 import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 import { GameCardOptions } from "@/entities/game/ui/gameCardOptions"
+import { GameCreate } from "@/entities/game/ui/gameCreate"
 import { GameLibrarySkeleton } from "@/entities/game/ui/gameLibrarySkeleton"
 
 import { useDashboardGameActions } from "../hooks/useDashboardGameActions"
