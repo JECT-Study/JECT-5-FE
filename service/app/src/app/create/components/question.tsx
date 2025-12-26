@@ -32,24 +32,54 @@ export const Question = ({
   actions,
   className,
 }: QuestionProps) => {
-  const accessibleName = `${index}번째 문제`
-
   const canDelete = actions?.canDelete ?? true
   const shouldClampTitle = !hasError
 
   return (
     <div
       role="option"
-      aria-label={accessibleName}
-      tabIndex={onClick ? 0 : undefined}
+      aria-label={`${index}번째 문제`}
+      aria-selected={isSelected}
+      tabIndex={-1}
       onKeyDown={(e) => {
-        if (!onClick) return
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault()
-          onClick()
+        const isFromChild = e.currentTarget !== e.target
+        if (isFromChild && e.key !== "Escape") return
+
+        switch (e.key) {
+          case "ArrowDown": {
+            e.preventDefault()
+            ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.focus()
+            break
+          }
+
+          case "ArrowUp": {
+            e.preventDefault()
+            ;(
+              e.currentTarget.previousElementSibling as HTMLElement | null
+            )?.focus()
+            break
+          }
+
+          case "Enter":
+          case " ": {
+            e.preventDefault()
+            onClick?.()
+            break
+          }
+
+          case "Escape": {
+            e.stopPropagation()
+            ;(
+              e.currentTarget.closest('[role="option"]') as HTMLElement | null
+            )?.focus()
+            break
+          }
+
+          default:
+            break
         }
       }}
-      onClick={onClick}
+      onClick={() => onClick?.()}
       className={cn(
         "flex min-h-[134px] w-full min-w-0 justify-between gap-16 rounded-8 bg-background-primary px-20 py-24",
         onClick ? "cursor-pointer" : "cursor-default",
