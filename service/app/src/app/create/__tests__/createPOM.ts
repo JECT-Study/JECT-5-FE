@@ -49,7 +49,7 @@ export class CreatePOM {
     this.deleteImageButton = page.getByRole("button", { name: "이미지 삭제" })
 
     // 질문 리스트 영역
-    this.questionList = page.getByTestId("question-list")
+    this.questionList = page.getByRole("listbox", { name: "문제 목록" })
     this.addQuestionButton = page.getByRole("button", { name: "문제 추가하기" })
 
     // 질문/답안 입력 영역
@@ -72,7 +72,7 @@ export class CreatePOM {
     this.invalidFilePopup = page.getByRole("dialog").filter({
       hasText: /JPG, JPEG, PNG 형식만 가능하며/,
     })
-    this.questionComponents = page.getByRole("group", {
+    this.questionComponents = page.getByRole("option", {
       name: /^\d+번째 문제$/,
     })
   }
