@@ -75,14 +75,20 @@ const createGameStore = (initialGameName: string = "새 게임") =>
         moveQuestion: (id, direction) =>
           set((state) => {
             const index = state.questions.findIndex((q) => q.id === id)
-            if (index !== -1) {
-              const newIndex = direction === "up" ? index - 1 : index + 1
-              state.questions.splice(
-                newIndex,
-                0,
-                state.questions.splice(index, 1)[0],
-              )
+            if (index === -1) {
+              return
             }
+
+            const newIndex = direction === "up" ? index - 1 : index + 1
+            if (newIndex < 0 || newIndex >= state.questions.length) {
+              return
+            }
+
+            state.questions.splice(
+              newIndex,
+              0,
+              state.questions.splice(index, 1)[0],
+            )
           }),
         uploadImage: (id, file, previewUrl) =>
           set((state) => {

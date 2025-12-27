@@ -1,14 +1,20 @@
 "use client"
 
 import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
-import { Question } from "@ject-5-fe/design/components/question"
 import { StickyActionBar } from "@ject-5-fe/design/components/stickyActionBar"
-import Image from "next/image"
+import { useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
 
+import { useListboxNavigation } from "@/shared/lib/useListBoxNavigation"
+
 import { useCreateGameStore } from "../store/useCreateGameStore"
+import { Question } from "./question"
 
 export function QuestionList() {
+  const listboxRef = useRef<HTMLDivElement>(null)
+  const { onListboxFocus, onOptionKeyDown } = useListboxNavigation({
+    listboxRef,
+  })
   const {
     questions,
     selectedQuestionId,
@@ -28,52 +34,42 @@ export function QuestionList() {
   )
 
   return (
-    <div
-      className="flex h-full min-h-0 w-[420px] flex-col bg-background-tertiary"
-      data-testid="question-list"
-    >
-      <div className="flex-1 overflow-y-auto px-[32px] py-[16px] pb-32">
+    <div className="flex h-full min-h-0 w-[420px] flex-col bg-background-tertiary px-[32px] py-[16px]">
+      <div
+        ref={listboxRef}
+        className="flex flex-col gap-24 overflow-y-auto"
+        role="listbox"
+        aria-label="문제 목록"
+        tabIndex={0}
+        onFocus={onListboxFocus}
+      >
         {questions.map((question, index) => {
           const isSelected = selectedQuestionId === question.id
           const questionError =
             question.text.length > 50 || question.text.length < 1
+          const imageSrc = question.imageUrl || question.previewImageUrl || null
+          const isFirst = index === 0
+          const isLast = index === questions.length - 1
 
           return (
-            <div key={question.id} className="mb-24 last:mb-0">
-              <Question
-                index={index + 1}
-                state={
-                  isSelected ? "selected" : questionError ? "error" : "default"
-                }
-                onClick={() => setSelectedQuestionId(question.id)}
-              >
-                <Question.Title>
-                  {question.text || "질문을 입력해주세요"}
-                </Question.Title>
-
-                <Question.Image>
-                  {(question.imageUrl || question.previewImageUrl) && (
-                    <Image
-                      src={question.imageUrl || question.previewImageUrl || ""}
-                      alt="질문 이미지"
-                      width={78}
-                      height={78}
-                      className="size-[78px] rounded-[7px] object-cover"
-                    />
-                  )}
-                </Question.Image>
-
-                <Question.DeleteButton
-                  onDelete={() => deleteQuestion(question.id)}
-                  canDelete={questions.length > 1}
-                />
-
-                <Question.MoveButtons
-                  onMoveUp={() => moveQuestion(question.id, "up")}
-                  onMoveDown={() => moveQuestion(question.id, "down")}
-                />
-              </Question>
-            </div>
+            <Question
+              key={question.id}
+              index={index + 1}
+              isSelected={isSelected}
+              hasError={questionError}
+              onClick={() => setSelectedQuestionId(question.id)}
+              title={question.text || "질문을 입력해주세요"}
+              imageSrc={imageSrc}
+              actions={{
+                canDelete: questions.length > 1,
+                canMoveUp: !isFirst,
+                canMoveDown: !isLast,
+                onDelete: () => deleteQuestion(question.id),
+                onMoveUp: () => moveQuestion(question.id, "up"),
+                onMoveDown: () => moveQuestion(question.id, "down"),
+              }}
+              onKeyDown={onOptionKeyDown}
+            />
           )
         })}
       </div>
