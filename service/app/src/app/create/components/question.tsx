@@ -15,6 +15,8 @@ export interface QuestionProps {
   onClick?: () => void
   actions?: {
     canDelete?: boolean
+    canMoveUp?: boolean
+    canMoveDown?: boolean
     onDelete?: () => void
     onMoveUp?: () => void
     onMoveDown?: () => void
@@ -35,6 +37,8 @@ export const Question = ({
   onKeyDown,
 }: QuestionProps) => {
   const canDelete = actions?.canDelete ?? true
+  const canMoveUp = actions?.canMoveUp ?? true
+  const canMoveDown = actions?.canMoveDown ?? true
   const shouldClampTitle = !hasError
 
   return (
@@ -95,6 +99,7 @@ export const Question = ({
               e.stopPropagation()
               actions?.onMoveUp?.()
             }}
+            disabled={!canMoveUp}
             aria-label={`${index}번째 문제 위로 이동`}
           >
             <Arrow />
@@ -105,6 +110,7 @@ export const Question = ({
               e.stopPropagation()
               actions?.onMoveDown?.()
             }}
+            disabled={!canMoveDown}
             aria-label={`${index}번째 문제 아래로 이동`}
           >
             <Arrow className="rotate-180" />

@@ -48,6 +48,8 @@ export function QuestionList() {
           const questionError =
             question.text.length > 50 || question.text.length < 1
           const imageSrc = question.imageUrl || question.previewImageUrl || null
+          const isFirst = index === 0
+          const isLast = index === questions.length - 1
 
           return (
             <Question
@@ -60,6 +62,8 @@ export function QuestionList() {
               imageSrc={imageSrc}
               actions={{
                 canDelete: questions.length > 1,
+                canMoveUp: !isFirst,
+                canMoveDown: !isLast,
                 onDelete: () => deleteQuestion(question.id),
                 onMoveUp: () => moveQuestion(question.id, "up"),
                 onMoveDown: () => moveQuestion(question.id, "down"),
