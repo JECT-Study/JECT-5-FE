@@ -22,7 +22,10 @@ export interface QuestionProps {
     onMoveDown?: () => void
   }
   className?: string
-  onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  onKeyDown?: (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    onSelect?: () => void,
+  ) => void
 }
 
 export const Question = ({
@@ -47,7 +50,7 @@ export const Question = ({
       aria-label={`${index}번째 문제`}
       aria-selected={isSelected}
       tabIndex={-1}
-      onKeyDown={onKeyDown}
+      onKeyDown={(e) => onKeyDown?.(e, onClick)}
       onClick={() => onClick?.()}
       className={cn(
         "flex min-h-[134px] w-full min-w-0 justify-between gap-16 rounded-8 bg-background-primary px-20 py-24",
