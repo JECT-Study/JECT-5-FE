@@ -20,6 +20,7 @@ export interface QuestionProps {
     onMoveDown?: () => void
   }
   className?: string
+  onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
 }
 
 export const Question = ({
@@ -31,6 +32,7 @@ export const Question = ({
   onClick,
   actions,
   className,
+  onKeyDown,
 }: QuestionProps) => {
   const canDelete = actions?.canDelete ?? true
   const shouldClampTitle = !hasError
@@ -41,44 +43,7 @@ export const Question = ({
       aria-label={`${index}번째 문제`}
       aria-selected={isSelected}
       tabIndex={-1}
-      onKeyDown={(e) => {
-        const isFromChild = e.currentTarget !== e.target
-        if (isFromChild && e.key !== "Escape") return
-
-        switch (e.key) {
-          case "ArrowDown": {
-            e.preventDefault()
-            ;(e.currentTarget.nextElementSibling as HTMLElement | null)?.focus()
-            break
-          }
-
-          case "ArrowUp": {
-            e.preventDefault()
-            ;(
-              e.currentTarget.previousElementSibling as HTMLElement | null
-            )?.focus()
-            break
-          }
-
-          case "Enter":
-          case " ": {
-            e.preventDefault()
-            onClick?.()
-            break
-          }
-
-          case "Escape": {
-            e.stopPropagation()
-            ;(
-              e.currentTarget.closest('[role="option"]') as HTMLElement | null
-            )?.focus()
-            break
-          }
-
-          default:
-            break
-        }
-      }}
+      onKeyDown={onKeyDown}
       onClick={() => onClick?.()}
       className={cn(
         "flex min-h-[134px] w-full min-w-0 justify-between gap-16 rounded-8 bg-background-primary px-20 py-24",
@@ -130,7 +95,6 @@ export const Question = ({
               e.stopPropagation()
               actions?.onMoveUp?.()
             }}
-            size="md"
             aria-label={`${index}번째 문제 위로 이동`}
           >
             <Arrow />
@@ -141,7 +105,6 @@ export const Question = ({
               e.stopPropagation()
               actions?.onMoveDown?.()
             }}
-            size="md"
             aria-label={`${index}번째 문제 아래로 이동`}
           >
             <Arrow className="rotate-180" />

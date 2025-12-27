@@ -5,11 +5,16 @@ import { StickyActionBar } from "@ject-5-fe/design/components/stickyActionBar"
 import { useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
 
+import { useListboxNavigation } from "@/shared/lib/useListBoxNavigation"
+
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { Question } from "./question"
 
 export function QuestionList() {
-  const listBoxRef = useRef<HTMLDivElement>(null)
+  const listboxRef = useRef<HTMLDivElement>(null)
+  const { onListboxFocus, onOptionKeyDown } = useListboxNavigation({
+    listboxRef,
+  })
   const {
     questions,
     selectedQuestionId,
@@ -31,20 +36,12 @@ export function QuestionList() {
   return (
     <div className="flex h-full min-h-0 w-[420px] flex-col bg-background-tertiary px-[32px] py-[16px]">
       <div
-        ref={listBoxRef}
+        ref={listboxRef}
         className="flex flex-col gap-24 overflow-y-auto"
         role="listbox"
         aria-label="문제 목록"
         tabIndex={0}
-        onFocus={(e) => {
-          if (e.target !== e.currentTarget) return
-          const selectedOption =
-            listBoxRef.current?.querySelector<HTMLElement>(
-              '[aria-selected="true"]',
-            ) ??
-            listBoxRef.current?.querySelector<HTMLElement>('[role="option"]')
-          selectedOption?.focus()
-        }}
+        onFocus={onListboxFocus}
       >
         {questions.map((question, index) => {
           const isSelected = selectedQuestionId === question.id
@@ -67,6 +64,7 @@ export function QuestionList() {
                 onMoveUp: () => moveQuestion(question.id, "up"),
                 onMoveDown: () => moveQuestion(question.id, "down"),
               }}
+              onKeyDown={onOptionKeyDown}
             />
           )
         })}
