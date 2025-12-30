@@ -30,6 +30,9 @@ export const authHandlers = [
       }),
       {
         status: 200,
+        headers: {
+          "Set-Cookie": "JSESSIONID=; Max-Age=0; Path=/; SameSite=Lax",
+        },
       },
     )
   }),
