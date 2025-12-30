@@ -31,8 +31,6 @@ export const instance = _instance.extend({
       },
       (_request, _options, response) => {
         if (response.status === 401 && typeof window !== "undefined") {
-          document.cookie =
-            "JSESSIONID=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;"
           window.dispatchEvent(new CustomEvent("auth:session-expired"))
         }
       },
