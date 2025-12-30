@@ -1,50 +1,51 @@
 import { create } from "zustand"
-import { createJSONStorage, persist } from "zustand/middleware"
 
 import { kakaoLogin } from "../api/kakaoLogin"
 import { logout } from "../api/logout"
-import { KakaoLoginData } from "../model/auth"
+import { validateSession } from "../api/validateSession"
+
+type AuthStatus = "unknown" | "authenticated" | "unauthenticated"
+type AuthUser = { nickname: string; profileImageUrl: string }
 
 type AuthState = {
-  user: KakaoLoginData | null
-  isAuthenticated: boolean
-  _hasHydrated: boolean
+  authStatus: AuthStatus
+  user: AuthUser | null
+  hasBootstrapped: boolean
   login: (code: string) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
+  bootstrap: () => Promise<void>
+  setUnauthenticated: () => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isAuthenticated: false,
-      _hasHydrated: false,
+export const useAuthStore = create<AuthState>()((set, get) => ({
+  authStatus: "unknown",
+  user: null,
+  hasBootstrapped: false,
 
-      login: async (code: string) => {
-        try {
-          const res = await kakaoLogin(code)
-          set({ user: res.data, isAuthenticated: true })
-        } catch (error) {
-          throw new Error("login failed")
-        }
-      },
+  bootstrap: async () => {
+    if (get().hasBootstrapped) return
+    try {
+      await validateSession()
+      set({ authStatus: "authenticated" })
+    } catch (error) {
+      set({ authStatus: "unauthenticated" })
+    }
+    set({ hasBootstrapped: true })
+  },
 
-      logout: async () => {
-        await logout()
-        set({ user: null, isAuthenticated: false })
-      },
-    }),
-    {
-      name: "auth-store",
-      storage: createJSONStorage(() => sessionStorage),
-      partialize: (state) => ({
-        isAuthenticated: state.isAuthenticated,
-      }),
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          state._hasHydrated = true
-        }
-      },
-    },
-  ),
-)
+  login: async (code: string) => {
+    try {
+      const { profileImageUrl, nickname } = (await kakaoLogin(code)).data
+      set({ user: { profileImageUrl, nickname }, authStatus: "authenticated" })
+    } catch (error) {
+      throw new Error("login failed")
+    }
+  },
+
+  logout: async () => {
+    await logout()
+    set({ authStatus: "unauthenticated", user: null })
+  },
+
+  setUnauthenticated: () => set({ authStatus: "unauthenticated", user: null }),
+}))

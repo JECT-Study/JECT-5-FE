@@ -14,11 +14,11 @@ const LoginButton = dynamic(() => import("@/shared/authButton"), {
 import Link from "next/link"
 
 export default function HomeNavigationRightContent() {
-  const { isAuthenticated } = useAuthStore()
+  const { authStatus } = useAuthStore()
 
   return (
     <>
-      {isAuthenticated && (
+      {authStatus === "authenticated" ? (
         <>
           <PrimaryBoxButton size="sm" _style="solid" asChild>
             <Link href="/dashboard">내 게임</Link>
@@ -30,8 +30,9 @@ export default function HomeNavigationRightContent() {
             </Link>
           </PrimaryBoxButton>
         </>
+      ) : (
+        <LoginButton />
       )}
-      <LoginButton />
       <ThemeToggle />
     </>
   )
