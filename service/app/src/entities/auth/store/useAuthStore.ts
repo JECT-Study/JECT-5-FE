@@ -4,7 +4,6 @@ import { createJSONStorage, persist } from "zustand/middleware"
 import { kakaoLogin } from "../api/kakaoLogin"
 import { logout } from "../api/logout"
 import { KakaoLoginData } from "../model/auth"
-import { deleteCookie, getSessionId } from "../utils/cookieUtils"
 
 type AuthState = {
   user: KakaoLoginData | null
@@ -18,7 +17,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
-      isAuthenticated: !!getSessionId(),
+      isAuthenticated: false,
       _hasHydrated: false,
 
       login: async (code: string) => {
@@ -32,7 +31,6 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         await logout()
-        deleteCookie("JSESSIONID")
         set({ user: null, isAuthenticated: false })
       },
     }),
@@ -40,7 +38,6 @@ export const useAuthStore = create<AuthState>()(
       name: "auth-store",
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
       onRehydrateStorage: () => (state) => {
