@@ -1,4 +1,6 @@
 import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
+import { immer } from "zustand/middleware/immer"
 
 import { kakaoLogin } from "../api/kakaoLogin"
 import { logout } from "../api/logout"
@@ -17,35 +19,50 @@ type AuthState = {
   setUnauthenticated: () => void
 }
 
-export const useAuthStore = create<AuthState>()((set, get) => ({
-  authStatus: "unknown",
-  user: null,
-  hasBootstrapped: false,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    immer((set, get) => ({
+      authStatus: "unknown",
+      user: null,
+      hasBootstrapped: false,
 
-  bootstrap: async () => {
-    if (get().hasBootstrapped) return
-    try {
-      await validateSession()
-      set({ authStatus: "authenticated" })
-    } catch (error) {
-      set({ authStatus: "unauthenticated" })
-    }
-    set({ hasBootstrapped: true })
-  },
+      bootstrap: async () => {
+        if (get().hasBootstrapped) return
+        try {
+          await validateSession()
+          set({ authStatus: "authenticated" })
+        } catch (error) {
+          set({ authStatus: "unauthenticated" })
+        }
+        set({ hasBootstrapped: true })
+      },
 
-  login: async (code: string) => {
-    try {
-      const { profileImageUrl, nickname } = (await kakaoLogin(code)).data
-      set({ user: { profileImageUrl, nickname }, authStatus: "authenticated" })
-    } catch (error) {
-      throw new Error("login failed")
-    }
-  },
+      login: async (code: string) => {
+        try {
+          const { profileImageUrl, nickname } = (await kakaoLogin(code)).data
+          set({
+            user: { profileImageUrl, nickname },
+            authStatus: "authenticated",
+          })
+        } catch (error) {
+          throw new Error("login failed")
+        }
+      },
 
-  logout: async () => {
-    await logout()
-    set({ authStatus: "unauthenticated", user: null })
-  },
+      logout: async () => {
+        await logout()
+        set({ authStatus: "unauthenticated", user: null })
+      },
 
-  setUnauthenticated: () => set({ authStatus: "unauthenticated", user: null }),
-}))
+      setUnauthenticated: () =>
+        set({ authStatus: "unauthenticated", user: null }),
+    })),
+    {
+      name: "auth-store",
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        user: state.user,
+      }),
+    },
+  ),
+)
