@@ -1,17 +1,22 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 
 import { MSW_MOCK_CODE } from "@/mocks/handlers/auth"
+import { ENTRY_KEYS, saveEntry } from "@/shared/lib/saveEntry"
 
 export default function KakaoLoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const kakaoClientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID
   const redirectUri = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI
 
   useEffect(() => {
+    const returnTo = searchParams.get("returnTo")
+    if (returnTo) saveEntry(ENTRY_KEYS.auth, returnTo)
+
     if (process.env.NODE_ENV === "development") {
       router.replace(`/login/kakao/?code=${MSW_MOCK_CODE}`)
       return
@@ -22,7 +27,7 @@ export default function KakaoLoginPage() {
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
 
     router.replace(kakaoAuthUrl)
-  }, [router, kakaoClientId, redirectUri])
+  }, [router, kakaoClientId, redirectUri, searchParams])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background-primary">

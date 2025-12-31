@@ -1,16 +1,21 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect, useRef } from "react"
 
 import { useAuthStore } from "@/entities/auth"
+import { clearEntry, ENTRY_KEYS, getEntry } from "@/shared/lib/saveEntry"
 
 function KakaoCallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login } = useAuthStore()
+  const handledRef = useRef(false)
 
   useEffect(() => {
+    if (handledRef.current) return
+    handledRef.current = true
+
     const handleCallback = async () => {
       const code = searchParams.get("code")
       const error = searchParams.get("error")
@@ -19,7 +24,9 @@ function KakaoCallbackContent() {
         throw new Error(error || "인증 코드를 받지 못했습니다.")
 
       await login(code)
-      router.push("/")
+      const returnTo = getEntry(ENTRY_KEYS.auth) ?? "/"
+      clearEntry(ENTRY_KEYS.auth)
+      router.replace(returnTo)
     }
 
     handleCallback()

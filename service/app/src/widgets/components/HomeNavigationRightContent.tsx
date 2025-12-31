@@ -3,6 +3,7 @@
 import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { Add } from "@ject-5-fe/design/icons"
 import Link from "next/link"
+import { usePathname, useSearchParams } from "next/navigation"
 
 import { useAuthStore } from "@/entities/auth"
 import { ThemeToggle } from "@/shared/themeToggleButton"
@@ -12,6 +13,9 @@ import { KakaoLoginButton } from "./kakaoLoginButton"
 
 export default function HomeNavigationRightContent() {
   const { authStatus, user, logout } = useAuthStore()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const returnTo = `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`
 
   return (
     <>
@@ -29,7 +33,7 @@ export default function HomeNavigationRightContent() {
           <AvatarButton src={user?.profileImageUrl} onClick={logout} />
         </>
       ) : (
-        <KakaoLoginButton />
+        <KakaoLoginButton returnTo={returnTo} />
       )}
       <ThemeToggle />
     </>
