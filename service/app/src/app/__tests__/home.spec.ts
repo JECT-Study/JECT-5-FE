@@ -22,7 +22,7 @@ test.describe("홈 화면: 비로그인 상태", () => {
     page,
   }) => {
     await pageObj.clickKakaoLoginButton()
-    await page.waitForURL("/login")
+    await page.waitForURL(/\/login(\?|$)/, { waitUntil: "commit" })
   })
 })
 
