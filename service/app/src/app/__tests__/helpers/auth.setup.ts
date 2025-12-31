@@ -14,7 +14,7 @@ setup("authenticate", async ({ page }) => {
   await page.goto("/")
 
   await page.waitForURL("/")
-  await expect(page.getByRole("button", { name: "내 게임" })).toBeVisible()
+  await expect(page.getByRole("link", { name: "내 게임" })).toBeVisible()
 
   await page.context().storageState({ path: authFile })
 })

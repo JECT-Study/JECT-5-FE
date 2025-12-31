@@ -39,13 +39,13 @@ export class HomePOM {
     // 네비게이션 영역 (비로그인 상태)
     this.homeLogoImage = page.getByAltText("홈 로고")
     this.themeToggleButton = page.getByTestId("theme-toggle-button")
-    this.kakaoLoginButton = page.getByRole("button", {
+    this.kakaoLoginButton = page.getByRole("link", {
       name: "간편로그인해서 게임 만들기",
     })
 
     // 네비게이션 영역 (로그인 상태)
-    this.myGamesButton = page.getByRole("button", { name: "내 게임" })
-    this.createGameButton = page.getByRole("button", {
+    this.myGamesButton = page.getByRole("link", { name: "내 게임" })
+    this.createGameButton = page.getByRole("link", {
       name: "게임 만들기",
       exact: true,
     })
