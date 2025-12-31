@@ -5,7 +5,7 @@ import { Navigation } from "@ject-5-fe/design/components/navigation"
 import * as TextField from "@ject-5-fe/design/components/textField"
 import { Add, Magnifier } from "@ject-5-fe/design/icons"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
 import { type ChangeEvent, useState } from "react"
 import { useDebounce } from "react-simplikit"
@@ -31,6 +31,12 @@ export const GamesNavigation = ({ className }: GamesNavigationProps) => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const returnTo = `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push("/")
+  }
 
   const debouncedUpdateQuery = useDebounce((value: string) => {
     setQuery(value)
@@ -68,7 +74,10 @@ export const GamesNavigation = ({ className }: GamesNavigationProps) => {
                   게임 만들기
                 </Link>
               </PrimaryBoxButton>
-              <AvatarButton src={user?.profileImageUrl} onClick={logout} />
+              <AvatarButton
+                src={user?.profileImageUrl}
+                onClick={handleLogout}
+              />
             </>
           ) : (
             <KakaoLoginButton returnTo={returnTo} />

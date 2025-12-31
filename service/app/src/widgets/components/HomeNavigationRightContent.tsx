@@ -4,6 +4,7 @@ import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { Add } from "@ject-5-fe/design/icons"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 import { useAuthStore } from "@/entities/auth"
 import { ThemeToggle } from "@/shared/themeToggleButton"
@@ -16,6 +17,12 @@ export default function HomeNavigationRightContent() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const returnTo = `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push("/")
+  }
 
   return (
     <>
@@ -30,7 +37,7 @@ export default function HomeNavigationRightContent() {
               게임 만들기
             </Link>
           </PrimaryBoxButton>
-          <AvatarButton src={user?.profileImageUrl} onClick={logout} />
+          <AvatarButton src={user?.profileImageUrl} onClick={handleLogout} />
         </>
       ) : (
         <KakaoLoginButton returnTo={returnTo} />
