@@ -8,6 +8,7 @@ export const useAuthGuard = () => {
   const { authStatus } = useAuthStore()
 
   useEffect(() => {
+    if (authStatus === "unknown") return
     if (authStatus !== "authenticated") {
       alert("로그인이 필요합니다.")
       router.replace("/")
