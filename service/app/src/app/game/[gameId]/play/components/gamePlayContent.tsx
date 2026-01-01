@@ -29,7 +29,7 @@ export const GamePlayContent = ({
 
   return (
     <div className="flex w-full flex-1 flex-col items-center justify-center gap-[68px]">
-      <h1 className="typography-heading-4xl-bold max-w-[1080px] text-center text-text-primary">
+      <h1 className="typography-heading-4xl-extrabold max-w-[1080px] text-center text-text-primary">
         {currentQuestion.questionText}
       </h1>
 

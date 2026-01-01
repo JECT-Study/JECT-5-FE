@@ -114,7 +114,7 @@ export const Description = ({ children, className }: DescriptionProps) => {
   return (
     <p
       className={cn(
-        "typography-body-lg-bold line-clamp-2 w-full break-keep text-text-secondary",
+        "typography-body-lg-extrabold line-clamp-2 w-full break-keep text-text-primary",
         className,
       )}
       data-testid="gamecard-description"

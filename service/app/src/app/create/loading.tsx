@@ -10,7 +10,7 @@ export default function CreateGamePageSkeleton() {
         height={100}
         unoptimized
       />
-      <p className="typography-heading-md-bold">
+      <p className="typography-heading-md-extrabold">
         페이지를 준비하고 있습니다...
       </p>
     </div>

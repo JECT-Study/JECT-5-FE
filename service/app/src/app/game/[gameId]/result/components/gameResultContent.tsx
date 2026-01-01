@@ -32,10 +32,10 @@ export const GameResultContent = ({
             key={team.id}
             className="flex items-center justify-center gap-[30px] rounded-[10px] bg-gray-100 px-[110px] py-[18px]"
           >
-            <span className="text-[57px] font-bold text-blue-700">
+            <span className="text-[57px] font-extrabold text-blue-700">
               {team.name}
             </span>
-            <span className="text-[57px] font-bold text-blue-400">
+            <span className="text-[57px] font-extrabold text-blue-400">
               {scores[team.id]}점
             </span>
           </div>

@@ -3784,13 +3784,13 @@
               }
             },
             {
-              "name": "body/sm/bold",
+              "name": "body/sm/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 11,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": -1,
@@ -3848,13 +3848,13 @@
               }
             },
             {
-              "name": "body/md/bold",
+              "name": "body/md/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 13,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -3912,13 +3912,13 @@
               }
             },
             {
-              "name": "body/lg/bold",
+              "name": "body/lg/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 16,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -3966,7 +3966,7 @@
               "value": {
                 "fontSize": 19,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "SemiBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -3976,13 +3976,13 @@
               }
             },
             {
-              "name": "heading/sm/bold",
+              "name": "heading/sm/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 19,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4040,13 +4040,13 @@
               }
             },
             {
-              "name": "heading/md/bold",
+              "name": "heading/md/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 23,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4104,13 +4104,13 @@
               }
             },
             {
-              "name": "heading/lg/bold",
+              "name": "heading/lg/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 28,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4168,13 +4168,13 @@
               }
             },
             {
-              "name": "heading/xl/bold",
+              "name": "heading/xl/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 33,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4232,13 +4232,13 @@
               }
             },
             {
-              "name": "heading/2xl/bold",
+              "name": "heading/2xl/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 40,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4296,13 +4296,13 @@
               }
             },
             {
-              "name": "heading/3xl/bold",
+              "name": "heading/3xl/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 48,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,
@@ -4360,13 +4360,13 @@
               }
             },
             {
-              "name": "heading/4xl/bold",
+              "name": "heading/4xl/extrabold",
               "type": "typography",
               "isAlias": false,
               "value": {
                 "fontSize": 57,
                 "fontFamily": "Pretendard",
-                "fontWeight": "Bold",
+                "fontWeight": "ExtraBold",
                 "lineHeight": 120.00000476837158,
                 "lineHeightUnit": "PERCENT",
                 "letterSpacing": 0,

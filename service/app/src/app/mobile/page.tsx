@@ -11,7 +11,7 @@ export default function MobilePage() {
           height={60}
           priority
         />
-        <p className="typography-heading-md-bold w-full whitespace-nowrap text-center text-text-primary">
+        <p className="typography-heading-md-extrabold w-full whitespace-nowrap text-center text-text-primary">
           원활한 참여를 위해
           <br />
           <span className="text-text-interactive-primary">웹 브라우저</span>로

@@ -53,7 +53,7 @@ const GameCardTitle = ({ children, className }: GameCardTitleProps) => {
     <div className="flex h-[46px] w-[178px]">
       <h3
         className={cn(
-          "typography-body-lg-bold line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-text-primary",
+          "typography-body-lg-extrabold line-clamp-2 h-[46px] w-[178px] overflow-hidden text-ellipsis break-keep text-text-primary",
           className,
         )}
       >
