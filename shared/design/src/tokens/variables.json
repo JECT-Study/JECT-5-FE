@@ -2297,6 +2297,24 @@
                 "collection": "primitive",
                 "name": "unit/999"
               }
+            },
+            {
+              "name": "border width/border-width-1",
+              "type": "number",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "unit/1"
+              }
+            },
+            {
+              "name": "border width/border-width-2",
+              "type": "number",
+              "isAlias": true,
+              "value": {
+                "collection": "primitive",
+                "name": "unit/2"
+              }
             }
           ]
         },
