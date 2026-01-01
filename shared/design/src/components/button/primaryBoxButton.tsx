@@ -20,7 +20,7 @@ const primaryBoxButtonVariants = cva(
         solid:
           "bg-background-interactive-primary text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:bg-background-interactive-primary-pressed",
         outline:
-          "border border-border-interactive-primary text-text-interactive-primary hover:bg-background-interactive-secondary-hovered active:border-0 active:bg-background-interactive-primary-pressed active:text-text-interactive-inverse",
+          "border-2 border-border-interactive-primary text-text-interactive-primary hover:bg-background-interactive-secondary-hovered active:border-0 active:bg-background-interactive-primary-pressed active:text-text-interactive-inverse",
       },
     },
     compoundVariants: [
