@@ -9,8 +9,8 @@ const secondaryOutlineBoxButtonVariants = cva(
   {
     variants: {
       size: {
-        md: "typography-body-lg-semibold h-[48px] w-fit border px-16 py-8",
-        lg: "typography-heading-3xl-semibold h-[98px] w-[572px] border-[3px] px-32 py-20",
+        md: "typography-body-lg-semibold h-[48px] w-fit border-1 px-16 py-8",
+        lg: "typography-heading-3xl-semibold h-[98px] w-[572px] border-2 px-32 py-20",
       },
     },
     defaultVariants: {

@@ -20,7 +20,7 @@ export const GameCreate = ({ className = "" }: GameCreateProps) => {
         className="size-full object-contain"
       />
 
-      <h3 className="typography-heading-sm-bold text-center text-text-primary">
+      <h3 className="typography-heading-sm-extrabold text-center text-text-primary">
         게임 만들기
       </h3>
     </Link>

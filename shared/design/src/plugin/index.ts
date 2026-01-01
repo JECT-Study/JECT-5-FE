@@ -9,6 +9,7 @@ import {
   generateTypographyTokens,
 } from "../tokens/typography"
 import { generateUnitTokens } from "../tokens/unit"
+import { generateWidthTokens } from "../tokens/width"
 
 const {
   base: colorBase,
@@ -18,6 +19,7 @@ const {
 const { theme: typographyTheme } = generateTypographyTokens()
 const { theme: spacingTheme } = generateSpacingTokens()
 const { theme: radiusTheme } = generateRadiusTokens()
+const { theme: widthTheme } = generateWidthTokens()
 const { cssVars: unitCssVars } = generateUnitTokens()
 
 export default plugin(
@@ -50,6 +52,7 @@ export default plugin(
       extend: {
         spacing: spacingTheme,
         borderRadius: radiusTheme,
+        borderWidth: widthTheme,
         colors: colorTheme,
         typography: typographyTheme,
         fontWeight: fontWeightTokens,

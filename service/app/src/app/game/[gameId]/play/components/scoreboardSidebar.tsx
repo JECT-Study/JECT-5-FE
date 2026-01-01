@@ -23,7 +23,7 @@ export const ScoreboardSidebar = ({
   return (
     <div className="flex max-h-[940px] w-[400px] min-w-[400px] flex-col rounded-[20px] bg-background-tertiary px-24">
       <div className="relative flex items-center justify-center py-20">
-        <span className="typography-heading-sm-bold w-full text-center text-text-primary">
+        <span className="typography-heading-sm-extrabold w-full text-center text-text-primary">
           점수판
         </span>
         <PrimarySolidIconButton
