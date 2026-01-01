@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { OverlayProvider } from "overlay-kit"
 
+import { AuthProvider } from "@/entities/auth/ui/authProvider"
 import { MSWProvider } from "@/mocks/mswProvider"
 import { queryClient } from "@/shared/lib/queryClient"
 
@@ -23,7 +24,9 @@ export function Providers({ children }: ProvidersProps) {
       >
         <OverlayProvider>
           <MSWProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <AuthProvider>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </AuthProvider>
           </MSWProvider>
         </OverlayProvider>
       </ThemeProvider>
