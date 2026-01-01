@@ -118,7 +118,7 @@ test.describe("게임 설정 - 팀 관리 E2E 테스트", () => {
   }) => {
     const entry = "/games"
     await page.evaluate((e) => {
-      window.sessionStorage.setItem("entry", e)
+      window.sessionStorage.setItem("entry:game", e)
     }, entry)
     await gameSetupPage.clickHomeLogo()
     await expect(page).toHaveURL(entry)
@@ -126,7 +126,7 @@ test.describe("게임 설정 - 팀 관리 E2E 테스트", () => {
 
   test("entry 정보가 없으면 홈 페이지로 이동해야 한다", async ({ page }) => {
     await page.evaluate(() => {
-      window.sessionStorage.removeItem("entry")
+      window.sessionStorage.removeItem("entry:game")
     })
     await gameSetupPage.clickHomeLogo()
     await expect(page).toHaveURL("/")
@@ -137,7 +137,7 @@ test.describe("게임 설정 - 팀 관리 E2E 테스트", () => {
   }) => {
     const entry = "/games"
     await page.evaluate((e) => {
-      window.sessionStorage.setItem("entry", e)
+      window.sessionStorage.setItem("entry:game", e)
     }, entry)
     await gameSetupPage.clickExitIcon()
     await expect(page).toHaveURL(entry)
