@@ -50,7 +50,7 @@ export class CreatePOM {
 
     // 질문 리스트 영역
     this.questionList = page.getByRole("listbox", { name: "문제 목록" })
-    this.addQuestionButton = page.getByRole("button", { name: "문제 추가하기" })
+    this.addQuestionButton = page.getByRole("button", { name: "문제 추가" })
 
     // 질문/답안 입력 영역
     this.questionInput = page.getByPlaceholder("질문 입력")

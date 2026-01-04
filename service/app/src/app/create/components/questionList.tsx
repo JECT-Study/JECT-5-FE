@@ -84,6 +84,7 @@ export function QuestionList() {
         <PrimaryBoxButton
           className="aspect-square size-64 rounded-full"
           onClick={addQuestion}
+          aria-label="문제 추가"
         >
           <Add className="size-full" />
         </PrimaryBoxButton>
