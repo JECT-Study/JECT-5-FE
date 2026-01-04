@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test"
+import { expect, test, type TestInfo } from "@playwright/test"
 
 import { CreatePOM } from "./createPOM"
 
@@ -84,32 +84,31 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   test.use({ storageState: "playwright/.auth/user.json" })
 
   let pageObj: CreatePOM
+  let result: {
+    baseTitle: string
+    baseQuestion: string
+    baseAnswer: string
+  }
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo: TestInfo) => {
     await page.goto("/create")
     pageObj = new CreatePOM(page)
+    result = await pageObj.createGame(testInfo)
 
-    await pageObj.fillGameName("테스트")
-    await pageObj.fillQuestionAndAnswer("문제 1 테스트", "정답 1 테스트")
-    await pageObj.uploadImage("public/exampleThumbnail.jpg")
-    await pageObj.clickSaveGameButton()
-    await pageObj.clickPopupConfirmButton(pageObj.saveGamePopup)
-    await page.waitForURL("/dashboard")
-
-    const newGameCard = page.getByTestId("gamecard-root").first()
-    await newGameCard.getByTestId("gamecard-options-trigger").click()
+    const targetGameCard = pageObj.getTargetGameCard(result.baseTitle)
+    await targetGameCard.getByTestId("gamecard-options-trigger").click()
     await page.getByRole("menuitem", { name: "게임 수정" }).click()
 
-    await page.waitForURL(/\/create/)
+    await page.waitForURL(/\/create\?gameId=/)
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 게임 이름이 알맞게 표시되어야 한다", async () => {
-    await expect(pageObj.gameNameInput).toHaveValue("테스트")
+    await expect(pageObj.gameNameInput).toHaveValue(result.baseTitle)
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 질문이 알맞게 표시되어야 한다", async () => {
-    await expect(pageObj.questionInput).toHaveValue("문제 1 테스트")
-    await expect(pageObj.answerInput).toHaveValue("정답 1 테스트")
+    await expect(pageObj.questionInput).toHaveValue(result.baseQuestion)
+    await expect(pageObj.answerInput).toHaveValue(result.baseAnswer)
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 이미지가 알맞게 표시되어야 한다", async () => {
@@ -119,31 +118,33 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
   test("게임 수정 페이지에서 제목을 수정하면 알맞게 반영되어야 한다", async ({
     page,
   }) => {
-    await pageObj.fillGameName("게임 수정 테스트")
+    const updatedTitle = `${result.baseTitle.slice(0, 22)}-updated`
+
+    await pageObj.fillGameName(updatedTitle)
     await pageObj.saveGame()
-    const updatedCard = page
-      .getByTestId("gamecard-root")
-      .filter({ hasText: "게임 수정 테스트" })
-      .first()
+    const updatedCard = page.getByRole("group", { name: updatedTitle })
     await expect(updatedCard).toBeVisible()
-    const gameTitle = updatedCard.getByTestId("gamecard-description")
-    await expect(gameTitle).toHaveText("게임 수정 테스트")
+    await expect(updatedCard.getByTestId("gamecard-description")).toHaveText(
+      updatedTitle,
+    )
   })
 
   test("게임 수정 페이지에서 질문을 수정하면 알맞게 반영되어야 한다", async ({
     page,
   }) => {
-    await pageObj.fillQuestionInput("문제 1 테스트 수정")
+    const updatedQuestion = `${result.baseQuestion.slice(0, 22)}-updated`
+
+    await pageObj.fillQuestionInput(updatedQuestion)
     await pageObj.saveGame()
-    const gameCard = page.getByTestId("gamecard-root").first()
-    gameCard.click()
+    const updatedCard = page.getByRole("group", { name: result.baseTitle })
+    updatedCard.click()
     const gamePreview = page.getByRole("dialog")
     await expect(gamePreview).toBeVisible()
     const gamePreviewQuestion = page
       .getByTestId("game-preview-questions")
       .locator("p")
       .first()
-    await expect(gamePreviewQuestion).toHaveText("문제 1 테스트 수정")
+    await expect(gamePreviewQuestion).toHaveText(updatedQuestion)
   })
 })
 

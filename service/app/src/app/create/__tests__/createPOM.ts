@@ -1,4 +1,4 @@
-import { type Locator, type Page } from "@playwright/test"
+import { type Locator, type Page, type TestInfo } from "@playwright/test"
 
 export class CreatePOM {
   readonly page: Page
@@ -188,5 +188,29 @@ export class CreatePOM {
     await this.saveGameButton.click()
     await this.clickPopupConfirmButton(this.saveGamePopup)
     await this.page.waitForURL("/dashboard")
+  }
+
+  async createGame(testInfo: TestInfo) {
+    const baseTitle = `e2e-${testInfo.workerIndex}-${Date.now()}`
+    const baseQuestion = "문제 1 테스트"
+    const baseAnswer = "정답 1 테스트"
+
+    await this.fillGameName(baseTitle)
+    await this.fillQuestionAndAnswer(baseQuestion, baseAnswer)
+    await this.uploadImage("public/exampleThumbnail.jpg")
+
+    await this.clickSaveGameButton()
+    await this.clickPopupConfirmButton(this.saveGamePopup)
+    await this.page.waitForURL("/dashboard")
+
+    return {
+      baseTitle,
+      baseQuestion,
+      baseAnswer,
+    }
+  }
+
+  getTargetGameCard(title: string) {
+    return this.page.getByRole("group", { name: title })
   }
 }
