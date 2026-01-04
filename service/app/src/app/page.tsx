@@ -4,10 +4,12 @@ import { HomeNavigation } from "@/widgets/HomeNavigation"
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen w-full flex-col items-start gap-112 bg-background-primary">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background-primary">
       <HomeNavigation />
-      <HeroSection />
-      <GameSection />
+      <div className="flex flex-col gap-56">
+        <HeroSection />
+        <GameSection />
+      </div>
     </main>
   )
 }

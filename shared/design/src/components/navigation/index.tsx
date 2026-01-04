@@ -20,7 +20,7 @@ export const Navigation = ({
   return (
     <nav
       className={cn(
-        "flex h-[90px] min-h-[90px] w-full items-center justify-between gap-36 px-40",
+        "fixed left-0 top-0 z-50 flex h-[90px] min-h-[90px] w-full items-center justify-between gap-36 bg-background-primary px-40",
         className,
       )}
       {...rest}
