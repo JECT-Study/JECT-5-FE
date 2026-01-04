@@ -106,10 +106,10 @@ export function CreateGameNavigation() {
   return (
     <Navigation
       leftContent={
-        <div className="flex w-[340px] items-center px-16">
+        <div className="flex w-[340px] items-start">
           <TextField.Root
             name="gameTitle"
-            className="w-full"
+            className="w-[320px]"
             state={gameNameError ? "error" : "default"}
           >
             <TextField.InputWrapper className="bg-transparent shadow-none">

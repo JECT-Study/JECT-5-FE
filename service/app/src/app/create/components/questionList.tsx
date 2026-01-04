@@ -2,6 +2,7 @@
 
 import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { StickyActionBar } from "@ject-5-fe/design/components/stickyActionBar"
+import { Add } from "@ject-5-fe/design/icons"
 import { useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
 
@@ -80,8 +81,11 @@ export function QuestionList() {
         className="mt-auto px-[32px] pb-[16px]"
         contentClassName="w-full"
       >
-        <PrimaryBoxButton size="xl" onClick={addQuestion} className="w-full">
-          문제 추가하기
+        <PrimaryBoxButton
+          className="aspect-square size-64 rounded-full"
+          onClick={addQuestion}
+        >
+          <Add className="size-full" />
         </PrimaryBoxButton>
       </StickyActionBar>
     </div>
