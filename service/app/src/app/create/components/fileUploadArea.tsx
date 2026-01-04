@@ -55,7 +55,7 @@ export function FileUploadArea() {
   return (
     <FileUpload onAccept={handleFileAccept}>
       <Dropzone
-        className="flex h-[632px] w-[577px] flex-col items-center justify-center gap-[22px] p-[10px]"
+        className="flex aspect-square size-[clamp(400px,calc(42vw-200px),600px)] flex-none flex-col items-center justify-center"
         data-testid="file-upload-area"
       >
         {hasImage ? (

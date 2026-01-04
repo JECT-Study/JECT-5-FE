@@ -11,17 +11,15 @@ export default function CreateGamePage() {
   useAuthGuard()
 
   return (
-    <main className="flex h-screen flex-col overflow-hidden bg-background-primary">
+    <div className="bg-background-primary">
       <CreateGameNavigation />
-      <div className="flex flex-1 flex-row overflow-hidden">
-        <div className="flex">
-          <QuestionList />
-        </div>
-        <div className="flex w-full justify-center gap-[94px]">
+      <div className="flex h-screen pt-[90px]">
+        <QuestionList />
+        <main className="flex flex-1 justify-center gap-44">
           <FileUploadArea />
           <QuestionInputForm />
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
   )
 }

@@ -97,9 +97,13 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
 
     const targetGameCard = pageObj.getTargetGameCard(result.baseTitle)
     await targetGameCard.getByTestId("gamecard-options-trigger").click()
-    await page.getByRole("menuitem", { name: "게임 수정" }).click()
+    await Promise.all([
+      page.waitForURL(/\/create\?gameId=/, { waitUntil: "commit" }),
+      page.getByRole("menuitem", { name: "게임 수정" }).click(),
+    ])
 
-    await page.waitForURL(/\/create\?gameId=/)
+    await expect(page.getByText("페이지를 준비하고 있습니다...")).toBeHidden()
+    await expect(pageObj.gameNameInput).toBeVisible()
   })
 
   test("게임 수정 페이지에 들어왔을 경우, 기본 게임 이름이 알맞게 표시되어야 한다", async () => {
@@ -121,7 +125,7 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     const updatedTitle = `${result.baseTitle.slice(0, 22)}-updated`
 
     await pageObj.fillGameName(updatedTitle)
-    await pageObj.saveGame()
+    await pageObj.saveGame(updatedTitle)
     const updatedCard = page.getByRole("group", { name: updatedTitle })
     await expect(updatedCard).toBeVisible()
     await expect(updatedCard.getByTestId("gamecard-description")).toHaveText(
@@ -135,7 +139,7 @@ test.describe("게임 생성 페이지: 게임 수정", () => {
     const updatedQuestion = `${result.baseQuestion.slice(0, 22)}-updated`
 
     await pageObj.fillQuestionInput(updatedQuestion)
-    await pageObj.saveGame()
+    await pageObj.saveGame(result.baseTitle)
     const updatedCard = page.getByRole("group", { name: result.baseTitle })
     updatedCard.click()
     const gamePreview = page.getByRole("dialog")
