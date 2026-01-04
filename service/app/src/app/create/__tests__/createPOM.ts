@@ -1,4 +1,9 @@
-import { type Locator, type Page, type TestInfo } from "@playwright/test"
+import {
+  expect,
+  type Locator,
+  type Page,
+  type TestInfo,
+} from "@playwright/test"
 
 export class CreatePOM {
   readonly page: Page
@@ -184,10 +189,18 @@ export class CreatePOM {
     return this.uploadedImage.locator("..")
   }
 
-  async saveGame() {
+  async saveGame(baseTitle: string) {
+    await expect(this.saveGameButton).toBeEnabled()
+
+    const dashboardCommitted = this.page.waitForURL(/\/dashboard(?:\?.*)?$/, {
+      waitUntil: "commit",
+    })
+
     await this.saveGameButton.click()
     await this.clickPopupConfirmButton(this.saveGamePopup)
-    await this.page.waitForURL("/dashboard")
+
+    await dashboardCommitted
+    await expect(this.getTargetGameCard(baseTitle)).toBeVisible()
   }
 
   async createGame(testInfo: TestInfo) {
@@ -199,9 +212,7 @@ export class CreatePOM {
     await this.fillQuestionAndAnswer(baseQuestion, baseAnswer)
     await this.uploadImage("public/exampleThumbnail.jpg")
 
-    await this.clickSaveGameButton()
-    await this.clickPopupConfirmButton(this.saveGamePopup)
-    await this.page.waitForURL("/dashboard")
+    await this.saveGame(baseTitle)
 
     return {
       baseTitle,
