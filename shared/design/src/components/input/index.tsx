@@ -1,10 +1,11 @@
 "use client"
 
+import { useControllableState } from "@radix-ui/react-use-controllable-state"
 import { cva } from "class-variance-authority"
 import { Form } from "radix-ui"
-import { Context, useControllableState } from "radix-ui/internal"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
-import { forwardRef } from "react"
+import type * as React from "react"
+import { createContext, forwardRef, useContext } from "react"
 
 import { Magnifier, Trash } from "../../icons"
 import { cn } from "../../utils/cn"
@@ -84,13 +85,26 @@ const errorTextVariants = cva(
 
 export const Root = Form.Root
 
-type InputContext = {
+type InputContextValue = {
   name: string
-  children: ReactNode
 } & InputVariant
 
-const [InputProvider, useInputContext] =
-  Context.createContext<InputContext>("textField")
+const InputContext = createContext<InputContextValue | undefined>(undefined)
+
+const useInputContext = (consumerName: string) => {
+  const ctx = useContext(InputContext)
+  if (!ctx) {
+    throw new Error(`\`${consumerName}\` must be used within <Input.Field>`)
+  }
+  return ctx
+}
+
+const InputProvider = ({
+  children,
+  ...value
+}: InputContextValue & { children: ReactNode }) => {
+  return <InputContext.Provider value={value}>{children}</InputContext.Provider>
+}
 
 export const Field = forwardRef<
   React.ElementRef<typeof Form.Field>,

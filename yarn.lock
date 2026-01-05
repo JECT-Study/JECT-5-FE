@@ -862,7 +862,7 @@ __metadata:
 "@figma/plugin-typings@npm:^1.100.2":
   version: 1.116.0
   resolution: "@figma/plugin-typings@npm:1.116.0"
-  checksum: 10c0/f4cafcc6c7de929c60cd8920642ec113bccc845dd0880c8ac225dc2213d5fc2cda6d94b7432d953b825c7ff1a5d40717f64d448b03827bcbff108c8fdeaaa7fa
+  checksum: 10c0/cb4526d6294053ba3119843b3c212ad32c96d47d9f9f037fb1a3b2e7cd46ccfd99ab9af571ec2c8c59b1009d17fba6c1538d3a31dd8bd2ca171511b38e3b3483
   languageName: node
   linkType: hard
 
@@ -1472,6 +1472,7 @@ __metadata:
   dependencies:
     "@chromatic-com/storybook": "npm:^4"
     "@ject-5-fe/eslint": "workspace:*"
+    "@radix-ui/react-use-controllable-state": "npm:^1.2.2"
     "@storybook/addon-a11y": "npm:^9.0.9"
     "@storybook/addon-docs": "npm:^9.0.9"
     "@storybook/addon-vitest": "npm:^9.0.9"
@@ -3093,7 +3094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-use-controllable-state@npm:1.2.2":
+"@radix-ui/react-use-controllable-state@npm:1.2.2, @radix-ui/react-use-controllable-state@npm:^1.2.2":
   version: 1.2.2
   resolution: "@radix-ui/react-use-controllable-state@npm:1.2.2"
   dependencies:
@@ -9527,7 +9528,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/0ebd8fce04e396b9b40152754ccecb5b2b4f3f8774e6ca2b4175b3dcb86e09f11bc2d33d04dd282b0d770382d9669337a08ca1e6a620cd38471bed3caf781daa
+  checksum: 10c0/47b6a1e96d9263894da150bbb2c98c123b1630a0a88eb55c2129938557c51e8e55edf1d43364f7721b472fb4977e9567541f9c504a69ccf8138d0128cb682561
   languageName: node
   linkType: hard
 

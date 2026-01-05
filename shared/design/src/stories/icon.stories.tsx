@@ -1,6 +1,7 @@
 import {
   Add,
   Arrow,
+  Check,
   Cross,
   Edit,
   Hidden,
@@ -40,7 +41,7 @@ export default {
 ## 📦 사용법
 
 \`\`\`tsx
-import { Add, Arrow, Cross } from "@ject-5-fe/design/icons"
+import { Add, Arrow, Cross, Check } from "@ject-5-fe/design/icons"
 
 // 기본 사용법 (24×24px)
 <Add />
@@ -129,6 +130,7 @@ const icons = [
   { name: "Trash", component: Trash },
   { name: "Unshare", component: Unshare },
   { name: "Upload", component: Upload },
+  { name: "Check", component: Check },
 ]
 
 export const AllIcons = ({ size = 24, color = "text-black" }) => (
