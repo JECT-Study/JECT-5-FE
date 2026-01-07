@@ -1,6 +1,7 @@
 import plugin from "tailwindcss/plugin"
 import type { CSSRuleObject } from "tailwindcss/types/config"
 
+import { generateBreakpointTokens } from "../tokens/breakpoint"
 import { generateColorTokens } from "../tokens/color"
 import { generateRadiusTokens } from "../tokens/radius"
 import { generateSpacingTokens } from "../tokens/spacing"
@@ -20,6 +21,7 @@ const { theme: typographyTheme } = generateTypographyTokens()
 const { theme: spacingTheme } = generateSpacingTokens()
 const { theme: radiusTheme } = generateRadiusTokens()
 const { theme: widthTheme } = generateWidthTokens()
+const { theme: breakpointTheme } = generateBreakpointTokens()
 const { cssVars: unitCssVars } = generateUnitTokens()
 
 export default plugin(
@@ -50,6 +52,7 @@ export default plugin(
   {
     theme: {
       extend: {
+        screens: breakpointTheme,
         spacing: spacingTheme,
         borderRadius: radiusTheme,
         borderWidth: widthTheme,
