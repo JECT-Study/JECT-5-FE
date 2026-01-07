@@ -4,7 +4,7 @@ import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
 } from "@ject-5-fe/design/components/menu"
-import { MoreDot } from "@ject-5-fe/design/icons"
+import { MoreDots } from "@ject-5-fe/design/icons"
 import { cn } from "@ject-5-fe/design/utils/cn"
 import NextImage from "next/image"
 import type { ComponentPropsWithoutRef, PropsWithChildren } from "react"
@@ -156,7 +156,7 @@ export const Options = ({
               event.stopPropagation()
             }}
           >
-            <MoreDot />
+            <MoreDots />
           </SecondaryPlainIconButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent

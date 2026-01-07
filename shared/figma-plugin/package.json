@@ -6,7 +6,8 @@
     "dev": "plugma dev",
     "socket": "tsx src/socket.ts",
     "start": "concurrently \"yarn run socket\" \"yarn run dev\" --names \"SOCKET,MCP\" --prefix-colors \"blue,green\"",
-    "build:server": "tsup"
+    "build:server": "tsup",
+    "export-icons": "tsx src/cli/exportIcons.ts"
   },
   "bin": "dist/server/server.cjs",
   "files": [

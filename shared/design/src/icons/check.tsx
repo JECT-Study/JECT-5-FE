@@ -17,7 +17,7 @@ const Check = (
     ref={ref}
     {...props}
   >
-    <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z" />
+    <path d="m11.074 17.456-.024.024L5 11.43l1.97-1.97 4.104 4.104L17.638 7l1.97 1.97-8.51 8.51z" />
   </svg>
 )
 const ForwardRef = forwardRef(Check)

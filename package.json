@@ -29,7 +29,8 @@
     "test:all": "yarn workspace @ject-5-fe/app run test:all && yarn workspace @ject-5-fe/design run test",
     "lint:all": "yarn workspaces foreach -A run lint",
     "type-check:all": "yarn workspaces foreach -A run type-check",
-    "ci": "yarn run test:all && yarn run type-check:all && yarn run lint:all"
+    "ci": "yarn run test:all && yarn run type-check:all && yarn run lint:all",
+    "icons:sync": "yarn workspace @ject-5-fe/figma-plugin export-icons --out .tmp/icons.export.json && yarn workspace @ject-5-fe/design apply-icons --in ../figma-plugin/.tmp/icons.export.json --out src/icons/icon.json && yarn workspace @ject-5-fe/design generate-icons"
   },
   "resolutions": {
     "vite": "^6"

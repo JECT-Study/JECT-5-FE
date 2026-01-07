@@ -187,6 +187,12 @@ export default function () {
       case "get_node_info":
         if (!params?.nodeId) throw new Error("Missing nodeId parameter")
         return await getNodeInfo(params.nodeId)
+      case "export_icons_from_frame":
+        return await exportIcons({
+          pageName: params?.pageName ?? "컴포넌트",
+          frameName: params?.frameName ?? "아이콘",
+          ignoreFrameChildren: true,
+        })
       default:
         throw new Error(`Unknown command: ${command}`)
     }
@@ -310,6 +316,140 @@ export default function () {
         type: node.type,
         ...("visible" in node ? { visible: node.visible } : {}),
       }
+    }
+  }
+
+  type ExportIconsParams = {
+    pageName: string
+    frameName: string
+    ignoreFrameChildren: boolean
+  }
+  
+  type ExportedIcon = {
+    nodeId: string
+    figmaName: string
+    figmaType: SceneNode["type"]
+    svg: string
+  }
+  
+  function findPageByName(pageName: string): PageNode | null {
+    return (
+      figma.root.children.find(
+        (p): p is PageNode => p.type === "PAGE" && p.name.includes(pageName),
+      ) ?? null
+    )
+  }
+  
+  function findFrameByName(
+    root: BaseNode & ChildrenMixin,
+    frameName: string,
+  ): FrameNode | null {
+    for (const child of root.children) {
+      if (child.type === "FRAME" && child.name.includes(frameName)) return child
+      if ("children" in child) {
+        const found = findFrameByName(child as BaseNode & ChildrenMixin, frameName)
+        if (found) return found
+      }
+    }
+    return null
+  }
+  
+  function utf8Decode(bytes: Uint8Array): string {
+    let out = ""
+    let i = 0
+  
+    while (i < bytes.length) {
+      const c1 = bytes[i++]
+  
+      if (c1 < 0x80) {
+        out += String.fromCharCode(c1)
+        continue
+      }
+  
+      if (c1 < 0xe0) {
+        const c2 = bytes[i++] & 0x3f
+        out += String.fromCharCode(((c1 & 0x1f) << 6) | c2)
+        continue
+      }
+  
+      if (c1 < 0xf0) {
+        const c2 = bytes[i++] & 0x3f
+        const c3 = bytes[i++] & 0x3f
+        out += String.fromCharCode(((c1 & 0x0f) << 12) | (c2 << 6) | c3)
+        continue
+      }
+  
+      const c2 = bytes[i++] & 0x3f
+      const c3 = bytes[i++] & 0x3f
+      const c4 = bytes[i++] & 0x3f
+      let codePoint = ((c1 & 0x07) << 18) | (c2 << 12) | (c3 << 6) | c4
+      codePoint -= 0x10000
+      out += String.fromCharCode(
+        0xd800 + (codePoint >> 10),
+        0xdc00 + (codePoint & 0x3ff),
+      )
+    }
+  
+    return out
+  }
+  
+  async function exportNodeToSvg(node: SceneNode): Promise<string> {
+    const anyNode = node as any
+    const exportAsync = anyNode.exportAsync as
+      | ((opts: { format: "SVG" }) => Promise<Uint8Array>)
+      | undefined
+  
+    if (typeof exportAsync !== "function") {
+      throw new Error(`Node type "${node.type}" does not support exportAsync`)
+    }
+  
+    const bytes = await exportAsync.call(anyNode, { format: "SVG" })
+    return utf8Decode(bytes)
+  }
+  
+  async function exportIcons(params: ExportIconsParams): Promise<{
+    pageId: string
+    pageName: string
+    frameId: string
+    frameName: string
+    count: number
+    icons: ExportedIcon[]
+  }> {
+    const page = findPageByName(params.pageName)
+    if (!page) throw new Error(`Page not found: "${params.pageName}"`)
+  
+    await page.loadAsync()
+  
+    const iconFrame = findFrameByName(page, params.frameName)
+    if (!iconFrame) {
+      throw new Error(
+        `Frame not found: "${params.frameName}" in page "${params.pageName}"`,
+      )
+    }
+  
+    const candidates = iconFrame.children
+      .filter((n) => n.visible)
+      .filter((n) => !(params.ignoreFrameChildren && n.type === "FRAME"))
+  
+    const icons = await Promise.all(
+      candidates.map(async (node) => {
+        const svg = await exportNodeToSvg(node)
+        return {
+          nodeId: node.id,
+          figmaName: node.name,
+          figmaType: node.type,
+          svg,
+        }
+      }),
+    )
+  
+    return {
+      pageId: page.id,
+      pageName: page.name,
+      frameId: iconFrame.id,
+      frameName: iconFrame.name,
+      count: icons.length,
+      icons,
     }
   }
 
