@@ -3,6 +3,7 @@
 import { DropdownMenuItem } from "@ject-5-fe/design/components/menu"
 import { Copy, Share } from "@ject-5-fe/design/icons"
 import Link from "next/link"
+import { useState } from "react"
 import { useIntersectionObserver } from "react-simplikit"
 
 import type { GameListItem } from "@/entities/game/model"
@@ -38,6 +39,8 @@ export const GameLibraryGrid = ({
   onGameClick,
   onLoadMore,
 }: GameLibraryGridProps) => {
+  const [openMenuGameId, setOpenMenuGameId] = useState<string | null>(null)
+
   const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
     (entry) => {
       if (
@@ -91,7 +94,12 @@ export const GameLibraryGrid = ({
                   )}
                 </GameCard.Image>
                 <GameCard.Description>{game.gameTitle}</GameCard.Description>
-                <GameCard.Options>
+                <GameCard.Options
+                  open={openMenuGameId === game.gameId}
+                  onOpenChange={(nextOpen) => {
+                    setOpenMenuGameId(nextOpen ? game.gameId : null)
+                  }}
+                >
                   <DropdownMenuItem
                     type="icon"
                     onClick={(event) => {

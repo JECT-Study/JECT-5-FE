@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
@@ -12,6 +13,8 @@ import { GameLibrarySkeleton } from "@/entities/game/ui/gameLibrarySkeleton"
 import { useDashboardGameActions } from "../hooks/useDashboardGameActions"
 
 export const DashboardGameSection = () => {
+  const [openMenuGameId, setOpenMenuGameId] = useState<string | null>(null)
+
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteMyGames({
       limit: 19,
@@ -73,7 +76,12 @@ export const DashboardGameSection = () => {
                 )}
               </GameCard.Image>
               <GameCard.Description>{game.gameTitle}</GameCard.Description>
-              <GameCard.Options>
+              <GameCard.Options
+                open={openMenuGameId === game.gameId}
+                onOpenChange={(nextOpen) => {
+                  setOpenMenuGameId(nextOpen ? game.gameId : null)
+                }}
+              >
                 <GameCardOptions
                   shared={game.isShared}
                   onEdit={() => handleEditGame(game)}

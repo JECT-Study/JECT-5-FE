@@ -127,12 +127,16 @@ export const Description = ({ children, className }: DescriptionProps) => {
 interface OptionsProps extends PropsWithChildren {
   className?: string
   menuClassName?: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export const Options = ({
   children,
   className,
   menuClassName,
+  open,
+  onOpenChange,
 }: OptionsProps) => {
   return (
     <div
@@ -142,7 +146,7 @@ export const Options = ({
       )}
       data-testid="gamecard-options"
     >
-      <DropdownMenuRoot>
+      <DropdownMenuRoot open={open} onOpenChange={onOpenChange}>
         <DropdownMenuTrigger asChild>
           <SecondaryPlainIconButton
             size="sm"

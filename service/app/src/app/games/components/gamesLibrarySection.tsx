@@ -1,6 +1,7 @@
 "use client"
 
 import { parseAsString, useQueryState } from "nuqs"
+import { useState } from "react"
 import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
@@ -12,6 +13,8 @@ import { filterInput } from "../utils/filterInput"
 import { GameCardActions } from "./gameCardActions"
 
 export function GamesLibrarySection() {
+  const [openMenuGameId, setOpenMenuGameId] = useState<string | null>(null)
+
   const [searchQuery] = useQueryState("query", parseAsString.withDefault(""))
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
@@ -66,7 +69,12 @@ export function GamesLibrarySection() {
                 )}
               </GameCard.Image>
               <GameCard.Description>{game.gameTitle}</GameCard.Description>
-              <GameCard.Options>
+              <GameCard.Options
+                open={openMenuGameId === game.gameId}
+                onOpenChange={(nextOpen) => {
+                  setOpenMenuGameId(nextOpen ? game.gameId : null)
+                }}
+              >
                 <GameCardActions game={game} />
               </GameCard.Options>
             </GameCard.Root>
