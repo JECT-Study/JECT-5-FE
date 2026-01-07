@@ -1,5 +1,5 @@
 import { forwardRef, type Ref, type SVGProps } from "react"
-const MoreDot = (
+const Warning = (
   {
     size = 24,
     ...props
@@ -17,8 +17,12 @@ const MoreDot = (
     ref={ref}
     {...props}
   >
-    <path d="M12.002 7.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8M12.002 14.4a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8M12.002 21.6a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8" />
+    <path
+      fillRule="evenodd"
+      d="M9.908 3.718c.918-1.63 3.267-1.63 4.184 0l6.696 11.905c.9 1.6-.256 3.577-2.091 3.577H5.304c-1.836 0-2.992-1.977-2.092-3.577zM13.2 15.6a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0M12 6a1.2 1.2 0 0 0-1.2 1.2v3.6a1.2 1.2 0 0 0 2.4 0V7.2A1.2 1.2 0 0 0 12 6"
+      clipRule="evenodd"
+    />
   </svg>
 )
-const ForwardRef = forwardRef(MoreDot)
+const ForwardRef = forwardRef(Warning)
 export default ForwardRef
