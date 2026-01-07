@@ -6,7 +6,7 @@ import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
 } from "../components/menu"
-import { Edit, MoreDot, Trash, Unshare } from "../icons"
+import { Edit, MoreDots, Trash, Unshare } from "../icons"
 
 /**
  * # Menu Component
@@ -82,7 +82,7 @@ export const VerticalText: Story = {
   render: (args) => (
     <DropdownMenuRoot>
       <DropdownMenuTrigger>
-        <MoreDot />
+        <MoreDots />
       </DropdownMenuTrigger>
       <DropdownMenuContent {...args}>
         <DropdownMenuItem type="text">로그아웃</DropdownMenuItem>
@@ -102,7 +102,7 @@ export const HorizontalIcon: Story = {
   render: (args) => (
     <DropdownMenuRoot>
       <DropdownMenuTrigger>
-        <MoreDot />
+        <MoreDots />
       </DropdownMenuTrigger>
       <DropdownMenuContent {...args}>
         <DropdownMenuItem type="icon">

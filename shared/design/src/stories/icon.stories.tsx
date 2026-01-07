@@ -1,24 +1,16 @@
-import {
-  Add,
-  Arrow,
-  Check,
-  Cross,
-  Edit,
-  Hidden,
-  Iconplaceholder_16px,
-  Iconplaceholder_24px,
-  Iconplaceholder_28px,
-  Iconplaceholder_32px,
-  Magnifier,
-  Minus,
-  MoreDot,
-  Play,
-  Show,
-  Sun,
-  Trash,
-  Unshare,
-  Upload,
-} from "../icons"
+import * as Icons from "../icons"
+
+type IconProps = React.SVGProps<SVGSVGElement> & { size?: number | string }
+type IconComponent =
+  | React.ComponentType<IconProps>
+  | React.ForwardRefExoticComponent<IconProps>
+
+const icons = Object.entries(Icons)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([name, component]) => ({
+    name,
+    component: component as IconComponent,
+  }))
 
 export default {
   title: "Icons",
@@ -110,28 +102,6 @@ Tailwind CSS의 색상 클래스를 사용하여 아이콘 색상을 변경할 �
     },
   },
 }
-
-const icons = [
-  { name: "Add", component: Add },
-  { name: "Arrow", component: Arrow },
-  { name: "Cross", component: Cross },
-  { name: "Edit", component: Edit },
-  { name: "Hidden", component: Hidden },
-  { name: "Iconplaceholder 16px", component: Iconplaceholder_16px },
-  { name: "Iconplaceholder 24px", component: Iconplaceholder_24px },
-  { name: "Iconplaceholder 28px", component: Iconplaceholder_28px },
-  { name: "Iconplaceholder 32px", component: Iconplaceholder_32px },
-  { name: "Magnifier", component: Magnifier },
-  { name: "Minus", component: Minus },
-  { name: "MoreDot", component: MoreDot },
-  { name: "Play", component: Play },
-  { name: "Show", component: Show },
-  { name: "Sun", component: Sun },
-  { name: "Trash", component: Trash },
-  { name: "Unshare", component: Unshare },
-  { name: "Upload", component: Upload },
-  { name: "Check", component: Check },
-]
 
 export const AllIcons = ({ size = 24, color = "text-black" }) => (
   <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5 p-5">
