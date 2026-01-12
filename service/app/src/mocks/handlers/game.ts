@@ -11,8 +11,6 @@ import {
 } from "@/entities/game"
 
 import { internalServerError, loginRequiredError } from "../data/common"
-
-const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
 import { mockGameList } from "../data/common"
 import {
   gameConflictError,
@@ -50,7 +48,7 @@ import {
 import { generateSuccessResponse } from "../utils/responseHelpers"
 
 export const gameHandlers = [
-  http.get(`${MSW_BASE_URL}/games/default`, () => {
+  http.get(`/games/default`, () => {
     try {
       const defaultGames = mockGameList.slice(0, 4)
 
@@ -65,7 +63,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.get(`${MSW_BASE_URL}/users/me/games`, ({ request }) => {
+  http.get(`/users/me/games`, ({ request }) => {
     const url = new URL(request.url)
     const { cursorGameId, cursorUpdatedAt, limit } = Object.fromEntries(
       url.searchParams.entries(),
@@ -116,7 +114,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.get(`${MSW_BASE_URL}/games`, ({ request }) => {
+  http.get(`/games`, ({ request }) => {
     const url = new URL(request.url)
     const { cursorGameId, cursorPlayCount, cursorUpdatedAt, limit, query } =
       Object.fromEntries(url.searchParams.entries())
@@ -143,7 +141,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError)
     }
   }),
-  http.get(`${MSW_BASE_URL}/games/:gameId`, async ({ params }) => {
+  http.get(`/games/:gameId`, async ({ params }) => {
     try {
       const { gameId } = params
 
@@ -161,7 +159,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.post(`${MSW_BASE_URL}/games/:gameId/plays`, async ({ params }) => {
+  http.post(`/games/:gameId/plays`, async ({ params }) => {
     try {
       const { gameId } = params
 
@@ -178,47 +176,44 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.post(
-    `${MSW_BASE_URL}/games/:gameId/clone`,
-    async ({ request, params }) => {
-      try {
-        const { gameId } = params
+  http.post(`/games/:gameId/clone`, async ({ request, params }) => {
+    try {
+      const { gameId } = params
 
-        const cookieHeader = request.headers.get("Cookie")
-        if (!validateSessionCookie(cookieHeader)) {
-          return HttpResponse.json(loginRequiredError, { status: 401 })
-        }
-
-        const sourceGame = findGameById(gameId as string)
-        if (!sourceGame) {
-          return HttpResponse.json(gameNotFoundError(gameId as string), {
-            status: 404,
-          })
-        }
-
-        const clonedGameId = generateFakeUUID()
-        const clonedGame: GameListItem = {
-          gameId: clonedGameId,
-          gameTitle: `${sourceGame.gameTitle} 사본`,
-          gameThumbnailUrl: sourceGame.gameThumbnailUrl,
-          questionCount: sourceGame.questionCount,
-          playCount: 0,
-          isShared: false,
-          version: 1,
-          updatedAt: new Date().toISOString(),
-        }
-
-        mockGameList.push(clonedGame)
-
-        return HttpResponse.json(
-          generateSuccessResponse({ gameId: clonedGameId }),
-        )
-      } catch {
-        return HttpResponse.json(internalServerError, { status: 500 })
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
       }
-    },
-  ),
-  http.post(`${MSW_BASE_URL}/games`, async ({ request }) => {
+
+      const sourceGame = findGameById(gameId as string)
+      if (!sourceGame) {
+        return HttpResponse.json(gameNotFoundError(gameId as string), {
+          status: 404,
+        })
+      }
+
+      const clonedGameId = generateFakeUUID()
+      const clonedGame: GameListItem = {
+        gameId: clonedGameId,
+        gameTitle: `${sourceGame.gameTitle} 사본`,
+        gameThumbnailUrl: sourceGame.gameThumbnailUrl,
+        questionCount: sourceGame.questionCount,
+        playCount: 0,
+        isShared: false,
+        version: 1,
+        updatedAt: new Date().toISOString(),
+      }
+
+      mockGameList.push(clonedGame)
+
+      return HttpResponse.json(
+        generateSuccessResponse({ gameId: clonedGameId }),
+      )
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.post(`/games`, async ({ request }) => {
     try {
       const body = (await request.json()) as GameCreateRequest
 
@@ -265,7 +260,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError)
     }
   }),
-  http.put(`${MSW_BASE_URL}/games/:gameId`, async ({ request, params }) => {
+  http.put(`/games/:gameId`, async ({ request, params }) => {
     try {
       const { gameId } = params
       const body = (await request.json()) as GameUpdateRequest
@@ -321,7 +316,7 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.delete(`${MSW_BASE_URL}/games/:gameId`, async ({ request, params }) => {
+  http.delete(`/games/:gameId`, async ({ request, params }) => {
     try {
       const { gameId } = params
 
@@ -344,57 +339,51 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError, { status: 500 })
     }
   }),
-  http.post(
-    `${MSW_BASE_URL}/games/:gameId/share`,
-    async ({ request, params }) => {
-      try {
-        const { gameId } = params
+  http.post(`/games/:gameId/share`, async ({ request, params }) => {
+    try {
+      const { gameId } = params
 
-        const cookieHeader = request.headers.get("Cookie")
-        if (!validateSessionCookie(cookieHeader)) {
-          return HttpResponse.json(loginRequiredError, { status: 401 })
-        }
-
-        const game = findGameById(gameId as string)
-        if (!game) {
-          return HttpResponse.json(gameNotFoundError(gameId as string), {
-            status: 404,
-          })
-        }
-
-        toggleGameShare(game, true)
-        return HttpResponse.json(gameSuccessResponse())
-      } catch {
-        return HttpResponse.json(internalServerError, { status: 500 })
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
       }
-    },
-  ),
-  http.post(
-    `${MSW_BASE_URL}/games/:gameId/unshare`,
-    async ({ request, params }) => {
-      try {
-        const { gameId } = params
 
-        const cookieHeader = request.headers.get("Cookie")
-        if (!validateSessionCookie(cookieHeader)) {
-          return HttpResponse.json(loginRequiredError, { status: 401 })
-        }
-
-        const game = findGameById(gameId as string)
-        if (!game) {
-          return HttpResponse.json(gameNotFoundError(gameId as string), {
-            status: 404,
-          })
-        }
-
-        toggleGameShare(game, false)
-        return HttpResponse.json(gameSuccessResponse())
-      } catch {
-        return HttpResponse.json(internalServerError, { status: 500 })
+      const game = findGameById(gameId as string)
+      if (!game) {
+        return HttpResponse.json(gameNotFoundError(gameId as string), {
+          status: 404,
+        })
       }
-    },
-  ),
-  http.post(`${MSW_BASE_URL}/games/uploads/urls`, async ({ request }) => {
+
+      toggleGameShare(game, true)
+      return HttpResponse.json(gameSuccessResponse())
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.post(`/games/:gameId/unshare`, async ({ request, params }) => {
+    try {
+      const { gameId } = params
+
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
+      }
+
+      const game = findGameById(gameId as string)
+      if (!game) {
+        return HttpResponse.json(gameNotFoundError(gameId as string), {
+          status: 404,
+        })
+      }
+
+      toggleGameShare(game, false)
+      return HttpResponse.json(gameSuccessResponse())
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.post(`/games/uploads/urls`, async ({ request }) => {
     try {
       const body = (await request.json()) as PresignedUrlRequest
       const { images } = body
@@ -412,27 +401,24 @@ export const gameHandlers = [
       return HttpResponse.json(internalServerError)
     }
   }),
-  http.post(
-    `${MSW_BASE_URL}/games/:gameId/uploads/urls`,
-    async ({ request, params }) => {
-      try {
-        const { gameId } = params
-        const body = (await request.json()) as PresignedUrlRequest
-        const { images } = body
+  http.post(`/games/:gameId/uploads/urls`, async ({ request, params }) => {
+    try {
+      const { gameId } = params
+      const body = (await request.json()) as PresignedUrlRequest
+      const { images } = body
 
-        const cookieHeader = request.headers.get("Cookie")
-        if (!validateSessionCookie(cookieHeader)) {
-          return HttpResponse.json(loginRequiredError, { status: 401 })
-        }
-
-        return HttpResponse.json(
-          presignedUrlDataSuccess(gameId as string, images.length),
-        )
-      } catch {
-        return HttpResponse.json(internalServerError)
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
       }
-    },
-  ),
+
+      return HttpResponse.json(
+        presignedUrlDataSuccess(gameId as string, images.length),
+      )
+    } catch {
+      return HttpResponse.json(internalServerError)
+    }
+  }),
   http.put(/\/exampleThumbnail\.jpg/, async () => {
     return new HttpResponse(null, { status: 200 })
   }),
