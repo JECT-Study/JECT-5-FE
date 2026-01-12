@@ -64,6 +64,7 @@ jobs:
       - name: Build Next.js app for E2E tests
         env:
           NEXT_PUBLIC_TEST: "1"
+          MSW_ENABLED: "true"
         run: yarn workspace @ject-5-fe/app build
 
       - name: Cache E2E test results
