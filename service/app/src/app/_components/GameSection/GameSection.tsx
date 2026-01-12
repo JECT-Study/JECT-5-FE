@@ -1,10 +1,7 @@
-import { Suspense } from "react"
-
 import { getDefaultGame } from "@/entities/game/api/getDefaultGame"
 
 import { GameSectionClient } from "./GameSectionClient"
 import { GameSectionHeader } from "./GameSectionHeader"
-import { GameSectionSkeleton } from "./GameSectionSkeleton"
 
 interface GameSectionProps {
   className?: string
@@ -20,9 +17,7 @@ export const GameSection = async ({ className = "" }: GameSectionProps) => {
     >
       <div className="flex min-w-[952px] flex-col gap-28">
         <GameSectionHeader />
-        <Suspense fallback={<GameSectionSkeleton />}>
-          <GameSectionClient games={games} />
-        </Suspense>
+        <GameSectionClient games={games} />
       </div>
     </section>
   )
