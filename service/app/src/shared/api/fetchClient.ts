@@ -3,9 +3,14 @@ import ky, { type HTTPError, isHTTPError, type Options } from "ky"
 import { type ApiError, type ApiSuccess, errorSchema } from "./types/response"
 
 const isDev = process.env.NODE_ENV === "development"
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
+if (!apiUrl) {
+  throw new Error("NEXT_PUBLIC_API_URL is not set")
+}
 
 const _instance = ky.create({
-  prefixUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  prefixUrl: apiUrl,
   credentials: "include",
   timeout: 10000,
   headers: {
