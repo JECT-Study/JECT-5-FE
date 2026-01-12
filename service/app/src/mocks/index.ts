@@ -5,7 +5,7 @@ export async function initMsw() {
   } else {
     const { worker } = await import("./browser")
     await worker.start({
-      onUnhandledRequest: "bypass",
+      onUnhandledRequest: "warn",
       serviceWorker: { url: "/mockServiceWorker.js" },
     })
   }
