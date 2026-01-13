@@ -43,7 +43,7 @@ export function GamesLibrarySection() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1130px] flex-col items-center px-10 pb-120 pt-[210px] sm:px-6 lg:px-0">
-      <div className="grid w-full grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-60">
+      <div className="grid w-full grid-cols-5 gap-10 lg:gap-60">
         {isLoading && (!filteredGames || filteredGames.length === 0) && (
           <GameLibrarySkeleton count={19} />
         )}
