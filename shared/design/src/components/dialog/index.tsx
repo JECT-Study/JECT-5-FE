@@ -111,7 +111,7 @@ export const DialogHeader = ({
     <DialogPrimitive.Title
       data-slot="dialog-header"
       className={cn(
-        "typography-heading-md-semibold flex w-full flex-col items-center justify-center break-keep p-2.5 text-center text-text-primary",
+        "typography-heading-md-semibold flex w-full flex-col items-center justify-center break-keep p-8 text-center text-text-primary",
         className,
       )}
       {...props}
@@ -154,7 +154,7 @@ export const DialogBody = ({
       <DialogPrimitive.Description
         data-slot="dialog-body"
         className={cn(
-          "typography-body-lg-medium flex w-full flex-col items-center justify-center break-keep p-2.5 text-center text-text-secondary",
+          "typography-body-lg-medium flex w-full flex-col items-center justify-center break-keep text-center text-text-secondary",
           className,
         )}
         {...props}
