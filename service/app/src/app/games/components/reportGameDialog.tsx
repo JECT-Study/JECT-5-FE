@@ -17,29 +17,11 @@ import { overlay } from "overlay-kit"
 import { useState } from "react"
 
 import { reportGame } from "@/entities/game/api/reportGame"
-import type { ReportReasonCode } from "@/entities/game/model/report"
+import {
+  REPORT_REASON_OPTIONS,
+  type ReportReasonCode,
+} from "@/entities/game/model/report"
 import type { UUID } from "@/shared/api/types/common"
-
-const REPORT_REASON_OPTIONS: Array<{ value: ReportReasonCode; label: string }> =
-  [
-    {
-      value: "VIOLENT_OR_DISTURBING_CONTENT",
-      label: "폭력적이거나 불편한 컨텐츠",
-    },
-    { value: "SEXUAL_CONTENT", label: "성적인 컨텐츠" },
-    {
-      value: "CYBERBULLYING_OR_HARASSMENT",
-      label: "사이버 폭력 또는 괴롭힘",
-    },
-    { value: "SUICIDE_OR_SELF_HARM", label: "자살 또는 자해" },
-    { value: "FRAUD_OR_MISINFORMATION", label: "사기 또는 거짓된 정보" },
-    { value: "SPAM_OR_PROMOTION", label: "스팸 또는 홍보" },
-    { value: "PRIVACY_VIOLATION", label: "개인정보 침해" },
-    {
-      value: "INTELLECTUAL_PROPERTY_INFRINGEMENT",
-      label: "지식재산권 침해",
-    },
-  ]
 
 export interface ReportGameDialogOptions {
   gameId: UUID

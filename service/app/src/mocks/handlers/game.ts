@@ -9,11 +9,16 @@ import {
   PresignedUrlRequest,
   sortGames,
 } from "@/entities/game"
+import {
+  REPORT_REASON_CODES,
+  type ReportReasonCode,
+} from "@/entities/game/model/report"
 
-import { internalServerError, loginRequiredError } from "../data/common"
-
-const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
-import { mockGameList } from "../data/common"
+import {
+  internalServerError,
+  loginRequiredError,
+  mockGameList,
+} from "../data/common"
 import {
   gameConflictError,
   gameDetailSuccess,
@@ -49,18 +54,7 @@ import {
 } from "../utils/mockGenerators"
 import { generateSuccessResponse } from "../utils/responseHelpers"
 
-const REPORT_REASON_CODES = [
-  "VIOLENT_OR_DISTURBING_CONTENT",
-  "SEXUAL_CONTENT",
-  "CYBERBULLYING_OR_HARASSMENT",
-  "SUICIDE_OR_SELF_HARM",
-  "FRAUD_OR_MISINFORMATION",
-  "SPAM_OR_PROMOTION",
-  "PRIVACY_VIOLATION",
-  "INTELLECTUAL_PROPERTY_INFRINGEMENT",
-] as const
-
-type ReportReasonCode = (typeof REPORT_REASON_CODES)[number]
+const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
 
 type GameReportRequest = {
   reasonCode: ReportReasonCode
