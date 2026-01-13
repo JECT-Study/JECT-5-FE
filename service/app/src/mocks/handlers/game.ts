@@ -49,6 +49,23 @@ import {
 } from "../utils/mockGenerators"
 import { generateSuccessResponse } from "../utils/responseHelpers"
 
+const REPORT_REASON_CODES = [
+  "VIOLENT_OR_DISTURBING_CONTENT",
+  "SEXUAL_CONTENT",
+  "CYBERBULLYING_OR_HARASSMENT",
+  "SUICIDE_OR_SELF_HARM",
+  "FRAUD_OR_MISINFORMATION",
+  "SPAM_OR_PROMOTION",
+  "PRIVACY_VIOLATION",
+  "INTELLECTUAL_PROPERTY_INFRINGEMENT",
+] as const
+
+type ReportReasonCode = (typeof REPORT_REASON_CODES)[number]
+
+type GameReportRequest = {
+  reasonCode: ReportReasonCode
+}
+
 export const gameHandlers = [
   http.get(`${MSW_BASE_URL}/games/default`, () => {
     try {
@@ -435,5 +452,12 @@ export const gameHandlers = [
   ),
   http.put(/\/exampleThumbnail\.jpg/, async () => {
     return new HttpResponse(null, { status: 200 })
+  }),
+  http.post(`/games/:gameId/report`, async ({ request }) => {
+    const body = (await request.json()) as GameReportRequest
+    if (!body.reasonCode || !REPORT_REASON_CODES.includes(body.reasonCode)) {
+      return new HttpResponse(null, { status: 400 })
+    }
+    return HttpResponse.json(gameSuccessResponse())
   }),
 ]
