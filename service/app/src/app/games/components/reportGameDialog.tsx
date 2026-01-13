@@ -136,7 +136,8 @@ function ReportGameDialogContent({
                     감사합니다!
                   </DialogHeader>
                   <DialogBody className="typography-body-lg-regular flex w-full">
-                    회원님의 신고는 더 나은 서비스를 만드는 데 도움이 됩니다.
+                    회원님의 신고는 더 나은 서비스를 <br />
+                    만드는 데 도움이 됩니다.
                   </DialogBody>
                 </div>
               </div>
