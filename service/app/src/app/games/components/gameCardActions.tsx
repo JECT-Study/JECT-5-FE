@@ -1,12 +1,13 @@
 "use client"
 
 import { DropdownMenuItem } from "@ject-5-fe/design/components/menu"
-import { Copy, Share } from "@ject-5-fe/design/icons"
+import { Copy, Share, Warning } from "@ject-5-fe/design/icons"
 import { type MouseEvent } from "react"
 
 import type { GameListItem } from "@/entities/game"
 
 import { useActions } from "../hooks/useGameCardActions"
+import { openReportGameDialog } from "./reportGameDialog"
 
 interface GameCardActionsProps {
   game: GameListItem
@@ -26,6 +27,11 @@ export const GameCardActions = ({ game }: GameCardActionsProps) => {
     clone(game.gameId)
   }
 
+  const handleReportGame = (event: MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
+    openReportGameDialog({ gameId: game.gameId })
+  }
+
   return (
     <>
       <DropdownMenuItem
@@ -43,6 +49,14 @@ export const GameCardActions = ({ game }: GameCardActionsProps) => {
       >
         <Copy />
         <span className="text-text-interactive-secondary">게임 복제</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        type="icon"
+        onClick={handleReportGame}
+        className="cursor-pointer"
+      >
+        <Warning />
+        <span className="text-text-interactive-secondary">게임 신고</span>
       </DropdownMenuItem>
     </>
   )
