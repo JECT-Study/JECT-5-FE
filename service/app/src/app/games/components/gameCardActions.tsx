@@ -7,6 +7,7 @@ import { type MouseEvent } from "react"
 import type { GameListItem } from "@/entities/game"
 
 import { useActions } from "../hooks/useGameCardActions"
+import { openCloneGameDialog } from "./cloneGameDialog"
 import { openReportGameDialog } from "./reportGameDialog"
 
 interface GameCardActionsProps {
@@ -22,9 +23,11 @@ export const GameCardActions = ({ game }: GameCardActionsProps) => {
     copy(`${origin}/game/${game.gameId}`)
   }
 
-  const handleCloneGame = (event: MouseEvent<HTMLElement>) => {
+  const handleCloneGame = async (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation()
-    clone(game.gameId)
+    const confirmed = await openCloneGameDialog()
+    if (!confirmed) return
+    await clone(game.gameId)
   }
 
   const handleReportGame = (event: MouseEvent<HTMLElement>) => {
