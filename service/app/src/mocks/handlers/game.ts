@@ -447,7 +447,7 @@ export const gameHandlers = [
   http.put(/\/exampleThumbnail\.jpg/, async () => {
     return new HttpResponse(null, { status: 200 })
   }),
-  http.post(`/games/:gameId/report`, async ({ request }) => {
+  http.post(`${MSW_BASE_URL}/games/:gameId/report`, async ({ request }) => {
     const body = (await request.json()) as GameReportRequest
     if (!body.reasonCode || !REPORT_REASON_CODES.includes(body.reasonCode)) {
       return new HttpResponse(null, { status: 400 })
