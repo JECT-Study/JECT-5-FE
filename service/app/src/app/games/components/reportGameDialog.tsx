@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogHeader,
 } from "@ject-5-fe/design/components/dialog"
-import { RadioField } from "@ject-5-fe/design/components/radioField"
+import { RadioGroup, RadioItem } from "@ject-5-fe/design/components/radio"
 import { Cross } from "@ject-5-fe/design/icons"
 import { overlay } from "overlay-kit"
 import { useState } from "react"
@@ -36,7 +36,7 @@ function ReportGameDialogContent({
   close,
   isOpen,
 }: ReportGameDialogOptions & { close: () => void; isOpen: boolean }) {
-  const [reasonCode, setReasonCode] = useState<ReportReasonCode | null>(null)
+  const [reasonCode, setReasonCode] = useState<ReportReasonCode | undefined>()
   const [step, setStep] = useState<ReportGameDialogStep>("select")
 
   const handleReport = async () => {
@@ -75,19 +75,21 @@ function ReportGameDialogContent({
                 </div>
 
                 <div className="flex w-[259px] flex-col items-start gap-24">
-                  {REPORT_REASON_OPTIONS.map((option) => (
-                    <RadioField
-                      key={option.value}
-                      name="game-report-reason"
-                      value={option.value}
-                      checked={reasonCode === option.value}
-                      onCheckedChange={() => setReasonCode(option.value)}
-                    >
-                      <span className="typography-body-lg-semibold">
-                        {option.label}
-                      </span>
-                    </RadioField>
-                  ))}
+                  <RadioGroup
+                    value={reasonCode}
+                    onValueChange={(value) =>
+                      setReasonCode(value as ReportReasonCode)
+                    }
+                    className="flex w-[259px] flex-col items-start gap-24"
+                  >
+                    {REPORT_REASON_OPTIONS.map((option) => (
+                      <RadioItem key={option.value} value={option.value}>
+                        <span className="typography-body-lg-semibold">
+                          {option.label}
+                        </span>
+                      </RadioItem>
+                    ))}
+                  </RadioGroup>
                 </div>
               </div>
               <PrimaryBoxButton
