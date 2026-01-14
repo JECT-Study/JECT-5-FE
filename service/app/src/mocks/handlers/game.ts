@@ -9,11 +9,16 @@ import {
   PresignedUrlRequest,
   sortGames,
 } from "@/entities/game"
+import {
+  REPORT_REASON_CODES,
+  type ReportReasonCode,
+} from "@/entities/game/model/report"
 
-import { internalServerError, loginRequiredError } from "../data/common"
-
-const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
-import { mockGameList } from "../data/common"
+import {
+  internalServerError,
+  loginRequiredError,
+  mockGameList,
+} from "../data/common"
 import {
   gameConflictError,
   gameDetailSuccess,
@@ -48,6 +53,12 @@ import {
   generateGameDetailData,
 } from "../utils/mockGenerators"
 import { generateSuccessResponse } from "../utils/responseHelpers"
+
+const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
+
+type GameReportRequest = {
+  reasonCode: ReportReasonCode
+}
 
 export const gameHandlers = [
   http.get(`${MSW_BASE_URL}/games/default`, () => {
@@ -435,5 +446,12 @@ export const gameHandlers = [
   ),
   http.put(/\/exampleThumbnail\.jpg/, async () => {
     return new HttpResponse(null, { status: 200 })
+  }),
+  http.post(`${MSW_BASE_URL}/games/:gameId/report`, async ({ request }) => {
+    const body = (await request.json()) as GameReportRequest
+    if (!body.reasonCode || !REPORT_REASON_CODES.includes(body.reasonCode)) {
+      return new HttpResponse(null, { status: 400 })
+    }
+    return HttpResponse.json(gameSuccessResponse())
   }),
 ]
