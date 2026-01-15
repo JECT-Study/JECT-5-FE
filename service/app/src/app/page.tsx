@@ -8,6 +8,18 @@ export const metadata: Metadata = {
   title: "Re:creation - 모두 함께 즐기는 레크레이션",
   description:
     "MT, 워크샵, 소모임을 위한 인물 퀴즈, 명대사 퀴즈, 줄줄이 말해요 등 다양한 레크레이션 게임을 만들고 즐길 수 있습니다.",
+  keywords: [
+    "레크레이션",
+    "아이스 브레이킹",
+    "레크레이션 게임",
+    "실내 게임 25가지 레크레이션",
+    "신서유기 게임",
+    "이름 맞추기",
+    "퀴즈 사이트",
+    "엠티 레크레이션",
+    "기업 레크레이션",
+    "레크레이션 피피티",
+  ],
   openGraph: {
     title: "Re:creation - 모두 함께 즐기는 레크레이션",
     description:
