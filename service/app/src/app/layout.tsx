@@ -49,6 +49,10 @@ export default function RootLayout({
       className={`${pretendard.variable} ${joyofSinging.variable}`}
       suppressHydrationWarning
     >
+      <meta
+        name="google-site-verification"
+        content="59Yy5G36T2doFkw86V9zLyWe88Z-Hb8V0eowJmNRcq0"
+      />
       <GoogleTagManager gtmId="GTM-MGCJ2489" />
       <body>
         <Providers>{children}</Providers>
