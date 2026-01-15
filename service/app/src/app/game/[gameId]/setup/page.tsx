@@ -1,6 +1,37 @@
+import { getGameDetail } from "@/entities/game"
+
 import { GameNavigation } from "./components/gameNavigation"
 import { TeamInputForm } from "./components/teamInputForm"
 import { TeamSidebar } from "./components/teamSidebar"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { gameId: string }
+}) {
+  const { data: game } = await getGameDetail(params.gameId)
+  return {
+    title: `${game.gameTitle} - Re:creation`,
+    robots: {
+      index: false,
+      follow: false,
+    },
+    openGraph: {
+      title: game.gameTitle,
+      type: "website",
+      locale: "ko_KR",
+      images: [
+        {
+          url: `/og/og-${params.gameId}.png`,
+          width: 1200,
+          height: 630,
+          alt: game.gameTitle,
+          type: "image/png",
+        },
+      ],
+    },
+  }
+}
 
 export default function GameSetupPage() {
   return (

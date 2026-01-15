@@ -9,8 +9,8 @@ import localFont from "next/font/local"
 import { Providers } from "./providers"
 
 export const metadata: Metadata = {
-  title: "RE:creation",
-  description: "모두가 가볍게 즐길 수 있는 라이트 레크리에이션",
+  authors: [{ name: "JECT" }],
+  metadataBase: new URL("https://re-creation.vercel.app"),
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
