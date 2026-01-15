@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
+  verification: {
+    google: "59Yy5G36T2doFkw86V9zLyWe88Z-Hb8V0eowJmNRcq0",
+  },
 }
 
 const pretendard = localFont({
