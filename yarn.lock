@@ -862,7 +862,7 @@ __metadata:
 "@figma/plugin-typings@npm:^1.100.2":
   version: 1.116.0
   resolution: "@figma/plugin-typings@npm:1.116.0"
-  checksum: 10c0/cb4526d6294053ba3119843b3c212ad32c96d47d9f9f037fb1a3b2e7cd46ccfd99ab9af571ec2c8c59b1009d17fba6c1538d3a31dd8bd2ca171511b38e3b3483
+  checksum: 10c0/cf06419f3808b596e94d17b87dd290b8459c32c8ecd11873280a78eb0fa7ca29d0ee0c87c1a72c25846ccc1f9b4c58b6d9d9ae9ceaa9dad5ca5b2a5744f6d5e8
   languageName: node
   linkType: hard
 
@@ -1491,6 +1491,7 @@ __metadata:
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     eslint-plugin-storybook: "npm:^9.0.9"
+    overlay-kit: "npm:^1.8.6"
     playwright: "npm:^1.53.1"
     postcss: "npm:^8.5.5"
     radix-ui: "npm:^1.4.2"
@@ -1503,6 +1504,8 @@ __metadata:
     typescript: "npm:^5.8.3"
     vite: "npm:^6"
     vitest: "npm:^3.2.4"
+  peerDependencies:
+    overlay-kit: ^1.0.0
   languageName: unknown
   linkType: soft
 
@@ -9611,7 +9614,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10c0/47b6a1e96d9263894da150bbb2c98c123b1630a0a88eb55c2129938557c51e8e55edf1d43364f7721b472fb4977e9567541f9c504a69ccf8138d0128cb682561
+  checksum: 10c0/0ebd8fce04e396b9b40152754ccecb5b2b4f3f8774e6ca2b4175b3dcb86e09f11bc2d33d04dd282b0d770382d9669337a08ca1e6a620cd38471bed3caf781daa
   languageName: node
   linkType: hard
 
@@ -9901,6 +9904,16 @@ __metadata:
     react: ^16.8 || ^17 || ^18 || ^19
     react-dom: ^16.8 || ^17 || ^18 || ^19
   checksum: 10c0/85e486c753672023686e5f07c7de6943e3e9e981bf637d6ac51fd858fb52e342b030ae8fddd2a83ab50750d0a439b567bd0183c0fd628543c470c4b97ec48509
+  languageName: node
+  linkType: hard
+
+"overlay-kit@npm:^1.8.6":
+  version: 1.8.6
+  resolution: "overlay-kit@npm:1.8.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19
+    react-dom: ^16.8 || ^17 || ^18 || ^19
+  checksum: 10c0/025d61133475500ccd7f07d07e346f65880feec7898ab2ad535a4f290c885dfb68d749518873ac5dd85b38b4caa4ef2b6464e249aef03707a26e0f1768fb2ef9
   languageName: node
   linkType: hard
 
