@@ -9,12 +9,12 @@ import { RadioItem, type RadioItemProps } from "./RadioItem"
  * ```tsx
  * const ReportRadio = createRadioGroup<"SPAM" | "ABUSE">()
  *
- * <ReportRadio.RadioGroup onValueChange={(v) => {
+ * <ReportRadio.Root onValueChange={(v) => {
  *   // v: "SPAM" | "ABUSE" (타입 캐스팅 불필요)
  * }}>
- *   <ReportRadio.RadioItem value="SPAM">스팸</ReportRadio.RadioItem>
- *   <ReportRadio.RadioItem value="ABUSE">욕설</ReportRadio.RadioItem>
- * </ReportRadio.RadioGroup>
+ *   <ReportRadio.Item value="SPAM">스팸</ReportRadio.Item>
+ *   <ReportRadio.Item value="ABUSE">욕설</ReportRadio.Item>
+ * </ReportRadio.Root>
  * ```
  */
 export const createRadioGroup = <T extends string>() =>
