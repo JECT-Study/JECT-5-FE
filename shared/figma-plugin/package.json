@@ -1,6 +1,6 @@
 {
   "name": "@ject-5-fe/figma-plugin",
-  "version": "0.0.1",
+  "version": "0.3.3",
   "type": "module",
   "scripts": {
     "dev": "plugma dev",

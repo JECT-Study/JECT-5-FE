@@ -3,11 +3,12 @@ import {
   ResourceTemplate,
 } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
-import fs from "fs"
-import path from "path"
 import { z } from "zod"
 
 import { createFigmaClient } from "./figmaClient"
+
+// 빌드 시점에 주입되는 rules 객체
+declare const __RULES__: Record<string, string>
 
 // Custom logging functions that write to stderr instead of stdout to avoid being captured
 const logger = {
@@ -18,7 +19,8 @@ const logger = {
   log: (message: string) => process.stderr.write(`[LOG] ${message}\n`),
 }
 
-const BASE_DIR = path.join(__dirname, "../../", "rules")
+// __RULES__에서 파일 목록 추출
+const RULES_FILES = Object.keys(__RULES__)
 
 function levenshtein(a: string, b: string): number {
   const m = a.length
@@ -68,15 +70,15 @@ function getSimilarityScore(target: string, candidate: string): number {
 const STORIES_EXT = ".stories.mdx" as const
 
 /**
- * BASE_DIR 안에서 componentName 과 유사한 .stories.mdx 파일들을
+ * RULES_FILES 에서 componentName 과 유사한 .stories.mdx 파일들을
  * 유사도 높은 순으로 반환
  */
-function findSimilarStoriesFiles(baseDir: string, componentName: string) {
+function findSimilarStoriesFiles(componentName: string) {
   const compName = componentName.toLowerCase()
 
-  const files = fs
-    .readdirSync(baseDir)
-    .filter((file) => file.toLowerCase().endsWith(STORIES_EXT))
+  const files = RULES_FILES.filter((file) =>
+    file.toLowerCase().endsWith(STORIES_EXT),
+  )
 
   const scored = files
     .map((file) => {
@@ -263,12 +265,9 @@ server.registerTool(
     }),
   },
   async ({ componentName }) => {
-    const similarFiles = findSimilarStoriesFiles(BASE_DIR, componentName)
+    const similarFiles = findSimilarStoriesFiles(componentName)
 
-    const compName = componentName.toLocaleLowerCase()
-    const texts = similarFiles.map(({ file }) =>
-      fs.readFileSync(path.join(BASE_DIR, file), "utf-8"),
-    )
+    const texts = similarFiles.map(({ file }) => __RULES__[file])
     return {
       content: [
         {
@@ -284,16 +283,15 @@ server.registerResource(
   "file", // 리소스 ID
   new ResourceTemplate("file://{path}/", {
     list: async () => {
-      const paths = fs.readdirSync(BASE_DIR)
       return {
-        resources: paths.map((path) => ({
-          uri: `file://${path}`,
-          name: path,
-          title: path,
+        resources: RULES_FILES.map((filePath) => ({
+          uri: `file://${filePath}`,
+          name: filePath,
+          title: filePath,
           description: "local file from design-rules",
-          mimeType: "text/plain", // 필요시 확장자 보고 바꾸셔도 됩니다
+          mimeType: "text/plain",
           _meta: {
-            filePath: path,
+            filePath: filePath,
           },
         })),
       }
@@ -305,10 +303,8 @@ server.registerResource(
   },
   // resources/read 핸들러
   async (uri, props) => {
-    const text = fs.readFileSync(
-      path.join(BASE_DIR, props.path as string),
-      "utf-8",
-    )
+    const filePath = props.path as string
+    const text = __RULES__[filePath] ?? ""
     return {
       contents: [
         {
