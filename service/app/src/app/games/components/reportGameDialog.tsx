@@ -11,7 +11,7 @@ import {
   DialogContent,
   DialogHeader,
 } from "@ject-5-fe/design/components/dialog"
-import { RadioGroup, RadioItem } from "@ject-5-fe/design/components/radio"
+import { createRadioGroup } from "@ject-5-fe/design/components/radio"
 import { Cross } from "@ject-5-fe/design/icons"
 import { overlay } from "overlay-kit"
 import { useState } from "react"
@@ -29,6 +29,8 @@ export interface ReportGameDialogOptions {
 }
 
 type ReportGameDialogStep = "select" | "success" | "error"
+
+const RadioGroup = createRadioGroup<ReportReasonCode>()
 
 function ReportGameDialogContent({
   gameId,
@@ -75,21 +77,19 @@ function ReportGameDialogContent({
                 </div>
 
                 <div className="flex w-[259px] flex-col items-start gap-24">
-                  <RadioGroup
+                  <RadioGroup.Root
                     value={reasonCode}
-                    onValueChange={(value) =>
-                      setReasonCode(value as ReportReasonCode)
-                    }
+                    onValueChange={(value) => setReasonCode(value)}
                     className="flex w-[259px] flex-col items-start gap-24"
                   >
                     {REPORT_REASON_OPTIONS.map((option) => (
-                      <RadioItem key={option.value} value={option.value}>
+                      <RadioGroup.Item key={option.value} value={option.value}>
                         <span className="typography-body-lg-semibold">
                           {option.label}
                         </span>
-                      </RadioItem>
+                      </RadioGroup.Item>
                     ))}
-                  </RadioGroup>
+                  </RadioGroup.Root>
                 </div>
               </div>
               <PrimaryBoxButton
