@@ -6,6 +6,7 @@ import {
   rectangleNodeToReactNode,
   textNodeToReactNode,
 } from "./utils/node"
+import { sanitizeForPostMessage } from "./utils/sanitize"
 
 // WebSocket 상태 관리
 const state = {
@@ -35,7 +36,7 @@ export default function () {
           figma.ui.postMessage({
             type: "command-result",
             id: msg.id,
-            result,
+            result: sanitizeForPostMessage(result),
           })
         } catch (error: unknown) {
           const errorMessage =
@@ -116,11 +117,11 @@ export default function () {
       const xmlData = reactNodes.map((node) => reactNodeToXML(node))
       figma.ui.postMessage({
         type: "SELECTION_DATA",
-        data: {
+        data: sanitizeForPostMessage({
           reactNodes,
           variables: variablesData,
           xml: xmlData,
-        },
+        }),
       })
     } catch (error: unknown) {
       const errorMessage =
