@@ -324,14 +324,14 @@ export default function () {
     frameName: string
     ignoreFrameChildren: boolean
   }
-  
+
   type ExportedIcon = {
     nodeId: string
     figmaName: string
     figmaType: SceneNode["type"]
     svg: string
   }
-  
+
   function findPageByName(pageName: string): PageNode | null {
     return (
       figma.root.children.find(
@@ -339,7 +339,7 @@ export default function () {
       ) ?? null
     )
   }
-  
+
   function findFrameByName(
     root: BaseNode & ChildrenMixin,
     frameName: string,
@@ -347,38 +347,41 @@ export default function () {
     for (const child of root.children) {
       if (child.type === "FRAME" && child.name.includes(frameName)) return child
       if ("children" in child) {
-        const found = findFrameByName(child as BaseNode & ChildrenMixin, frameName)
+        const found = findFrameByName(
+          child as BaseNode & ChildrenMixin,
+          frameName,
+        )
         if (found) return found
       }
     }
     return null
   }
-  
+
   function utf8Decode(bytes: Uint8Array): string {
     let out = ""
     let i = 0
-  
+
     while (i < bytes.length) {
       const c1 = bytes[i++]
-  
+
       if (c1 < 0x80) {
         out += String.fromCharCode(c1)
         continue
       }
-  
+
       if (c1 < 0xe0) {
         const c2 = bytes[i++] & 0x3f
         out += String.fromCharCode(((c1 & 0x1f) << 6) | c2)
         continue
       }
-  
+
       if (c1 < 0xf0) {
         const c2 = bytes[i++] & 0x3f
         const c3 = bytes[i++] & 0x3f
         out += String.fromCharCode(((c1 & 0x0f) << 12) | (c2 << 6) | c3)
         continue
       }
-  
+
       const c2 = bytes[i++] & 0x3f
       const c3 = bytes[i++] & 0x3f
       const c4 = bytes[i++] & 0x3f
@@ -389,24 +392,24 @@ export default function () {
         0xdc00 + (codePoint & 0x3ff),
       )
     }
-  
+
     return out
   }
-  
+
   async function exportNodeToSvg(node: SceneNode): Promise<string> {
     const anyNode = node as any
     const exportAsync = anyNode.exportAsync as
       | ((opts: { format: "SVG" }) => Promise<Uint8Array>)
       | undefined
-  
+
     if (typeof exportAsync !== "function") {
       throw new Error(`Node type "${node.type}" does not support exportAsync`)
     }
-  
+
     const bytes = await exportAsync.call(anyNode, { format: "SVG" })
     return utf8Decode(bytes)
   }
-  
+
   async function exportIcons(params: ExportIconsParams): Promise<{
     pageId: string
     pageName: string
@@ -417,20 +420,20 @@ export default function () {
   }> {
     const page = findPageByName(params.pageName)
     if (!page) throw new Error(`Page not found: "${params.pageName}"`)
-  
+
     await page.loadAsync()
-  
+
     const iconFrame = findFrameByName(page, params.frameName)
     if (!iconFrame) {
       throw new Error(
         `Frame not found: "${params.frameName}" in page "${params.pageName}"`,
       )
     }
-  
+
     const candidates = iconFrame.children
       .filter((n) => n.visible)
       .filter((n) => !(params.ignoreFrameChildren && n.type === "FRAME"))
-  
+
     const icons = await Promise.all(
       candidates.map(async (node) => {
         const svg = await exportNodeToSvg(node)
@@ -442,7 +445,7 @@ export default function () {
         }
       }),
     )
-  
+
     return {
       pageId: page.id,
       pageName: page.name,

@@ -56,6 +56,7 @@ export const DestructiveSolidIconButton = forwardRef<
 ```
 
 **Question 컴포넌트에서 사용:**
+
 ```tsx
 // Question.DeleteButton에서 사용
 <DestructiveSolidIconButton
@@ -98,6 +99,7 @@ const SecondaryPlainIconButton = React.forwardRef<
 ```
 
 **Question 컴포넌트에서 사용:**
+
 ```tsx
 // Question.MoveButtons에서 사용
 <SecondaryPlainIconButton
@@ -152,23 +154,26 @@ Question
 ```
 
 #### `role="group"`
+
 - **목적**: 질문 카드를 논리적으로 관련된 요소들의 그룹으로 정의
 - **이유**: 질문 제목, 이미지, 버튼들이 하나의 질문 단위를 구성한다는 것을 명시적으로 표현
 - **E2E 테스트**: `page.getByRole('group')` 선택자로 질문 카드를 안정적으로 찾을 수 있음
 
 #### `aria-label={accessibleName}`
+
 - **목적**: 각 질문 카드를 구체적으로 구분할 수 있는 접근 가능한 이름 제공
 - **값**: `index ? \`${index}번째 문제\` : "질문 카드"`
-- **이유**: 
+- **이유**:
   - **순서 기반 식별**: 질문 내용 대신 순서로 식별하여 더 안정적이고 간결함
   - **동적 업데이트**: 질문 순서가 변경되면 자동으로 라벨도 업데이트됨
   - **E2E 테스트 안정성**: 질문 내용이 바뀌어도 순서 기반으로 안정적인 선택 가능
 - **E2E 테스트**: `page.getByRole('group', { name: '1번째 문제' })`로 첫 번째 질문 선택
 
 #### `data-state={state}`
+
 - **목적**: 질문의 현재 상태를 명시적으로 표현
 - **값**: `"default" | "selected" | "error"`
-- **이유**: 
+- **이유**:
   - Radix UI의 표준 패턴을 따라 상태 기반 스타일링 지원
   - E2E 테스트에서 상태별 질문 필터링 가능
   - `aria-selected`, `aria-invalid` 대신 사용하여 Radix UI와의 충돌 방지
@@ -177,6 +182,7 @@ Question
 ### 2. **Button 컴포넌트들의 접근성 속성**
 
 #### DestructiveSolidIconButton (삭제 버튼)
+
 ```tsx
 <DestructiveSolidIconButton
   aria-label={deleteLabel}
@@ -187,6 +193,7 @@ Question
 ```
 
 #### SecondaryPlainIconButton (이동 버튼들)
+
 ```tsx
 <SecondaryPlainIconButton
   aria-label={upLabel}
@@ -197,8 +204,9 @@ Question
 ```
 
 #### `aria-label` 속성 (모든 아이콘 버튼)
+
 - **목적**: 텍스트가 없는 아이콘 버튼에 명확한 기능 설명 제공
-- **값**: 
+- **값**:
   - 삭제 버튼: `"${index}번째 문제 삭제"` 또는 `"질문 삭제"`
   - 위로 이동: `"${index}번째 문제 위로 이동"` 또는 `"질문 위로 이동"`
   - 아래로 이동: `"${index}번째 문제 아래로 이동"` 또는 `"질문 아래로 이동"`
@@ -215,26 +223,30 @@ Question
 #### 제거된 속성들과 그 이유
 
 **`aria-selected` (제거됨)**
+
 - **문제**: HTML 표준에서 `aria-selected`는 주로 `option`, `tab`, `gridcell` 등에서 사용
 - **해결**: `data-state="selected"`로 대체하여 Radix UI 패턴과 일치
 
 **`aria-invalid` (제거됨)**
+
 - **문제**: Form 컨텍스트가 아닌 일반 그룹 요소에는 부적절
 - **해결**: `data-state="error"`로 대체하여 상태 표현
 
 #### 유지된 속성들과 그 이유
 
 **`aria-label` (버튼에서 유지)**
+
 - **이유**: Radix UI의 BaseButton이 표준 HTML `<button>` 요소를 사용하므로 안전
 - **근거**: HTML 표준에서 button 요소의 `aria-label`은 공식 지원 속성
 
 ### 4. **순서 기반 접근성의 장점**
 
 #### **동적 업데이트 지원**
+
 ```typescript
 // QuestionList에서 질문 순서 변경 시
 {state.questions.map((question, index) => (
-  <Question 
+  <Question
     index={index + 1}  // 배열 순서에 따라 자동 업데이트
     state={...}
   >
@@ -244,29 +256,31 @@ Question
 ```
 
 **Before (순서 변경 전):**
+
 - "1번째 문제" (첫 번째 질문)
-- "2번째 문제" (두 번째 질문)  
+- "2번째 문제" (두 번째 질문)
 - "3번째 문제" (세 번째 질문)
 
 **After (두 번째 질문을 첫 번째로 이동):**
+
 - "1번째 문제" (원래 두 번째였던 질문) ✅ 자동 업데이트
 - "2번째 문제" (원래 첫 번째였던 질문) ✅ 자동 업데이트
 - "3번째 문제" (세 번째 질문 그대로)
 
 #### **E2E 테스트에서의 활용**
+
 ```typescript
 // 순서 기반으로 안정적인 테스트 작성
-test('질문 순서 변경', async ({ page }) => {
+test("질문 순서 변경", async ({ page }) => {
   // 2번째 문제를 위로 이동
-  await page.getByRole('button', { name: '2번째 문제 위로 이동' }).click()
-  
+  await page.getByRole("button", { name: "2번째 문제 위로 이동" }).click()
+
   // 순서가 바뀐 후 첫 번째 질문 확인 (자동으로 라벨 업데이트됨)
-  await expect(page.getByRole('group', { name: '1번째 문제' })).toBeVisible()
+  await expect(page.getByRole("group", { name: "1번째 문제" })).toBeVisible()
 })
 ```
 
 이러한 순서 기반 접근성 설계를 통해 Question 컴포넌트는 스크린 리더 사용자와 E2E 테스트 모두에서 안정적이고 예측 가능한 동작을 보장합니다.
-
 
 ## 🔄 Figma 디자인 대비 리팩토링 변경사항
 
@@ -279,7 +293,7 @@ Figma의 Question 컴포넌트 세트는 다음과 같이 구성되어 있었습
 ```
 COMPONENT_SET "question"
 ├── COMPONENT "state=selected, image=true"   (350×118px)
-├── COMPONENT "state=selected, image=false"  (350×118px)  
+├── COMPONENT "state=selected, image=false"  (350×118px)
 ├── COMPONENT "state=error, image=true"      (350×118px)
 ├── COMPONENT "state=error, image=false"     (350×118px)
 ├── COMPONENT "state=default, image=true"    (350×118px)
@@ -287,6 +301,7 @@ COMPONENT_SET "question"
 ```
 
 **Figma 구조의 특징:**
+
 - **고정된 배리언트**: `state` × `image` 조합으로 6개의 고정 배리언트
 - **절대 위치 기반**: 각 요소가 절대 위치로 배치 (`x`, `y` 좌표)
 - **Figma 전용 속성**: `layoutMode="NONE"`, 절대 좌표 기반 레이아웃
@@ -312,6 +327,7 @@ COMPONENT_SET "question"
 #### 1. **Compound Component Pattern 도입**
 
 **변경 전 (Figma):**
+
 ```
 - 6개의 고정 배리언트
 - state와 image 조합으로만 사용 가능
@@ -319,6 +335,7 @@ COMPONENT_SET "question"
 ```
 
 **변경 후 (현재):**
+
 ```typescript
 // 유연한 조합 가능
 <Question state="selected">
@@ -330,6 +347,7 @@ COMPONENT_SET "question"
 ```
 
 **이유:**
+
 - **확장성**: 새로운 요구사항에 맞춰 유연하게 조합 가능
 - **재사용성**: 부분적으로 다른 구성이 필요한 경우 대응 가능
 - **유지보수성**: 개별 하위 컴포넌트를 독립적으로 수정 가능
@@ -337,6 +355,7 @@ COMPONENT_SET "question"
 #### 2. **상태 관리 방식 변경**
 
 **변경 전 (Figma):**
+
 ```
 - state=default|selected|error (고정)
 - image=true|false (고정)
@@ -344,16 +363,18 @@ COMPONENT_SET "question"
 ```
 
 **변경 후 (현재):**
+
 ```typescript
 interface QuestionRootProps {
   state: "default" | "selected" | "error"
-  index?: number      // 순서 기반 접근성 (1부터 시작)
+  index?: number // 순서 기반 접근성 (1부터 시작)
   onClick?: () => void // 인터랙션 지원
   // image (boolean) 속성 삭제
 }
 ```
 
 **이유:**
+
 - **동적 상태**: 런타임에 상태 변경 가능, `state="error"`로 에러 처리 통합
 - **순서 기반 접근성**: `index` prop으로 "n번째 문제" 라벨 자동 생성
 - **동적 업데이트**: 질문 순서 변경 시 접근성 라벨도 자동 업데이트
@@ -363,11 +384,12 @@ interface QuestionRootProps {
 #### 3. **이미지 처리 방식 개선**
 
 **변경 후 (현재):**
+
 ```typescript
 // shared/design 패키지에서는 일반 img 태그 사용 (Next.js 독립적)
 <Question state="default">
   <Question.Image>
-    <img 
+    <img
       src="/question-images/sample.jpg"
       alt="질문 관련 이미지"
       className="size-[78px] rounded-[7px]"
@@ -390,7 +412,7 @@ interface QuestionRootProps {
 // service/app에서 Next.js Image 사용 시
 <Question state="default">
   <Question.Image>
-    <Image 
+    <Image
       src="/question-images/sample.jpg"
       alt="질문 관련 이미지"
       width={78}
@@ -403,6 +425,7 @@ interface QuestionRootProps {
 ```
 
 **이유:**
+
 - **패키지 독립성**: shared/design은 Next.js에 의존하지 않는 순수 React 컴포넌트
 - **유연성**: 일반 img 태그와 Next.js Image 모두 주입 가능
 - **프레임워크 중립**: 다른 React 기반 프레임워크에서도 재사용 가능
@@ -411,11 +434,13 @@ interface QuestionRootProps {
 #### 4. **사용 예시 변경**
 
 **변경 전 (Figma):**
+
 ```typescript
 <QuestionComponent variant="state=selected,image=true" />
 ```
 
 **변경 후 (현재):**
+
 ```typescript
 <Question index={1} state="selected" onClick={handleClick}>  {/* index로 순서 기반 접근성 */}
   <Question.Title>사용자 정의 제목</Question.Title>
@@ -425,8 +450,7 @@ interface QuestionRootProps {
 ```
 
 **접근성 라벨 결과:**
+
 - Question 카드: `aria-label="1번째 문제"`
 - 삭제 버튼: `aria-label="1번째 문제 삭제"`
 - 이동 버튼: `aria-label="1번째 문제 위로 이동"`
-
-

@@ -18,7 +18,11 @@ function randomId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`
 }
 
-async function callSocketServer<T>(port: number, command: string, params: unknown) {
+async function callSocketServer<T>(
+  port: number,
+  command: string,
+  params: unknown,
+) {
   const id = randomId()
   const ws = new WebSocket(`ws://localhost:${port}`)
 
@@ -73,10 +77,11 @@ async function main() {
     { pageName: "컴포넌트", frameName: "아이콘", ignoreFrameChildren: true },
   )
 
-
   fs.mkdirSync(path.dirname(out), { recursive: true })
   fs.writeFileSync(out, JSON.stringify(result.icons, null, 2) + "\n", "utf-8")
-  process.stdout.write(`[figma-plugin] exported ${result.icons.length} icons -> ${out}\n`)
+  process.stdout.write(
+    `[figma-plugin] exported ${result.icons.length} icons -> ${out}\n`,
+  )
 }
 
 main().catch((e) => {
