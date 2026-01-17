@@ -15,7 +15,7 @@ module.exports = {
         "ci",
         "build",
         "revert",
-        "rule", // Cursor Rules 관련 변경사항
+        "ai", // AI agent 관련 수정사항(rule,skill 등)
       ],
     ],
   },
