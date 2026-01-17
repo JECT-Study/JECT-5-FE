@@ -13,6 +13,7 @@ import {
 import { Cross, Play } from "@ject-5-fe/design/icons"
 
 import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
+import { DEFAULT_BLUR_DATA_URL } from "@/shared/constants/images"
 
 interface GamePreviewProps {
   className?: string
@@ -114,7 +115,7 @@ export const GamePreview = ({
                         src={question.imageUrl ?? "/thumbnail.svg"}
                         alt={question.title}
                         placeholder="blur"
-                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                        blurDataURL={DEFAULT_BLUR_DATA_URL}
                       />
                       <GameCard.Description>
                         {question.title}
