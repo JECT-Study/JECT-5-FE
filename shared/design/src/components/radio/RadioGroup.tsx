@@ -1,6 +1,6 @@
 "use client"
 
-import * as RadixRadioGroup from "@radix-ui/react-radio-group"
+import { RadioGroup as RadixRadioGroup } from "radix-ui"
 import type { ComponentPropsWithoutRef } from "react"
 
 import { cn } from "../../utils/cn"
