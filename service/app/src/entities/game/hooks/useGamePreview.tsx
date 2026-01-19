@@ -6,7 +6,7 @@ import { useCallback } from "react"
 import type { GameListItem } from "@/entities/game"
 import { getGameDetail } from "@/entities/game/api/getGameDetail"
 import { GameQuestion } from "@/entities/game/model/game"
-import { GamePreview } from "@/entities/game/ui/gamePreview"
+import { GamePreviewUser } from "@/entities/game/ui/GamePreview"
 
 import { useGameEntryNavigation } from "./useGameEntryNavigation"
 
@@ -29,7 +29,7 @@ export const useGamePreview = ({ onError }: UseGamePreviewParams = {}) => {
           }
 
           return (
-            <GamePreview
+            <GamePreviewUser
               gameTitle={gameDetail.gameTitle}
               creatorName={gameDetail.nickname}
               questionCount={gameDetail.questionCount}

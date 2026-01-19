@@ -1,0 +1,6 @@
+export { GamePreviewAdmin } from "./gamePreviewAdmin"
+export { GamePreviewQuestionList } from "./gamePreviewQuestionList"
+export { GamePreviewReportTable } from "./gamePreviewReportTable"
+export { GamePreviewShell } from "./gamePreviewShell"
+export { GamePreviewTitle } from "./gamePreviewTitle"
+export { GamePreviewUser } from "./gamePreviewUser"
