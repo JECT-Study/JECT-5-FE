@@ -1,3 +1,5 @@
+import type { ReportReasonCode } from "@/entities/game/model/report"
+
 export interface ReportedGame {
   id: string
   no: number | string
@@ -24,4 +26,23 @@ export interface AdminReport {
   reporterName: string
   reportedAt: string
   status: "PENDING" | "RESOLVED" | "REJECTED"
+}
+
+export interface ReportDetailData {
+  gameTitle: string
+  makerNickname: string
+  makerEmail: string
+  quetionCount: number
+  version: number
+  questions: {
+    questionId: number
+    questionOrder: number
+    imageUrl: string
+    questionText: string
+    questionAnswer: string
+    version: number
+  }[]
+  reporterEmail: string
+  reporterNickname: string
+  reasonCode: ReportReasonCode
 }

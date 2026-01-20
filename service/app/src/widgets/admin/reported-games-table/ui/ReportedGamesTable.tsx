@@ -10,9 +10,13 @@ import { ReportedGameRow } from "./ReportedGameRow"
 
 interface ReportedGamesTableProps {
   items: ReportedGame[]
+  onRowClick?: (item: ReportedGame) => void
 }
 
-export const ReportedGamesTable = ({ items }: ReportedGamesTableProps) => {
+export const ReportedGamesTable = ({
+  items,
+  onRowClick,
+}: ReportedGamesTableProps) => {
   return (
     <AdminTableRoot>
       <AdminTableRow variant="header" className="gap-72">
@@ -37,7 +41,7 @@ export const ReportedGamesTable = ({ items }: ReportedGamesTableProps) => {
       </AdminTableRow>
 
       {items.map((item) => (
-        <ReportedGameRow key={item.id} item={item} />
+        <ReportedGameRow key={item.id} item={item} onClick={onRowClick} />
       ))}
     </AdminTableRoot>
   )

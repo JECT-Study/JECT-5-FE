@@ -51,15 +51,10 @@ export const GamePreviewAdmin = ({
   return (
     <GamePreviewShell className={className} isOpen={isOpen} onClose={onClose}>
       <div className="flex size-full flex-col items-center justify-center">
-        <div className="flex h-auto w-full flex-col gap-[28px]">
-          <GamePreviewQuestionList
-            questionCount={questionCount}
-            questions={questions}
-          />
-
+        <div className="flex h-auto w-full flex-col gap-16">
           <div className="flex w-full items-start justify-between">
             <GamePreviewTitle gameTitle={gameTitle} showCreatorName={false} />
-            <div className="flex items-center gap-[16px]">
+            <div className="flex items-center gap-16">
               <PrimaryBoxButton
                 size="lg"
                 _style="solid"
@@ -77,16 +72,22 @@ export const GamePreviewAdmin = ({
               </PrimaryBoxButton>
             </div>
           </div>
-
-          {reportData && (
-            <GamePreviewReportTable
-              creator={reportData.creator}
-              reporter={reportData.reporter}
-              category={reportData.category}
-              onBlockCreator={onBlockCreator}
-              onBlockReporter={onBlockReporter}
+          <div className="flex h-auto w-full flex-col gap-60">
+            <GamePreviewQuestionList
+              questionCount={questionCount}
+              questions={questions}
             />
-          )}
+
+            {reportData && (
+              <GamePreviewReportTable
+                creator={reportData.creator}
+                reporter={reportData.reporter}
+                category={reportData.category}
+                onBlockCreator={onBlockCreator}
+                onBlockReporter={onBlockReporter}
+              />
+            )}
+          </div>
         </div>
       </div>
     </GamePreviewShell>

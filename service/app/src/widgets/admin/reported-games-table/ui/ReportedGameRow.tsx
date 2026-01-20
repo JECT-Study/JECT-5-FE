@@ -7,11 +7,15 @@ import {
 
 interface ReportedGameRowProps {
   item: ReportedGame
+  onClick?: (item: ReportedGame) => void
 }
 
-export const ReportedGameRow = ({ item }: ReportedGameRowProps) => {
+export const ReportedGameRow = ({ item, onClick }: ReportedGameRowProps) => {
   return (
-    <AdminTableRow className="gap-72">
+    <AdminTableRow
+      className="cursor-pointer gap-72"
+      onClick={() => onClick?.(item)}
+    >
       <AdminTableGroup className="w-full gap-56 md:min-w-[400px] lg:min-w-[800px]">
         <AdminTableText className="min-w-[45px]">{item.no}</AdminTableText>
         <AdminTableText>{item.title}</AdminTableText>
