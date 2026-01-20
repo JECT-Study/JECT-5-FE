@@ -2,7 +2,9 @@ import { http, HttpResponse } from "msw"
 
 import { type AdminReportsResponse, mockAdminReports } from "../data/admin"
 import { internalServerError, loginRequiredError } from "../data/common"
+import { gameNotFoundError } from "../data/game"
 import { validateSessionCookie } from "../utils/gameHandlers"
+import { generateMockQuestions } from "../utils/mockGenerators"
 import { generateSuccessResponse } from "../utils/responseHelpers"
 
 const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
@@ -22,20 +24,6 @@ export const adminHandlers = [
       const pageParam = url.searchParams.get("page")
       const page = pageParam ? Math.max(0, parseInt(pageParam, 10)) : 0
 
-      if (isNaN(page) || page < 0) {
-        return HttpResponse.json(
-          {
-            result: "ERROR",
-            data: null,
-            error: {
-              code: "E400",
-              message: "Invalid page parameter",
-            },
-          },
-          { status: 400 },
-        )
-      }
-
       const totalPages = Math.ceil(TOTAL_ELEMENTS / PAGE_SIZE)
       const startIndex = page * PAGE_SIZE
       const endIndex = startIndex + PAGE_SIZE
@@ -53,6 +41,47 @@ export const adminHandlers = [
       }
 
       return HttpResponse.json(generateSuccessResponse(response))
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.get(`${MSW_BASE_URL}/admin/games/:reportId`, ({ request, params }) => {
+    try {
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
+      }
+
+      const reportId = Number(params.reportId)
+
+      const report = mockAdminReports.find((r) => r.reportId === reportId)
+      if (!report) {
+        return HttpResponse.json(gameNotFoundError(reportId.toString()), {
+          status: 404,
+        })
+      }
+
+      const makerNickname = report.creatorName
+      const makerEmail = `${makerNickname.replace(/\s+/g, ".").toLowerCase()}@example.com`
+      const reporterNickname = report.reporterName
+      const reporterEmail = `${reporterNickname.replace(/\s+/g, ".").toLowerCase()}@example.com`
+
+      const questionCount = 10
+      const questions = generateMockQuestions(questionCount, 1)
+
+      const data = {
+        gameTitle: report.gameName,
+        makerNickname,
+        makerEmail,
+        questionCount,
+        version: 1,
+        questions,
+        reporterEmail,
+        reporterNickname,
+        reasonCode: "VIOLENT_OR_DISTURBING_CONTENT",
+      }
+
+      return HttpResponse.json(generateSuccessResponse(data))
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })
     }
