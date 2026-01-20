@@ -23,8 +23,8 @@ const PaginationItem = ({ page, isActive, onClick }: PaginationItemProps) => {
     <SecondaryPlainBoxButton
       onClick={onClick}
       className={cn(
-        isActive && "rounded-12 bg-background-primary",
-        "typography-heading-sm-semibold h-full bg-transparent p-16",
+        "typography-heading-sm-semibold h-full rounded-12 p-16",
+        isActive ? "bg-background-primary" : "bg-transparent",
       )}
       aria-label={`페이지 ${page}로 이동`}
       aria-current={isActive ? "page" : undefined}
