@@ -1,8 +1,14 @@
 import { http, HttpResponse } from "msw"
 
+import { adminReportUpdateRequestSchema } from "@/entities/report/model/types"
+
 import { type AdminReportsResponse, mockAdminReports } from "../data/admin"
 import { internalServerError, loginRequiredError } from "../data/common"
-import { gameNotFoundError } from "../data/game"
+import {
+  gameMissingFieldsError,
+  gameNotFoundError,
+  gameSuccessResponse,
+} from "../data/game"
 import { validateSessionCookie } from "../utils/gameHandlers"
 import { generateMockQuestions } from "../utils/mockGenerators"
 import { generateSuccessResponse } from "../utils/responseHelpers"
@@ -82,6 +88,34 @@ export const adminHandlers = [
       }
 
       return HttpResponse.json(generateSuccessResponse(data))
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.post(`${MSW_BASE_URL}/admin/games/delete`, async ({ request }) => {
+    try {
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
+      }
+
+      const json = await request.json()
+      const parsed = adminReportUpdateRequestSchema.safeParse(json)
+
+      if (!parsed.success) {
+        return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
+      }
+
+      const { reportId } = parsed.data
+
+      const report = mockAdminReports.find((r) => r.reportId === reportId)
+      if (!report) {
+        return HttpResponse.json(gameNotFoundError(reportId.toString()), {
+          status: 404,
+        })
+      }
+
+      return HttpResponse.json(gameSuccessResponse())
     } catch {
       return HttpResponse.json(internalServerError, { status: 500 })
     }

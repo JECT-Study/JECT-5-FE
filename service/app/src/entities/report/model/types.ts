@@ -1,3 +1,5 @@
+import z from "zod"
+
 import type { ReportReasonCode } from "@/entities/game/model/report"
 
 export interface ReportedGame {
@@ -27,6 +29,24 @@ export interface AdminReport {
   reportedAt: string
   status: "PENDING" | "RESOLVED" | "REJECTED"
 }
+
+export const adminReportUpdateStatusSchema = z.enum([
+  "IGNORE_REPORT",
+  "DELETE_GAME",
+])
+
+export type AdminReportUpdateStatus = z.infer<
+  typeof adminReportUpdateStatusSchema
+>
+
+export const adminReportUpdateRequestSchema = z.object({
+  status: adminReportUpdateStatusSchema,
+  reportId: z.number(),
+})
+
+export type AdminReportUpdateRequest = z.infer<
+  typeof adminReportUpdateRequestSchema
+>
 
 export interface ReportDetailData {
   gameTitle: string
