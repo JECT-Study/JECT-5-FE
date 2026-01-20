@@ -38,7 +38,7 @@ export const authHandlers = [
       },
     )
   }),
-  http.get(`${MSW_BASE_URL}/auth/me`, async ({ request }) => {
+  http.get(`${MSW_BASE_URL}/users/auth/me`, async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie")
     if (!validateSessionCookie(cookieHeader)) {
       return HttpResponse.json(loginRequiredError, { status: 401 })
