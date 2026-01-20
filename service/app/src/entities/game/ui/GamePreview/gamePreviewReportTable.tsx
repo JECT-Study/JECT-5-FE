@@ -25,7 +25,7 @@ export const GamePreviewReportTable = ({
             제작자
           </span>
         </div>
-        <div className="flex h-[70px] flex-1 items-center gap-[40px] px-[20px]">
+        <div className="flex h-[70px] w-full flex-1 items-center justify-between gap-[40px] px-[20px]">
           <span className="typography-heading-md-medium text-text-interactive-input-filled">
             {creator.name}({creator.email})
           </span>
@@ -46,7 +46,7 @@ export const GamePreviewReportTable = ({
             신고자
           </span>
         </div>
-        <div className="flex h-[70px] flex-1 items-center gap-[40px] px-[20px]">
+        <div className="flex h-[70px] w-full flex-1 items-center justify-between gap-[40px] px-[20px]">
           <span className="typography-heading-md-medium text-text-interactive-input-filled">
             {reporter.name}({reporter.email})
           </span>

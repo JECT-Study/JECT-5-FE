@@ -1,6 +1,7 @@
 import { http, HttpResponse } from "msw"
 
 import { adminReportUpdateRequestSchema } from "@/entities/report/model/types"
+import { blockUsersRequestSchema } from "@/entities/suspension/model/types"
 
 import { type AdminReportsResponse, mockAdminReports } from "../data/admin"
 import { internalServerError, loginRequiredError } from "../data/common"
@@ -113,6 +114,25 @@ export const adminHandlers = [
         return HttpResponse.json(gameNotFoundError(reportId.toString()), {
           status: 404,
         })
+      }
+
+      return HttpResponse.json(gameSuccessResponse())
+    } catch {
+      return HttpResponse.json(internalServerError, { status: 500 })
+    }
+  }),
+  http.post(`${MSW_BASE_URL}/admin/users/block`, async ({ request }) => {
+    try {
+      const cookieHeader = request.headers.get("Cookie")
+      if (!validateSessionCookie(cookieHeader)) {
+        return HttpResponse.json(loginRequiredError, { status: 401 })
+      }
+
+      const json = await request.json()
+      const parsed = blockUsersRequestSchema.safeParse(json)
+
+      if (!parsed.success) {
+        return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
       }
 
       return HttpResponse.json(gameSuccessResponse())
