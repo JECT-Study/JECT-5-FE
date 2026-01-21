@@ -34,7 +34,7 @@ export const useGamePreview = ({ onError }: UseGamePreviewParams = {}) => {
               creatorName={gameDetail.nickname}
               questionCount={gameDetail.questionCount}
               questions={gameDetail.questions.map((question: GameQuestion) => ({
-                id: question.questionId.toString(),
+                id: question.questionId,
                 title: question.questionText,
                 imageUrl: question.imageUrl,
               }))}

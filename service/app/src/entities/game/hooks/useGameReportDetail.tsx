@@ -11,7 +11,7 @@ export const useAdminGamePreview = () => {
     useAdminReportMutations()
 
   const openAdminPreview = useCallback(
-    async (reportId: string) => {
+    async (reportId: number) => {
       const data = await getReportDetail(reportId)
 
       overlay.open(({ close, isOpen }) => {
@@ -38,7 +38,7 @@ export const useAdminGamePreview = () => {
             gameTitle={data.gameTitle}
             questionCount={data.quetionCount}
             questions={data.questions.map((q) => ({
-              id: q.questionId.toString(),
+              id: q.questionId,
               title: q.questionText,
               imageUrl: q.imageUrl,
             }))}

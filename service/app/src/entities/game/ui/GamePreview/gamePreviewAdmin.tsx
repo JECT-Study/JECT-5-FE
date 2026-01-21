@@ -12,7 +12,7 @@ interface GamePreviewAdminProps {
   gameTitle?: string
   questionCount?: number
   questions?: Array<{
-    id: string
+    id: number
     title: string
     imageUrl?: string
   }>

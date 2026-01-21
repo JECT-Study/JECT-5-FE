@@ -5,7 +5,7 @@ import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 interface GamePreviewQuestionListProps {
   questionCount: number
   questions: Array<{
-    id: string
+    id: number
     title: string
     imageUrl?: string
   }>

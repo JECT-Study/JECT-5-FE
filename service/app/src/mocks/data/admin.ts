@@ -1,22 +1,4 @@
-export type ReportStatus = "PENDING" | "RESOLVED" | "REJECTED"
-
-export interface AdminReport {
-  reportId: string
-  gameName: string
-  creatorName: string
-  reporterName: string
-  reportedAt: string
-  status: ReportStatus
-}
-
-export interface AdminReportsResponse {
-  report: AdminReport[]
-  page: number
-  size: number
-  totalElements: number
-  totalPages: number
-  hasNext: boolean
-}
+import type { AdminReport } from "@/entities/report/model/types"
 
 const gameNames = [
   "퀴즈 마스터",
@@ -57,7 +39,7 @@ const reporterNames = [
   "신고자10",
 ]
 
-const statuses: ReportStatus[] = ["PENDING", "RESOLVED", "REJECTED"]
+const statuses: AdminReport["status"][] = ["PENDING", "GAME_DELETED", "IGNORED"]
 
 export const generateMockAdminReports = (
   count: number,
@@ -86,7 +68,7 @@ export const generateMockAdminReports = (
     date.setDate(date.getDate() - daysAgo)
 
     result.push({
-      reportId: (i + 1).toString(),
+      reportId: i + 1,
       gameName: gameNames[randomIndex],
       creatorName: creatorNames[creatorIndex],
       reporterName: reporterNames[reporterIndex],

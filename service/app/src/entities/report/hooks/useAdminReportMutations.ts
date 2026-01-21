@@ -7,7 +7,7 @@ import { updateAdminReportStatus } from "../api/updateAdminReportStatus"
 
 export const useAdminReportMutations = () => {
   const ignoreReportMutation = useMutation({
-    mutationFn: (reportId: string) =>
+    mutationFn: (reportId: number) =>
       updateAdminReportStatus({ status: "IGNORE_REPORT", reportId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminReports"] })
@@ -15,7 +15,7 @@ export const useAdminReportMutations = () => {
   })
 
   const deleteGameMutation = useMutation({
-    mutationFn: (reportId: string) =>
+    mutationFn: (reportId: number) =>
       updateAdminReportStatus({ status: "DELETE_GAME", reportId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminReports"] })

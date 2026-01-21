@@ -8,6 +8,7 @@ import { UUID } from "@/shared/api/types/common"
 import { generatePresignedUrlData } from "../utils/mockGenerators"
 import {
   generateGameErrorResponse,
+  generateReportErrorResponse,
   generateSuccessResponse,
 } from "../utils/responseHelpers"
 import { mockGameList } from "./common"
@@ -52,6 +53,9 @@ export const gameDetailSuccess = (gameDetailData: GameDetailData) => ({
 
 export const gameNotFoundError = (gameId: UUID) =>
   generateGameErrorResponse.notFound(gameId)
+
+export const reportNotFoundError = (reportId: number) =>
+  generateReportErrorResponse.notFound(reportId)
 
 export const gameUnauthorizedError = () =>
   generateGameErrorResponse.unauthorized()

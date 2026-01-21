@@ -39,3 +39,10 @@ export const generateGameErrorResponse = {
       gameId,
     }),
 }
+
+export const generateReportErrorResponse = {
+  notFound: (reportId: number) =>
+    generateErrorResponse("E404", "해당 신고가 존재하지 않습니다.", {
+      reportId,
+    }),
+}

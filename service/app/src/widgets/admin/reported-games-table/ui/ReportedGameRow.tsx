@@ -17,7 +17,7 @@ export const ReportedGameRow = ({ item, onClick }: ReportedGameRowProps) => {
       onClick={() => onClick?.(item)}
     >
       <AdminTableGroup className="w-full gap-56 md:min-w-[400px] lg:min-w-[800px]">
-        <AdminTableText className="min-w-[45px]">{item.no}</AdminTableText>
+        <AdminTableText className="min-w-[45px]">{item.id}</AdminTableText>
         <AdminTableText>{item.title}</AdminTableText>
       </AdminTableGroup>
 

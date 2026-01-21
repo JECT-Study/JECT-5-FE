@@ -13,7 +13,7 @@ interface GamePreviewUserProps {
   creatorName?: string
   questionCount?: number
   questions?: Array<{
-    id: string
+    id: number
     title: string
     imageUrl?: string
   }>

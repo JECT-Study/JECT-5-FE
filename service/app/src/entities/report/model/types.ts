@@ -3,8 +3,7 @@ import z from "zod"
 import type { ReportReasonCode } from "@/entities/game/model/report"
 
 export interface ReportedGame {
-  id: string
-  no: number | string
+  id: number
   title: string
   creatorName: string
   reporterName: string
@@ -27,7 +26,7 @@ export interface AdminReport {
   creatorName: string
   reporterName: string
   reportedAt: string
-  status: "PENDING" | "RESOLVED" | "REJECTED"
+  status: "PENDING" | "GAME_DELETED" | "IGNORED"
 }
 
 export const adminReportUpdateStatusSchema = z.enum([
@@ -41,7 +40,7 @@ export type AdminReportUpdateStatus = z.infer<
 
 export const adminReportUpdateRequestSchema = z.object({
   status: adminReportUpdateStatusSchema,
-  reportId: z.string(),
+  reportId: z.coerce.number(),
 })
 
 export type AdminReportUpdateRequest = z.infer<
@@ -49,7 +48,7 @@ export type AdminReportUpdateRequest = z.infer<
 >
 
 export const reportIdParamsSchema = z.object({
-  reportId: z.string(),
+  reportId: z.coerce.number(),
 })
 
 export type ReportIdParams = z.infer<typeof reportIdParamsSchema>
