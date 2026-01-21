@@ -1,11 +1,11 @@
 // Read the docs https://plugma.dev/docs
+
+import { figmaNodeToReactNode } from "./convert"
+import type { SelectionDataPayload } from "./types/figmaNode"
 import {
-  frameNodeToReactNode,
-  groupNodeToReactNode,
-  instanceNodeToReactNode,
-  rectangleNodeToReactNode,
-  textNodeToReactNode,
-} from "./utils/node"
+  formatVariableUsageRecord,
+  resolveVariableUsageFromReactNodes,
+} from "./utils/variables/variableUsage"
 
 // WebSocket 상태 관리
 const state = {
@@ -52,75 +52,11 @@ export default function () {
 
   async function handleSelectionChange() {
     try {
-      const selection = figma.currentPage.selection
+      const data = await getSelection()
 
-      let reactNodes: any[] = []
-      const allUsedVariables = new Map<string, any>()
-
-      if (selection.length > 0) {
-        reactNodes = await Promise.all(
-          selection.map((node) => figmaNodeToReactNode(node)),
-        )
-
-        for (const node of selection) {
-          await collectUsedVariables(node, allUsedVariables)
-        }
-      }
-
-      const variablesData = Object.fromEntries(allUsedVariables)
-
-      // React Node를 XML로 변환하는 함수
-      const reactNodeToXML = (node: any, indent = 0): string => {
-        const { type, props, children } = node
-        const spaces = "  ".repeat(indent)
-        let xml = `${spaces}<${type}`
-
-        // props를 attributes로 변환
-        if (props) {
-          Object.entries(props).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && key !== "children") {
-              let strValue = ""
-              if (typeof value === "string") {
-                strValue = value
-              } else if (typeof value === "object") {
-                strValue = JSON.stringify(value)
-              } else {
-                strValue = String(value)
-              }
-              xml += `\n${spaces}  ${key}="${strValue}"`
-            }
-          })
-        }
-
-        if (!children || (Array.isArray(children) && children.length === 0)) {
-          xml += " />"
-        } else {
-          xml += ">"
-
-          if (typeof children === "string") {
-            xml += `\n${spaces}  ${children}\n${spaces}`
-          } else if (Array.isArray(children)) {
-            xml += "\n"
-            children.forEach((child) => {
-              xml += reactNodeToXML(child, indent + 1) + "\n"
-            })
-            xml += spaces
-          }
-
-          xml += `</${type}>`
-        }
-
-        return xml
-      }
-
-      const xmlData = reactNodes.map((node) => reactNodeToXML(node))
       figma.ui.postMessage({
         type: "SELECTION_DATA",
-        data: {
-          reactNodes,
-          variables: variablesData,
-          xml: xmlData,
-        },
+        data,
       })
     } catch (error: unknown) {
       const errorMessage =
@@ -219,71 +155,17 @@ export default function () {
     }
   }
 
-  async function getSelection() {
+  async function getSelection(): Promise<SelectionDataPayload> {
     const selection = figma.currentPage.selection
 
-    let reactNodes: any[] = []
-    const allUsedVariables = new Map<string, any>()
+    const reactNodes = await Promise.all(
+      selection.map((node) => figmaNodeToReactNode(node)),
+    )
 
-    if (selection.length > 0) {
-      reactNodes = await Promise.all(
-        selection.map((node) => figmaNodeToReactNode(node)),
-      )
+    const variablesMap = await resolveVariableUsageFromReactNodes(reactNodes)
+    const variablesData = formatVariableUsageRecord(variablesMap)
 
-      for (const node of selection) {
-        await collectUsedVariables(node, allUsedVariables)
-      }
-    }
-
-    const variablesData = Object.fromEntries(allUsedVariables)
-
-    // React Node를 XML로 변환하는 함수
-    const reactNodeToXML = (node: any, indent = 0): string => {
-      const { type, props, children } = node
-      const spaces = "  ".repeat(indent)
-      let xml = `${spaces}<${type}`
-
-      // props를 attributes로 변환
-      if (props) {
-        Object.entries(props).forEach(([key, value]) => {
-          if (value !== undefined && value !== null && key !== "children") {
-            let strValue = ""
-            if (typeof value === "string") {
-              strValue = value
-            } else if (typeof value === "object") {
-              strValue = JSON.stringify(value)
-            } else {
-              strValue = String(value)
-            }
-            xml += `\n${spaces}  ${key}="${strValue}"`
-          }
-        })
-      }
-
-      if (!children || (Array.isArray(children) && children.length === 0)) {
-        xml += " />"
-      } else {
-        xml += ">"
-
-        if (typeof children === "string") {
-          xml += `\n${spaces}  ${children}\n${spaces}`
-        } else if (Array.isArray(children)) {
-          xml += "\n"
-          children.forEach((child) => {
-            xml += reactNodeToXML(child, indent + 1) + "\n"
-          })
-          xml += spaces
-        }
-
-        xml += `</${type}>`
-      }
-
-      return xml
-    }
-
-    const xmlData = reactNodes.map((node) => reactNodeToXML(node))
-
-    return {
+    const payload: SelectionDataPayload = {
       selectionCount: selection.length,
       selection: selection.map((node) => ({
         id: node.id,
@@ -293,8 +175,9 @@ export default function () {
       })),
       reactNodes,
       variables: variablesData,
-      xml: xmlData,
     }
+
+    return payload
   }
 
   async function getNodeInfo(nodeId: string) {
@@ -317,239 +200,5 @@ export default function () {
         ...("visible" in node ? { visible: node.visible } : {}),
       }
     }
-  }
-
-  type ExportIconsParams = {
-    pageName: string
-    frameName: string
-    ignoreFrameChildren: boolean
-  }
-
-  type ExportedIcon = {
-    nodeId: string
-    figmaName: string
-    figmaType: SceneNode["type"]
-    svg: string
-  }
-
-  function findPageByName(pageName: string): PageNode | null {
-    return (
-      figma.root.children.find(
-        (p): p is PageNode => p.type === "PAGE" && p.name.includes(pageName),
-      ) ?? null
-    )
-  }
-
-  function findFrameByName(
-    root: BaseNode & ChildrenMixin,
-    frameName: string,
-  ): FrameNode | null {
-    for (const child of root.children) {
-      if (child.type === "FRAME" && child.name.includes(frameName)) return child
-      if ("children" in child) {
-        const found = findFrameByName(
-          child as BaseNode & ChildrenMixin,
-          frameName,
-        )
-        if (found) return found
-      }
-    }
-    return null
-  }
-
-  function utf8Decode(bytes: Uint8Array): string {
-    let out = ""
-    let i = 0
-
-    while (i < bytes.length) {
-      const c1 = bytes[i++]
-
-      if (c1 < 0x80) {
-        out += String.fromCharCode(c1)
-        continue
-      }
-
-      if (c1 < 0xe0) {
-        const c2 = bytes[i++] & 0x3f
-        out += String.fromCharCode(((c1 & 0x1f) << 6) | c2)
-        continue
-      }
-
-      if (c1 < 0xf0) {
-        const c2 = bytes[i++] & 0x3f
-        const c3 = bytes[i++] & 0x3f
-        out += String.fromCharCode(((c1 & 0x0f) << 12) | (c2 << 6) | c3)
-        continue
-      }
-
-      const c2 = bytes[i++] & 0x3f
-      const c3 = bytes[i++] & 0x3f
-      const c4 = bytes[i++] & 0x3f
-      let codePoint = ((c1 & 0x07) << 18) | (c2 << 12) | (c3 << 6) | c4
-      codePoint -= 0x10000
-      out += String.fromCharCode(
-        0xd800 + (codePoint >> 10),
-        0xdc00 + (codePoint & 0x3ff),
-      )
-    }
-
-    return out
-  }
-
-  async function exportNodeToSvg(node: SceneNode): Promise<string> {
-    const anyNode = node as any
-    const exportAsync = anyNode.exportAsync as
-      | ((opts: { format: "SVG" }) => Promise<Uint8Array>)
-      | undefined
-
-    if (typeof exportAsync !== "function") {
-      throw new Error(`Node type "${node.type}" does not support exportAsync`)
-    }
-
-    const bytes = await exportAsync.call(anyNode, { format: "SVG" })
-    return utf8Decode(bytes)
-  }
-
-  async function exportIcons(params: ExportIconsParams): Promise<{
-    pageId: string
-    pageName: string
-    frameId: string
-    frameName: string
-    count: number
-    icons: ExportedIcon[]
-  }> {
-    const page = findPageByName(params.pageName)
-    if (!page) throw new Error(`Page not found: "${params.pageName}"`)
-
-    await page.loadAsync()
-
-    const iconFrame = findFrameByName(page, params.frameName)
-    if (!iconFrame) {
-      throw new Error(
-        `Frame not found: "${params.frameName}" in page "${params.pageName}"`,
-      )
-    }
-
-    const candidates = iconFrame.children
-      .filter((n) => n.visible)
-      .filter((n) => !(params.ignoreFrameChildren && n.type === "FRAME"))
-
-    const icons = await Promise.all(
-      candidates.map(async (node) => {
-        const svg = await exportNodeToSvg(node)
-        return {
-          nodeId: node.id,
-          figmaName: node.name,
-          figmaType: node.type,
-          svg,
-        }
-      }),
-    )
-
-    return {
-      pageId: page.id,
-      pageName: page.name,
-      frameId: iconFrame.id,
-      frameName: iconFrame.name,
-      count: icons.length,
-      icons,
-    }
-  }
-
-  const figmaNodeToReactNode = async (figmaNode: SceneNode): Promise<any> => {
-    let node: any
-    switch (figmaNode.type) {
-      case "INSTANCE": // 아이콘도 이 타입에 포함
-        node = await instanceNodeToReactNode(figmaNode)
-        break
-      case "FRAME":
-        node = await frameNodeToReactNode(figmaNode)
-        break
-      case "TEXT":
-        node = await textNodeToReactNode(figmaNode)
-        break
-      case "RECTANGLE":
-        node = await rectangleNodeToReactNode(figmaNode)
-        break
-      case "GROUP":
-        node = await groupNodeToReactNode(figmaNode)
-        break
-
-      default:
-        node = {
-          type: figmaNode.type,
-          props: {
-            id: figmaNode.id,
-            name: figmaNode.name,
-          },
-          children:
-            "children" in figmaNode && figmaNode.children
-              ? figmaNode.children
-              : [],
-        }
-    }
-
-    if (
-      node.children &&
-      Array.isArray(node.children) &&
-      node.children.length > 0
-    ) {
-      node.children = await Promise.all(
-        node.children
-          .filter((child: SceneNode) => child.visible)
-          .map((child: SceneNode) => figmaNodeToReactNode(child)),
-      )
-    }
-
-    return node
-  }
-
-  const resolveVariableValue = async (variableId: string) => {
-    try {
-      const variable = await figma.variables.getVariableByIdAsync(variableId)
-      if (!variable) return null
-
-      return {
-        id: variable.id,
-        name: variable.codeSyntax.WEB,
-      }
-    } catch (error) {
-      return { error: `Error resolving variable: ${error}` }
-    }
-  }
-
-  const collectUsedVariables = async (
-    node: SceneNode,
-    variableMap: Map<string, any> = new Map(),
-  ): Promise<Map<string, any>> => {
-    if (!node.boundVariables) return variableMap
-
-    for (const [property, aliases] of Object.entries(node.boundVariables)) {
-      const aliasList = Array.isArray(aliases) ? aliases : [aliases]
-
-      for (const alias of aliasList) {
-        if (alias?.type === "VARIABLE_ALIAS" && alias.id) {
-          const variable = await resolveVariableValue(alias.id as string)
-          if (variable?.id && variable.name) {
-            const existing = variableMap.get(variable.id)
-            variableMap.set(variable.id, {
-              id: variable.id,
-              name: variable.name,
-              usedIn: [...(existing?.usedIn || []), `${node.name}.${property}`],
-            })
-          }
-        }
-      }
-    }
-
-    if ("children" in node && node.children) {
-      for (const child of node.children) {
-        if (child.visible) {
-          await collectUsedVariables(child, variableMap)
-        }
-      }
-    }
-
-    return variableMap
   }
 }
