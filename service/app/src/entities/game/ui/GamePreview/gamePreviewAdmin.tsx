@@ -54,7 +54,7 @@ export const GamePreviewAdmin = ({
         <div className="flex h-auto w-full flex-col gap-16">
           <div className="flex w-full items-start justify-between">
             <GamePreviewTitle gameTitle={gameTitle} showCreatorName={false} />
-            <div className="flex items-center gap-16">
+            <div className="z-50 flex items-center gap-16">
               <PrimaryBoxButton
                 size="lg"
                 _style="solid"

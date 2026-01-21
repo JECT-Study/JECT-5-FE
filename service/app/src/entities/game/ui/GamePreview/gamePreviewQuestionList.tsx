@@ -16,7 +16,7 @@ export const GamePreviewQuestionList = ({
   questions,
 }: GamePreviewQuestionListProps) => {
   return (
-    <div className="flex w-full flex-col items-start gap-[20px]">
+    <div className="flex w-full flex-col items-start gap-20">
       <span
         className="typography-heading-md-regular font-light text-text-primary"
         data-testid="game-preview-question-count"
@@ -24,7 +24,7 @@ export const GamePreviewQuestionList = ({
         총 {questionCount} 문제
       </span>
       <div
-        className="mt-[20px] flex w-full items-center gap-[32px] overflow-x-auto p-0"
+        className="mt-20 flex w-full items-center gap-32 overflow-x-auto p-0"
         data-testid="game-preview-questions"
       >
         {questions.map((question) => (

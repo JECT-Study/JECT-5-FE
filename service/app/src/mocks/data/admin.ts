@@ -1,7 +1,7 @@
 export type ReportStatus = "PENDING" | "RESOLVED" | "REJECTED"
 
 export interface AdminReport {
-  reportId: number
+  reportId: string
   gameName: string
   creatorName: string
   reporterName: string
@@ -86,7 +86,7 @@ export const generateMockAdminReports = (
     date.setDate(date.getDate() - daysAgo)
 
     result.push({
-      reportId: i + 1,
+      reportId: (i + 1).toString(),
       gameName: gameNames[randomIndex],
       creatorName: creatorNames[creatorIndex],
       reporterName: reporterNames[reporterIndex],

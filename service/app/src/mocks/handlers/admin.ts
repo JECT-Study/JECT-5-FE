@@ -1,6 +1,9 @@
 import { http, HttpResponse } from "msw"
 
-import { adminReportUpdateRequestSchema } from "@/entities/report/model/types"
+import {
+  adminReportUpdateRequestSchema,
+  reportIdParamsSchema,
+} from "@/entities/report/model/types"
 import { blockUsersRequestSchema } from "@/entities/suspension/model/types"
 
 import { type AdminReportsResponse, mockAdminReports } from "../data/admin"
@@ -59,11 +62,15 @@ export const adminHandlers = [
         return HttpResponse.json(loginRequiredError, { status: 401 })
       }
 
-      const reportId = Number(params.reportId)
+      const parsed = reportIdParamsSchema.safeParse(params)
+      if (!parsed.success) {
+        return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
+      }
 
+      const { reportId } = parsed.data
       const report = mockAdminReports.find((r) => r.reportId === reportId)
       if (!report) {
-        return HttpResponse.json(gameNotFoundError(reportId.toString()), {
+        return HttpResponse.json(gameNotFoundError(reportId), {
           status: 404,
         })
       }
@@ -111,7 +118,7 @@ export const adminHandlers = [
 
       const report = mockAdminReports.find((r) => r.reportId === reportId)
       if (!report) {
-        return HttpResponse.json(gameNotFoundError(reportId.toString()), {
+        return HttpResponse.json(gameNotFoundError(reportId), {
           status: 404,
         })
       }

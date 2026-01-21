@@ -41,12 +41,18 @@ export type AdminReportUpdateStatus = z.infer<
 
 export const adminReportUpdateRequestSchema = z.object({
   status: adminReportUpdateStatusSchema,
-  reportId: z.number(),
+  reportId: z.string(),
 })
 
 export type AdminReportUpdateRequest = z.infer<
   typeof adminReportUpdateRequestSchema
 >
+
+export const reportIdParamsSchema = z.object({
+  reportId: z.string(),
+})
+
+export type ReportIdParams = z.infer<typeof reportIdParamsSchema>
 
 export interface ReportDetailData {
   gameTitle: string
