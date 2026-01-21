@@ -7,6 +7,14 @@ export default defineConfig([
   nextPlugin.flatConfig.recommended,
   nextPlugin.flatConfig.coreWebVitals,
   {
-    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "dist/**", "playwright-report/**", "test-results/**"],
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "dist/**",
+      "playwright-report/**",
+      "test-results/**",
+    ],
   },
 ])

@@ -2,7 +2,6 @@ import fs from "fs"
 import path from "path"
 
 function normalizeIconKey(figmaName) {
-
   const placeholderMatch = /^iconPlaceholder\/(\d+px)$/i.exec(figmaName.trim())
   if (placeholderMatch) return `iconplaceholder_${placeholderMatch[1]}`
 
@@ -13,7 +12,8 @@ function normalizeIconKey(figmaName) {
     .trim()
 
   const parts = cleaned.split(" ").filter(Boolean)
-  if (parts.length === 0) throw new Error(`Cannot normalize empty name: "${figmaName}"`)
+  if (parts.length === 0)
+    throw new Error(`Cannot normalize empty name: "${figmaName}"`)
 
   const [first, ...rest] = parts
   return (
@@ -73,10 +73,14 @@ async function main() {
   fs.mkdirSync(path.dirname(absOut), { recursive: true })
   fs.writeFileSync(absOut, JSON.stringify(iconJson, null, 2) + "\n", "utf-8")
 
-  process.stdout.write(`[design] wrote ${Object.keys(iconJson).length} icons -> ${absOut}\n`)
+  process.stdout.write(
+    `[design] wrote ${Object.keys(iconJson).length} icons -> ${absOut}\n`,
+  )
 }
 
 main().catch((e) => {
-  process.stderr.write(`[design] apply-icons failed: ${e instanceof Error ? e.message : String(e)}\n`)
+  process.stderr.write(
+    `[design] apply-icons failed: ${e instanceof Error ? e.message : String(e)}\n`,
+  )
   process.exit(1)
 })

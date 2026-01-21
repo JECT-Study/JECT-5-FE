@@ -1,6 +1,6 @@
 "use client"
 
-import { useControllableState } from "@radix-ui/react-use-controllable-state"
+import { useControllableState } from "radix-ui/internal"
 import { type ComponentPropsWithoutRef, forwardRef, useId } from "react"
 
 import { Check } from "../../icons"

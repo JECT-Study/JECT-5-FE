@@ -32,7 +32,7 @@ export const useGameShareActions = (): UseGameShareActionsReturn => {
         throw error
       }
     },
-    [queryClient]
+    [queryClient],
   )
 
   const handleUnshareGame = useCallback(
@@ -53,7 +53,7 @@ export const useGameShareActions = (): UseGameShareActionsReturn => {
         throw error
       }
     },
-    [queryClient]
+    [queryClient],
   )
 
   return {

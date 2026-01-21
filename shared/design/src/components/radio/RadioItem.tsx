@@ -1,15 +1,17 @@
 "use client"
 
-import * as RadixRadioGroup from "@radix-ui/react-radio-group"
+import { RadioGroup as RadixRadioGroup } from "radix-ui"
 import { type ComponentPropsWithoutRef, forwardRef } from "react"
 
 import { cn } from "../../utils/cn"
 
-export type RadioItemProps = Omit<
+//기존의 value 관련 타입을 string -> T로 확장
+export type RadioItemProps<T extends string = string> = Omit<
   ComponentPropsWithoutRef<typeof RadixRadioGroup.Item>,
-  "children"
+  "value" | "children"
 > & {
   children?: React.ReactNode
+  value: T
 }
 
 export const RadioItem = forwardRef<HTMLButtonElement, RadioItemProps>(

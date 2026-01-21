@@ -1,6 +1,8 @@
 import "../index.css"
 
 import type { Preview } from "@storybook/react-vite"
+import { OverlayProvider } from "overlay-kit"
+import React from "react"
 
 const preview: Preview = {
   parameters: {
@@ -18,6 +20,10 @@ const preview: Preview = {
       test: "todo",
     },
   },
+  decorators: [
+    (Story) =>
+      React.createElement(OverlayProvider, null, React.createElement(Story)),
+  ],
 }
 
 export default preview
