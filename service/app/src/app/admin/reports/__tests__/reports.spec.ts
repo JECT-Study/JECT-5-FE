@@ -122,13 +122,12 @@ test.describe("신고접수 페이지", () => {
     test("삭제되지 않은 게임에서 게임 삭제 클릭시 팝업이 닫히고 상태가 삭제 완료로 업데이트된다", async () => {
       await pom.clickReportedGameRow(0)
 
+      const row = pom.reportedGameRows.first()
+
       await pom.clickDeleteGame()
       await expect(pom.reportDetail).not.toBeVisible()
 
-      await expect(pom.reportedGameRows.nth(1)).toHaveAttribute(
-        "aria-label",
-        /처리 여부 삭제 완료/,
-      )
+      await expect(row).toHaveAttribute("aria-label", /처리 여부 삭제 완료/)
     })
   })
 
