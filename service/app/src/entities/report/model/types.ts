@@ -12,7 +12,7 @@ export interface ReportedGame {
 }
 
 export interface AdminReportsResponse {
-  report: AdminReport[]
+  content: AdminReport[]
   page: number
   size: number
   totalElements: number

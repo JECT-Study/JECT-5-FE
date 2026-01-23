@@ -50,7 +50,7 @@ export const createAdminHandlers = (initialReports: AdminReport[]) => {
         const hasNext = page < totalPages - 1
 
         const response: AdminReportsResponse = {
-          report: paginatedReports,
+          content: paginatedReports,
           page,
           size: PAGE_SIZE,
           totalElements,
