@@ -28,7 +28,7 @@ export const useAdminReportMutations = () => {
         banList: [{ email }],
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adminReports"] })
+      queryClient.invalidateQueries({ queryKey: ["reportDetail"] })
     },
   })
 
