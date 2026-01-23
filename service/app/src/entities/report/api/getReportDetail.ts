@@ -6,5 +6,6 @@ export const getReportDetail = async (reportId: number) => {
   const response = await fetchClient.get<ReportDetailData>(
     `admin/games/${reportId}`,
   )
-  return response.json().then((res) => res.data)
+  const res = await response.json()
+  return res.data
 }
