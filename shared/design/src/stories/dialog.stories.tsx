@@ -120,6 +120,64 @@ import {
  *   - 제목만 필요한 경우: `DialogHeader`만 사용
  *   - 본문만 필요한 경우: `DialogBody`만 사용
  *   - 제목과 본문 모두 필요한 경우: `DialogHeader`와 `DialogBody` 모두 사용
+ *
+ * ---
+ *
+ * ## useDialog Hook
+ *
+ * 반복되는 다이얼로그 보일러플레이트를 줄이기 위한 추상화 훅입니다.
+ *
+ * ### Before (30~50줄)
+ * ```tsx
+ * overlay.open(({ isOpen, close }) => (
+ *   <Dialog open={isOpen} onOpenChange={close}>
+ *     <DialogContent>
+ *       <DialogHeader>제목</DialogHeader>
+ *       <DialogBody>내용</DialogBody>
+ *       <DialogFooter>
+ *         <DialogButton.Secondary onClick={() => close()}>취소</DialogButton.Secondary>
+ *         <DialogButton.Primary onClick={() => { onConfirm(); close() }}>확인</DialogButton.Primary>
+ *       </DialogFooter>
+ *     </DialogContent>
+ *   </Dialog>
+ * ))
+ * ```
+ *
+ * ### After (5줄)
+ * ```tsx
+ * const dialog = useDialog()
+ * dialog.open({
+ *   title: "제목",
+ *   body: "내용",
+ *   primary: { label: "확인", onClick: onConfirm },
+ *   secondary: { label: "취소" },
+ * })
+ * ```
+ *
+ * ### API
+ *
+ * | 메서드 | 설명 |
+ * |--------|------|
+ * | `dialog.open(config)` | 콜백 방식. 버튼의 `onClick`으로 액션 처리 |
+ * | `dialog.openAsync(config)` | Promise 반환. `primary` 또는 `destructive` 클릭 시 `true`, `secondary` 또는 배경 클릭 시 `false` |
+ *
+ * ### DialogConfig
+ *
+ * | 속성 | 타입 | 설명 |
+ * |------|------|------|
+ * | `title` | `string?` | 다이얼로그 제목 |
+ * | `body` | `ReactNode?` | 다이얼로그 본문 |
+ * | `role` | `"dialog" \| "alertdialog"?` | ARIA role |
+ * | `primary` | `ButtonConfig?` | Primary 버튼 (파란색) |
+ * | `secondary` | `ButtonConfig?` | Secondary 버튼 (회색) |
+ * | `destructive` | `ButtonConfig?` | Destructive 버튼 (빨간색) |
+ *
+ * **Note:** `primary`와 `destructive`는 동시에 사용할 수 없습니다.
+ *
+ * ### 제한 사항
+ *
+ * 이 훅은 표준적인 다이얼로그 패턴(제목, 본문, 버튼)만 지원합니다.
+ * 커스텀 레이아웃이나 복잡한 UI가 필요한 경우, 기존 Dialog 프리미티브를 직접 조합하세요.
  */
 
 const meta = {
@@ -267,6 +325,85 @@ DialogHeader가 없는 경우, 스크린 리더 사용자를 위해 \`srTitle\` 
 
 개발자 도구에서 Elements 탭을 확인하면 \`sr-only\` 클래스가 적용된 숨겨진 제목 요소를 볼 수 있습니다.
         `,
+      },
+    },
+  },
+}
+
+import { useDialog } from "../components/dialog/useDialog"
+
+const UseDialogOpenExample = () => {
+  const dialog = useDialog()
+
+  const handleClick = () => {
+    dialog.open({
+      title: "게임을 삭제하시겠습니까?",
+      body: "삭제된 게임은 복구할 수 없습니다.",
+      destructive: {
+        label: "삭제",
+        onClick: () => console.log("삭제됨"),
+      },
+      secondary: { label: "취소" },
+    })
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+    >
+      useDialog.open 예시
+    </button>
+  )
+}
+
+export const UseDialogOpen: Story = {
+  render: () => <UseDialogOpenExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`dialog.open()` - 콜백 방식. 버튼의 `onClick`에서 액션을 처리합니다.",
+      },
+    },
+  },
+}
+
+const UseDialogOpenAsyncExample = () => {
+  const dialog = useDialog()
+
+  const handleClick = async () => {
+    const confirmed = await dialog.openAsync({
+      title: "이 게임을 복제하시겠습니까?",
+      body: "선택한 게임이 복제되어, 곧바로 편집 화면으로 이동합니다.",
+      primary: { label: "네" },
+      secondary: { label: "아니요" },
+    })
+
+    if (confirmed) {
+      console.log("복제 진행")
+    } else {
+      console.log("취소됨")
+    }
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+    >
+      useDialog.openAsync 예시
+    </button>
+  )
+}
+
+export const UseDialogOpenAsync: Story = {
+  render: () => <UseDialogOpenAsyncExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`dialog.openAsync()` - Promise 반환. `primary`/`destructive` 클릭 시 `true`, `secondary`/배경 클릭 시 `false`.",
       },
     },
   },

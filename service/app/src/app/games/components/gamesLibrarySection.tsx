@@ -8,6 +8,7 @@ import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
 import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 import { GameLibrarySkeleton } from "@/entities/game/ui/gameLibrarySkeleton"
+import { DEFAULT_BLUR_DATA_URL } from "@/shared/constants/images"
 
 import { filterInput } from "../utils/filterInput"
 import { GameCardActions } from "./gameCardActions"
@@ -61,7 +62,7 @@ export function GamesLibrarySection() {
                 fill
                 sizes="178px"
                 placeholder="blur"
-                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI3IiBoZWlnaHQ9IjQ1OSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+"
+                blurDataURL={DEFAULT_BLUR_DATA_URL}
               >
                 <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
                 {game.isShared && (

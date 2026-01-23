@@ -124,6 +124,24 @@ Uses conventional commits with custom types including "rule" for Cursor Rules ch
 - **Figma Integration**: MCP servers configured for Figma plugin and Playwright
 - **Build**: Uses Vercel for deployment
 
+## 주의사항
+
+### Radix UI Import Convention
+
+Use the unified `radix-ui` package instead of individual `@radix-ui/*` packages:
+
+```tsx
+// ✅ Correct - Components
+import { RadioGroup, Dialog, Form } from "radix-ui"
+
+// ✅ Correct - Internal hooks (use~ prefix)
+import { useControllableState } from "radix-ui/internal"
+
+// ❌ Wrong - Legacy individual packages
+import * as RadioGroup from "@radix-ui/react-radio-group"
+import { useControllableState } from "@radix-ui/react-use-controllable-state"
+```
+
 ## Additional Rules & Guidelines
 
 For comprehensive development guidelines and conventions, refer to the cursor rules in `.cursor/rules/`:

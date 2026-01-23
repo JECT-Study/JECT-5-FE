@@ -1,0 +1,88 @@
+---
+title: stickyActionBar.stories.tsx
+source: src/stories/stickyActionBar.stories.tsx
+generated: 2025-12-08T12:37:12.107Z
+---
+# stickyActionBar.stories.tsx
+
+```tsx
+// Source: src/stories/stickyActionBar.stories.tsx
+import type { Meta, StoryObj } from "@storybook/react-vite"
+
+import { PrimaryBoxButton } from "../components/button"
+import { StickyActionBar } from "../components/stickyActionBar"
+
+const meta = {
+  title: "Components/StickyActionBar",
+  component: StickyActionBar,
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        component:
+          "스크롤이 길어도 주요 액션을 화면 하단에 고정해 노출할 수 있는 레이아웃 래퍼입니다.",
+      },
+    },
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof StickyActionBar>
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const ViewportFixedAction: Story = {
+  render: () => (
+    <div className="min-h-screen w-full bg-background-tertiary">
+      <div className="mx-auto flex min-h-screen w-full max-w-[720px] flex-col bg-background-primary">
+        <header className="sticky top-0 z-30 border-b border-border-interactive-secondary bg-background-primary px-32 py-24">
+          <h1 className="typography-heading-xl-semibold text-text-primary">
+            문제 편집 화면
+          </h1>
+          <p className="typography-body-md-regular mt-12 text-text-secondary">
+            스크롤을 내려도 하단의 “문제 추가하기” 버튼이 고정되어 있는 모습을
+            확인하세요.
+          </p>
+        </header>
+
+        <main className="flex-1 space-y-20 px-32 pb-[160px] pt-24">
+          {[...Array(24)].map((_, index) => (
+            <article
+              key={index}
+              className="rounded-12 border border-border-interactive-tertiary bg-background-secondary p-24 shadow-[0px_8px_24px_rgba(15,23,42,0.1)]"
+            >
+              <h2 className="typography-heading-md-semibold text-text-primary">
+                섹션 {index + 1}
+              </h2>
+              <p className="typography-body-sm-regular mt-12 text-text-secondary">
+                실제 화면에서 긴 설명, 입력 폼, 미디어 블록 등이 들어갈 수 있는
+                영역을 가정한 더미 컨텐츠입니다.
+              </p>
+            </article>
+          ))}
+        </main>
+      </div>
+
+      <StickyActionBar
+        position="fixed"
+        edge="bottom"
+        className=""
+        maxWidth={720}
+      >
+        <PrimaryBoxButton size="xl" className="w-full">
+          문제 추가하기
+        </PrimaryBoxButton>
+      </StickyActionBar>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "전체 뷰포트 기준으로 StickyActionBar를 고정한 예시입니다. 메인 컨텐츠가 스크롤되더라도 액션 버튼이 항상 하단에 노출됩니다.",
+      },
+    },
+  },
+}
+
+```

@@ -34,5 +34,10 @@
   },
   "resolutions": {
     "vite": "^6"
+  },
+  "dependenciesMeta": {
+    "@modelcontextprotocol/sdk@1.24.3": {
+      "unplugged": true
+    }
   }
 }

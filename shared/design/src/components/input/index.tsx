@@ -1,8 +1,8 @@
 "use client"
 
-import { useControllableState } from "@radix-ui/react-use-controllable-state"
 import { cva } from "class-variance-authority"
 import { Form } from "radix-ui"
+import { useControllableState } from "radix-ui/internal"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import type * as React from "react"
 import { createContext, forwardRef, useContext } from "react"
