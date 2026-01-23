@@ -18,7 +18,7 @@ export const ReportedGamesTable = ({
   onRowClick,
 }: ReportedGamesTableProps) => {
   return (
-    <AdminTableRoot ariaLabel="신고접수 테이블">
+    <AdminTableRoot ariaLabel="신고접수 테이블" className="overflow-y-auto">
       <AdminTableRow
         variant="header"
         className="gap-72"

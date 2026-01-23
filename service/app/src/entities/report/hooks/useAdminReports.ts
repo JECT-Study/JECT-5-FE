@@ -34,7 +34,7 @@ export const useAdminReports = ({
   })
 
   const games: ReportedGame[] =
-    data?.report.map((report) => mapAdminReportToReportedGame(report)) ?? []
+    data?.content.map((report) => mapAdminReportToReportedGame(report)) ?? []
 
   return {
     games,
