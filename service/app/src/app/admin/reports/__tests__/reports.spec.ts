@@ -125,10 +125,10 @@ test.describe("신고접수 페이지", () => {
       await pom.clickDeleteGame()
       await expect(pom.reportDetail).not.toBeVisible()
 
-      const updatedAriaLabel = await pom.reportedGameRows
-        .nth(1)
-        .getAttribute("aria-label")
-      expect(updatedAriaLabel).toContain("처리 여부 삭제 완료")
+      await expect(pom.reportedGameRows.nth(1)).toHaveAttribute(
+        "aria-label",
+        /처리 여부 삭제 완료/,
+      )
     })
   })
 
@@ -173,8 +173,7 @@ test.describe("신고접수 페이지", () => {
       await pom.clickIgnoreReport()
       await expect(pom.reportDetail).not.toBeVisible()
 
-      const updatedAriaLabel = await row.getAttribute("aria-label")
-      expect(updatedAriaLabel).toContain("처리 여부 신고 무시")
+      await expect(row).toHaveAttribute("aria-label", /처리 여부 신고 무시/)
     })
   })
 
