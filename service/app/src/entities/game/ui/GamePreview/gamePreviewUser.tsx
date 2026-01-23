@@ -52,10 +52,15 @@ export const GamePreviewUser = ({
             </PrimaryBoxButton>
           </div>
 
-          <GamePreviewQuestionList
-            questionCount={questionCount}
-            questions={questions}
-          />
+          <div className="flex w-full flex-col items-start gap-20">
+            <span
+              className="typography-heading-md-regular font-light text-text-primary"
+              data-testid="game-preview-question-count"
+            >
+              총 {questionCount} 문제
+            </span>
+            <GamePreviewQuestionList questions={questions} />
+          </div>
         </div>
       </div>
     </GamePreviewShell>

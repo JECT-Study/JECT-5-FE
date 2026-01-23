@@ -2,6 +2,8 @@
 
 import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 
+import type { AdminReportStatus } from "@/entities/report/model/types"
+
 import { GamePreviewQuestionList } from "./gamePreviewQuestionList"
 import { GamePreviewReportTable } from "./gamePreviewReportTable"
 import { GamePreviewShell } from "./gamePreviewShell"
@@ -20,13 +22,16 @@ interface GamePreviewAdminProps {
     creator: {
       name: string
       email: string
+      isBlocked: boolean
     }
     reporter: {
       name: string
       email: string
+      isBlocked: boolean
     }
     category: string
   }
+  status: AdminReportStatus
   onClose?: () => void
   onIgnoreReport?: () => void
   onDeleteGame?: () => void
@@ -38,6 +43,7 @@ interface GamePreviewAdminProps {
 export const GamePreviewAdmin = ({
   className = "",
   gameTitle,
+  status,
   questionCount = 10,
   questions = [],
   reportData,
@@ -59,6 +65,7 @@ export const GamePreviewAdmin = ({
                 size="lg"
                 _style="solid"
                 onClick={onIgnoreReport}
+                disabled={status === "GAME_DELETED"}
               >
                 신고 무시
               </PrimaryBoxButton>
@@ -67,16 +74,28 @@ export const GamePreviewAdmin = ({
                 _style="solid"
                 onClick={onDeleteGame}
                 className="bg-background-interactive-destructive"
+                disabled={status === "GAME_DELETED"}
               >
                 게임 삭제
               </PrimaryBoxButton>
             </div>
           </div>
           <div className="flex h-auto w-full flex-col gap-60">
-            <GamePreviewQuestionList
-              questionCount={questionCount}
-              questions={questions}
-            />
+            <div className="flex w-full flex-col items-start gap-20">
+              <span
+                className="typography-heading-md-regular font-light text-text-primary"
+                data-testid="game-preview-question-count"
+              >
+                총 {questionCount} 문제
+              </span>
+              {status === "GAME_DELETED" ? (
+                <div className="typography-heading-xl-medium flex h-[310px] w-full items-center justify-center text-center text-text-interactive-input-error">
+                  삭제 처리된 게임입니다.
+                </div>
+              ) : (
+                <GamePreviewQuestionList questions={questions} />
+              )}
+            </div>
 
             {reportData && (
               <GamePreviewReportTable
