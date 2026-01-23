@@ -39,8 +39,6 @@ const reporterNames = [
   "신고자10",
 ]
 
-const statuses: AdminReport["status"][] = ["PENDING", "GAME_DELETED", "IGNORED"]
-
 export const generateMockAdminReports = (
   count: number,
   seed?: number,
@@ -61,7 +59,6 @@ export const generateMockAdminReports = (
     const randomIndex = Math.floor(Math.random() * gameNames.length)
     const creatorIndex = Math.floor(Math.random() * creatorNames.length)
     const reporterIndex = Math.floor(Math.random() * reporterNames.length)
-    const statusIndex = Math.floor(Math.random() * statuses.length)
     const daysAgo = Math.floor(Math.random() * 30)
 
     const date = new Date()
@@ -73,7 +70,7 @@ export const generateMockAdminReports = (
       creatorName: creatorNames[creatorIndex],
       reporterName: reporterNames[reporterIndex],
       reportedAt: date.toISOString(),
-      status: statuses[statusIndex],
+      status: "PENDING",
     })
   }
 

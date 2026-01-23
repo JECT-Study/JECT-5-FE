@@ -20,13 +20,15 @@ export interface AdminReportsResponse {
   hasNext: boolean
 }
 
+export type AdminReportStatus = "PENDING" | "GAME_DELETED" | "IGNORED"
+
 export interface AdminReport {
   reportId: number
   gameName: string
   creatorName: string
   reporterName: string
   reportedAt: string
-  status: "PENDING" | "GAME_DELETED" | "IGNORED"
+  status: AdminReportStatus
 }
 
 export const adminReportUpdateStatusSchema = z.enum([
@@ -54,6 +56,7 @@ export const reportIdParamsSchema = z.object({
 export type ReportIdParams = z.infer<typeof reportIdParamsSchema>
 
 export interface ReportDetailData {
+  status: AdminReportStatus
   gameTitle: string
   makerNickname: string
   makerEmail: string
@@ -70,4 +73,6 @@ export interface ReportDetailData {
   reporterEmail: string
   reporterNickname: string
   reasonCode: ReportReasonCode
+  isMakerBlock: boolean
+  isReporterBlock: boolean
 }
