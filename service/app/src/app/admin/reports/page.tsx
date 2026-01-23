@@ -26,7 +26,7 @@ export default function AdminReportsPage() {
   }
 
   return (
-    <div className="mt-[90px] flex w-full flex-col items-center gap-52 bg-background-interactive-primary-disabled p-40">
+    <div className="flex h-full flex-col items-center gap-52 bg-background-interactive-primary-disabled p-40">
       <div className="flex size-full flex-col items-start gap-52 rounded-20 bg-background-interactive-primary-sub px-[62px] py-[70px]">
         <h1 className="typography-heading-2xl-extrabold">신고접수</h1>
         <ReportedGamesTable items={games} onRowClick={handleRowClick} />

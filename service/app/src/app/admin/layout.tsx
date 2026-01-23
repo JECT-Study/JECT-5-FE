@@ -36,7 +36,7 @@ export default function AdminLayout({
   return (
     <div>
       <AdminNavigation />
-      {children}
+      <main className="h-screen pt-[90px]">{children}</main>
     </div>
   )
 }
