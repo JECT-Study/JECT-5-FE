@@ -22,7 +22,7 @@ export const AdminTableRow = ({
       : "bg-transparent"
 
   return (
-    <div className={cn(base, border, bg, className)} {...rest}>
+    <div className={cn(base, border, bg, className)} {...rest} role="row">
       {children}
     </div>
   )

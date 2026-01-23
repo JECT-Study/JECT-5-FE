@@ -18,8 +18,12 @@ export const ReportedGamesTable = ({
   onRowClick,
 }: ReportedGamesTableProps) => {
   return (
-    <AdminTableRoot>
-      <AdminTableRow variant="header" className="gap-72">
+    <AdminTableRoot ariaLabel="신고접수 테이블">
+      <AdminTableRow
+        variant="header"
+        className="gap-72"
+        aria-label="신고접수 테이블 헤더"
+      >
         <AdminTableGroup className="w-full gap-56 md:min-w-[400px] lg:min-w-[800px]">
           <AdminTableText tone="header" className="min-w-[45px]">
             번호

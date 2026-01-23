@@ -12,6 +12,8 @@ export const AdminNavigation = () => {
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`)
 
+  const getAriaCurrent = (active: boolean) => (active ? "page" : undefined)
+
   const navItemClass = (active: boolean) =>
     cn(
       "typography-heading-md-semibold",
@@ -30,22 +32,29 @@ export const AdminNavigation = () => {
         </div>
       }
       rightContent={
-        <div className="flex shrink-0 items-center gap-52">
+        <div
+          className="flex shrink-0 items-center gap-52"
+          role="group"
+          aria-label="관리자 섹션 탭"
+        >
           <SecondaryPlainBoxButton
             asChild
             className={navItemClass(isActive("/admin/reports"))}
+            aria-current={getAriaCurrent(isActive("/admin/reports"))}
           >
             <Link href="/admin/reports">신고접수</Link>
           </SecondaryPlainBoxButton>
           <SecondaryPlainBoxButton
             asChild
             className={navItemClass(isActive("/admin/games"))}
+            aria-current={getAriaCurrent(isActive("/admin/games"))}
           >
             <Link href="/admin/games">게임관리</Link>
           </SecondaryPlainBoxButton>
           <SecondaryPlainBoxButton
             asChild
             className={navItemClass(isActive("/admin/users"))}
+            aria-current={getAriaCurrent(isActive("/admin/users"))}
           >
             <Link href="/admin/users">회원관리</Link>
           </SecondaryPlainBoxButton>

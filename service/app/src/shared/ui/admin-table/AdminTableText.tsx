@@ -25,6 +25,7 @@ export const AdminTableText = ({
         tone === "header" ? header : body,
         className,
       )}
+      role={tone === "header" ? "columnheader" : "cell"}
     >
       {children}
     </span>

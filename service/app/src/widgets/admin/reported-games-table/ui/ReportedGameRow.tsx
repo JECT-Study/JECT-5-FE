@@ -15,6 +15,8 @@ export const ReportedGameRow = ({ item, onClick }: ReportedGameRowProps) => {
     <AdminTableRow
       className="cursor-pointer gap-72"
       onClick={() => onClick?.(item)}
+      aria-label={`게임명 ${item.title} 제작자 ${item.creatorName} 신고자 ${item.reporterName} 신고일자 ${item.reportedAt} 처리 여부 ${item.statusLabel}`}
+      tabIndex={0}
     >
       <AdminTableGroup className="w-full gap-56 md:min-w-[400px] lg:min-w-[800px]">
         <AdminTableText className="min-w-[45px]">{item.id}</AdminTableText>
