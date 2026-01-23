@@ -2,7 +2,9 @@ import { http, HttpResponse } from "msw"
 
 import { KakaoLoginRequest } from "@/entities/auth/model/authRequest"
 
-import { kakaoLoginSuccess } from "../data/auth"
+import { kakaoLoginSuccess, userInfoSuccess } from "../data/auth"
+import { loginRequiredError } from "../data/common"
+import { validateSessionCookie } from "../utils/gameHandlers"
 
 const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
 export const MSW_MOCK_CODE = "someValidCode"
@@ -35,5 +37,17 @@ export const authHandlers = [
         },
       },
     )
+  }),
+  http.get(`${MSW_BASE_URL}/users/auth/me`, async ({ request }) => {
+    const cookieHeader = request.headers.get("Cookie")
+    if (!validateSessionCookie(cookieHeader)) {
+      return HttpResponse.json(loginRequiredError, { status: 401 })
+    }
+    return new HttpResponse(JSON.stringify(userInfoSuccess), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
   }),
 ]
