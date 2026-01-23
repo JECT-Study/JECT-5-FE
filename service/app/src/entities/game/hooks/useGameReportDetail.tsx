@@ -58,7 +58,7 @@ export const useAdminGamePreview = () => {
           return (
             <GamePreviewAdmin
               gameTitle={data.gameTitle}
-              questionCount={data.quetionCount}
+              questionCount={data.questionCount}
               questions={data.questions.map((q) => ({
                 id: q.questionId,
                 title: q.questionText,

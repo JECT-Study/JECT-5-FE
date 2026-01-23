@@ -60,7 +60,7 @@ export interface ReportDetailData {
   gameTitle: string
   makerNickname: string
   makerEmail: string
-  quetionCount: number
+  questionCount: number
   version: number
   questions: {
     questionId: number
