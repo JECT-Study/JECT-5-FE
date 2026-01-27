@@ -1,4 +1,5 @@
 import { Checkbox } from "@ject-5-fe/design/components/checkBox"
+import { memo } from "react"
 
 import { REPORT_REASON_LABELS } from "@/entities/game/model/report"
 import type { AdminUser } from "@/entities/report/model/types"
@@ -14,7 +15,11 @@ interface UserRowProps {
   onSelect: (email: string, checked: boolean) => void
 }
 
-export const UserRow = ({ item, selected, onSelect }: UserRowProps) => {
+export const UserRow = memo(function UserRow({
+  item,
+  selected,
+  onSelect,
+}: UserRowProps) {
   const blockReasonLabel = item.blockReason
     ? REPORT_REASON_LABELS[item.blockReason]
     : "-"
@@ -55,4 +60,4 @@ export const UserRow = ({ item, selected, onSelect }: UserRowProps) => {
       </AdminTableRow>
     </div>
   )
-}
+})

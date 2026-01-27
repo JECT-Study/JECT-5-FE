@@ -9,8 +9,8 @@ import {
 } from "@ject-5-fe/design/components/input"
 
 interface UsersPageHeaderProps {
-  onBlock?: () => void
-  onUnblock?: () => void
+  onBlock: () => void
+  onUnblock: () => void
 }
 
 export const UsersPageHeader = ({
