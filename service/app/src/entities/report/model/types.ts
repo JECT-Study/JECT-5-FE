@@ -1,6 +1,32 @@
 import z from "zod"
 
 import type { ReportReasonCode } from "@/entities/game/model/report"
+import { reportReasonCodeSchema } from "@/entities/game/model/report"
+
+export interface AdminUser {
+  nickname: string
+  email: string
+  blockReason: ReportReasonCode | null
+  blockedAt: string | null
+  blocked: boolean
+}
+
+export const adminUserSchema = z.object({
+  nickname: z.string(),
+  email: z.string(),
+  blockReason: reportReasonCodeSchema.nullable(),
+  blockedAt: z.string().nullable(),
+  blocked: z.boolean(),
+})
+
+export interface AdminUsersResponse {
+  content: AdminUser[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  hasNext: boolean
+}
 
 export interface ReportedGame {
   id: number

@@ -3,12 +3,17 @@ import { http, HttpResponse } from "msw"
 import type {
   AdminReport,
   AdminReportsResponse,
+  AdminUser,
+  AdminUsersResponse,
 } from "@/entities/report/model/types"
 import {
   adminReportUpdateRequestSchema,
   reportIdParamsSchema,
 } from "@/entities/report/model/types"
-import { blockUsersRequestSchema } from "@/entities/suspension/model/types"
+import {
+  blockUsersRequestSchema,
+  unblockUsersRequestSchema,
+} from "@/entities/suspension/model/types"
 
 import { internalServerError, loginRequiredError } from "../data/common"
 import {
@@ -24,8 +29,35 @@ const MSW_BASE_URL = process.env.MSW_BASE_URL || "http://localhost:3000"
 
 const PAGE_SIZE = 7
 
+const BLOCK_REASONS = [
+  "VIOLENT_OR_DISTURBING_CONTENT",
+  "SEXUAL_CONTENT",
+  "CYBERBULLYING_OR_HARASSMENT",
+  "SUICIDE_OR_SELF_HARM",
+  "FRAUD_OR_MISINFORMATION",
+  "SPAM_OR_PROMOTION",
+  "PRIVACY_VIOLATION",
+  "INTELLECTUAL_PROPERTY_INFRINGEMENT",
+] as const
+
+const generateMockUsers = (count: number): AdminUser[] => {
+  return Array.from({ length: count }, (_, i) => {
+    const blocked = i % 3 === 0
+    return {
+      nickname: `user_${i + 1}`,
+      email: `user${i + 1}@example.com`,
+      blockReason: blocked ? BLOCK_REASONS[i % BLOCK_REASONS.length] : null,
+      blockedAt: blocked
+        ? `2026-01-${String((i % 28) + 1).padStart(2, "0")}`
+        : null,
+      blocked,
+    }
+  })
+}
+
 export const createAdminHandlers = (initialReports: AdminReport[]) => {
   const store: AdminReport[] = structuredClone(initialReports)
+  const usersStore: AdminUser[] = generateMockUsers(32)
   const blockedEmails = new Set<string>()
 
   return [
@@ -170,11 +202,90 @@ export const createAdminHandlers = (initialReports: AdminReport[]) => {
           return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
         }
 
-        parsed.data.banList.forEach(({ email }) => {
+        parsed.data.banList.forEach(({ email, reason }) => {
           blockedEmails.add(email)
+          const userIndex = usersStore.findIndex((u) => u.email === email)
+          if (userIndex !== -1) {
+            usersStore[userIndex] = {
+              ...usersStore[userIndex],
+              blocked: true,
+              blockReason:
+                (reason as (typeof BLOCK_REASONS)[number]) ||
+                "VIOLENT_OR_DISTURBING_CONTENT",
+              blockedAt: new Date().toISOString().split("T")[0],
+            }
+          }
         })
 
         return HttpResponse.json(gameSuccessResponse())
+      } catch {
+        return HttpResponse.json(internalServerError, { status: 500 })
+      }
+    }),
+
+    http.post(`${MSW_BASE_URL}/admin/users/unblock`, async ({ request }) => {
+      try {
+        const cookieHeader = request.headers.get("Cookie")
+        if (!validateSessionCookie(cookieHeader)) {
+          return HttpResponse.json(loginRequiredError, { status: 401 })
+        }
+
+        const json = await request.json()
+        const parsed = unblockUsersRequestSchema.safeParse(json)
+
+        if (!parsed.success) {
+          return HttpResponse.json(gameMissingFieldsError(), { status: 400 })
+        }
+
+        parsed.data.emails.forEach((email) => {
+          blockedEmails.delete(email)
+          const userIndex = usersStore.findIndex((u) => u.email === email)
+          if (userIndex !== -1) {
+            usersStore[userIndex] = {
+              ...usersStore[userIndex],
+              blocked: false,
+              blockReason: null,
+              blockedAt: null,
+            }
+          }
+        })
+
+        return HttpResponse.json(gameSuccessResponse())
+      } catch {
+        return HttpResponse.json(internalServerError, { status: 500 })
+      }
+    }),
+
+    http.get(`${MSW_BASE_URL}/admin/users`, ({ request }) => {
+      try {
+        const cookieHeader = request.headers.get("Cookie")
+        if (!validateSessionCookie(cookieHeader)) {
+          return HttpResponse.json(loginRequiredError, { status: 401 })
+        }
+
+        const url = new URL(request.url)
+        const pageParam = url.searchParams.get("page")
+        const page = pageParam ? Math.max(0, parseInt(pageParam, 10)) : 0
+
+        const totalElements = usersStore.length
+        const totalPages = Math.ceil(totalElements / PAGE_SIZE)
+
+        const startIndex = page * PAGE_SIZE
+        const endIndex = startIndex + PAGE_SIZE
+
+        const paginatedUsers = usersStore.slice(startIndex, endIndex)
+        const hasNext = page < totalPages - 1
+
+        const response: AdminUsersResponse = {
+          content: paginatedUsers,
+          page,
+          size: PAGE_SIZE,
+          totalElements,
+          totalPages,
+          hasNext,
+        }
+
+        return HttpResponse.json(generateSuccessResponse(response))
       } catch {
         return HttpResponse.json(internalServerError, { status: 500 })
       }
