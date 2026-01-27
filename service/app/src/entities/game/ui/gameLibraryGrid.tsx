@@ -1,9 +1,7 @@
 "use client"
 
-import { DropdownMenuItem } from "@ject-5-fe/design/components/menu"
-import { Copy, Share } from "@ject-5-fe/design/icons"
 import Link from "next/link"
-import { useState } from "react"
+import { type ReactNode, useState } from "react"
 import { useIntersectionObserver } from "react-simplikit"
 
 import type { GameListItem } from "@/entities/game/model"
@@ -11,34 +9,34 @@ import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
 import { GameCreate } from "@/entities/game/ui/gameCreate"
 import { DEFAULT_BLUR_DATA_URL } from "@/shared/constants/images"
 
-import { useActions } from "../../../app/games/hooks/useGameCardActions"
 import { GameLibrarySkeleton } from "./gameLibrarySkeleton"
 
 interface GameLibraryGridProps {
-  className?: string
   games?: GameListItem[]
   isLoading?: boolean
-  isDashboard?: boolean
   isFetchingNextPage?: boolean
   hasNextPage?: boolean
-  onCreateGame?: () => void
-  onGameClick?: (game: GameListItem) => void
   onLoadMore?: () => void
-  onEditGame?: (game: GameListItem) => void
-  onShareGame?: (game: GameListItem) => void
-  onDeleteGame?: (game: GameListItem) => void
-  onCopyLinkGame?: (game: GameListItem) => void
-  onCloneGame?: (game: GameListItem) => void
+  onGameClick?: (game: GameListItem) => void
+  renderMenuItems?: (game: GameListItem) => ReactNode
+  showCreateButton?: boolean
+  createButtonHref?: string
+  emptyMessage?: string
+  className?: string
 }
 
 export const GameLibraryGrid = ({
-  className = "",
   games = [],
   isLoading = false,
   isFetchingNextPage = false,
   hasNextPage = false,
-  onGameClick,
   onLoadMore,
+  onGameClick,
+  renderMenuItems,
+  showCreateButton = false,
+  createButtonHref = "/create",
+  emptyMessage = "등록된 게임이 없습니다.",
+  className = "",
 }: GameLibraryGridProps) => {
   const [openMenuGameId, setOpenMenuGameId] = useState<string | null>(null)
 
@@ -60,78 +58,60 @@ export const GameLibraryGrid = ({
     },
   )
 
-  const { copy, clone } = useActions()
+  const isEmpty = !isLoading && games.length === 0
 
   return (
     <div
-      className={`mx-auto w-full max-w-[1130px] px-10 sm:px-6 lg:px-0 ${className}`}
+      className={`mx-auto flex w-full max-w-[1130px] flex-col items-center px-10 sm:px-6 lg:px-0 ${className}`}
     >
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-60">
-        <Link href="/create" prefetch={true}>
-          <GameCreate />
-        </Link>
+      <div className="grid w-full grid-cols-5 gap-10 lg:gap-60">
+        {showCreateButton && (
+          <Link href={createButtonHref} prefetch={true}>
+            <GameCreate />
+          </Link>
+        )}
 
-        {isLoading ? (
-          <GameLibrarySkeleton count={19} />
-        ) : (
-          games.map((game) => (
-            <div
-              key={game.gameId}
-              onClick={() => onGameClick?.(game)}
-              className="cursor-pointer"
-            >
-              <GameCard.Root title={game.gameTitle}>
-                <GameCard.Image
-                  src={game.gameThumbnailUrl || ""}
-                  alt={game.gameTitle}
-                  fill
-                  sizes="178px"
-                  placeholder="blur"
-                  blurDataURL={DEFAULT_BLUR_DATA_URL}
-                >
-                  <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
-                  {game.isShared && (
-                    <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
-                  )}
-                </GameCard.Image>
-                <GameCard.Description>{game.gameTitle}</GameCard.Description>
+        {isLoading && games.length === 0 && <GameLibrarySkeleton count={19} />}
+
+        {games.map((game) => (
+          <div
+            key={game.gameId}
+            onClick={() => onGameClick?.(game)}
+            className="cursor-pointer"
+          >
+            <GameCard.Root title={game.gameTitle}>
+              <GameCard.Image
+                src={game.gameThumbnailUrl || ""}
+                alt={game.gameTitle}
+                fill
+                sizes="178px"
+                placeholder="blur"
+                blurDataURL={DEFAULT_BLUR_DATA_URL}
+              >
+                <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
+                {game.isShared && (
+                  <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
+                )}
+              </GameCard.Image>
+              <GameCard.Description>{game.gameTitle}</GameCard.Description>
+              {renderMenuItems && (
                 <GameCard.Options
                   open={openMenuGameId === game.gameId}
                   onOpenChange={(nextOpen) => {
                     setOpenMenuGameId(nextOpen ? game.gameId : null)
                   }}
                 >
-                  <DropdownMenuItem
-                    type="icon"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      const origin = window.location.origin
-                      copy(`${origin}/game/${game.gameId}`)
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Share />
-                    <span className="text-text-interactive-secondary">
-                      링크 복사
-                    </span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    type="icon"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      clone(game.gameId)
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Copy />
-                    <span className="text-text-interactive-secondary">
-                      게임 복제
-                    </span>
-                  </DropdownMenuItem>
+                  {renderMenuItems(game)}
                 </GameCard.Options>
-              </GameCard.Root>
-            </div>
-          ))
+              )}
+            </GameCard.Root>
+          </div>
+        ))}
+
+        {isEmpty && !showCreateButton && (
+          <p className="col-span-full text-center text-text-secondary">
+            {emptyMessage}
+          </p>
         )}
       </div>
 

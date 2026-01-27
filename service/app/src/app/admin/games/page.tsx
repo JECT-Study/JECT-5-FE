@@ -1,3 +1,7 @@
+"use client"
+
+import { AdminGameSection } from "./components/adminGameSection"
+
 export default function AdminGamesPage() {
-  return <div>AdminPage-Games</div>
+  return <AdminGameSection />
 }

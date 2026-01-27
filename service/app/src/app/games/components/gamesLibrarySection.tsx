@@ -1,40 +1,21 @@
 "use client"
 
 import { parseAsString, useQueryState } from "nuqs"
-import { useState } from "react"
-import { useIntersectionObserver } from "react-simplikit"
 
 import { useGamePreview } from "@/entities/game/hooks/useGamePreview"
 import { useInfiniteGameList } from "@/entities/game/model/useInfiniteGameList"
-import * as GameCard from "@/entities/game/ui/GameCard/gameCard"
-import { GameLibrarySkeleton } from "@/entities/game/ui/gameLibrarySkeleton"
-import { DEFAULT_BLUR_DATA_URL } from "@/shared/constants/images"
+import { GameLibraryGrid } from "@/entities/game/ui/gameLibraryGrid"
 
 import { filterInput } from "../utils/filterInput"
 import { GameCardActions } from "./gameCardActions"
 
 export function GamesLibrarySection() {
-  const [openMenuGameId, setOpenMenuGameId] = useState<string | null>(null)
-
   const [searchQuery] = useQueryState("query", parseAsString.withDefault(""))
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteGameList({
       limit: 19,
       query: searchQuery || undefined,
     })
-
-  const intersectRef = useIntersectionObserver<HTMLDivElement>(
-    (entry) => {
-      if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage()
-      }
-    },
-    {
-      root: null,
-      rootMargin: "100px",
-      threshold: 0.1,
-    },
-  )
 
   const filteredGames = games?.filter((game) =>
     filterInput(game.gameTitle, searchQuery),
@@ -43,61 +24,16 @@ export function GamesLibrarySection() {
   const { openPreview } = useGamePreview()
 
   return (
-    <div className="mx-auto flex w-full max-w-[1130px] flex-col items-center px-10 pb-120 pt-[210px] sm:px-6 lg:px-0">
-      <div className="grid w-full grid-cols-5 gap-10 lg:gap-60">
-        {isLoading && (!filteredGames || filteredGames.length === 0) && (
-          <GameLibrarySkeleton count={19} />
-        )}
-
-        {filteredGames?.map((game) => (
-          <div
-            key={game.gameId}
-            onClick={() => openPreview(game)}
-            className="cursor-pointer"
-          >
-            <GameCard.Root title={game.gameTitle}>
-              <GameCard.Image
-                src={game.gameThumbnailUrl || ""}
-                alt={game.gameTitle}
-                fill
-                sizes="178px"
-                placeholder="blur"
-                blurDataURL={DEFAULT_BLUR_DATA_URL}
-              >
-                <GameCard.Badge>{game.questionCount}문제</GameCard.Badge>
-                {game.isShared && (
-                  <GameCard.Badge variant="bottom-left">공유</GameCard.Badge>
-                )}
-              </GameCard.Image>
-              <GameCard.Description>{game.gameTitle}</GameCard.Description>
-              <GameCard.Options
-                open={openMenuGameId === game.gameId}
-                onOpenChange={(nextOpen) => {
-                  setOpenMenuGameId(nextOpen ? game.gameId : null)
-                }}
-              >
-                <GameCardActions game={game} />
-              </GameCard.Options>
-            </GameCard.Root>
-          </div>
-        ))}
-
-        {!isLoading && filteredGames?.length === 0 && (
-          <p className="col-span-full text-center text-text-secondary">
-            검색 결과가 없습니다.
-          </p>
-        )}
-      </div>
-
-      {isFetchingNextPage && <GameLibrarySkeleton count={5} />}
-
-      {hasNextPage && (
-        <div
-          ref={intersectRef}
-          className="mt-[60px] h-[20px] w-full"
-          aria-hidden="true"
-        />
-      )}
-    </div>
+    <GameLibraryGrid
+      games={filteredGames}
+      isLoading={isLoading}
+      isFetchingNextPage={isFetchingNextPage}
+      hasNextPage={hasNextPage}
+      onLoadMore={fetchNextPage}
+      onGameClick={openPreview}
+      emptyMessage="검색 결과가 없습니다."
+      className="pb-120 pt-[210px]"
+      renderMenuItems={(game) => <GameCardActions game={game} />}
+    />
   )
 }

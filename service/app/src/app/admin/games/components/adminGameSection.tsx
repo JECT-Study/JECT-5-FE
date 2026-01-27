@@ -5,9 +5,9 @@ import { useInfiniteMyGames } from "@/entities/game/model/useInfiniteMyGames"
 import { GameCardOptions } from "@/entities/game/ui/gameCardOptions"
 import { GameLibraryGrid } from "@/entities/game/ui/gameLibraryGrid"
 
-import { useDashboardGameActions } from "../hooks/useDashboardGameActions"
+import { useAdminGameActions } from "../hooks/useAdminGameActions"
 
-export const DashboardGameSection = () => {
+export const AdminGameSection = () => {
   const { games, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteMyGames({
       limit: 19,
@@ -19,7 +19,7 @@ export const DashboardGameSection = () => {
     handleDeleteGame,
     handleCopyLink,
     handleCloneGame,
-  } = useDashboardGameActions()
+  } = useAdminGameActions()
 
   const { openPreview } = useGamePreview()
 
@@ -34,7 +34,7 @@ export const DashboardGameSection = () => {
       showCreateButton
       createButtonHref="/create"
       emptyMessage="등록된 게임이 없습니다."
-      className="pb-120 pt-[210px]"
+      className="pb-120 pt-[120px]"
       renderMenuItems={(game) => (
         <GameCardOptions
           shared={game.isShared}
