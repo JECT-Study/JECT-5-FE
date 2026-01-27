@@ -16,6 +16,7 @@ import { openUnblockConfirmModal } from "./_components/dialog/unblockConfirmModa
 
 export default function AdminUsersPage() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState("")
   const pageIndex = currentPage - 1
 
   const { users = [], totalPages } = useAdminUsers({
@@ -31,7 +32,20 @@ export default function AdminUsersPage() {
 
   const { blockMutation, unblockMutation } = useUserBlockMutations()
 
-  const userEmails = useMemo(() => users.map((u) => u.email), [users])
+  const filteredUsers = useMemo(() => {
+    if (!searchQuery) return users
+    const query = searchQuery.toLowerCase()
+    return users.filter(
+      (user) =>
+        user.nickname.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query),
+    )
+  }, [users, searchQuery])
+
+  const userEmails = useMemo(
+    () => filteredUsers.map((u) => u.email),
+    [filteredUsers],
+  )
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -71,14 +85,18 @@ export default function AdminUsersPage() {
   return (
     <AdminPageLayout
       header={
-        <UsersPageHeader onBlock={handleBlock} onUnblock={handleUnblock} />
+        <UsersPageHeader
+          onSearch={setSearchQuery}
+          onBlock={handleBlock}
+          onUnblock={handleUnblock}
+        />
       }
       currentPage={currentPage}
       totalPages={totalPages}
       onPageChange={handlePageChange}
     >
       <UsersTable
-        items={users}
+        items={filteredUsers}
         selectedEmails={selectedEmails}
         onSelectChange={handleSelectChange}
         onSelectAll={handleSelectAllUsers}

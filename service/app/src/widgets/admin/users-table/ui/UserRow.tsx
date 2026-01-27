@@ -22,7 +22,7 @@ export const UserRow = memo(function UserRow({
 }: UserRowProps) {
   const blockReasonLabel = item.blockReason
     ? REPORT_REASON_LABELS[item.blockReason]
-    : "-"
+    : ""
 
   return (
     <div className="flex items-center gap-16">
@@ -32,10 +32,7 @@ export const UserRow = memo(function UserRow({
           onCheckedChange={(checked) => onSelect(item.email, checked)}
         />
       </div>
-      <AdminTableRow
-        className="flex-1 gap-40"
-        aria-label={`이름 ${item.nickname} 이메일 ${item.email} 차단 여부 ${item.blocked ? "차단됨" : "활성"}`}
-      >
+      <AdminTableRow className="flex-1 gap-40">
         <AdminTableGroup className="w-full gap-40 md:min-w-[500px] lg:min-w-[600px]">
           <AdminTableText className="min-w-[100px]">
             {item.nickname}
@@ -50,12 +47,12 @@ export const UserRow = memo(function UserRow({
             {blockReasonLabel}
           </AdminTableText>
           <AdminTableText className="min-w-[200px]">
-            {item.blockedAt ?? "-"}
+            {item.blockedAt ?? ""}
           </AdminTableText>
         </AdminTableGroup>
 
         <AdminTableText className="min-w-[100px]">
-          {item.blocked ? "차단됨" : "활성"}
+          {item.blocked ? "차단됨" : ""}
         </AdminTableText>
       </AdminTableRow>
     </div>

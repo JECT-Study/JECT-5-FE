@@ -7,16 +7,28 @@ import {
   Field as InputField,
   Root as InputRoot,
 } from "@ject-5-fe/design/components/input"
+import { useState } from "react"
 
 interface UsersPageHeaderProps {
+  onSearch: (query: string) => void
   onBlock: () => void
   onUnblock: () => void
 }
 
 export const UsersPageHeader = ({
+  onSearch,
   onBlock,
   onUnblock,
 }: UsersPageHeaderProps) => {
+  const [inputValue, setInputValue] = useState("")
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      onSearch(inputValue.trim())
+    }
+  }
+
   return (
     <div className="flex w-full items-center gap-300">
       <div className="flex w-full items-center gap-40">
@@ -30,7 +42,12 @@ export const UsersPageHeader = ({
             state="default"
             name="admin-user-search"
           >
-            <InputControl placeholder="이름 또는 이메일 검색" />
+            <InputControl
+              placeholder="이름 또는 이메일 검색"
+              value={inputValue}
+              onChange={setInputValue}
+              onKeyDown={handleKeyDown}
+            />
           </InputField>
         </InputRoot>
       </div>
