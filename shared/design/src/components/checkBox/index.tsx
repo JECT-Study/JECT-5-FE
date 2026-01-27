@@ -85,7 +85,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <label
         htmlFor={id}
         className={cn(
-          "inline-flex items-center gap-[11px]",
+          "flex items-center gap-[11px] leading-none",
           disabled ? "cursor-not-allowed" : "cursor-pointer",
           containerClassName,
         )}
@@ -94,7 +94,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           ref={ref}
           id={id}
           type="checkbox"
-          className={cn("peer sr-only", className)}
+          className={cn("peer absolute size-0 opacity-0", className)}
           disabled={disabled}
           checked={checked}
           onChange={(e) => setChecked(e.target.checked)}
