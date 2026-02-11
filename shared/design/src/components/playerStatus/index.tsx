@@ -39,7 +39,7 @@ export const PlayerStatus = ({
   return (
     <div
       className={cn(
-        "relative flex w-full items-center overflow-hidden rounded-12 bg-background-primary py-40",
+        "flex w-full shrink-0 overflow-hidden rounded-12 bg-background-primary",
         className,
       )}
       role="group"
@@ -47,19 +47,19 @@ export const PlayerStatus = ({
     >
       <SecondaryPlainIconButton
         size="lg"
-        className="group absolute inset-y-0 left-0 z-10 flex h-auto w-1/2 cursor-pointer items-center justify-center gap-16 rounded-l-12 rounded-r-none transition-colors hover:bg-[#FFC7C8] active:bg-[#FF6467]"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-12 rounded-r-none px-20 py-40 transition-colors hover:bg-[#FFC7C8] active:bg-[#FF6467]"
         onClick={onScoreDecrease}
         aria-label={`${name} 점수 감소`}
       >
         <Minus className="size-32 shrink-0" />
-        <span className="block w-[100px] truncate text-center font-pretendard text-[33px] font-light leading-[120%] text-text-primary">
+        <span className="typography-heading-lg-regular block w-[100px] truncate text-center">
           {name}
         </span>
       </SecondaryPlainIconButton>
 
       <SecondaryPlainIconButton
         size="lg"
-        className="group absolute inset-y-0 right-0 z-10 flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-none rounded-r-12 px-20 transition-colors hover:bg-[#BDDCFF] active:bg-[#51A2FF]"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-none rounded-r-12 px-20 py-40 transition-colors hover:bg-[#BDDCFF] active:bg-[#51A2FF]"
         onClick={onScoreIncrease}
         aria-label={`${name} 점수 증가`}
       >

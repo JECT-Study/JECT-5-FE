@@ -60,13 +60,11 @@ const ScoreboardGame = () => {
           })
         }
       />
-      <div className="absolute left-[20px] top-[110px] z-10">
-        <ScoreboardSidebar
-          teams={teams}
-          scores={scores}
-          onUpdateTeamScore={updateTeamScore}
-        />
-      </div>
+      <ScoreboardSidebar
+        teams={teams}
+        scores={scores}
+        onUpdateTeamScore={updateTeamScore}
+      />
       <div>
         <GamePlayContent
           currentQuestion={currentQuestion}
