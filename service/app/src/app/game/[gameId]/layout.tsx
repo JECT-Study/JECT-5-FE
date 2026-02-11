@@ -34,7 +34,7 @@ export default async function GameLayout({
 
   return (
     <GameProvider initialGameDetail={gameDetail.data}>
-      <div className="flex h-screen w-screen flex-col bg-background-primary">
+      <div className="flex h-screen w-screen flex-col bg-background-primary pt-[90px]">
         {children}
       </div>
     </GameProvider>
