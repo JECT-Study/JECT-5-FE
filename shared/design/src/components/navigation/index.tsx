@@ -28,7 +28,7 @@ export const Navigation = ({
       <div className="flex shrink-0 items-center justify-start">
         {leftContent}
       </div>
-      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center">
+      <div className="flex flex-1 items-center justify-center">
         {centerContent}
       </div>
       <div className="flex shrink-0 items-center justify-end gap-16">

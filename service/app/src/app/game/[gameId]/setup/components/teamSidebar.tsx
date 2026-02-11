@@ -29,7 +29,7 @@ export function TeamSidebar() {
   }
 
   return (
-    <aside className="absolute bottom-32 left-20 top-20 flex w-[400px] flex-col overflow-hidden rounded-20 bg-background-tertiary">
+    <aside className="absolute bottom-32 left-20 top-20 flex flex-col overflow-hidden rounded-20 bg-background-tertiary md:w-[334px] lg:w-[400px]">
       <div className="flex max-h-full flex-col items-center gap-24 overflow-y-auto px-24 pb-[140px] pt-28">
         {teams.map((team) => (
           <PlayerStatus
@@ -37,7 +37,7 @@ export function TeamSidebar() {
             name={team.name}
             score=""
             scoreView={false}
-            className="h-[118px] w-[350px] shrink-0"
+            className="shrink-0 py-40"
           />
         ))}
       </div>
