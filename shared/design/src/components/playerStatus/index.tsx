@@ -47,7 +47,7 @@ export const PlayerStatus = ({
     >
       <SecondaryPlainIconButton
         size="lg"
-        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-12 rounded-r-none px-20 py-40 transition-colors hover:bg-[#FFC7C8] active:bg-[#FF6467]"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-12 rounded-r-none py-40 transition-colors hover:bg-[#FFC7C8] active:bg-[#FF6467] md:px-16 lg:px-20"
         onClick={onScoreDecrease}
         aria-label={`${name} 점수 감소`}
       >
@@ -59,7 +59,7 @@ export const PlayerStatus = ({
 
       <SecondaryPlainIconButton
         size="lg"
-        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-none rounded-r-12 px-20 py-40 transition-colors hover:bg-[#BDDCFF] active:bg-[#51A2FF]"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-none rounded-r-12 px-20 py-40 transition-colors hover:bg-[#BDDCFF] active:bg-[#51A2FF] md:px-16 lg:px-20"
         onClick={onScoreIncrease}
         aria-label={`${name} 점수 증가`}
       >

@@ -60,12 +60,12 @@ const ScoreboardGame = () => {
           })
         }
       />
-      <ScoreboardSidebar
-        teams={teams}
-        scores={scores}
-        onUpdateTeamScore={updateTeamScore}
-      />
-      <div>
+      <div className="relative flex-1">
+        <ScoreboardSidebar
+          teams={teams}
+          scores={scores}
+          onUpdateTeamScore={updateTeamScore}
+        />
         <GamePlayContent
           currentQuestion={currentQuestion}
           currentRound={currentRound}

@@ -24,7 +24,7 @@ export const ScoreboardSidebar = ({
   return (
     <aside
       className={cn(
-        "absolute left-20 top-20 flex w-full flex-col overflow-hidden rounded-20 bg-background-tertiary md:w-[330px] lg:w-[400px]",
+        "absolute left-20 top-[10px] flex w-[246px] flex-col overflow-hidden rounded-20 bg-background-tertiary md:w-[330px] lg:w-[400px]",
         isSidebarOpen && "bottom-32",
       )}
     >
