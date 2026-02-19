@@ -1,3 +1,4 @@
+import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
 
@@ -82,12 +83,13 @@ export const GamePlayContent = ({
       </div>
 
       <div className="flex flex-col items-center gap-16">
-        <div
+        <PrimaryBoxButton
+          size="2xl"
+          _style="solid"
           onClick={() => (showAnswer ? onNextQuestion() : onShowAnswer())}
-          className="typography-heading-3xl-semibold inline-flex w-[572px] cursor-pointer flex-row items-center justify-center gap-8 rounded-12 border-[3px] border-transparent bg-background-interactive-primary px-32 py-12 text-text-interactive-inverse hover:bg-background-interactive-primary-hovered active:border-transparent active:bg-background-interactive-primary-pressed"
         >
           {showAnswer ? "다음" : "정답은?"}
-        </div>
+        </PrimaryBoxButton>
       </div>
     </div>
   )

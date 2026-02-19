@@ -3,38 +3,26 @@ import { expect, test } from "@playwright/test"
 import { GameSetupPOM } from "../../setup/__tests__/gameSetupPOM"
 import { GamePlayPOM } from "./gamePlayPOM"
 
-// E2E: 이미지 맞추기 게임 - 두 번째 문제 플로우 (503/504/505)
+// E2E: 게임 플레이 페이지 테스트
 // guides/playwright-convention.mdc 및 test-convention.mdc 준수
 
-test.describe("게임 진행 - 두 번째 문제 플로우", () => {
+test.describe("게임 진행 - 기본 UI", () => {
   let pageObj: GamePlayPOM
   let setupPage: GameSetupPOM
 
   test.beforeEach(async ({ page }) => {
-    // Given: /setup에서 게임 시작을 통해 playing 상태로 전환
     setupPage = new GameSetupPOM(page)
     await setupPage.goto("1")
     await setupPage.startGame()
-
-    // When: /play로 이동 (초기 1번 문제)
     pageObj = new GamePlayPOM(page)
   })
 
-  test("1번 문제: 이전 버튼은 비활성화되고 다음 버튼은 활성화되어야 한다", async () => {
-    await expect(pageObj.prevQuestionButton).toBeDisabled()
-    await expect(pageObj.nextQuestionButton).toBeEnabled()
+  test("1번 문제: '정답은?' 버튼이 표시되어야 한다", async () => {
+    await expect(pageObj.showAnswerButton).toBeVisible()
+    await expect(pageObj.nextQuestionButton).not.toBeVisible()
 
     const progress = await pageObj.getProgressValue()
     expect(progress).not.toBeNull()
-  })
-
-  test("2번 문제: 이전/다음 버튼이 모두 활성화되어야 한다", async ({
-    page,
-  }) => {
-    await pageObj.goToNextQuestion()
-    await expect(page).toHaveURL(/\?q=2/)
-    await expect(pageObj.prevQuestionButton).toBeEnabled()
-    await expect(pageObj.nextQuestionButton).toBeEnabled()
   })
 
   test("홈 로고 클릭 시 나가기 다이얼로그가 뜨고, '아니요' 클릭 시 페이지에 머문다", async ({
@@ -52,8 +40,8 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
   })
 
   test("점수판을 접고 다시 펼칠 수 있어야 한다", async () => {
-    await pageObj.toggleScoreboard() // 접기
-    await pageObj.toggleScoreboard() // 펼치기
+    await pageObj.toggleScoreboard()
+    await pageObj.toggleScoreboard()
   })
 
   test("팀 점수를 클릭 당 +1, -1씩 조정할 수 있다", async () => {
@@ -64,37 +52,146 @@ test.describe("게임 진행 - 두 번째 문제 플로우", () => {
     await pageObj.decreaseScore(teamName, 1)
     await pageObj.expectTeamScore(teamName, "0점")
   })
+})
 
-  test("'이전 문제' 클릭 시 이전 라운드로 이동하고 진행률이 감소한다", async ({
-    page,
-  }) => {
-    // 1번 → 2번 문제로 이동하고 URL 변경 대기
-    await pageObj.goToNextQuestion()
-    await page.waitForURL(/\?q=2/, { timeout: 1000 })
+test.describe("게임 진행 - 버튼 클릭 조작", () => {
+  let pageObj: GamePlayPOM
+  let setupPage: GameSetupPOM
 
-    // 2번 → 3번 문제로 이동하고 URL 변경 대기
-    await pageObj.goToNextQuestion()
-    await page.waitForURL(/\?q=3/, { timeout: 1000 })
-
-    // 진행률 측정 후 이전 문제로 이동
-    const before = await pageObj.getProgressValue()
-    await pageObj.goToPrevQuestion()
-    await page.waitForURL(/\?q=2/, { timeout: 1000 })
-
-    const after = await pageObj.getProgressValue()
-    expect(after).toBeLessThanOrEqual(before!)
+  test.beforeEach(async ({ page }) => {
+    setupPage = new GameSetupPOM(page)
+    await setupPage.goto("1")
+    await setupPage.startGame()
+    pageObj = new GamePlayPOM(page)
   })
 
-  //실제 문제 개수를 알지 못하기 때문에, 정확한 value 측정보다는 비교 연산으로 테스트 진행
-  test("'다음 문제' 클릭 시 다음 라운드로 이동하고 진행률이 증가한다 (1→2)", async ({
+  test("'정답은?' 버튼 클릭 시 정답이 공개되고 '다음' 버튼이 표시된다", async ({
     page,
   }) => {
+    await pageObj.clickShowAnswer()
+    await expect(page).toHaveURL(/answer=true/)
+    await expect(pageObj.nextQuestionButton).toBeVisible()
+    await expect(pageObj.showAnswerButton).not.toBeVisible()
+  })
+
+  test("정답 공개 후 '다음' 버튼 클릭 시 다음 문제로 이동한다", async ({
+    page,
+  }) => {
+    await pageObj.clickShowAnswer()
+    await pageObj.clickNext()
+    await expect(page).toHaveURL(/\?q=2/)
+    await expect(pageObj.showAnswerButton).toBeVisible()
+  })
+})
+
+test.describe("게임 진행 - 키보드 조작", () => {
+  let pageObj: GamePlayPOM
+  let setupPage: GameSetupPOM
+
+  test.beforeEach(async ({ page }) => {
+    setupPage = new GameSetupPOM(page)
+    await setupPage.goto("1")
+    await setupPage.startGame()
+    pageObj = new GamePlayPOM(page)
+  })
+
+  test("Enter 키로 정답을 공개할 수 있다", async ({ page }) => {
+    await pageObj.pressEnter()
+    await expect(page).toHaveURL(/answer=true/)
+    await expect(pageObj.nextQuestionButton).toBeVisible()
+  })
+
+  test("→ 키로 정답을 공개할 수 있다", async ({ page }) => {
+    await pageObj.pressArrowRight()
+    await expect(page).toHaveURL(/answer=true/)
+    await expect(pageObj.nextQuestionButton).toBeVisible()
+  })
+
+  test("정답 공개 후 Enter 키로 다음 문제로 이동할 수 있다", async ({
+    page,
+  }) => {
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
+    await expect(page).toHaveURL(/\?q=2/)
+    await expect(pageObj.showAnswerButton).toBeVisible()
+  })
+
+  test("정답 공개 후 → 키로 다음 문제로 이동할 수 있다", async ({ page }) => {
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressArrowRight()
+    await expect(page).toHaveURL(/\?q=2/)
+    await expect(pageObj.showAnswerButton).toBeVisible()
+  })
+
+  test("← 키로 이전 문제로 이동할 수 있다 (2번 문제에서)", async ({ page }) => {
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
+    await page.waitForURL(/\?q=2/)
+
+    await pageObj.pressArrowLeft()
+    await expect(page).toHaveURL(/\?q=1/)
+  })
+
+  test("1번 문제에서 ← 키는 무반응이다", async ({ page }) => {
+    const urlBefore = page.url()
+    await pageObj.pressArrowLeft()
+    await expect(page).toHaveURL(urlBefore)
+    await expect(pageObj.showAnswerButton).toBeVisible()
+  })
+
+  test("이전 문제로 돌아가면 정답 숨김 상태로 시작한다", async ({ page }) => {
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
+    await page.waitForURL(/\?q=2/)
+
+    await pageObj.pressArrowLeft()
+    await expect(page).toHaveURL(/\?q=1/)
+    await expect(page).not.toHaveURL(/answer=true/)
+    await expect(pageObj.showAnswerButton).toBeVisible()
+  })
+})
+
+test.describe("게임 진행 - 문제 이동 및 진행률", () => {
+  let pageObj: GamePlayPOM
+  let setupPage: GameSetupPOM
+
+  test.beforeEach(async ({ page }) => {
+    setupPage = new GameSetupPOM(page)
+    await setupPage.goto("1")
+    await setupPage.startGame()
+    pageObj = new GamePlayPOM(page)
+  })
+
+  test("다음 문제로 이동하면 진행률이 증가한다", async ({ page }) => {
     const before = await pageObj.getProgressValue()
-    await pageObj.goToNextQuestion()
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
     await expect(page).toHaveURL(/\?q=2/)
 
     const after = await pageObj.getProgressValue()
+    expect(after).toBeGreaterThan(before!)
+  })
 
-    expect(after).toBeGreaterThanOrEqual(before!)
+  test("이전 문제로 이동하면 진행률이 감소한다", async ({ page }) => {
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
+    await page.waitForURL(/\?q=2/)
+    await pageObj.pressEnter()
+    await page.waitForURL(/answer=true/)
+    await pageObj.pressEnter()
+    await page.waitForURL(/\?q=3/)
+
+    const before = await pageObj.getProgressValue()
+    await pageObj.pressArrowLeft()
+    await page.waitForURL(/\?q=2/)
+
+    const after = await pageObj.getProgressValue()
+    expect(after).toBeLessThan(before!)
   })
 })

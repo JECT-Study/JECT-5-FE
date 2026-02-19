@@ -5,14 +5,16 @@ import { expect, type Locator, type Page } from "@playwright/test"
  * - 테스트 컨벤션: guides/test-convention.mdc를 따름
  * - 가능한 한 접근성 셀렉터(getByRole, getByAltText 등)를 우선 사용
  * - 접근성 속성이 없는 요소는 구조 기반 셀렉터로 보완
+ *
+ * 키보드 조작:
+ * - Enter / ArrowRight: 정답 숨김 → 정답 공개, 정답 공개 → 다음 문제
+ * - ArrowLeft: 이전 문제로 이동 (1번 문제에서는 무반응)
  */
 export class GamePlayPOM {
   readonly page: Page
 
   // 헤더 영역
   readonly homeLogoImage: Locator
-  readonly prevQuestionButton: Locator
-  readonly nextQuestionButton: Locator
   readonly exitIconButton: Locator
   readonly progressbar: Locator
 
@@ -22,7 +24,11 @@ export class GamePlayPOM {
   // 메인 콘텐츠
   readonly questionHeading: Locator
   readonly questionImage: Locator
+  readonly answerArea: Locator
+
+  // 액션 버튼 ("정답은?" 또는 "다음")
   readonly showAnswerButton: Locator
+  readonly nextQuestionButton: Locator
 
   // 나가기 다이얼로그
   readonly exitDialogConfirmButton: Locator
@@ -33,8 +39,6 @@ export class GamePlayPOM {
 
     // 헤더
     this.homeLogoImage = page.getByAltText("홈 로고")
-    this.prevQuestionButton = page.getByRole("button", { name: "이전 문제" })
-    this.nextQuestionButton = page.getByRole("button", { name: "다음 문제" })
     this.exitIconButton = page.getByRole("button", { name: "게임 종료" })
 
     // Progress
@@ -48,28 +52,25 @@ export class GamePlayPOM {
     // 메인 콘텐츠
     this.questionHeading = page.getByRole("heading", { level: 1 })
     this.questionImage = page.getByAltText("문제 이미지")
-    this.showAnswerButton = page.getByRole("button", { name: "정답 보기" })
+    this.answerArea = page.locator("[data-testid='answer-area']")
+
+    // 액션 버튼
+    this.showAnswerButton = page.getByRole("button", { name: "정답은?" })
+    this.nextQuestionButton = page.getByRole("button", { name: "다음" })
 
     // 나가기 다이얼로그 버튼
     this.exitDialogConfirmButton = page.getByRole("button", { name: "네" })
     this.exitDialogCancelButton = page.getByRole("button", { name: "아니요" })
   }
 
-  async goto(gameId: string = "1", round?: number) {
-    const search = round ? `?q=${round}` : ""
+  async goto(gameId: string = "1", round?: number, showAnswer?: boolean) {
+    let search = round ? `?q=${round}` : ""
+    if (showAnswer) search += "&answer=true"
     await this.page.goto(`game/${gameId}/play${search}`)
   }
 
   async clickHomeLogo() {
     await this.homeLogoImage.click()
-  }
-
-  async goToPrevQuestion() {
-    await this.prevQuestionButton.click()
-  }
-
-  async goToNextQuestion() {
-    await this.nextQuestionButton.click()
   }
 
   async clickExitIcon() {
@@ -85,13 +86,55 @@ export class GamePlayPOM {
     await this.scoreboardToggleButton.click()
   }
 
+  // 정답 공개 버튼 클릭
+  async clickShowAnswer() {
+    await this.showAnswerButton.click()
+  }
+
+  // 다음 버튼 클릭 (정답 공개 상태에서)
+  async clickNext() {
+    await this.nextQuestionButton.click()
+  }
+
+  // 키보드 조작: Enter 키
+  async pressEnter() {
+    await this.page.locator("body").press("Enter")
+  }
+
+  // 키보드 조작: → 키
+  async pressArrowRight() {
+    await this.page.locator("body").press("ArrowRight")
+  }
+
+  // 키보드 조작: ← 키
+  async pressArrowLeft() {
+    await this.page.locator("body").press("ArrowLeft")
+  }
+
+  // 정답 공개 (버튼 또는 키보드)
+  async showAnswer() {
+    await this.pressEnter()
+  }
+
+  // 다음 문제로 이동 (정답 공개 상태에서)
+  async goToNextQuestion() {
+    await expect(this.nextQuestionButton).toBeVisible()
+    await this.pressEnter()
+  }
+
+  // 이전 문제로 이동 (키보드)
+  async goToPrevQuestion() {
+    await this.pressArrowLeft()
+  }
+
+  // 현재 정답 공개 상태인지 확인
+  async isAnswerVisible() {
+    return await this.nextQuestionButton.isVisible()
+  }
+
   // 팀 관련 접근성 셀렉터 기반
   teamCard(teamName: string) {
     return this.page.getByRole("group", { name: `${teamName} 점수 카드` })
-  }
-
-  teamScoreLabel(teamName: string) {
-    return this.page.getByLabel(`${teamName} 현재 점수`)
   }
 
   teamDecreaseButton(teamName: string) {
@@ -117,7 +160,8 @@ export class GamePlayPOM {
   }
 
   async expectTeamScore(teamName: string, expectedText: string) {
-    await expect(this.teamScoreLabel(teamName)).toHaveText(expectedText)
+    const scoreButton = this.teamIncreaseButton(teamName)
+    await expect(scoreButton).toContainText(expectedText)
   }
 
   async getQuestionText() {
@@ -126,26 +170,6 @@ export class GamePlayPOM {
 
   async isQuestionImageVisible() {
     return await this.questionImage.isVisible()
-  }
-
-  async showAnswerAndGetText() {
-    await this.showAnswerButton.click()
-    const answerButton = this.page
-      .getByRole("button")
-      .filter({ hasNotText: "정답 보기" })
-      .first()
-    await expect(this.showAnswerButton).not.toBeVisible()
-    const answerText = (await answerButton.textContent())?.trim() ?? ""
-    return answerText
-  }
-
-  async hideAnswer() {
-    const answerButton = this.page
-      .getByRole("button")
-      .filter({ hasNotText: "정답 보기" })
-      .first()
-    await answerButton.click()
-    await expect(this.showAnswerButton).toBeVisible()
   }
 
   async confirmExit() {

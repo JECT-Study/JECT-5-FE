@@ -43,7 +43,7 @@ export function TeamSidebar() {
       </div>
       <FloatingAddButton
         onClick={handleAddTeam}
-        ariaLabel="참가자 및 팀 추가"
+        ariaLabel="참가자 및 팀 추가하기"
         disabled={teams.length >= MAX_TEAMS}
       />
     </aside>
