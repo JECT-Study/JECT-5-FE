@@ -29,7 +29,7 @@ export function TeamSidebar() {
   }
 
   return (
-    <aside className="absolute bottom-32 left-20 top-20 flex flex-col overflow-hidden rounded-20 bg-background-tertiary md:w-[334px] lg:w-[400px]">
+    <aside className="absolute bottom-32 left-20 top-20 flex flex-col overflow-hidden rounded-20 bg-background-tertiary sm:w-[334px] md:w-[400px]">
       <div className="flex max-h-full flex-col items-center gap-24 overflow-y-auto px-24 pb-[140px] pt-28">
         {teams.map((team) => (
           <PlayerStatus
