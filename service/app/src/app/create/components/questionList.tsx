@@ -1,12 +1,10 @@
 "use client"
 
-import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
-import { StickyActionBar } from "@ject-5-fe/design/components/stickyActionBar"
-import { Add } from "@ject-5-fe/design/icons"
 import { useRef } from "react"
 import { useShallow } from "zustand/react/shallow"
 
 import { useListboxNavigation } from "@/shared/lib/useListBoxNavigation"
+import { FloatingAddButton } from "@/shared/ui/floatingAddButton"
 
 import { useCreateGameStore } from "../store/useCreateGameStore"
 import { Question } from "./question"
@@ -35,10 +33,10 @@ export function QuestionList() {
   )
 
   return (
-    <div className="flex h-full min-h-0 w-[420px] flex-col bg-background-tertiary px-[32px] py-[16px]">
+    <div className="relative flex h-full min-h-0 w-[420px] flex-col bg-background-tertiary px-32 py-16">
       <div
         ref={listboxRef}
-        className="flex flex-col gap-24 overflow-y-auto"
+        className="flex flex-col gap-24 overflow-y-auto pb-[140px]"
         role="listbox"
         aria-label="문제 목록"
         tabIndex={0}
@@ -75,20 +73,7 @@ export function QuestionList() {
         })}
       </div>
 
-      <StickyActionBar
-        position="sticky"
-        edge="bottom"
-        className="mt-auto px-[32px] pb-[16px]"
-        contentClassName="w-full"
-      >
-        <PrimaryBoxButton
-          className="aspect-square size-64 rounded-full"
-          onClick={addQuestion}
-          aria-label="문제 추가"
-        >
-          <Add className="size-full" />
-        </PrimaryBoxButton>
-      </StickyActionBar>
+      <FloatingAddButton onClick={addQuestion} ariaLabel="문제 추가" />
     </div>
   )
 }

@@ -1,10 +1,10 @@
 "use client"
 
-import { PrimaryBoxButton } from "@ject-5-fe/design/components/button"
 import { PlayerStatus } from "@ject-5-fe/design/components/playerStatus"
-import { StickyActionBar } from "@ject-5-fe/design/components/stickyActionBar"
 import { v4 as uuidv4 } from "uuid"
 import { useShallow } from "zustand/react/shallow"
+
+import { FloatingAddButton } from "@/shared/ui/floatingAddButton"
 
 import { useGameStore } from "../../store/useGameStore"
 import { generateTeamName } from "../../utils/generateTeamName"
@@ -29,30 +29,23 @@ export function TeamSidebar() {
   }
 
   return (
-    <aside className="flex h-full w-[420px] flex-col overflow-hidden bg-background-tertiary pt-[25px]">
-      <div className="flex min-h-0 flex-1 flex-col items-stretch gap-6 overflow-y-auto px-[35px] pb-28">
+    <aside className="absolute bottom-32 left-20 top-20 flex flex-col overflow-hidden rounded-20 bg-background-tertiary sm:w-[334px] md:w-[400px]">
+      <div className="flex max-h-full flex-col items-center gap-24 overflow-y-auto px-24 pb-[140px] pt-28">
         {teams.map((team) => (
           <PlayerStatus
             key={team.id}
             name={team.name}
             score=""
             scoreView={false}
-            className="h-[118px] shrink-0"
+            className="shrink-0 py-40"
           />
         ))}
       </div>
-      <StickyActionBar className="mt-auto" contentClassName="w-full">
-        <PrimaryBoxButton
-          type="button"
-          size="xl"
-          _style="solid"
-          className="w-full"
-          disabled={teams.length >= MAX_TEAMS}
-          onClick={handleAddTeam}
-        >
-          참가자 및 팀 추가하기
-        </PrimaryBoxButton>
-      </StickyActionBar>
+      <FloatingAddButton
+        onClick={handleAddTeam}
+        ariaLabel="참가자 및 팀 추가하기"
+        disabled={teams.length >= MAX_TEAMS}
+      />
     </aside>
   )
 }

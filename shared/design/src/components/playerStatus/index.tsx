@@ -19,51 +19,55 @@ export const PlayerStatus = ({
   onScoreDecrease,
   className,
 }: PlayerStatusProps) => {
+  if (!scoreView) {
+    return (
+      <div
+        className={cn(
+          "flex w-full items-center justify-center rounded-12 bg-background-primary py-40",
+          className,
+        )}
+        role="group"
+        aria-label={`${name} 카드`}
+      >
+        <span className="block w-[145px] truncate text-center font-pretendard text-[33px] font-normal leading-[120%] text-text-primary">
+          {name}
+        </span>
+      </div>
+    )
+  }
+
   return (
     <div
       className={cn(
-        "flex min-h-[40px] w-full items-center justify-center rounded-12 bg-background-primary px-20",
+        "flex w-full shrink-0 overflow-hidden rounded-12 bg-background-primary",
         className,
       )}
       role="group"
       aria-label={`${name} 점수 카드`}
     >
-      <div className="flex h-10 min-h-10 max-w-[310px] flex-1 items-center justify-center gap-20">
-        <h3
-          className={`typography-heading-xl-medium flex h-[40px] min-w-0 items-center text-center ${scoreView ? "flex-1" : "w-full"}`}
-        >
-          <span className="block w-full truncate">{name}</span>
-        </h3>
+      <SecondaryPlainIconButton
+        size="lg"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-12 rounded-r-none px-20 py-40 transition-colors hover:bg-[#FFC7C8] active:bg-[#FF6467]"
+        onClick={onScoreDecrease}
+        aria-label={`${name} 점수 감소`}
+      >
+        <Minus className="size-32 shrink-0" />
+        <span className="typography-heading-lg-regular block w-[100px] truncate text-center">
+          {name}
+        </span>
+      </SecondaryPlainIconButton>
 
-        {scoreView && (
-          <div className="flex h-[40px] w-[138px] items-center justify-between gap-16">
-            <SecondaryPlainIconButton
-              size="lg"
-              onClick={onScoreDecrease}
-              aria-label={`${name} 점수 감소`}
-            >
-              <Minus />
-            </SecondaryPlainIconButton>
-
-            <div className="flex h-[40px] items-center justify-center">
-              <span
-                className="typography-heading-lg-semibold"
-                aria-label={`${name} 현재 점수`}
-              >
-                {score}
-              </span>
-            </div>
-
-            <SecondaryPlainIconButton
-              size="lg"
-              onClick={onScoreIncrease}
-              aria-label={`${name} 점수 증가`}
-            >
-              <Add />
-            </SecondaryPlainIconButton>
-          </div>
-        )}
-      </div>
+      <SecondaryPlainIconButton
+        size="lg"
+        className="flex h-auto w-1/2 cursor-pointer items-center justify-between rounded-l-none rounded-r-12 px-20 py-40 transition-colors hover:bg-[#BDDCFF] active:bg-[#51A2FF]"
+        onClick={onScoreIncrease}
+        aria-label={`${name} 점수 증가`}
+      >
+        <span className="typography-heading-lg-semibold text-text-primary">
+          {score}
+        </span>
+        <Add className="size-32 shrink-0" />
+      </SecondaryPlainIconButton>
     </div>
   )
 }

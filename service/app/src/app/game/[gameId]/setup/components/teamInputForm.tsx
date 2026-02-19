@@ -54,7 +54,7 @@ export function TeamInputForm() {
 
   return (
     <form
-      className="flex w-full flex-col gap-6"
+      className="flex size-full flex-col"
       onSubmit={(e) => {
         e.preventDefault()
         if (teams.length >= MAX_TEAMS) return
@@ -66,48 +66,50 @@ export function TeamInputForm() {
         })
       }}
     >
-      {teams.map((team, index) => {
-        const name = `team-${team.id}-${index}`
-        const state = teamErrors[team.id] ? "error" : "default"
-        return (
-          <TextField.Root name={name} state={state} key={team.id}>
-            <TextField.InputWrapper>
-              <TextField.Input
-                value={team.name}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value.length > MAX_TEAM_NAME_LENGTH) return
-                  updateTeamName(team.id, value.trim())
-                }}
-                maxLength={MAX_TEAM_NAME_LENGTH}
-              />
-              <DestructiveSolidIconButton
-                type="button"
-                aria-label="clear input"
-                onClick={() => {
-                  if (teams.length > MIN_TEAMS) {
-                    removeTeam(team.id)
-                  }
-                }}
-              >
-                <Trash />
-              </DestructiveSolidIconButton>
-            </TextField.InputWrapper>
-            {teamErrors[team.id] && (
-              <TextField.ErrorText>{teamErrors[team.id]}</TextField.ErrorText>
-            )}
-          </TextField.Root>
-        )
-      })}
+      <div className="flex min-h-0 flex-1 flex-col gap-24 overflow-y-auto pb-24">
+        {teams.map((team, index) => {
+          const name = `team-${team.id}-${index}`
+          const state = teamErrors[team.id] ? "error" : "default"
+          return (
+            <TextField.Root name={name} state={state} key={team.id}>
+              <TextField.InputWrapper>
+                <TextField.Input
+                  value={team.name}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    if (value.length > MAX_TEAM_NAME_LENGTH) return
+                    updateTeamName(team.id, value.trim())
+                  }}
+                  maxLength={MAX_TEAM_NAME_LENGTH}
+                />
+                <DestructiveSolidIconButton
+                  type="button"
+                  aria-label="clear input"
+                  onClick={() => {
+                    if (teams.length > MIN_TEAMS) {
+                      removeTeam(team.id)
+                    }
+                  }}
+                >
+                  <Trash />
+                </DestructiveSolidIconButton>
+              </TextField.InputWrapper>
+              {teamErrors[team.id] && (
+                <TextField.ErrorText>{teamErrors[team.id]}</TextField.ErrorText>
+              )}
+            </TextField.Root>
+          )
+        })}
+      </div>
       <PrimaryBoxButton
         type="button"
         size="xl"
         _style="solid"
-        className="w-full"
+        className="mt-24 w-full shrink-0"
         disabled={!isGameReady}
         onClick={handleStartGame}
       >
-        게임 시작
+        게임 시작하기
       </PrimaryBoxButton>
     </form>
   )

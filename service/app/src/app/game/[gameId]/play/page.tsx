@@ -15,7 +15,7 @@ import { gamePlaySchema } from "./schemas"
 
 const ScoreboardGame = () => {
   const router = useRouter()
-  const [{ q: currentRound }, setSearchParams] =
+  const [{ q: currentRound, answer: showAnswer }, setSearchParams] =
     useTypedSearchParams(gamePlaySchema)
 
   const { gameDetail, teams, totalRounds, updateTeamScore, scores } =
@@ -42,7 +42,7 @@ const ScoreboardGame = () => {
       router.push("./result")
       return
     }
-    setSearchParams({ q: (currentRound + 1).toString() })
+    setSearchParams({ q: (currentRound + 1).toString(), answer: "" })
   }
 
   const { goBackToEntry } = useGameEntryNavigation()
@@ -60,21 +60,22 @@ const ScoreboardGame = () => {
           })
         }
       />
-      <div className="absolute left-[20px] top-[110px] z-10">
+      <div className="relative flex flex-1 items-center justify-center">
         <ScoreboardSidebar
           teams={teams}
           scores={scores}
           onUpdateTeamScore={updateTeamScore}
         />
-      </div>
-      <div>
         <GamePlayContent
           currentQuestion={currentQuestion}
           currentRound={currentRound}
-          totalRounds={totalRounds}
+          showAnswer={showAnswer}
+          onShowAnswer={() => {
+            setSearchParams({ q: currentRound.toString(), answer: "true" })
+          }}
           onPrevQuestion={() => {
             if (currentRound <= 1) return
-            setSearchParams({ q: (currentRound - 1).toString() })
+            setSearchParams({ q: (currentRound - 1).toString(), answer: "" })
           }}
           onNextQuestion={handleNextQuestion}
         />
