@@ -17,9 +17,9 @@ export const GameResultContent = ({
   }, [teams, scores])
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-10">
+    <div className="flex flex-1 flex-col items-center justify-center gap-40">
       {/* Winner Title */}
-      <div className="flex h-[96px] items-center justify-center gap-2.5 rounded-[15px] bg-blue-400 px-32 py-8">
+      <div className="flex items-center justify-center rounded-[15px] bg-blue-400 px-32 py-20">
         <h2 className="typography-heading-3xl-semibold text-neutral-white">
           🎉 이번 게임의 Winner는?
         </h2>
@@ -30,7 +30,7 @@ export const GameResultContent = ({
         {topTeams.map((team) => (
           <div
             key={team.id}
-            className="flex items-center justify-center gap-[30px] rounded-[10px] bg-gray-100 px-[110px] py-[18px]"
+            className="flex items-center justify-center gap-[30px] rounded-[10px] bg-gray-100 px-[110px] py-12"
           >
             <span className="text-[57px] font-extrabold text-blue-700">
               {team.name}
