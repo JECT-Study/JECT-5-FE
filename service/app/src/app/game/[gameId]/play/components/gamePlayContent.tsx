@@ -25,6 +25,9 @@ export const GamePlayContent = ({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      const isDialogOpen = document.querySelector("[role='dialog']") !== null
+      if (isDialogOpen) return
+
       if (e.key === "Enter" || e.key === "ArrowRight") {
         if (showAnswer) {
           onNextQuestion()
@@ -45,19 +48,27 @@ export const GamePlayContent = ({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleKeyDown])
 
+  const hasImage = !!currentQuestion?.imageUrl
+
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-[70px] sm:max-w-[642px] md:max-w-[1080px]">
       <div className="flex flex-col items-center gap-40">
-        <h1 className="text-center text-text-primary sm:typography-heading-3xl-extrabold md:typography-heading-4xl-extrabold">
-          {currentQuestion.questionText}
-        </h1>
+        {hasImage && (
+          <h1 className="text-center text-text-primary sm:typography-heading-3xl-extrabold md:typography-heading-4xl-extrabold">
+            {currentQuestion.questionText}
+          </h1>
+        )}
 
-        {currentQuestion?.imageUrl && (
-          <div
-            className="flex h-[246px] items-center justify-center overflow-hidden rounded-lg sm:h-[406px] md:h-[499px]"
-            style={currentImageWidth ? { width: currentImageWidth } : undefined}
-          >
-            {showAnswer ? (
+        <div
+          className="flex h-[246px] items-center justify-center overflow-hidden rounded-lg sm:h-[406px] md:h-[499px]"
+          style={
+            hasImage && currentImageWidth
+              ? { width: currentImageWidth }
+              : undefined
+          }
+        >
+          {hasImage ? (
+            showAnswer ? (
               <div className="flex size-full items-center justify-center rounded-12 border-2 border-border-interactive-secondary bg-background-interactive-inverse px-32 py-12 text-text-interactive-secondary sm:typography-heading-3xl-semibold md:typography-heading-4xl-semibold">
                 {currentQuestion?.questionAnswer}
               </div>
@@ -77,9 +88,15 @@ export const GamePlayContent = ({
                   }))
                 }}
               />
-            )}
-          </div>
-        )}
+            )
+          ) : (
+            <span className="text-center text-text-primary sm:typography-heading-3xl-extrabold md:typography-heading-4xl-extrabold">
+              {showAnswer
+                ? currentQuestion?.questionAnswer
+                : currentQuestion.questionText}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col items-center gap-16">
