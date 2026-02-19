@@ -870,19 +870,19 @@
               "name": "breakpoint/sm",
               "type": "number",
               "isAlias": false,
-              "value": 960
+              "value": 961
             },
             {
               "name": "breakpoint/md",
               "type": "number",
               "isAlias": false,
-              "value": 1440
+              "value": 1441
             },
             {
               "name": "breakpoint/lg",
               "type": "number",
               "isAlias": false,
-              "value": 1920
+              "value": 1921
             }
           ]
         }
